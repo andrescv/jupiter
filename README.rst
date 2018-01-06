@@ -1,2 +1,3 @@
-# VSim
-RISC-V Simulator (RV32M)
+=====
+VSim - RISC-V Simulator
+=====
