@@ -45,7 +45,8 @@ class TestRegister(unittest.TestCase):
         self.assertEqual(self.register.getValue(), self.register.getResetValue())
 
     def test_signed(self):
-        for n in range(-10, 0):
+        numbers = [0, -2 ** 31] + [random.randint(-2 ** 31 + 1, -1) for i in range(10)]
+        for n in numbers:
             self.register.setValue(n)
             # sign-extend
             v = (self.register.getValue() ^ 0x80000000) - 0x80000000
