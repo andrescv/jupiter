@@ -14,9 +14,6 @@ class Register(object):
     def getNumber(self):
         return self._number
 
-    def getName(self):
-        return 'X%i' % self._number
-
     def getValue(self):
         return self._value
 
