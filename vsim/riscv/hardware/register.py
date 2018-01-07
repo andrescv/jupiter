@@ -32,4 +32,6 @@ class Register(object):
             self._reset_value = int(reset_value) & 0xFFFFFFFF
 
     def __str__(self):
+        if self._number < 10:
+            return '%s  [0x%08X]' % (self.getName(), self._value)
         return '%s [0x%08X]' % (self.getName(), self._value)

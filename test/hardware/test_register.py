@@ -1,6 +1,6 @@
 import random
 import unittest
-from vsim.hardware import Register
+from vsim.riscv.hardware import Register
 
 
 class TestRegister(unittest.TestCase):
