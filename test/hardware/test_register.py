@@ -19,6 +19,8 @@ class TestRegister(unittest.TestCase):
     def test_exceptions(self):
         self.assertRaises(TypeError, Register, 0.0)
         self.assertRaises(TypeError, Register, 0, value=0.0)
+        self.assertRaises(TypeError, self.register.setValue, 0.0)
+        self.assertRaises(TypeError, self.register.setResetValue, 0.0)
 
     def test_methods(self):
         # register methods
