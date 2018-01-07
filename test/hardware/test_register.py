@@ -23,8 +23,6 @@ class TestRegister(unittest.TestCase):
         self.assertRaises(TypeError, self.register.setResetValue, 0.0)
 
     def test_methods(self):
-        # register methods
-        self.assertEqual(self.register.getName(), 'X%i' % self.number)
         # value
         n = random.randint(0, 2 ** 32 - 1)
         self.register.setValue(n)
