@@ -38,6 +38,11 @@ class TestRegister(unittest.TestCase):
         self.assertEqual(self.register.getValue(), 0)
         self.register.setResetValue(2 ** 32)
         self.assertEqual(self.register.getResetValue(), 0)
+        # clear
+        n = random.randint(0, 2 ** 32 - 1)
+        self.register.setResetValue(n)
+        self.register.reset()
+        self.assertEqual(self.register.getValue(), self.register.getResetValue())
 
     def test_signed(self):
         for n in range(-10, 0):

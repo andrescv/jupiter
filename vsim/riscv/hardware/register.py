@@ -11,8 +11,6 @@ class Register(object):
         self._reset_value = self._value
         self._editable = editable
 
-    # getters
-
     def getNumber(self):
         return self._number
 
@@ -24,8 +22,6 @@ class Register(object):
 
     def getResetValue(self):
         return self._reset_value
-
-    # setters
 
     def setValue(self, value):
         if self._editable:
@@ -39,7 +35,8 @@ class Register(object):
                 raise TypeError('argument "reset_value" should be a integer')
             self._reset_value = reset_value & 0xFFFFFFFF
 
+    def reset(self):
+        self._value = self._reset_value
+
     def __str__(self):
-        if self._number < 10:
-            return '%s  [0x%08X]' % (self.getName(), self._value)
-        return '%s [0x%08X]' % (self.getName(), self._value)
+        return '0x%08X' % self._value
