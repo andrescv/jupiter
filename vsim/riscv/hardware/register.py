@@ -37,12 +37,12 @@ class Register(object):
     def setValue(self, val):
         if self._editable:
             assert isinstance(val, int)
-            self._val = val & 0xffffffff
+            self._val = val
 
     def setResetValue(self, reset_val):
         if self._editable:
             assert isinstance(reset_val, int)
-            self._reset_val = reset_val & 0xffffffff
+            self._reset_val = reset_val
 
     def resetValue(self):
         self._val = self._reset_val
