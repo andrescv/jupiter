@@ -1,3 +1,0 @@
-include README.rst
-include LICENSE
-recursive-exclude * __pycache__

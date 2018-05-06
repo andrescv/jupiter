@@ -1,3 +1,0 @@
-=====
-VSim - RISC-V Simulator
-=====
