@@ -48,5 +48,71 @@ class TestRegister(unittest.TestCase):
 
     def testSetValue(self):
         self.register.setValue(0xdead)
-        print(self.register.getValue())
         self.assertEqual(self.register.getValue(), 0xdead)
+
+    def testInvalidSetValue(self):
+        with self.assertRaises(TypeError) as ctxt:
+            self.register.setValue('0xcafe')
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'val should be an integer')
+
+    def testSetResetValue(self):
+        self.register.setResetValue(0xffff)
+        self.assertEqual(self.register.getResetValue(), 0xffff)
+        self.register.resetValue()
+        self.assertEqual(self.register.getValue(), 0xffff)
+
+    def testInvalidSetResetValue(self):
+        with self.assertRaises(TypeError) as ctxt:
+            self.register.setResetValue('0xdead')
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'reset_val should be an integer')
+
+    def testNonEditableRegister(self):
+        reg = Register(0, 0, 'zero', editable=False)
+        reg.setValue(0xffff)
+        self.assertEqual(reg.getValue(), 0)
+        reg.setResetValue(0xcafe)
+        self.assertEqual(reg.getResetValue(), 0)
+
+    def testInvalidCreationNum(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register('0', 0, 'zero')
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register number should be an int')
+
+    def testInvalidCreationVal(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, '0', 'zero')
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register value should be an int')
+
+    def testInvalidCreationABIName(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, 0, 0)
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register ABI Name should be a string')
+
+    def testInvalidCreationEditable(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, 0, 'zero', editable='false')
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'editable should be a bool')
+
+    def testInvalidCreationAlternative(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, 0, 'zero', alt_name=0)
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register alternative name should be a string')
+
+    def testInvalidCreationDescription(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, 0, 'zero', description=0)
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register description should be a string')
+
+    def testInvalidCreationSaver(self):
+        with self.assertRaises(TypeError) as ctxt:
+            Register(0, 0, 'zero', saver=0)
+        msg = str(ctxt.exception)
+        self.assertEqual(msg, 'register saver should be a string')
