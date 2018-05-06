@@ -3,21 +3,36 @@ from termcolor import colored
 
 class Register(object):
 
-    def __init__(self, ABIName, num, val, editable=True, alt_name=None):
-        assert isinstance(ABIName, str) and len(ABIName) != 0
-        assert isinstance(num, int) and num >= 0
-        assert isinstance(num, int)
-        assert isinstance(editable, bool)
-        assert isinstance(alt_name, str) or alt_name is None
-        self._ABIName = ABIName
+    def __init__(self, num, val, ABIName, **kwargs):
+        editable = kwargs.get('editable', True)
+        alt_name = kwargs.get('alt_name', None)
+        description = kwargs.get('description', '-')
+        saver = kwargs.get('saver', '-')
+
+        # type checking
+        if not isinstance(num, int):
+            raise TypeError('register number should be an int')
+        if not isinstance(val, int):
+            raise TypeError('register value should be an int')
+        if not isinstance(ABIName, str):
+            raise TypeError('register ABI Name should be a string')
+        if not isinstance(editable, bool):
+            raise TypeError('editable should be a bool')
+        if not (isinstance(alt_name, str) or alt_name is None):
+            raise TypeError('register alternative name should be a string')
+        if not isinstance(description, str):
+            raise TypeError('register description should be a string')
+        if not isinstance(saver, str):
+            raise TypeError('register saver should be a string')
+
         self._num = num
         self._val = val
+        self._ABIName = ABIName
         self._reset_val = val
         self._editable = editable
         self._alt_name = alt_name
-
-    def getABIName(self):
-        return self._ABIName
+        self._description = description
+        self._saver = saver
 
     def getNumber(self):
         return self._num
@@ -28,21 +43,38 @@ class Register(object):
     def getResetValue(self):
         return self._reset_val
 
+    def getABIName(self):
+        return self._ABIName
+
     def getAlternativeName(self):
         return self._alt_name
+
+    def getDescription(self):
+        return self._description
+
+    def getSaver(self):
+        return self._saver
 
     def isEditable(self):
         return self._editable
 
     def setValue(self, val):
         if self._editable:
-            assert isinstance(val, int)
-            self._val = val
+            if isinstance(val, int):
+                # to int 32
+                val = val & 0xffffffff
+                self._val = (val & (0x80000000 - 1)) - (val & 0x80000000)
+            else:
+                raise TypeError('val should be an integer')
 
     def setResetValue(self, reset_val):
         if self._editable:
-            assert isinstance(reset_val, int)
-            self._reset_val = reset_val
+            if isinstance(reset_val, int):
+                # to int 32
+                val = reset_val & 0xffffffff
+                self._reset_val = (val & (0x80000000 - 1)) - (val & 0x80000000)
+            else:
+                raise TypeError('reset_val should be an integer')
 
     def resetValue(self):
         self._val = self._reset_val

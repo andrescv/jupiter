@@ -1,70 +1,89 @@
+from os import path
+from yaml import load
 from os import linesep
 from termcolor import colored
+
 from .register import Register
-from ..config import RISCVConfig as Config
 
 
 class RegisterFile(object):
 
     def __init__(self):
-        self._regfile = [
-            Register('zero', 0, 0, editable=False),
-            Register('ra', 1, 0),
-            Register('sp', 2, 0),
-            Register('gp', 3, 0),
-            Register('tp', 4, 0), Register('t0', 5, 0),
-            Register('t1', 6, 0), Register('t2', 7, 0),
-            Register('s0', 8, 0, alt_name='fp'),
-            Register('s1', 9, 0), Register('a0', 10, 0),
-            Register('a1', 11, 0), Register('a2', 12, 0),
-            Register('a3', 13, 0), Register('a4', 14, 0),
-            Register('a5', 15, 0), Register('a6', 16, 0),
-            Register('a7', 17, 0), Register('s2', 18, 0),
-            Register('s3', 19, 0), Register('s4', 20, 0),
-            Register('s5', 21, 0), Register('s6', 22, 0),
-            Register('s7', 23, 0), Register('s8', 24, 0),
-            Register('s9', 25, 0), Register('s10', 26, 0),
-            Register('s11', 27, 0), Register('t3', 28, 0),
-            Register('t4', 29, 0), Register('t5', 30, 0),
-            Register('t6', 31, 0),
-        ]
-        self._pc = Register('pc', 32, 0)
+        regpath = path.join(path.dirname(__file__), 'config', 'registers.yml')
+        with open(regpath, 'r') as f:
+            registers = load(f)
+            self._regfile = []
+            for number, register in enumerate(registers):
+                self._regfile.append(Register(
+                    number,
+                    0,
+                    register.get('ABIName'),
+                    editable=register.get('editable', True),
+                    alt_name=register.get('alt_name', None),
+                    description=register.get('description', '-'),
+                    saver=register.get('saver', '-')
+                ))
+        self._pc = Register(32, 0, 'pc', description='program counter')
 
     def getRegisterNumber(self, name):
-        name = name.lower()
-        for reg in self._regfile:
-            if name == reg.getABIName().lower():
-                return reg.getNumber()
-            alt_name = reg.getAlternativeName()
-            if alt_name is not None and name == alt_name.lower():
-                return reg.getNumber()
-        if name == 'pc':
-            return self._pc.getNumber()
+        if isinstance(name, str):
+            name = name.lower()
+            for reg in self._regfile:
+                if name == reg.getABIName().lower():
+                    return reg.getNumber()
+                alt_name = reg.getAlternativeName()
+                if alt_name is not None and name == alt_name.lower():
+                    return reg.getNumber()
+            if name == 'pc':
+                return self._pc.getNumber()
+        else:
+            raise TypeError('name should be a string')
 
-    def getRegisterValue(self, num):
-        for reg in self._regfile:
-            if reg.getNumber() == num:
-                return reg.getValue()
-        if self._pc.getNumber() == num:
-            return self._pc.getValue()
+    def getRegister(self, num):
+        if isinstance(num, int):
+            for reg in self._regfile:
+                if reg.getNumber() == num:
+                    return reg
+            if self._pc.getNumber() == num:
+                return self._pc
+        else:
+            raise TypeError('num should be an int')
 
-    def updateRegister(self, num, val):
-        for reg in self._regfile:
-            if reg.getNumber() == num:
-                reg.setValue(val)
-                return
-        if self._pc.getNumber() == num:
-            self._pc.setValue(val)
-
-    def incProgramCounter(self):
-        val = self._pc.getValue()
-        self._pc.setValue(val + Config.INSTRUCTION_LENGTH)
+    def setRegister(self, num, val):
+        if isinstance(num, int):
+            for reg in self._regfile:
+                if reg.getNumber() == num:
+                    reg.setValue(val)
+                    return
+            if self._pc.getNumber() == num:
+                self._pc.setValue(val)
+        else:
+            raise TypeError('num should be an int')
 
     def setProgramCounter(self, val):
-        self._pc.setValue(val)
+        self['pc'] = val
+
+    def setStackPointer(self, val):
+        self['sp'] = val
+
+    def setGlobalPointer(self, val):
+        self['gp'] = val
+
+    def __getitem__(self, index):
+        if isinstance(index, str):
+            index = self.getRegisterNumber(index)
+        return self.getRegister(index)
+
+    def __setitem__(self, index, val):
+        if isinstance(index, str):
+            index = self.getRegisterNumber(index)
+        self.setRegister(index, val)
+
+    def __len__(self):
+        return len(self._regfile)
 
     def __str__(self):
-        s = 'RegFile' + linesep * 2
+        s = ''
         for reg in self._regfile:
             s += str(reg) + linesep
         pc = 'PC  [' + colored('0x%08x' % self._pc.getValue(), 'yellow') + ']'

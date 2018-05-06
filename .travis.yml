@@ -15,8 +15,9 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
   - pip install -r requirements.txt
-  # set PYTHONPATH
-  - export PYTHONPATH=./vsim
 
 script:
-  pytest
+  - pytest --cov=./
+
+after_success:
+  - codecov

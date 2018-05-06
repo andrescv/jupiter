@@ -1,39 +1,52 @@
-from unittest import TestCase
+import unittest
 
 from riscv.hardware import Register
 
 
-class TestReg(TestCase):
+class TestRegister(unittest.TestCase):
 
-    def testEditableRegister(self):
-        # create register
-        ABIName = 's0'
-        alt_name = 'fp'
-        val = 0
-        number = 8
-        reg = Register(ABIName, number, val, alt_name=alt_name)
-        # test getters
-        self.assertEqual(reg.getABIName(), ABIName)
-        self.assertEqual(reg.getNumber(), number)
-        self.assertEqual(reg.getValue(), val)
-        self.assertEqual(reg.getResetValue(), val)
-        self.assertEqual(reg.getAlternativeName(), alt_name)
-        self.assertEqual(reg.isEditable(), True)
-        # test setters
-        reg.setValue(0xcafe)
-        self.assertEqual(reg.getValue(), 0xcafe)
-        reg.setResetValue(0xdead)
-        reg.resetValue()
-        self.assertEqual(reg.getValue(), 0xdead)
+    def setUp(self):
+        self.num = 8
+        self.val = 0xcafe
+        self.ABIName = 's0'
+        self.alt_name = 'fp'
+        self.description = 'saved register / frame pointer'
+        self.saver = 'callee'
+        self.register = Register(
+            self.num,
+            self.val,
+            self.ABIName,
+            editable=True,
+            alt_name=self.alt_name,
+            description=self.description,
+            saver=self.saver
+        )
 
-    def testNonEditableRegister(self):
-        ABIName = 'zero'
-        val = 0
-        number = 0
-        reg = Register(ABIName, number, val, editable=False)
-        # test setters
-        reg.setValue(0xcafe)
-        self.assertEqual(reg.getValue(), val)
-        reg.setResetValue(0xdead)
-        reg.resetValue()
-        self.assertEqual(reg.getValue(), val)
+    def testGetNumber(self):
+        self.assertEqual(self.register.getNumber(), self.num)
+
+    def testGetValue(self):
+        self.assertEqual(self.register.getValue(), self.val)
+
+    def testGetResetValue(self):
+        self.assertEqual(self.register.getResetValue(), self.val)
+
+    def testGetABIName(self):
+        self.assertEqual(self.register.getABIName(), self.ABIName)
+
+    def testGetAlternativeName(self):
+        self.assertEqual(self.register.getAlternativeName(), self.alt_name)
+
+    def testGetDescription(self):
+        self.assertEqual(self.register.getDescription(), self.description)
+
+    def testGetSaver(self):
+        self.assertEqual(self.register.getSaver(), self.saver)
+
+    def testIsEditable(self):
+        self.assertEqual(self.register.isEditable(), True)
+
+    def testSetValue(self):
+        self.register.setValue(0xdead)
+        print(self.register.getValue())
+        self.assertEqual(self.register.getValue(), 0xdead)
