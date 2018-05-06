@@ -19,4 +19,4 @@ install:
   export PYTHONPATH=./vsim
 
 script:
-  py.test
+  pytest
