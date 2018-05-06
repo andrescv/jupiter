@@ -26,7 +26,7 @@ class Register(object):
             raise TypeError('register saver should be a string')
 
         self._num = num
-        self._val = val
+        self._val = val & 0xffffffff
         self._ABIName = ABIName
         self._reset_val = val
         self._editable = editable
@@ -61,18 +61,16 @@ class Register(object):
     def setValue(self, val):
         if self._editable:
             if isinstance(val, int):
-                # to int 32
-                val = val & 0xffffffff
-                self._val = (val & (0x80000000 - 1)) - (val & 0x80000000)
+                # 32 bits only
+                self._val = val & 0xffffffff
             else:
                 raise TypeError('val should be an integer')
 
     def setResetValue(self, reset_val):
         if self._editable:
             if isinstance(reset_val, int):
-                # to int 32
-                val = reset_val & 0xffffffff
-                self._reset_val = (val & (0x80000000 - 1)) - (val & 0x80000000)
+                # 32 bits only
+                self._reset_val = reset_val & 0xffffffff
             else:
                 raise TypeError('reset_val should be an integer')
 
