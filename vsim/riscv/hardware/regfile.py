@@ -41,24 +41,20 @@ class RegisterFile(object):
 
     def getRegister(self, num):
         if isinstance(num, int):
-            for reg in self._regfile:
-                if reg.getNumber() == num:
-                    return reg
-            if self._pc.getNumber() == num:
-                return self._pc
+            if num >= 0 and num <= 32:
+                for reg in self._regfile:
+                    if reg.getNumber() == num:
+                        return reg
+                if self._pc.getNumber() == num:
+                    return self._pc
+            else:
+                raise ValueError('num should be in a range of [0, 32]')
         else:
             raise TypeError('num should be an int')
 
     def setRegister(self, num, val):
-        if isinstance(num, int):
-            for reg in self._regfile:
-                if reg.getNumber() == num:
-                    reg.setValue(val)
-                    return
-            if self._pc.getNumber() == num:
-                self._pc.setValue(val)
-        else:
-            raise TypeError('num should be an int')
+        reg = self.getRegister(num)
+        reg.setValue(val)
 
     def setProgramCounter(self, val):
         self['pc'] = val
