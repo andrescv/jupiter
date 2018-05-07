@@ -15,8 +15,8 @@ class TestRegisterFile(unittest.TestCase):
     def testGetRegisterNumber(self):
         self.assertEqual(self.rf.getRegisterNumber('zero'), 0)
 
-    def testGetRegisterNumberPC(self):
-        self.assertEqual(self.rf.getRegisterNumber('pc'), 32)
+    def testGetRegisterNumberAltName(self):
+        self.assertEqual(self.rf.getRegisterNumber('fp'), 8)
 
     def testGetRegisterNumberUnknownName(self):
         self.assertEqual(self.rf.getRegisterNumber('cafe'), None)
@@ -31,8 +31,8 @@ class TestRegisterFile(unittest.TestCase):
         zero = self.rf.getRegister(0)
         self.assertIsInstance(zero, Register)
 
-    def testGetRegisterPC(self):
-        pc = self.rf.getRegister(32)
+    def testGetProgramCounter(self):
+        pc = self.rf.getProgramCounter()
         self.assertIsInstance(pc, Register)
 
     def testInvalidGetRegisterUnknownNum(self):
@@ -57,9 +57,9 @@ class TestRegisterFile(unittest.TestCase):
         self.assertEqual(self.rf.getRegister(num).getValue(), 0xcafe)
 
     def testSetProgramCounter(self):
-        num = self.rf.getRegisterNumber('pc')
         self.rf.setProgramCounter(0xdead)
-        self.assertEqual(self.rf.getRegister(num).getValue(), 0xdead)
+        pc = self.rf.getProgramCounter()
+        self.assertEqual(pc.getValue(), 0xdead)
 
     def testSetStackPointer(self):
         num = self.rf.getRegisterNumber('sp')
