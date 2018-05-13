@@ -27,6 +27,24 @@ class TestMemory(unittest.TestCase):
         self.assertEqual(mem.loadByteUnsigned(address), 0x0)
         del mem
 
+    def test_getValue(self):
+        mem = Memory()
+        address = randint(self.data_start, self.data_end)
+        address = Memory.alignToWordBoundary(address)
+        mem.storeWord(address, 0xbacacafe)
+        self.assertEqual(mem.loadWord(address), sign_extend(0xbacacafe, 32))
+        self.assertEqual(mem.loadHalf(address), sign_extend(0xcafe, 16))
+        self.assertEqual(mem.loadByte(address), sign_extend(0xfe, 8))
+        self.assertEqual(mem.loadHalfUnsigned(address), 0xcafe)
+        self.assertEqual(mem.loadByteUnsigned(address), 0xfe)
+        mem.storeWord(address, 0xffffffff)
+        self.assertEqual(mem.loadWord(address), sign_extend(0xffffffff, 32))
+        self.assertEqual(mem.loadHalf(address), sign_extend(0xffff, 16))
+        self.assertEqual(mem.loadByte(address), sign_extend(0xff, 8))
+        self.assertEqual(mem.loadHalfUnsigned(address), 0xffff)
+        self.assertEqual(mem.loadByteUnsigned(address), 0xff)
+        del mem
+
     def test_allocateBytes(self):
         mem = Memory()
         numBytes = randint(1, 256)
@@ -56,6 +74,7 @@ class TestMemory(unittest.TestCase):
         self.assertEqual(msg2, 'numBytes should be > 0')
         self.assertEqual(msg3, 'request exceeds available heap storage')
         self.assertEqual(msg4, 'numBytes should be an int')
+        del mem
 
     def test_loadStoreByte(self):
         address = randint(self.data_start, self.data_end)
@@ -123,3 +142,4 @@ class TestMemory(unittest.TestCase):
 
     def test_wordAlign(self):
         self.assertEqual(Memory.alignToWordBoundary(0x3), 0x4)
+        self.assertEqual(Memory.alignToWordBoundary(0x4), 0x4)
