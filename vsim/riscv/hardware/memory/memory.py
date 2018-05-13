@@ -1,6 +1,7 @@
 from termcolor import colored
 
 from .cell import MemoryCell
+from ..utils import sign_extend
 from .memconfig import MemoryConfig as config
 
 
@@ -16,65 +17,88 @@ class Memory:
                 raise ValueError('numBytes should be > 0')
             result = self._heap_address
             self._heap_address += numBytes
-            self._heap_address = Memory.alignToWordBoundary(self._heap_address)
             if self._heap_address >= config.DATA_LIMIT_ADDRESS:
                 raise ValueError('request exceeds available heap storage')
             return result
         else:
             raise TypeError('numBytes should be an int')
 
-    def loadByte(self, address, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
-            return 0x0
+    def createMemoryCell(self, address):
+        if Memory.isWordAligned(address):
+            if address not in self._mem:
+                self._mem[address] = MemoryCell()
         else:
-            return self._mem[address].loadByte(offset=offset)
+            raise ValueError('address should be word aligned')
 
-    def loadByteUnsigned(self, address, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
+    def loadByteValue(self, address):
+        Memory.checkAddress(address)
+        word_address = address // config.WORD_LENGTH * config.WORD_LENGTH
+        if word_address not in self._mem:
             return 0x0
         else:
-            return self._mem[address].loadByteUnsigned(offset=offset)
+            offset = address - word_address
+            return self._mem[word_address].loadByteUnsigned(offset=offset)
 
-    def loadHalf(self, address, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
-            return 0x0
-        else:
-            return self._mem[address].loadHalf(offset=offset)
+    def loadByte(self, address):
+        return sign_extend(self.loadByteValue(address), 8)
 
-    def loadHalfUnsigned(self, address, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
-            return 0x0
+    def loadByteUnsigned(self, address):
+        return self.loadByteValue(address)
+
+    def loadHalfValue(self, address):
+        Memory.checkAddress(address)
+        if Memory.isWordAligned(address):
+            if address not in self._mem:
+                return 0x0
+            return self._mem[address].loadHalfUnsigned()
         else:
-            return self._mem[address].loadHalfUnsigned(offset=offset)
+            byte1 = self.loadByteUnsigned(address)
+            byte2 = self.loadByteUnsigned(address + 1)
+            return byte2 << 8 | byte1
+
+    def loadHalf(self, address):
+        return sign_extend(self.loadHalfValue(address), 16)
+
+    def loadHalfUnsigned(self, address):
+        return self.loadHalfValue(address)
 
     def loadWord(self, address):
         Memory.checkAddress(address)
-        if address not in self._mem:
-            return 0x0
+        if Memory.isWordAligned(address):
+            if address not in self._mem:
+                return 0x0
+            else:
+                return self._mem[address].loadWord()
         else:
-            return self._mem[address].loadWord()
+            # word = half2 << 16 | half1
+            half1 = self.loadHalfUnsigned(address)
+            half2 = self.loadHalfUnsigned(address + 2)
+            return sign_extend(half2 << 16 | half1, 32)
 
-    def storeByte(self, address, byte, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
-            self._mem[address] = MemoryCell()
-        self._mem[address].storeByte(byte, offset=offset)
+    def storeByte(self, address, byte):
+        Memory.checkAddress(address)
+        word_address = address // config.WORD_LENGTH * config.WORD_LENGTH
+        offset = address - word_address
+        self.createMemoryCell(word_address)
+        self._mem[word_address].storeByte(byte, offset=offset)
 
-    def storeHalf(self, address, half, offset=0):
-        Memory.checkAddress(address, offset=offset)
-        if address not in self._mem:
-            self._mem[address] = MemoryCell()
-        self._mem[address].storeHalf(half, offset=offset)
+    def storeHalf(self, address, half):
+        Memory.checkAddress(address)
+        if Memory.isWordAligned(address):
+            self.createMemoryCell(address)
+            self._mem[address].storeHalf(half)
+        else:
+            self.storeByte(address, half)
+            self.storeByte(address + 1, half >> 8)
 
     def storeWord(self, address, word):
         Memory.checkAddress(address)
-        if address not in self._mem:
-            self._mem[address] = MemoryCell()
-        self._mem[address].storeWord(word)
+        if Memory.isWordAligned(address):
+            self.createMemoryCell(address)
+            self._mem[address].storeWord(word)
+        else:
+            self.storeHalf(address, word)
+            self.storeHalf(address + 2, word >> 16)
 
     def memory(self, fromAddress, rows=12):  # pragma: no cover
         Memory.checkAddress(fromAddress)
@@ -99,9 +123,19 @@ class Memory:
         return address % config.WORD_LENGTH == 0
 
     @staticmethod
+    def isHalfAligned(address):
+        return address % config.HALF_LENGTH == 0
+
+    @staticmethod
     def alignToWordBoundary(address):
         if not Memory.isWordAligned(address):
             address += (config.WORD_LENGTH - (address % config.WORD_LENGTH))
+        return address
+
+    @staticmethod
+    def alignToHalfBoundary(address):
+        if not Memory.isHalfAligned(address):
+            address += (config.HALF_LENGTH - (address % config.HALF_LENGTH))
         return address
 
     @staticmethod
@@ -139,9 +173,9 @@ class Memory:
         return Memory.inRange(address, *limits)
 
     @staticmethod
-    def checkAddress(address, offset=0):
-        if isinstance(address, int) and isinstance(offset, int):
-            if address >= 0 and offset >= 0:
+    def checkAddress(address):
+        if isinstance(address, int):
+            if address >= 0:
                 flags = [
                     Memory.inUserText(address),
                     Memory.inUserData(address),
@@ -152,12 +186,10 @@ class Memory:
                 ]
                 if True not in flags:
                     raise ValueError('address out of range')
-                if not Memory.isWordAligned(address):
-                    raise ValueError('address is not word aligned')
             else:
-                raise ValueError('address and offset should be >= 0')
+                raise ValueError('address should be >= 0')
         else:
-            raise TypeError('address and offset should be an int')
+            raise TypeError('address should be an int')
 
     def __getitem__(self, address):
         return self.loadWord(address)

@@ -32,6 +32,8 @@ class MemoryConfig:
 
     # word length
     WORD_LENGTH = 4
+    # half length
+    HALF_LENGTH = 2
 
     # high reserved memory
     RESERVED_HIGH_LIMIT = 0xffffffff
