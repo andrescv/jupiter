@@ -35,12 +35,10 @@ class RegisterFile(object):
 
     def getRegister(self, num):
         if isinstance(num, int):
-            if num >= 0 and num < 32:
-                for reg in self._regfile:
-                    if reg.getNumber() == num:
-                        return reg
-            else:
-                raise ValueError('num should be in a range of [0, 32]')
+            for reg in self._regfile:
+                if reg.getNumber() == num:
+                    return reg
+            raise ValueError('num should be in a range of [0, 32]')
         else:
             raise TypeError('num should be an int')
 
