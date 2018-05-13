@@ -1,28 +1,24 @@
-from os import path
-from yaml import load
 from os import linesep
 from termcolor import colored
 
 from .register import Register
+from .rfileconfig import RegistersConfig as config
 
 
 class RegisterFile(object):
 
     def __init__(self):
-        regpath = path.join(path.dirname(__file__), 'config', 'registers.yml')
-        with open(regpath, 'r') as f:
-            registers = load(f)
-            self._regfile = []
-            for number, register in enumerate(registers):
-                self._regfile.append(Register(
-                    number,
-                    0,
-                    register.get('ABIName'),
-                    editable=register.get('editable', True),
-                    alt_name=register.get('alt_name', None),
-                    description=register.get('description', '-'),
-                    saver=register.get('saver', '-')
-                ))
+        self._regfile = []
+        for number, register in enumerate(config.registers):
+            self._regfile.append(Register(
+                number,
+                0,
+                register.get('ABIName'),
+                editable=register.get('editable', True),
+                alt_name=register.get('alt_name', None),
+                description=register.get('description', '-'),
+                saver=register.get('saver', '-')
+            ))
         self._pc = Register(32, 0, 'pc', description='program counter')
 
     def getRegisterNumber(self, name):

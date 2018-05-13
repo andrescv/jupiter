@@ -78,8 +78,11 @@ class Register(object):
         self._val = self._reset_val
 
     def __str__(self):
-        fmt = '%s [%s]'
+        fmt = '%s (%s)%s [%s]'
         num = self.getNumber()
         num_str = 'x' + (str(num) if num >= 10 else str(num) + ' ')
-        val_str = '0x%08x' % self.getValue()
-        return fmt % (colored(num_str, 'green'), colored(val_str, 'red'))
+        num_str = colored(num_str, 'green')
+        val_str = colored('0x%08x' % self.getValue(), 'red')
+        abi_str = colored(self.getABIName(), 'blue')
+        spc_str = ' ' * (4 - len(self.getABIName()))
+        return fmt % (num_str, abi_str, spc_str, val_str)

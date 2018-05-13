@@ -9,11 +9,5 @@
   </a>
   <a href="https://codecov.io/gh/andrescv/VSim">
     <img src="https://codecov.io/gh/andrescv/VSim/branch/master/graph/badge.svg?token=FpiLNNzYj8" />
-  </a><br><br>
-  <a href="https://codecov.io/gh/andrescv/VSim/commit/e16053e0d0243fe0c7acbf6f6984cf4507098c03/graphs/sunburst.svg?token=FpiLNNzYj8">
-    <img src="https://codecov.io/gh/andrescv/VSim/commit/e16053e0d0243fe0c7acbf6f6984cf4507098c03/graphs/sunburst.svg?token=FpiLNNzYj8"
-    alt="sunburst"
-    width="80"
-    >
   </a>
 </p>

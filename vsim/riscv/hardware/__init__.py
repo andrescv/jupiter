@@ -1,2 +1,3 @@
-from .register import Register
-from .regfile import RegisterFile
+from .memory import Memory
+from .registers import Register
+from .registers import RegisterFile
