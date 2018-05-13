@@ -59,8 +59,8 @@ class Memory:
             return self._mem[address].loadWord()
 
     def storeByte(self, address, byte, offset=0):
+        Memory.checkAddress(address, offset=offset)
         if address not in self._mem:
-            Memory.checkAddress(address, offset=offset)
             self._mem[address] = MemoryCell()
         self._mem[address].storeByte(byte, offset=offset)
 
@@ -158,6 +158,12 @@ class Memory:
                 raise ValueError('address and offset should be >= 0')
         else:
             raise TypeError('address and offset should be an int')
+
+    def __getitem__(self, address):
+        return self.loadWord(address)
+
+    def __setitem__(self, address, word):
+        self.storeWord(address, word)
 
     def __str__(self):
         return self.memory(config.DATA_BASE_ADDRESS)
