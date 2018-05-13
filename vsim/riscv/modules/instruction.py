@@ -1,4 +1,4 @@
-from .simcodes.base import SimCode
+from .base import SimCode
 from .description import Description
 
 
@@ -13,6 +13,12 @@ class Instruction:
             raise TypeError('description should be an instance of Description')
         if not isinstance(self._simcode, SimCode):
             raise TypeError('simcode should be an instance of SimCode')
+
+    def getDescription(self):
+        return self._description
+
+    def getSimCode(self):
+        return self._simcode
 
     def execute(self, code):
         self._simcode(code)
