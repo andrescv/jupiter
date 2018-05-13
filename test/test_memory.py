@@ -43,6 +43,15 @@ class TestMemory(unittest.TestCase):
         self.assertEqual(mem.loadHalfValue(address), 0x0)
         del mem
 
+    def test_getRawHalfValueUnaligned(self):
+        mem = Memory()
+        address = randint(self.data_start, self.data_end)
+        address = Memory.alignToHalfBoundary(address) + 1
+        mem.storeWord(address, 0xbacacafe)
+        self.assertEqual(mem.loadHalfValue(address), 0xcafe)
+        self.assertEqual(mem.loadHalfValue(address + 2), 0xbaca)
+        del mem
+
     def test_getValueAligned(self):
         mem = Memory()
         address = randint(self.data_start, self.data_end)
