@@ -59,9 +59,9 @@ class RTypeSimCode(SimCode):
 
     def __call__(self, code):
         super().__call__(code)
-        rd = SimCode.getField(code, 0b11111, 7)
-        rs1 = SimCode.getField(code, 0b11111, 15)
-        rs2 = SimCode.getField(code, 0b11111, 20)
+        rd = SimCode.getField(code, 0x1f, 7)
+        rs1 = SimCode.getField(code, 0x1f, 15)
+        rs2 = SimCode.getField(code, 0x1f, 20)
         rs1_val = Globals.regfile[rs1].getValue()
         rs2_val = Globals.regfile[rs2].getValue()
         result = self.getResult(rs1_val, rs2_val)
@@ -106,10 +106,10 @@ class STypeSimCode(SimCode):
 
     def __call__(self, code):
         super().__call__(code)
-        rs1 = SimCode.getField(code, 0b11111, 15)
-        rs2 = SimCode.getField(code, 0b11111, 20)
-        imm5 = SimCode.getField(code, 0b11111, 7)
-        imm7 = SimCode.getField(code, 0b1111111, 25)
+        rs1 = SimCode.getField(code, 0x1f, 15)
+        rs2 = SimCode.getField(code, 0x1f, 20)
+        imm5 = SimCode.getField(code, 0x1f, 7)
+        imm7 = SimCode.getField(code, 0x7f, 25)
         imm = sign_extend(imm7 << 5 | imm5, 12)
         rs1_val = Globals.regfile[rs1].getValue()
         rs2_val = Globals.regfile[rs2].getValue()
@@ -161,7 +161,7 @@ class UTypeSimCode(SimCode):
 
     def __call__(self, code):
         super().__call__(code)
-        rd = SimCode.getField(code, 0b11111, 7)
+        rd = SimCode.getField(code, 0x1f, 7)
         imm = sign_extend(SimCode.getField(code, 0xfffff, 12), 20)
         Globals.regfile[rd] = self.getResult(imm)
 
@@ -181,7 +181,7 @@ class JTypeSimCode(SimCode):
 
     def __call__(self, code):
         super().__call__(code)
-        rd = SimCode.getField(code, 0b11111, 7)
+        rd = SimCode.getField(code, 0x1f, 7)
         imm = SimCode.getField(code, 0x1ffffff, 12)
         imm10 = SimCode.getField(imm, 0x3ff, 9)
         imm1b = SimCode.getField(imm, 0x1, 19)
