@@ -1,23 +1,13 @@
-language: python
-python:
-  - '3.6'
+language: java
+
+jdk:
+  -oraclejdk8
+  -openjdk8
+
 install:
-  - sudo apt-get update
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # useful for debugging any issues with conda
-  - conda info -a
-  # create conda environment and install dependencies
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
-  - source activate test-environment
-  - pip install -r requirements.txt
+  - wget https://github.com/junit-team/junit4/releases/download/r4.12/junit-4.12.jar
+  - mv junit-4.12.jar junit.jar
+  - export CLASSPATH=.:$PWD
 
 script:
-  - pytest --cov=./
-
-after_success:
-  - codecov -t $TOKEN
+  - make
