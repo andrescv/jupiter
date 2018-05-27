@@ -1,8 +1,8 @@
 language: java
 
 jdk:
-  -oraclejdk8
-  -openjdk8
+  - oraclejdk8
+  - openjdk8
 
 install:
   - wget https://github.com/junit-team/junit4/releases/download/r4.12/junit-4.12.jar
