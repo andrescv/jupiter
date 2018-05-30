@@ -24,40 +24,11 @@ public final class MemoryCell {
         return ((this.data & mask) >> shift) & SignExtender.BYTE_MASK;
     }
 
-    public int loadByte(ByteOffset offset) {
-        return SignExtender.signExtendByte(loadByteUnsigned(offset));
-    }
-
-    public int loadHalfUnsigned(HalfOffset offset) {
-        int shift = offset.ordinal() * SignExtender.HALF_LENGTH_BITS;
-        int mask = SignExtender.HALF_MASK << shift;
-        return ((this.data & mask) >> shift) & SignExtender.HALF_MASK;
-    }
-
-    public int loadHalf(HalfOffset offset) {
-        return SignExtender.signExtendHalf(loadHalfUnsigned(offset));
-    }
-
-    public int loadWord() {
-        return this.data;
-    }
-
     public void storeByte(int value, ByteOffset offset) {
         int shift = offset.ordinal() * SignExtender.BYTE_LENGTH_BITS;
         int mask = SignExtender.BYTE_MASK << shift;
         value = (SignExtender.BYTE_MASK & value) << shift;
         this.data = (this.data & ~mask) | value;
-    }
-
-    public void storeHalf(int value, HalfOffset offset) {
-        int shift = offset.ordinal() * SignExtender.HALF_LENGTH_BITS;
-        int mask = SignExtender.HALF_MASK << shift;
-        value = (SignExtender.HALF_MASK & value) << shift;
-        this.data = (this.data & ~mask) | value;
-    }
-
-    public void storeWord(int value) {
-        this.data = value;
     }
 
     @Override
