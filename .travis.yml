@@ -4,10 +4,5 @@ jdk:
   - oraclejdk8
   - openjdk8
 
-install:
-  - wget https://github.com/junit-team/junit4/releases/download/r4.12/junit-4.12.jar
-  - mv junit-4.12.jar junit.jar
-  - export CLASSPATH=.:$PWD
-
 script:
   - make

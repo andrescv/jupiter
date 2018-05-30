@@ -5,7 +5,7 @@ build/
 .vscode/
 
 # Main run file
-main
+run-vsim
 
 # Log file
 *.log
@@ -17,7 +17,6 @@ main
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear

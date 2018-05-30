@@ -1,13 +1,12 @@
 package vsim.riscv.hardware;
 
+import java.util.Hashtable;
 import vsim.utils.Colorize;
 
 
 public class RegisterFile {
 
-    public static final int NUM_REGISTERS = 32;
-
-    private static final String[] REG_NAMES = {
+    public static final String[] REGISTER_NAMES = {
         "zero", "ra", "sp", "gp",
         "tp", "t0", "t1", "t2",
         "s0/fp", "s1", "a0", "a1",
@@ -18,30 +17,34 @@ public class RegisterFile {
         "t3", "t4", "t5", "t6"
     };
 
-    private Register[] registers;
+    private Hashtable<String, Register> regfile;
     private Register pc;
 
     public RegisterFile() {
-        this.registers = new Register[NUM_REGISTERS];
-        for(int i=0; i < REG_NAMES.length; i++) {
-            this.registers[i] = new Register(i, 0, REG_NAMES[i], i != 0);
+        this.regfile = new Hashtable<String, Register>();
+        for (int i = 0; i < REGISTER_NAMES.length; i++) {
+            Register reg = new Register(i, 0, i != 0);
+            String name = REGISTER_NAMES[i];
+            if (name.contains("/")) {
+                String[] names = name.split("/");
+                for (int j = 0; j < names.length; j++)
+                    this.regfile.put(names[j], reg);
+            } else
+                this.regfile.put(name, reg);
         }
-        this.pc = new Register(32, 0, "PC", true);
+        this.pc = new Register(-1, 0, true);
     }
 
     public Register getRegister(String name) {
-        for(int i=0; i < this.registers.length; i++) {
-            String regName = this.registers[i].getName();
-            if (regName.contains(name))
-                return this.registers[i];
-        }
-        return null;
+        return this.regfile.get(name.toLowerCase());
     }
 
     public Register getRegister(int number) {
-        for(int i=0; i < this.registers.length; i++) {
-            if (this.registers[i].getNumber() == number)
-                return this.registers[i];
+        if (number >= 0 && number < REGISTER_NAMES.length) {
+            String name = REGISTER_NAMES[number];
+            if (name.contains("/"))
+                name = name.split("/")[0];
+            return this.getRegister(name);
         }
         return null;
     }
@@ -50,10 +53,12 @@ public class RegisterFile {
         return this.pc;
     }
 
-    public void setRegister(String name, int value) {
-        Register reg = getRegister(name);
-        if (reg != null)
-            reg.setValue(value);
+    public Register getStackPointer() {
+        return this.getRegister("sp");
+    }
+
+    public Register getGlobalPointer() {
+        return this.getRegister("gp");
     }
 
     public void setProgramCounter(int value) {
@@ -61,24 +66,38 @@ public class RegisterFile {
     }
 
     public void setStackPointer(int value) {
-        setRegister("sp", value);
+        this.getStackPointer().setValue(value);
     }
 
     public void setGlobalPointer(int value) {
-        setRegister("gp", value);
+        this.getGlobalPointer().setValue(value);
     }
 
     @Override
     public String toString() {
         String out = "";
+        String regfmt = "%s%s [%s] (%s)";
+        String space = " ";
         String newline = System.getProperty("line.separator");
-        for(int i=0; i < NUM_REGISTERS; i++) {
-            out += this.registers[i].toString() + newline;
+
+        for(int i=0; i < REGISTER_NAMES.length; i++) {
+            Register reg = this.getRegister(i);
+            if (i >= 10)
+                space = "";
+            out += String.format(
+                regfmt,
+                Colorize.green(String.format("X%d", reg.getNumber())),
+                space,
+                Colorize.red(String.format("0x%08x", reg.getValue())),
+                Colorize.cyan(REGISTER_NAMES[i])
+            ) + newline;
         }
+
         out += newline + String.format(
             "PC  [%s]",
             Colorize.yellow(String.format("0x%08x", this.pc.getValue()))
         );
+
         return out;
     }
 
