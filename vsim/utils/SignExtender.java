@@ -7,6 +7,9 @@ public final class SignExtender {
     public static final int HALF_MASK = 0xffff;
     public static final int WORD_MASK = 0xffffffff;
 
+    public static final int HALF_LENGTH = 2;
+    public static final int WORD_LENGTH = 4;
+
     public static final int BYTE_LENGTH_BITS = 8;
     public static final int HALF_LENGTH_BITS = 16;
     public static final int WORD_LENGTH_BITS = 32;
