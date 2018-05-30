@@ -1,34 +1,37 @@
 JAVA=java
 JAVAC=javac
+JFLAGS=
+
+# build classpath
 CLASSPATH=.
-TESTCLASSPATH=.:$(JUNIT_HOME)
-JFLAGS=-cp $(CLASSPATH) -d build
 
 # all src files
 SRCDIR=.
 SRC=$(shell find $(SRCDIR) -not -path './test/*' -name '*.java')
 
-# all compiled files
+# all class files
 OBJDIR=build
 OBJS=$(patsubst $(SRCDIR)/%.java, $(OBJDIR)/%.class, $(SRC))
 
 
-main: build $(OBJS) Makefile
-	$(RM) main
-	echo '#!/bin/sh' >> main
-	echo 'cd build'  >> main
-	echo '$(JAVA) -cp $(CLASSPATH) Main $$*' >> main
-	chmod 755 main
+# VSim script
+run-vsim: build Makefile $(OBJS)
+	$(RM) run-vsim
+	echo '#!/bin/sh' >> run-vsim
+	echo 'cd build'  >> run-vsim
+	echo '$(JAVA) -cp $(CLASSPATH) VSim $$*' >> run-vsim
+	chmod 755 run-vsim
 
+# create build directory
 build:
 	@echo "creating build directory..."
 	mkdir -p build
 
+# compile vsim
 $(OBJS): $(OBJDIR)/%.class: $(SRCDIR)/%.java
-	$(JAVAC) $(JFLAGS) $<
+	$(JAVAC) $(JFLAGS) -cp $(CLASSPATH) -d build $<
 
 .PHONY: clean
 
 clean:
-	rm -rf build main
-	rm -rf test/*.class
+	rm -rf build run-vsim

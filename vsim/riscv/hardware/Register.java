@@ -8,14 +8,12 @@ public final class Register {
     private int number;
     private int value;
     private int resetValue;
-    private String name;
     private boolean editable;
 
-    public Register(int number, int value, String name, boolean editable) {
+    public Register(int number, int value, boolean editable) {
         this.number = number;
         this.value = value;
         this.resetValue = value;
-        this.name = name;
         this.editable = editable;
     }
 
@@ -31,20 +29,18 @@ public final class Register {
         return this.resetValue;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public boolean isEditable() {
         return this.editable;
     }
 
     public void setValue(int value) {
-        this.value = value;
+        if (this.editable)
+            this.value = value;
     }
 
     public void setResetValue(int resetValue) {
-        this.resetValue = resetValue;
+        if (this.editable)
+            this.resetValue = resetValue;
     }
 
     public void reset() {
@@ -54,10 +50,9 @@ public final class Register {
     @Override
     public String toString() {
         return String.format(
-            "%s [%s] (%s)",
-            Colorize.green(String.format("X%02d", this.number)),
-            Colorize.red(String.format("0x%08x", this.value)),
-            Colorize.blue(this.name)
+            "%s [%s]",
+            Colorize.green(String.format("X%d", this.number)),
+            Colorize.red(String.format("0x%08x", this.value))
         );
     }
 
