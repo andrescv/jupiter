@@ -7,7 +7,7 @@ import vsim.riscv.isa.instructions.Format;
 import vsim.riscv.isa.instructions.SimCode;
 
 
-public abstract class BType extends SimCode {
+abstract class BType extends SimCode {
 
     protected abstract boolean comparison(int rs1, int rs2);
 

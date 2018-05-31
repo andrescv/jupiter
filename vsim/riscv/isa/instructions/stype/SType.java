@@ -7,7 +7,7 @@ import vsim.riscv.isa.instructions.Format;
 import vsim.riscv.isa.instructions.SimCode;
 
 
-public abstract class SType extends SimCode {
+abstract class SType extends SimCode {
 
     protected abstract void set(int rs1, int rs2, int imm);
 
