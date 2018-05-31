@@ -9,7 +9,7 @@ import vsim.riscv.isa.instructions.SimCode;
 
 public abstract class IType extends SimCode {
 
-    public abstract int compute(int rs1, int imm);
+    protected abstract int compute(int rs1, int imm);
 
     @Override
     public void execute(Code code) {

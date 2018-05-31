@@ -4,7 +4,7 @@ package vsim.riscv.isa.instructions.btype;
 public final class Bltu extends BType {
 
     @Override
-    public boolean comparison(int rs1, int rs2) {
+    protected boolean comparison(int rs1, int rs2) {
         return Integer.compareUnsigned(rs1, rs2) < 0;
     }
 

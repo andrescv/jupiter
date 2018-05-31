@@ -7,7 +7,7 @@ import vsim.riscv.hardware.Register;
 public final class Jalr extends IType {
 
     @Override
-    public int compute(int rs1, int imm) {
+    protected int compute(int rs1, int imm) {
         Register pc = Globals.regfile.getProgramCounter();
         int nextPc = pc.getValue() + 4;
         int result = rs1 + imm;
