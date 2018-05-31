@@ -6,8 +6,8 @@ import vsim.Globals;
 public final class Lhu extends IType {
 
     @Override
-    public int compute(int x, int y) {
-        return Globals.memory.loadHalfUnsigned(x + y);
+    public int compute(int rs1, int imm) {
+        return Globals.memory.loadHalfUnsigned(rs1 + imm);
     }
 
 }

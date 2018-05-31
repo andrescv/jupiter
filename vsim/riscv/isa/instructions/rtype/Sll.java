@@ -4,8 +4,8 @@ package vsim.riscv.isa.instructions.rtype;
 public final class Sll extends RType {
 
     @Override
-    public int compute(int x, int y) {
-        return x << (y & 0x1f);
+    public int compute(int rs1, int rs2) {
+        return rs1 << (rs2 & 0x1f);
     }
 
 }

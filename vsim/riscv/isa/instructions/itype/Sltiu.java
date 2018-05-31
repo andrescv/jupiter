@@ -4,8 +4,8 @@ package vsim.riscv.isa.instructions.itype;
 public final class Sltiu extends IType {
 
     @Override
-    public int compute(int x, int y) {
-        return (Integer.compareUnsigned(x, y) < 0) ? 1 : 0;
+    public int compute(int rs1, int imm) {
+        return (Integer.compareUnsigned(rs1, imm) < 0) ? 1 : 0;
     }
 
 }

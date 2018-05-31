@@ -6,8 +6,8 @@ import vsim.Globals;
 public final class Lw extends IType {
 
     @Override
-    public int compute(int x, int y) {
-        return Globals.memory.loadWord(x + y);
+    public int compute(int rs1, int imm) {
+        return Globals.memory.loadWord(rs1 + imm);
     }
 
 }
