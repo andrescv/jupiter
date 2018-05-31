@@ -1,8 +1,6 @@
 package vsim.riscv.hardware;
 
 import vsim.utils.Colorize;
-import vsim.utils.ByteOffset;
-import vsim.utils.HalfOffset;
 import vsim.utils.SignExtender;
 
 

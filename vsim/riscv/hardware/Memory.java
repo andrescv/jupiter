@@ -1,7 +1,6 @@
 package vsim.riscv.hardware;
 
 import java.util.Hashtable;
-import vsim.utils.ByteOffset;
 import vsim.utils.Colorize;
 import vsim.utils.SignExtender;
 import static vsim.utils.SignExtender.HALF_LENGTH;
