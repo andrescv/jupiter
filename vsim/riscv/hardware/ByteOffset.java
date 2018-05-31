@@ -5,5 +5,5 @@ public enum ByteOffset {
     FIRST,
     SECOND,
     THIRD,
-    FOURTH
+    FOURTH;
 }
