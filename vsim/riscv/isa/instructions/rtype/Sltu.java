@@ -15,7 +15,7 @@ public final class Sltu extends SimCode {
         Register rd = Globals.regfile.getRegister(code.getRd());
         int x = rs1.getValue();
         int y = rs2.getValue();
-        if (Integer.compareUnsigned(x, y) == 0)
+        if (Integer.compareUnsigned(x, y) < 0)
             rd.setValue(1);
         else
             rd.setValue(0);
