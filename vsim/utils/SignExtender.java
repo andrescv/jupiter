@@ -15,17 +15,17 @@ public final class SignExtender {
     public static final int WORD_LENGTH_BITS = 32;
 
 
-    private static int signExtend(int value, int bits) {
+    public static int signExtend(int value, int bits) {
         int shift = WORD_LENGTH_BITS - bits;
         return value << shift >> shift;
     }
 
     public static int signExtendByte(int value) {
-        return signExtend(value, BYTE_LENGTH_BITS);
+        return SignExtender.signExtend(value, BYTE_LENGTH_BITS);
     }
 
     public static int signExtendHalf(int value) {
-        return signExtend(value, HALF_LENGTH_BITS);
+        return SignExtender.signExtend(value, HALF_LENGTH_BITS);
     }
 
 }
