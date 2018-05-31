@@ -1,4 +1,4 @@
-package vsim.utils;
+package vsim.riscv.hardware;
 
 
 public enum ByteOffset {
