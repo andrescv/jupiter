@@ -9,7 +9,7 @@ import vsim.riscv.isa.instructions.SimCode;
 
 public abstract class SType extends SimCode {
 
-    public abstract void set(int rs1, int rs2, int imm);
+    protected abstract void set(int rs1, int rs2, int imm);
 
     @Override
     public void execute(Code code) {

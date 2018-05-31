@@ -9,7 +9,7 @@ import vsim.riscv.isa.instructions.SimCode;
 
 public abstract class BType extends SimCode {
 
-    public abstract boolean comparison(int rs1, int rs2);
+    protected abstract boolean comparison(int rs1, int rs2);
 
     @Override
     public void execute(Code code) {

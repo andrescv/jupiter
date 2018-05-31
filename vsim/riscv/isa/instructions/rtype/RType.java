@@ -8,7 +8,7 @@ import vsim.riscv.isa.instructions.SimCode;
 
 public abstract class RType extends SimCode {
 
-    public abstract int compute(int rs1, int rs2);
+    protected abstract int compute(int rs1, int rs2);
 
     @Override
     public void execute(Code code) {

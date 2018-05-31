@@ -6,7 +6,7 @@ import vsim.Globals;
 public final class Sb extends SType {
 
     @Override
-    public void set(int rs1, int rs2, int imm) {
+    protected void set(int rs1, int rs2, int imm) {
         Globals.memory.storeByte(rs1 + imm, rs2);
     }
 

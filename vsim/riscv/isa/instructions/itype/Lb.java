@@ -6,7 +6,7 @@ import vsim.Globals;
 public final class Lb extends IType {
 
     @Override
-    public int compute(int rs1, int imm) {
+    protected int compute(int rs1, int imm) {
         return Globals.memory.loadByte(rs1 + imm);
     }
 
