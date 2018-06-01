@@ -6,6 +6,14 @@ import vsim.riscv.hardware.Register;
 
 public final class Jalr extends IType {
 
+    public Jalr() {
+        super(
+            "jalr",
+            "jalr rd, imm",
+            "set rd = pc + 4 and pc = pc + ((rs1 + imm) & ~0x1)"
+        );
+    }
+
     @Override
     protected int compute(int rs1, int imm) {
         Register pc = Globals.regfile.getProgramCounter();
