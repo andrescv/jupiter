@@ -4,10 +4,14 @@ import vsim.Globals;
 import vsim.riscv.hardware.Register;
 import vsim.riscv.isa.instructions.Code;
 import vsim.riscv.isa.instructions.Format;
-import vsim.riscv.isa.instructions.SimCode;
+import vsim.riscv.isa.instructions.Instruction;
 
 
-abstract class IType extends SimCode {
+abstract class IType extends Instruction {
+
+    protected IType(String mnemonic, String usage, String description) {
+        super(Format.I, mnemonic, usage, description);
+    }
 
     protected abstract int compute(int rs1, int imm);
 

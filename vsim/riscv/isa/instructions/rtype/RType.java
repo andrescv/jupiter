@@ -3,10 +3,15 @@ package vsim.riscv.isa.instructions.rtype;
 import vsim.Globals;
 import vsim.riscv.hardware.Register;
 import vsim.riscv.isa.instructions.Code;
-import vsim.riscv.isa.instructions.SimCode;
+import vsim.riscv.isa.instructions.Format;
+import vsim.riscv.isa.instructions.Instruction;
 
 
-abstract class RType extends SimCode {
+abstract class RType extends Instruction {
+
+    protected RType(String mnemonic, String usage, String description) {
+        super(Format.R, mnemonic, usage, description);
+    }
 
     protected abstract int compute(int rs1, int rs2);
 
