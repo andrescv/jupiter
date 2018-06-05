@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Built-By: Andres Castellanos
+Main-Class: vsim.VSim
+Class-Path: .

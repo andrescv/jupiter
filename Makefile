@@ -1,3 +1,4 @@
+JAR=jar
 JAVA=java
 JAVAC=javac
 JFLAGS=
@@ -15,12 +16,9 @@ OBJS=$(patsubst $(SRCDIR)/%.java, $(OBJDIR)/%.class, $(SRC))
 
 
 # VSim script
-run-vsim: build Makefile $(OBJS)
-	$(RM) run-vsim
-	echo '#!/bin/sh' >> run-vsim
-	echo 'cd build'  >> run-vsim
-	echo '$(JAVA) -cp $(CLASSPATH) VSim $$*' >> run-vsim
-	chmod 755 run-vsim
+VSim.jar: build META-INF/MANIFEST.MF Makefile $(OBJS)
+	$(RM) VSim.jar
+	$(JAR) -cvfm VSim.jar META-INF/MANIFEST.MF -C build/ .
 
 # create build directory
 build:
@@ -34,4 +32,4 @@ $(OBJS): $(OBJDIR)/%.class: $(SRCDIR)/%.java
 .PHONY: clean
 
 clean:
-	rm -rf build run-vsim
+	rm -rf build VSim.jar
