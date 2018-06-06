@@ -42,11 +42,7 @@ public final class Reader {
         try {
             this.current = this.buffer.readLine();
             this.pos = 0;
-        } catch (IOException e) {
-            System.err.print("vsim: file can not be read: ");
-            System.err.println(this.filename);
-            System.exit(-1);
-        } catch (NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             this.current = null;
         }
         return this.current != null;
