@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 
 
-final class Reader {
+public final class Reader {
 
     protected static final char EOL = 0xffff;
 
