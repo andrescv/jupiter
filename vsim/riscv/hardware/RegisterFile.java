@@ -31,6 +31,7 @@ public class RegisterFile {
                     this.regfile.put(names[j], reg);
             } else
                 this.regfile.put(name, reg);
+            this.regfile.put("x" + i, reg);
         }
         this.pc = new Register(-1, 0, true);
     }
