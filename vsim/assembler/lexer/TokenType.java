@@ -12,5 +12,5 @@ public enum TokenType {
     NUMBER,
     STRING,
     REGISTER,
-    IDENTIFIER,
+    IDENTIFIER;
 }
