@@ -1,11 +1,8 @@
 # Build directory
 build/
 
-# VSCODE
-.vscode/
-
-# Main run file
-run-vsim
+# Java compiled files
+*.class
 
 # Log file
 *.log
