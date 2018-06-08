@@ -1,7 +1,8 @@
-package vsim.riscv.hardware;
+package vsim.riscv;
 
 import vsim.utils.Colorize;
 import java.util.Hashtable;
+import vsim.riscv.hardware.Register;
 
 
 public final class RegisterFile {

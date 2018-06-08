@@ -3,6 +3,7 @@ package vsim.riscv.hardware;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
 import java.util.Hashtable;
+import vsim.riscv.MemoryConfig;
 
 
 public final class Memory {
