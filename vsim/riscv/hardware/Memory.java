@@ -13,8 +13,8 @@ public final class Memory {
     this.memory = new Hashtable<Long, Integer>();
   }
 
-  public void printMemory(long from, long rows) {
-    System.out.println(this.getMemory(from, rows));
+  public void printMemory(long from) {
+    System.out.println(this.getMemory(from));
   }
 
   private void allocateNewAddress(long address) {
@@ -69,8 +69,9 @@ public final class Memory {
     return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
   }
 
-  private String getMemory(long from, long rows) {
-    long to = from + Data.WORD_LENGTH * rows * 4;
+  private String getMemory(long from) {
+    // 12 rows of 4 words
+    long to = from + Data.WORD_LENGTH * 48;
     String newline = System.getProperty("line.separator");
     String header = "Value (+0) Value (+4) Value (+8) Value (+c)";
     String out = "             " + Colorize.red(header + newline);
@@ -90,7 +91,7 @@ public final class Memory {
 
   @Override
   public String toString() {
-    return getMemory(MemoryConfig.DATA_SEGMENT, 12);
+    return getMemory(MemoryConfig.DATA_SEGMENT);
   }
 
 }
