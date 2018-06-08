@@ -39,8 +39,13 @@ public final class InstructionField {
     this.lo = lo;
     this.hi = hi;
     this.mask = 0;
+    this.length = hi - lo + 1;
     for (int i = lo, j = 0; i <= hi; i++, j++)
       this.mask |= 1 << j;
+  }
+
+  public int length() {
+    return this.length;
   }
 
   @Override

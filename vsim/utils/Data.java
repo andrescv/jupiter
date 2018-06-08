@@ -18,7 +18,7 @@ public final class Data {
   public static final int HALF_LENGTH_BITS = 16;
   public static final int WORD_LENGTH_BITS = 32;
 
-  private static int signExtend(int value, int bits) {
+  public static int signExtend(int value, int bits) {
     int shift = WORD_LENGTH_BITS - bits;
     return value << shift >> shift;
   }
