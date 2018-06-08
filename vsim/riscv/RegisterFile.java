@@ -2,7 +2,6 @@ package vsim.riscv;
 
 import vsim.utils.Colorize;
 import java.util.Hashtable;
-import vsim.riscv.hardware.Register;
 
 
 public final class RegisterFile {
@@ -26,7 +25,7 @@ public final class RegisterFile {
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // note: only "zero" register is not editable
-      Register reg = new Register(0, i != 0);
+      Register reg = new Register(i, 0, i != 0);
       // point all names to this new register in Hashtable
       String[] names = MNEMONICS[i].split("/");
       for (int j = 0; j < names.length; j++)
@@ -35,7 +34,7 @@ public final class RegisterFile {
       this.rf.put("x" + i, reg);
     }
     // program counter is a special register
-    this.pc = new Register(MemoryConfig.TEXT_SEGMENT, true);
+    this.pc = new Register(32, MemoryConfig.TEXT_SEGMENT, true);
     // set default value for stack and global pointer
     this.rf.get("sp").setValue(MemoryConfig.STACK_SEGMENT);
     this.rf.get("gp").setValue(MemoryConfig.DATA_SEGMENT);
@@ -43,6 +42,13 @@ public final class RegisterFile {
 
   public boolean isValidRegister(String name) {
     return this.rf.get(name) != null;
+  }
+
+  public int getRegisterNumber(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null)
+      return reg.getNumber();
+    return -1;
   }
 
   public int getRegister(int number) {
