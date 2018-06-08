@@ -3,41 +3,41 @@ package vsim.riscv.hardware;
 import vsim.utils.Colorize;
 
 
-final class Register {
+public final class Register {
 
   private int value;
   private int resetValue;
   private boolean editable;
 
-  protected Register(int value, boolean editable) {
+  public Register(int value, boolean editable) {
     this.value = value;
     this.resetValue = value;
     this.editable = editable;
   }
 
-  protected int getValue() {
+  public int getValue() {
     return this.value;
   }
 
-  protected int getResetValue() {
+  public int getResetValue() {
     return this.resetValue;
   }
 
-  protected boolean isEditable() {
+  public boolean isEditable() {
     return this.editable;
   }
 
-  protected void setValue(int value) {
+  public void setValue(int value) {
     if (this.editable)
       this.value = value;
   }
 
-  protected void setResetValue(int resetValue) {
+  public void setResetValue(int resetValue) {
     if (this.editable)
       this.resetValue = resetValue;
   }
 
-  protected void reset() {
+  public void reset() {
     this.value = this.resetValue;
   }
 
