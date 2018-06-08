@@ -23,14 +23,6 @@ final class Register {
     return this.value;
   }
 
-  protected int getResetValue() {
-    return this.resetValue;
-  }
-
-  protected boolean isEditable() {
-    return this.editable;
-  }
-
   protected void setValue(int value) {
     if (this.editable)
       this.value = value;
