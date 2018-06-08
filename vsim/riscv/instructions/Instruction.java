@@ -3,7 +3,7 @@ package vsim.riscv.instructions;
 import vsim.utils.Colorize;
 
 
-abstract class Instruction {
+public abstract class Instruction {
 
   // instruction formats
   public static enum Format {R, I, S, B, U, J};
