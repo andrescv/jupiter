@@ -1,6 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-
 import vsim.simulator.State;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
