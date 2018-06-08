@@ -54,4 +54,13 @@ public final class Data {
     return Integer.remainderUnsigned(a, b);
   }
 
+  public static boolean geu(int a, int b) {
+    int cmp = Integer.compareUnsigned(a, b);
+    return (cmp == 0) || (cmp > 0);
+  }
+
+  public static boolean ltu(int a, int b) {
+    return Integer.compareUnsigned(a, b) < 0;
+  }
+
 }
