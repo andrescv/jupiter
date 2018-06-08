@@ -44,10 +44,6 @@ public final class InstructionField {
       this.mask |= 1 << j;
   }
 
-  public int length() {
-    return this.length;
-  }
-
   @Override
   public String toString() {
     return String.format(
