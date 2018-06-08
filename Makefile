@@ -1,6 +1,7 @@
 JAR=jar
 JAVA=java
 JAVAC=javac
+JAVADOC=javadoc
 JFLAGS=
 
 # build classpath
@@ -8,7 +9,7 @@ CLASSPATH=.
 
 # all src files
 SRCDIR=.
-SRC=$(shell find $(SRCDIR) -not -path './test/*' -name '*.java')
+SRC=$(shell find $(SRCDIR) -not -path './test/*' -type f -name '*.java')
 
 # all class files
 OBJDIR=build
@@ -29,7 +30,14 @@ build:
 $(OBJS): $(OBJDIR)/%.class: $(SRCDIR)/%.java
 	$(JAVAC) $(JFLAGS) -cp $(CLASSPATH) -d build $<
 
-.PHONY: clean
+.PHONY: clean doc
 
+# create documentation
+doc:
+	rm -rf doc
+	mkdir doc
+	find $(SRCDIR) -type f -name '*.java' | xargs $(JAVADOC) -d doc
+
+# clean all
 clean:
-	rm -rf build VSim.jar
+	rm -rf build doc VSim.jar
