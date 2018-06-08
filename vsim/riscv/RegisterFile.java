@@ -17,6 +17,44 @@ public final class RegisterFile {
     "t3", "t4", "t5", "t6"
   };
 
+  private final class Register {
+
+    private int number;
+    private int value;
+    private int resetValue;
+    private boolean editable;
+
+    private Register(int number, int value, boolean editable) {
+      this.number = number;
+      this.value = value;
+      this.resetValue = value;
+      this.editable = editable;
+    }
+
+    private int getNumber() {
+      return this.number;
+    }
+
+    private int getValue() {
+      return this.value;
+    }
+
+    private void setValue(int value) {
+      if (this.editable)
+        this.value = value;
+    }
+
+    private void setResetValue(int resetValue) {
+      if (this.editable)
+        this.resetValue = resetValue;
+    }
+
+    private void reset() {
+      this.value = this.resetValue;
+    }
+
+  }
+
   private Hashtable<String, Register> rf;
   private Register pc;
 
