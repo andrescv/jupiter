@@ -8,15 +8,15 @@ public final class Message {
   }
 
   public static void warning(String msg) {
-    System.out.println(Colorize.yellow("vsim: " + msg));
+    System.out.println(Colorize.yellow("vsim: (warning) " + msg));
   }
 
   public static void error(String msg) {
-    System.err.println(Colorize.red("vsim: " + msg));
+    System.err.println(Colorize.red("vsim: (error) " + msg));
   }
 
   public static void panic(String msg) {
-    System.err.println(Colorize.red("vsim: " + msg));
+    System.err.println(Colorize.red("vsim: (panic) " + msg));
     System.exit(-1);
   }
 
