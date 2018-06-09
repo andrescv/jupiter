@@ -96,12 +96,25 @@ public final class RegisterFile {
     return 0;
   }
 
+  public int getRegister(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null)
+      return reg.getValue();
+    return 0;
+  }
+
   public int getProgramCounter() {
     return this.pc.getValue();
   }
 
   public void setRegister(int number, int value) {
     Register reg = this.rf.get("x" + number);
+    if (reg != null)
+      reg.setValue(value);
+  }
+
+  public void setRegister(String name, int value) {
+    Register reg = this.rf.get(name);
     if (reg != null)
       reg.setValue(value);
   }
