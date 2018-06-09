@@ -97,6 +97,10 @@ public final class InstructionSet {
     return this.instructions.get(mnemonic) != null;
   }
 
+  public Instruction get(String mnemonic) {
+    return this.instructions.get(mnemonic);
+  }
+
   public int size() {
     return this.instructions.size();
   }
