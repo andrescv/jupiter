@@ -7,9 +7,11 @@ import java.util.Hashtable;
 
 public final class Memory {
 
+  private int heapAddress;
   private Hashtable<Integer, Byte> memory;
 
   public Memory() {
+    this.heapAddress = MemoryConfig.HEAP_SEGMENT;
     this.memory = new Hashtable<Integer, Byte>();
   }
 
@@ -29,6 +31,15 @@ public final class Memory {
   public void storeWord(int address, int value) {
     this.storeHalf(address, value);
     this.storeHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
+  }
+
+  public int allocateBytesFromHeap(int bytes) {
+    int address = this.heapAddress;
+    this.heapAddress += bytes;
+    // align to a word boundary
+    if (this.heapAddress % Data.WORD_LENGTH != 0)
+      this.heapAddress += (Data.WORD_LENGTH - this.heapAddress % Data.WORD_LENGTH);
+    return address;
   }
 
   public int loadByteUnsigned(int address) {

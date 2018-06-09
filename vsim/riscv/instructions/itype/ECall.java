@@ -16,29 +16,8 @@ public final class ECall extends IType {
 
   @Override
   protected int compute(int rs1, int imm) {
-    int which = State.regfile.getRegister("a0");
-    // TODO: implement ecalls
-    switch (which) {
-      case Syscall.PRINT_INT:
-        break;
-      case Syscall.PRINT_STRING:
-        break;
-      case Syscall.READ_INT:
-        break;
-      case Syscall.READ_STRING:
-        break;
-      case Syscall.SBRK:
-        break;
-      case Syscall.EXIT:
-        break;
-      case Syscall.PRINT_CHAR:
-        break;
-      case Syscall.READ_CHAR:
-        break;
-      case Syscall.EXIT2:
-        break;
-    }
-
+    // call syscall handler
+    Syscall.handler();
     return 0;
   }
 
