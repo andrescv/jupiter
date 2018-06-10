@@ -3,6 +3,7 @@ package vsim.riscv;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
 import java.util.Hashtable;
+import java.util.Enumeration;
 
 
 public final class Memory {
@@ -13,6 +14,13 @@ public final class Memory {
   public Memory() {
     this.heapAddress = MemoryConfig.HEAP_SEGMENT;
     this.memory = new Hashtable<Integer, Byte>();
+  }
+
+  public void reset() {
+    for (Enumeration<Integer> e = this.memory.keys(); e.hasMoreElements();) {
+      int address = e.nextElement();
+      this.memory.remove(address);
+    }
   }
 
   public void printMemory(int from) {
