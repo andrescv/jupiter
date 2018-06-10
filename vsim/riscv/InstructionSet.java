@@ -53,10 +53,12 @@ public final class InstructionSet {
   private static final String[] JClasses = {
     "Jal"
   };
+  // only 1 instruction set instance
+  public static final InstructionSet insts = new InstructionSet();
 
   private Hashtable<String, Instruction> instructions;
 
-  public InstructionSet() {
+  private InstructionSet() {
     this.instructions = new Hashtable<String, Instruction>();
     this.populate();
   }
