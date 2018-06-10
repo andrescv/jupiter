@@ -123,6 +123,18 @@ public final class RegisterFile {
     this.pc.setValue(value);
   }
 
+  public void reset() {
+    // reset all 32 registers
+    for (int i = 0; i < MNEMONICS.length; i++) {
+      this.rf.get("x" + i).reset();
+    }
+    // use pc default reset value
+    this.pc.reset();
+    // set default value for stack and global pointer
+    this.rf.get("sp").setValue(MemoryConfig.STACK_SEGMENT);
+    this.rf.get("gp").setValue(MemoryConfig.DATA_SEGMENT);
+  }
+
   @Override
   public String toString() {
     String out = "";
