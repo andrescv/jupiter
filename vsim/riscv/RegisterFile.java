@@ -78,10 +78,6 @@ public final class RegisterFile {
     this.rf.get("gp").setValue(MemoryConfig.DATA_SEGMENT);
   }
 
-  public boolean isValidRegister(String name) {
-    return this.rf.get(name) != null;
-  }
-
   public int getRegisterNumber(String name) {
     Register reg = this.rf.get(name);
     if (reg != null)
