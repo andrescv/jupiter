@@ -95,10 +95,6 @@ public final class InstructionSet {
     this.add(JClasses, JTYPE);
   }
 
-  public boolean validInstruction(String mnemonic) {
-    return this.instructions.get(mnemonic) != null;
-  }
-
   public Instruction get(String mnemonic) {
     return this.instructions.get(mnemonic);
   }
