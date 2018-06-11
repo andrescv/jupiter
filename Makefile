@@ -22,9 +22,12 @@ SRC=$(shell find $(SRCDIR) -not -path './test/*' -type f -name '*.java')
 OBJDIR=build
 OBJS=$(patsubst $(SRCDIR)/%.java, $(OBJDIR)/%.class, $(SRC))
 
+# parser and lexer
+SYNTAX=vsim/assembler/syntax/Lexer.java vsim/assembler/syntax/Parser.java
+
 
 # VSim script
-VSim.jar: build META-INF/MANIFEST.MF Makefile syntax $(OBJS)
+VSim.jar: build META-INF/MANIFEST.MF Makefile $(SYNTAX) $(OBJS)
 	$(RM) VSim.jar
 	mkdir -p build/vsim/lib
 	cp lib/java-cup-11b.jar build/vsim/lib
@@ -39,9 +42,6 @@ build:
 $(OBJS): $(OBJDIR)/%.class: $(SRCDIR)/%.java
 	$(JAVAC) -cp $(CLASSPATH) $(JFLAGS) $<
 
-# build syntax
-syntax: vsim/assembler/syntax/Lexer.java vsim/assembler/syntax/Parser.java
-
 # build lexer
 vsim/assembler/syntax/Lexer.java: syntax/lexer.flex
 	$(JAVA) -jar $(JFLEX) $<
@@ -53,7 +53,7 @@ vsim/assembler/syntax/Parser.java: syntax/parser.cup
 	mv Parser.java vsim/assembler/syntax
 	mv Token.java vsim/assembler/syntax
 
-.PHONY: clean doc syntax
+.PHONY: clean doc
 
 # create documentation
 doc:
