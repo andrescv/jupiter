@@ -17,12 +17,26 @@ public final class Globals {
   // RV instruction set
   public static final InstructionSet iset = InstructionSet.insts;
 
+  // .globl
+  public static final SymbolTable table = new SymbolTable();
+
   // reset state
   public static void resetState() {
     // reset memory
     Globals.memory.reset();
     // reset registers
     Globals.regfile.reset();
+  }
+
+  // reset symbol table
+  public static void resetST() {
+    Globals.table.reset();
+  }
+
+  // hard reset
+  public static void reset() {
+    Globals.resetST();
+    Globals.resetState();
   }
 
 }
