@@ -8,10 +8,13 @@ import java.util.Enumeration;
 
 public final class Memory {
 
+  // only 1 memory instance
+  public static final Memory ram = new Memory();
+
   private int heapAddress;
   private Hashtable<Integer, Byte> memory;
 
-  public Memory() {
+  private Memory() {
     this.heapAddress = MemoryConfig.HEAP_SEGMENT;
     this.memory = new Hashtable<Integer, Byte>();
   }

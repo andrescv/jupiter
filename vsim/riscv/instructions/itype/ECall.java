@@ -1,7 +1,6 @@
 package vsim.riscv.instructions.itype;
 
 import vsim.utils.Syscall;
-import vsim.simulator.State;
 
 
 public final class ECall extends IType {

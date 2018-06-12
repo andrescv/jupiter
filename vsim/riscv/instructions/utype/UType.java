@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.utype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -16,7 +16,7 @@ abstract class UType extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
-    State.regfile.setRegister(
+    Globals.regfile.setRegister(
       code.get(InstructionField.RD),
       this.compute(code.get(InstructionField.IMM_31_12))
     );

@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.itype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 
 
 public final class Lhu extends IType {
@@ -18,7 +18,7 @@ public final class Lhu extends IType {
 
   @Override
   protected int compute(int rs1, int imm) {
-    return State.memory.loadHalfUnsigned(rs1 + imm);
+    return Globals.memory.loadHalfUnsigned(rs1 + imm);
   }
 
 }
