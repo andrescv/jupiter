@@ -11,6 +11,9 @@ public final class Sb extends SType {
       "sb rs2, offset(rs1)",
       "set memory[rs1 + offset] = rs2[0:7]"
     );
+    // set opcode
+    this.opcode = 0b0100011;
+    this.funct3 = 0b000;
   }
 
   @Override

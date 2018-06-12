@@ -9,6 +9,9 @@ public final class Blt extends BType {
       "blt rs1, rs2, imm",
       "set pc = pc + imm if rs1 < rs2, signed comparison"
     );
+    // set opcode
+    this.opcode = 0b1100011;
+    this.funct3 = 0b100;
   }
 
   @Override

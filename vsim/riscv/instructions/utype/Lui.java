@@ -9,6 +9,8 @@ public final class Lui extends UType {
       "lui rd, imm",
       "set rd[31:13] = imm"
     );
+    // set opcode
+    this.opcode = 0b0110111;
   }
 
   @Override

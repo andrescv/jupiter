@@ -11,6 +11,9 @@ public final class Bgeu extends BType {
       "bgeu rs1, rs2, imm",
       "set pc = pc + imm if rs1 >= rs2, unsigned comparison"
     );
+    // set opcode
+    this.opcode = 0b1100011;
+    this.funct3 = 0b111;
   }
 
   @Override

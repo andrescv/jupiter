@@ -9,6 +9,9 @@ public final class Andi extends IType {
       "andi rd, rs1, imm",
       "set rd = rs1 & imm, bitwise and"
     );
+    // set opcode
+    this.opcode = 0b0010011;
+    this.funct3 = 0b111;
   }
 
   @Override
