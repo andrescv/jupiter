@@ -33,8 +33,7 @@ public final class InstructionSet {
     "Addi", "Slti", "Sltiu",
     "Xori", "Ori", "Andi",
     "Slli", "Srli", "Srai",
-    "Fence", "FenceI", "ECall",
-    "EBreak"
+    "ECall"
   };
   // current classes in stype package
   private static final String[] SClasses = {
