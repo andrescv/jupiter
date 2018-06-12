@@ -1,0 +1,72 @@
+package vsim.assembler.syntax;
+
+import java_cup.runtime.*;
+import vsim.simulator.State;
+import vsim.riscv.InstructionSet;
+
+/*  TERMINALS */
+
+// Syntax
+terminal COMMA, COLON, LPAREN, RPAREN, DOT;
+
+// Operators
+terminal TIMES, DIVIDE, MOD, PLUS, MINUS, SLL, SRL, AND, OR, XOR, NEG;
+terminal UMINUS, UPLUS;
+
+// B Format
+terminal I_BEQ, I_BGE, I_BGEU, I_BLT, I_BLTU, I_BNE;
+
+// U Format
+terminal I_LUI, I_AUIPC;
+
+// J Format
+terminal I_JAL;
+
+// S Format
+terminal I_SB, I_SH, I_SW;
+
+// R Format
+terminal I_ADD, I_AND, I_DIVU, I_DIV, I_MULHSU, I_MULHU;
+terminal I_MULH, I_MUL, I_OR, I_REMU, I_REM, I_SLTU;
+terminal I_SLL, I_SLT, I_SRA, I_SRL, I_SUB, I_XOR;
+
+// I Format
+terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
+terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
+terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
+
+// Pseudos
+terminal I_LA, I_NOP, I_LI, I_MV, I_NOT, I_NEG;
+terminal I_SEQZ, I_SNEZ, I_SLTZ, I_SGTZ, I_BEQZ;
+terminal I_BNEZ, I_BLEZ, I_BGEZ, I_BLTZ, I_BGTZ;
+terminal I_BGT, I_BLE, I_BGTU, I_BLEU, I_J, I_JR;
+terminal I_RET, I_CALL, I_TAIL;
+
+// Literals
+terminal NUMBER, STRING, CHARACTER;
+
+// Ids and Registers
+terminal REGISTER, IDENTIFIER;
+
+// Directives
+terminal D_STRING, D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
+terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
+terminal D_ALIGN, D_GLOBAL, D_LOCAL, D_FILE;
+
+// error token
+terminal ERROR;
+
+/* NON TERMINALS */
+non terminal Statement;
+
+/* PRECEDENCE */
+precedence left OR;
+precedence left XOR;
+precedence left AND;
+precedence left SLL, SRL;
+precedence left MINUS, PLUS;
+precedence left TIMES, MOD, DIVIDE;
+precedence right UPLUS, UMINUS, NEG;
+
+/* BNF GRAMMAR */
+Statement ::= ;
