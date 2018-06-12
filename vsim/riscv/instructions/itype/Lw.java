@@ -11,6 +11,9 @@ public final class Lw extends IType {
       "lw rd, offset(rs1)",
       "set rd = word(memory[rs1 + offset])"
     );
+    // set opcode
+    this.opcode = 0b0000011;
+    this.funct3 = 0b010;
   }
 
   @Override

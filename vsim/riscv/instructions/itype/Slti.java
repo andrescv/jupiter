@@ -9,6 +9,9 @@ public final class Slti extends IType {
       "slti rd, rs1, imm",
       "set rd = 1 if rs1 < imm else 0, signed comparison"
     );
+    // set opcode
+    this.opcode = 0b0010011;
+    this.funct3 = 0b010;
   }
 
   @Override

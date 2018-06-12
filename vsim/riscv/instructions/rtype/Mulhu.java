@@ -11,6 +11,10 @@ public final class Mulhu extends RType {
       "mulhu rd, rs1, rs2",
       "set rd = High XLEN bits of unsigned(rs1) * unsigned(rs2)"
     );
+    // set opcode
+    this.opcode = 0b0110011;
+    this.funct3 = 0b011;
+    this.funct7 = 0b0000001;
   }
 
   @Override

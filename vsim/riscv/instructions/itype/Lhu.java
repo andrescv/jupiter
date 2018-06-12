@@ -11,6 +11,9 @@ public final class Lhu extends IType {
       "lhu rd, offset(rs1)",
       "set rd = half(memory[rs1 + offset])"
     );
+    // set opcode
+    this.opcode = 0b0000011;
+    this.funct3 = 0b101;
   }
 
   @Override

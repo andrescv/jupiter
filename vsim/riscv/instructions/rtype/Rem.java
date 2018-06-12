@@ -9,6 +9,10 @@ public final class Rem extends RType {
       "rem rd, rs1, rs2",
       "set rd = rs1 % rs2"
     );
+    // set opcode
+    this.opcode = 0b0110011;
+    this.funct3 = 0b110;
+    this.funct7 = 0b0000001;
   }
 
   @Override

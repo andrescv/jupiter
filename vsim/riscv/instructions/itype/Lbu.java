@@ -11,6 +11,9 @@ public final class Lbu extends IType {
       "lbu rd, offset(rs1)",
       "set rd = byte(memory[rs1 + offset])"
     );
+    // set opcode
+    this.opcode = 0b0000011;
+    this.funct3 = 0b100;
   }
 
   @Override

@@ -11,6 +11,9 @@ public final class Lh extends IType {
       "lh rd, offset(rs1)",
       "set rd = signExtend(half(memory[rs1 + offset]))"
     );
+    // set opcode
+    this.opcode = 0b0000011;
+    this.funct3 = 0b001;
   }
 
   @Override

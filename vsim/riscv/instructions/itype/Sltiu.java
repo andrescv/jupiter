@@ -11,6 +11,9 @@ public final class Sltiu extends IType {
       "sltiu rd, rs1, imm",
       "set rd = 1 if rs1 < imm else 0, unsigned comparison"
     );
+    // set opcode
+    this.opcode = 0b0010011;
+    this.funct3 = 0b011;
   }
 
   @Override

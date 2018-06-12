@@ -11,6 +11,9 @@ public final class Jalr extends IType {
       "jalr rd, imm",
       "set rd = pc + 4 and pc = pc + ((rs1 + imm) & ~0x1)"
     );
+    // set opcode
+    this.opcode = 0b1100111;
+    this.funct3 = 0b000;
   }
 
   @Override
