@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.itype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 
 
 public final class Lw extends IType {
@@ -18,7 +18,7 @@ public final class Lw extends IType {
 
   @Override
   protected int compute(int rs1, int imm) {
-    return State.memory.loadWord(rs1 + imm);
+    return Globals.memory.loadWord(rs1 + imm);
   }
 
 }

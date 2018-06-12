@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.utype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 
 
 public final class Auipc extends UType {
@@ -17,7 +17,7 @@ public final class Auipc extends UType {
 
   @Override
   protected int compute(int imm) {
-    return ((imm << 20) & 0xfffff000) + State.regfile.getProgramCounter();
+    return ((imm << 20) & 0xfffff000) + Globals.regfile.getProgramCounter();
   }
 
 }

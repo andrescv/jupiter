@@ -17,6 +17,9 @@ public final class RegisterFile {
     "t3", "t4", "t5", "t6"
   };
 
+  // only 1 instance
+  public static final RegisterFile regfile = new RegisterFile();
+
   private final class Register {
 
     private int number;
@@ -58,7 +61,7 @@ public final class RegisterFile {
   private Hashtable<String, Register> rf;
   private Register pc;
 
-  public RegisterFile() {
+  private RegisterFile() {
     this.rf = new Hashtable<String, Register>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {

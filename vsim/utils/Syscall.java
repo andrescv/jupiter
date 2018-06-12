@@ -1,7 +1,7 @@
 package vsim.utils;
 
+import vsim.Globals;
 import java.io.IOException;
-import vsim.simulator.State;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -26,7 +26,7 @@ public final class Syscall {
   public static final int EXIT2 = 17;
 
   public static void handler() {
-    int syscode = State.regfile.getRegister("a0");
+    int syscode = Globals.regfile.getRegister("a0");
     // match syscall code
     switch (syscode) {
       case PRINT_INT:
@@ -80,16 +80,16 @@ public final class Syscall {
   }
 
   private static void printInt() {
-    int num = State.regfile.getRegister("a1");
+    int num = Globals.regfile.getRegister("a1");
     System.out.print(num);
   }
 
   private static void printString() {
-    int buffer = State.regfile.getRegister("a1");
+    int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer();
     s.setLength(0);
     char c;
-    while ((c = (char)State.memory.loadByteUnsigned(buffer)) != '\0') {
+    while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
       s.append(c);
       buffer++;
     }
@@ -99,7 +99,7 @@ public final class Syscall {
   private static void readInt() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      State.regfile.setRegister("a0", Integer.parseInt(br.readLine()));
+      Globals.regfile.setRegister("a0", Integer.parseInt(br.readLine()));
     } catch (IOException e) {
       Message.warning("ecall: could not read integer");
     } catch (NumberFormatException e) {
@@ -111,11 +111,11 @@ public final class Syscall {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
       String s = br.readLine();
-      int buffer = State.regfile.getRegister("a1");
-      int length = State.regfile.getRegister("a2");
+      int buffer = Globals.regfile.getRegister("a1");
+      int length = Globals.regfile.getRegister("a2");
       for (int i = 0; i < Math.min(length, s.length()); i++) {
         char c = s.charAt(i);
-        State.memory.storeByte(buffer++, c);
+        Globals.memory.storeByte(buffer++, c);
       }
     } catch (IOException e) {
       Message.warning("ecall: could not read string");
@@ -123,10 +123,10 @@ public final class Syscall {
   }
 
   private static void sbrk() {
-    int numBytes = State.regfile.getRegister("a1");
+    int numBytes = Globals.regfile.getRegister("a1");
     if (numBytes > 0) {
-      int address = State.memory.allocateBytesFromHeap(numBytes);
-      State.regfile.setRegister("a0", address);
+      int address = Globals.memory.allocateBytesFromHeap(numBytes);
+      Globals.regfile.setRegister("a0", address);
     } else
       Message.warning("ecall: number of bytes should be > 0");
   }
@@ -136,21 +136,21 @@ public final class Syscall {
   }
 
   private static void printChar() {
-    int address = State.regfile.getRegister("a1");
-    System.out.print((char)State.memory.loadByte(address));
+    int address = Globals.regfile.getRegister("a1");
+    System.out.print((char)Globals.memory.loadByte(address));
   }
 
   private static void readChar() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      State.regfile.setRegister("a0", br.read());
+      Globals.regfile.setRegister("a0", br.read());
     } catch (IOException e) {
       Message.warning("ecall: could not read char");
     }
   }
 
   private static void exit2() {
-    int status = State.regfile.getRegister("a1");
+    int status = Globals.regfile.getRegister("a1");
     System.exit(status);
   }
 

@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.jtype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 
 
 public final class Jal extends JType {
@@ -17,8 +17,8 @@ public final class Jal extends JType {
 
   @Override
   protected int compute(int imm) {
-    int pc = State.regfile.getProgramCounter();
-    State.regfile.setProgramCounter(pc + imm);
+    int pc = Globals.regfile.getProgramCounter();
+    Globals.regfile.setProgramCounter(pc + imm);
     return pc + 4;
   }
 

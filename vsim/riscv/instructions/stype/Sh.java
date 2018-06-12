@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.stype;
 
-import vsim.simulator.State;
+import vsim.Globals;
 
 
 public final class Sh extends SType {
@@ -18,7 +18,7 @@ public final class Sh extends SType {
 
   @Override
   protected void setMemory(int rs1, int rs2, int imm) {
-    State.memory.storeHalf(rs1 + imm, rs2);
+    Globals.memory.storeHalf(rs1 + imm, rs2);
   }
 
 }
