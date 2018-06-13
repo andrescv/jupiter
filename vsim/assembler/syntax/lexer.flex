@@ -1,4 +1,4 @@
-package vsim.assembler.syntax;
+package vsim.assembler;
 
 %%
 
@@ -8,7 +8,7 @@ package vsim.assembler.syntax;
   private StringBuffer text;
 
   private java_cup.runtime.Symbol symbol(int type) {
-    return this.symbol(type, null);
+    return this.symbol(type, yytext());
   }
 
   private java_cup.runtime.Symbol symbol(int type, Object value) {
@@ -52,7 +52,6 @@ COMMA = ","
 COLON = ":"
 LPAREN = "("
 RPAREN = ")"
-DOT = "."
 
 // operators
 TIMES = "*"
@@ -61,7 +60,8 @@ MOD = "%"
 PLUS = "+"
 MINUS = "-"
 SLL = "<<"
-SRL = ">>"
+SRL = ">>>"
+SRA = ">>"
 AND = "&"
 OR = "|"
 XOR = "^"
@@ -81,7 +81,7 @@ D_BYTE = ".byte"
 D_HALF = ".half"
 D_WORD = ".word"
 D_ALIGN = ".align"
-D_GLOBAL = ".globl"
+D_GLOBL = ".globl"
 D_LOCAL = ".local"
 D_FILE = ".file"
 D_SECTION = ".section"
@@ -128,7 +128,7 @@ I_XOR = [xX][oO][rR]
 // I Format
 I_ADDI = [aA][dD][dD][iI]
 I_ANDI = [aA][nN][dD][iI]
-I_ECALL = [eE][cC][aA][lL]
+I_ECALL = [eE][cC][aA][lL][lL]
 I_JALR = [jJ][aA][lL][rR]
 I_LB = [lL][bB]
 I_LBU = [lL][bB][uU]
@@ -184,7 +184,7 @@ REGISTER = ({R_NUMBER}|{R_NAME})
 IDENTIFIER = [a-zA-Z_][a-zA-Z0-9_]*
 
 // numbers
-NUMBER = [0-9]+
+NUMBER = [+-]?[0-9]+
 HEXADECIMAL = 0[xX][0-9a-fA-F]+
 BINARY = 0[bB][01]+
 
@@ -214,10 +214,6 @@ ERROR = .
     return symbol(Token.RPAREN);
   }
 
-  {DOT} {
-    return symbol(Token.DOT);
-  }
-
   // operators
   {TIMES} {
     return symbol(Token.TIMES);
@@ -245,6 +241,10 @@ ERROR = .
 
   {SRL} {
     return symbol(Token.SRL);
+  }
+
+  {SRA} {
+    return symbol(Token.SRA);
   }
 
   {AND} {
@@ -304,8 +304,8 @@ ERROR = .
     return symbol(Token.D_ALIGN);
   }
 
-  {D_GLOBAL} {
-    return symbol(Token.D_GLOBAL);
+  {D_GLOBL} {
+    return symbol(Token.D_GLOBL);
   }
 
   {D_LOCAL} {
@@ -644,7 +644,7 @@ ERROR = .
   // number
   {NUMBER} {
     try {
-      return symbol(Token.NUMBER, Integer.parseUnsignedInt(yytext()));
+      return symbol(Token.NUMBER, Integer.parseInt(yytext()));
     } catch (Exception e) {
       return symbol(Token.ERROR, "invalid number constant: " + yytext());
     }
