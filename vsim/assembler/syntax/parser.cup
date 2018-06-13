@@ -1,0 +1,480 @@
+package vsim.assembler;
+
+import java.io.Reader;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import vsim.assembler.statements.*;
+import vsim.assembler.SymbolTable;
+
+parser code {:
+
+  public Parser(Reader input) {
+    super(new Lexer(input));
+  }
+
+  public void syntax_error(Symbol cur_token) {
+    System.out.println(Token.terminalNames[cur_token.sym] + " " + cur_token.value);
+  }
+
+  public void unrecovered_syntax_error(Symbol cur_token) {
+    // NOTHING
+  }
+
+:}
+
+/*  TERMINALS */
+
+// Syntax
+terminal COMMA, COLON, LPAREN, RPAREN;
+
+// Operators
+terminal TIMES, DIVIDE, MOD, PLUS, MINUS, SLL, SRL, SRA, AND, OR, XOR, NEG;
+terminal UMINUS, UPLUS;
+
+// B Format
+terminal I_BEQ, I_BGE, I_BGEU, I_BLT, I_BLTU, I_BNE;
+
+// U Format
+terminal I_LUI, I_AUIPC;
+
+// J Format
+terminal I_JAL;
+
+// S Format
+terminal I_SB, I_SH, I_SW;
+
+// R Format
+terminal I_ADD, I_AND, I_DIVU, I_DIV, I_MULHSU, I_MULHU;
+terminal I_MULH, I_MUL, I_OR, I_REMU, I_REM, I_SLTU;
+terminal I_SLL, I_SLT, I_SRA, I_SRL, I_SUB, I_XOR;
+
+// I Format
+terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
+terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
+terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
+
+// Pseudos
+terminal I_LA, I_NOP, I_LI, I_MV, I_NOT, I_NEG;
+terminal I_SEQZ, I_SNEZ, I_SLTZ, I_SGTZ, I_BEQZ;
+terminal I_BNEZ, I_BLEZ, I_BGEZ, I_BLTZ, I_BGTZ;
+terminal I_BGT, I_BLE, I_BGTU, I_BLEU, I_J, I_JR;
+terminal I_RET, I_CALL, I_TAIL;
+
+// Literals
+terminal NUMBER, STRING, CHARACTER;
+
+// Ids and Registers
+terminal REGISTER, IDENTIFIER;
+
+// Directives
+terminal D_STRING, D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
+terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
+terminal D_ALIGN, D_GLOBL, D_LOCAL, D_FILE;
+
+// error token
+terminal ERROR;
+
+/* NON TERMINALS */
+non terminal Statement;
+non terminal Label;
+non terminal Instruction;
+non terminal Statement RType, IType, SType, BType, UType, JType;
+non terminal PSeudos;
+non terminal String ROpCode, IOpCode, SOpCode, BOpCode;
+non terminal Data;
+non terminal String DataMode;
+non terminal ArrayList<Integer> DataList;
+non terminal Directive, SectionDir, SymbolDir, AlignDir, CompilerDir;
+non terminal String Section;
+non terminal Integer Expr;
+non terminal Integer Const;
+non terminal String Id;
+non terminal String Str;
+non terminal Integer Number;
+non terminal Integer Character;
+non terminal String Register;
+non terminal Delimiter;
+non terminal Epsilon;
+
+/* PRECEDENCE */
+precedence left OR;
+precedence left XOR;
+precedence left AND;
+precedence left SLL, SRL, SRA;
+precedence left MINUS, PLUS;
+precedence left TIMES, MOD, DIVIDE;
+precedence right UPLUS, UMINUS, NEG;
+
+/* BNF GRAMMAR */
+Statement   ::= Label Instruction
+             |  Label Data
+             |  Label
+             |  Instruction
+             |  Data
+             |  Directive
+             ;
+
+Label       ::= IDENTIFIER COLON
+             ;
+
+Instruction ::= RType:i
+                {: RESULT = i; :}
+             |  IType:i
+                {: RESULT = i; :}
+             |  SType:i
+                {: RESULT = i; :}
+             |  BType:i
+                {: RESULT = i; :}
+             |  UType:i
+                {: RESULT = i; :}
+             |  JType:i
+                {: RESULT = i; :}
+             |  PSeudos
+             ;
+
+RType       ::= ROpCode:opcode  Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType(opcode, rd, rs1, rs2); :}
+             |  I_NEG:opcode    Register:rd Delimiter Register:rs
+                {: RESULT = new RType("sub", rd, "x0", rs); :}
+             |  I_SNEZ:opcode   Register:rd Delimiter Register:rs
+                {: RESULT = new RType("sltu", rd, "x0", rs); :}
+             |  I_SLTZ:opcode   Register:rd Delimiter Register:rs
+                {: RESULT = new RType("slt", rd, rs, "x0"); :}
+             |  I_SGTZ:opcode   Register:rd Delimiter Register:rs
+                {: RESULT = new RType("slt", rd, "x0", rs); :}
+             ;
+
+ROpCode     ::= I_SLL:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SRL:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SRA:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_ADD:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SUB:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_XOR:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_OR:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_AND:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SLT:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SLTU:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_MUL:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_MULH:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_MULHSU:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_MULHU:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_DIV:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_DIVU:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_REM:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_REMU:opcode
+                {: RESULT = (String)opcode; :}
+             ;
+
+IType       ::= IOpCode:opcode  Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType(opcode, rd, rs1, imm); :}
+             |  I_JALR   Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("jalr", rd, rs1, imm); :}
+             |  I_LB     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("lb", rd, rs1, imm); :}
+             |  I_LBU    Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("lbu", rd, rs1, imm); :}
+             |  I_LH     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("lh", rd, rs1, imm); :}
+             |  I_LHU    Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("lhu", rd, rs1, imm); :}
+             |  I_LW     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+                {: RESULT = new IType("lw", rd, rs1, imm); :}
+             |  I_LB     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lb", rd, rs1, offset); :}
+             |  I_LBU    Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lbu", rd, rs1, offset); :}
+             |  I_LH     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lh", rd, rs1, offset); :}
+             |  I_LHU    Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lhu", rd, rs1, offset); :}
+             |  I_LW     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lw", rd, rs1, offset); :}
+             |  I_MV     Register:rd Delimiter Register:rs
+                {: RESULT = new IType("addi", rd, rs, 0); :}
+             |  I_NOT    Register:rd Delimiter Register:rs
+                {: RESULT = new IType("xori", rd, rs, -1); :}
+             |  I_SEQZ   Register:rd Delimiter Register:rs
+                {: RESULT = new IType("sltiu", rd, rs, 1); :}
+             |  I_JR     Register:rs
+                {: RESULT = new IType("jalr", "x0", rs, 0); :}
+             |  I_JALR   Register:rs
+                {: RESULT = new IType("jalr", "x1", rs, 0); :}
+             |  I_ECALL
+                {: RESULT = new IType("ecall", "x0", "x0", 0); :}
+             |  I_NOP
+                {: RESULT = new IType("addi", "x0", "x0", 0); :}
+             ;
+
+IOpCode     ::= I_SLLI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SRLI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SRAI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_ADDI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_XORI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_ORI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_ANDI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SLTI:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SLTIU:opcode
+                {: RESULT = (String)opcode; :}
+             ;
+
+SType       ::= SOpCode:opcode Register:rd Delimiter Register:rs1 Number:imm
+                {: RESULT = new SType(opcode, rd, rs1, imm); :}
+             |  SOpCode:opcode Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType(opcode, rd, rs1, offset); :}
+             ;
+
+SOpCode     ::= I_SB:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SH:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_SW:opcode
+                {: RESULT = (String)opcode; :}
+             ;
+
+BType       ::= BOpCode:opcode  Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
+                {: RESULT = new BType(opcode, rs1, rs2, imm); :}
+             |  BOpCode:opcode  Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType(opcode, rs1, rs2, id); :}
+             |  I_BEQZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("beq", rs, "x0", id); :}
+             |  I_BNEZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("bne", rs, "x0", id); :}
+             |  I_BLEZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("bge", "x0", rs, id); :}
+             |  I_BGEZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("bge", rs, "x0", id); :}
+             |  I_BLTZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("blt", rs, "x0", id); :}
+             |  I_BGTZ Register:rs Delimiter Id:id
+                {: RESULT = new BType("blt", "x0", rs, id); :}
+             |  I_BEQZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("beq", rs, "x0", imm); :}
+             |  I_BNEZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("bne", rs, "x0", imm); :}
+             |  I_BLEZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("bge", "x0", rs, imm); :}
+             |  I_BGEZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("bge", rs, "x0", imm); :}
+             |  I_BLTZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("blt", rs, "x0", imm); :}
+             |  I_BGTZ Register:rs Delimiter Number:imm
+                {: RESULT = new BType("blt", "x0", rs, imm); :}
+             |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
+                {: RESULT = new BType("blt", rs2, rs1, imm); :}
+             |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
+                {: RESULT = new BType("bge", rs2, rs1, imm); :}
+             |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
+                {: RESULT = new BType("bltu", rs2, rs1, imm); :}
+             |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
+                {: RESULT = new BType("bgeu", rs2, rs1, imm); :}
+             |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("blt", rs2, rs1, id); :}
+             |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bge", rs2, rs1, id); :}
+             |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bltu", rs2, rs1, id); :}
+             |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bgeu", rs2, rs1, id); :}
+             ;
+
+BOpCode     ::= I_BEQ:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_BNE:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_BLT:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_BGE:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_BLTU:opcode
+                {: RESULT = (String)opcode; :}
+             |  I_BGEU:opcode
+                {: RESULT = (String)opcode; :}
+             ;
+
+UType       ::= I_AUIPC Register:rd Delimiter Number:imm
+                {: RESULT = new UType("auipc", rd, imm); :}
+             |  I_LUI   Register:rd Delimiter Number:imm
+                {: RESULT = new UType("lui", rd, imm); :}
+             ;
+
+JType       ::= I_JAL Register:rd Delimiter Number:imm
+                {: RESULT = new JType("jal", rd, imm); :}
+             |  I_JAL Register:rd Delimiter Id:id
+                {: RESULT = new JType("jal", rd, id); :}
+             |  I_JAL Number:imm
+                {: RESULT = new JType("jal", "x1", imm); :}
+             |  I_JAL Id:id
+                {: RESULT = new JType("jal", "x1", id); :}
+             |  I_J Number:imm
+                {: RESULT = new JType("jal", "x0", imm); :}
+             |  I_J Id:id
+                {: RESULT = new JType("jal", "x0", id); :}
+             ;
+
+PSeudos     ::= I_LA Register Delimiter Id
+             |  I_LI Register Delimiter Number
+             |  I_RET
+             |  I_CALL Id
+             |  I_TAIL Id
+             ;
+
+Data        ::= DataMode:mode DataList:l
+                {: System.out.println(mode + ": " + l); :}
+             |  D_STRING:mode Str:s
+                {: System.out.println(mode + ": " + s); :}
+             |  D_ASCIIZ:mode Str:s
+                {: System.out.println(mode + ": " + s); :}
+             |  D_ZERO:mode Expr:e
+                {: System.out.println(mode + ": " + e); :}
+             ;
+
+DataMode    ::= D_BYTE:d
+                {: RESULT = (String)d; :}
+             |  D_HALF:d
+                {: RESULT = (String)d; :}
+             |  D_WORD:d
+                {: RESULT = (String)d; :}
+             ;
+
+DataList    ::= Expr:e
+                {:
+                  ArrayList<Integer> l = new ArrayList<Integer>();
+                  l.add(e);
+                  RESULT = l;
+                :}
+             |  DataList:l Delimiter Expr:e
+                {:
+                  l.add(e);
+                  RESULT = l;
+                :}
+             ;
+
+Directive   ::= SectionDir
+             |  SymbolDir
+             |  AlignDir
+             |  CompilerDir
+             ;
+
+SectionDir  ::= D_SECTION Section:s
+                {: System.out.println(".section " + s); :}
+             |  Section:s
+                {: System.out.println(s); :}
+             ;
+
+Section     ::= D_TEXT:s
+                {: RESULT = (String) s; :}
+             |  D_DATA:s
+                {: RESULT = (String) s; :}
+             |  D_RODATA:s
+                {: RESULT = (String) s; :}
+             |  D_BSS:s
+                {: RESULT = (String) s; :}
+             ;
+
+SymbolDir   ::= D_GLOBL Id:id
+                {: System.out.println(".globl " + id); :}
+             |  D_LOCAL Id:id
+                {: System.out.println(".local " + id); :}
+             ;
+
+AlignDir    ::= D_ALIGN Expr:e
+                {: System.out.println(".align " + e); :}
+             ;
+
+CompilerDir ::= D_FILE Str:s
+                {: System.out.println(".file " + s); :}
+             ;
+
+Expr        ::= Expr:e1 PLUS Expr:e2
+                {: RESULT = e1 + e2; :}
+             |  Expr:e1 MINUS Expr:e2
+                {: RESULT = e1 - e2; :}
+             |  Expr:e1 TIMES Expr:e2
+                {: RESULT = e1 * e2; :}
+             |  Expr:e1 DIVIDE Expr:e2
+                {: RESULT = e1 / e2; :}
+             |  Expr:e1 MOD Expr:e2
+                {: RESULT = e1 % e2; :}
+             |  Expr:e1 SLL Expr:e2
+                {: RESULT = e1 << e2; :}
+             |  Expr:e1 SRL Expr:e2
+                {: RESULT = e1 >>> e2; :}
+             |  Expr:e1 SRA Expr:e2
+                {: RESULT = e1 >> e2; :}
+             |  Expr:e1 AND Expr:e2
+                {: RESULT = e1 & e2; :}
+             |  Expr:e1 OR Expr:e2
+                {: RESULT = e1 | e2; :}
+             |  Expr:e1 XOR Expr:e2
+                {: RESULT = e1 ^ e2; :}
+             |  LPAREN Expr:e RPAREN
+                {: RESULT = e; :}
+             |  MINUS Expr:e
+                {: RESULT = -e; :}
+                %prec UMINUS
+             |  PLUS Expr:e
+                {: RESULT = e; :}
+                %prec UPLUS
+             |  NEG Expr:e
+                {: RESULT = ~e; :}
+             |  Const:n
+                {: RESULT = n; :}
+             ;
+
+Const       ::= Number:n
+                {: RESULT = n; :}
+             |  Character:c
+                {: RESULT = c; :}
+             ;
+
+Id          ::= IDENTIFIER:id
+                {: RESULT = (String)id; :}
+             ;
+
+Number      ::= NUMBER:n
+                {: RESULT = (int)n; :}
+             ;
+
+Character   ::= CHARACTER:c
+                {: RESULT = (int)c; :}
+             ;
+
+Str         ::= STRING:s
+                {: RESULT = (String)s; :}
+             ;
+
+Register    ::= REGISTER:reg
+                {: RESULT = (String)reg; :}
+             ;
+
+Delimiter   ::= COMMA
+             |  Epsilon
+             ;
+
+Epsilon     ::= /* NOTHING */
+             ;

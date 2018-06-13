@@ -23,7 +23,7 @@ OBJDIR=build
 OBJS=$(patsubst $(SRCDIR)/%.java, $(OBJDIR)/%.class, $(SRC))
 
 # parser and lexer
-SYNTAX=vsim/assembler/syntax/Lexer.java vsim/assembler/syntax/Parser.java
+SYNTAX=vsim/assembler/Lexer.java vsim/assembler/Parser.java
 
 
 # VSim script
@@ -43,15 +43,15 @@ $(OBJS): $(OBJDIR)/%.class: $(SRCDIR)/%.java
 	$(JAVAC) -cp $(CLASSPATH) $(JFLAGS) $<
 
 # build lexer
-vsim/assembler/syntax/Lexer.java: syntax/lexer.flex
+vsim/assembler/Lexer.java: vsim/assembler/syntax/lexer.flex
 	$(JAVA) -jar $(JFLEX) $<
-	mv syntax/Lexer.java vsim/assembler/syntax
+	mv vsim/assembler/syntax/Lexer.java vsim/assembler
 
 # build parser
-vsim/assembler/syntax/Parser.java: syntax/parser.cup
+vsim/assembler/Parser.java: vsim/assembler/syntax/parser.cup
 	$(JAVA) -jar $(JCUP) $(JCUPFLAGS) $<
-	mv Parser.java vsim/assembler/syntax
-	mv Token.java vsim/assembler/syntax
+	mv Parser.java vsim/assembler
+	mv Token.java vsim/assembler
 
 .PHONY: clean doc
 
