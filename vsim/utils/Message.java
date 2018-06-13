@@ -16,7 +16,7 @@ public final class Message {
   }
 
   public static void panic(String msg) {
-    System.err.println(Colorize.red("vsim: (panic) " + msg));
+    System.err.println(Colorize.red("vsim: (error) " + msg));
     System.exit(-1);
   }
 
