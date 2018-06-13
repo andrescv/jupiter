@@ -6,26 +6,29 @@ import java.util.ArrayList;
 
 public final class Cmd {
 
+  // newline
+  private static final String newline = System.getProperty("line.separator");
+
   // VSim header
-  private static final String HEADER = Colorize.red("__   _____ _\n") +
-                                       Colorize.green("\\ \\ / / __(_)_ __\n") +
-                                       Colorize.blue(" \\ V /\\__ \\ | '  \\\n") +
-                                       Colorize.yellow("  \\_/ |___/_|_|_|_|\n");
+  private static final String HEADER = Colorize.red("__   _____ _") + newline +
+                                       Colorize.green("\\ \\ / / __(_)_ __") + newline +
+                                       Colorize.blue(" \\ V /\\__ \\ | '  \\") + newline +
+                                       Colorize.yellow("  \\_/ |___/_|_|_|_|") + newline;
 
   // slogan and license
-  private static final String SUBHEADER = Colorize.cyan("RISC-V Assembler & Runtime Simulator\n\n") +
-                                          "MIT License\n" +
-                                          "Copyright (c) 2018 Andres Castellanos Vargas\n" +
-                                          "All Rights Reserved.\n" +
-                                          "See the file README for a full copyright notice.\n";
+  private static final String SUBHEADER = Colorize.cyan("RISC-V Assembler & Runtime Simulator") + newline +
+                                          newline + "MIT License" + newline +
+                                          "Copyright (c) 2018 Andres Castellanos" + newline +
+                                          "All Rights Reserved." + newline +
+                                          "See the file README for a full copyright notice." + newline;
 
   // usage [-h]
   private static final String USAGE = "usage: vsim [-h] [-asm] [-bare] [-quiet] [-noquiet] [<files>]" +
-                                      "\n\noptional arguments:\n" +
-                                      "  -h        show this help message and exit\n" +
-                                      "  -asm      extended machine (pseudo-ops) (default)\n" +
-                                      "  -bare     bare machine (no pseudo-ops)\n" +
-                                      "  -quiet    do not print warnings\n" +
+                                      newline + newline + "optional arguments:" + newline +
+                                      "  -h        show this help message and exit" + newline +
+                                      "  -asm      extended machine (pseudo-ops) (default)" + newline +
+                                      "  -bare     bare machine (no pseudo-ops)" + newline +
+                                      "  -quiet    do not print warnings" + newline +
                                       "  -noquiet  print warnings (default)";
 
   public static ArrayList<String> parse(String[] args) {
