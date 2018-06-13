@@ -141,19 +141,19 @@ public final class RegisterFile {
     String newline = System.getProperty("line.separator");
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
-        Register reg = this.rf.get("x" + i);
-        out += String.format(
-            regfmt,
-            Colorize.green("x" + i),
-            (i >= 10) ? "" : " ",
-            Colorize.blue(String.format("0x%08x", reg.getValue())),
-            Colorize.purple(MNEMONICS[i])
-        ) + newline;
+      Register reg = this.rf.get("x" + i);
+      out += String.format(
+        regfmt,
+        Colorize.green("x" + i),
+        (i >= 10) ? "" : " ",
+        Colorize.blue(String.format("0x%08x", reg.getValue())),
+        Colorize.purple(MNEMONICS[i])
+      ) + newline;
     }
     // and pc
     out += newline + String.format(
-        "PC  [%s]",
-        Colorize.blue(String.format("0x%08x", this.pc.getValue()))
+      "PC  [%s]",
+      Colorize.blue(String.format("0x%08x", this.pc.getValue()))
     );
     return out;
   }
