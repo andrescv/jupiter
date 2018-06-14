@@ -1,31 +1,59 @@
 package vsim.assembler;
 
-import java.io.Reader;
+import vsim.Settings;
+import vsim.utils.Data;
 import java_cup.runtime.*;
 import java.util.ArrayList;
+import java.io.StringReader;
+import vsim.assembler.pseudos.*;
 import vsim.assembler.statements.*;
-import vsim.assembler.SymbolTable;
+
 
 parser code {:
 
-  public Parser(Reader input) {
-    super(new Lexer(input));
+  private static Lexer lexer;
+  private static final Parser parser = new Parser();
+
+  public static Object parse(String line) {
+    Parser.lexer = new Lexer(new StringReader(line));
+    try {
+      return Parser.parser.parse();
+    } catch (Exception e) {
+      /* DO NOTHING */
+    }
+    return null;
+  }
+
+  public static void invalidInst(String opcode) {
+    Assembler.error("invalid instruction: '" + opcode + "', change assembler mode with -asm flag");
   }
 
   public void syntax_error(Symbol cur_token) {
-    System.out.println(Token.terminalNames[cur_token.sym] + " " + cur_token.value);
+    /* DO NOTHING */
   }
 
   public void unrecovered_syntax_error(Symbol cur_token) {
-    // NOTHING
+    if (cur_token.sym != Token.ERROR)
+      Assembler.error(
+        "(syntax) unexpected " +
+        Token.terminalNames[cur_token.sym] + ": " + cur_token.value +
+        " (column " + cur_token.right + ")"
+      );
+    else
+      Assembler.error(
+        cur_token.value +
+        " (column " + cur_token.right + ")"
+      );
   }
 
-:}
+:};
+
+scan with {: return Parser.lexer.next_token(); :};
 
 /*  TERMINALS */
 
 // Syntax
-terminal COMMA, COLON, LPAREN, RPAREN;
+terminal DOT, COMMA, COLON, LPAREN, RPAREN;
 
 // Operators
 terminal TIMES, DIVIDE, MOD, PLUS, MINUS, SLL, SRL, SRA, AND, OR, XOR, NEG;
@@ -69,7 +97,7 @@ terminal REGISTER, IDENTIFIER;
 // Directives
 terminal D_STRING, D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
 terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
-terminal D_ALIGN, D_GLOBL, D_LOCAL, D_FILE;
+terminal D_ALIGN, D_BALIGN, D_GLOBL, D_COMM;
 
 // error token
 terminal ERROR;
@@ -77,15 +105,15 @@ terminal ERROR;
 /* NON TERMINALS */
 non terminal Statement;
 non terminal Label;
-non terminal Instruction;
+non terminal Instruction, RISCVInst;
 non terminal Statement RType, IType, SType, BType, UType, JType;
-non terminal PSeudos;
+non terminal PSeudo PSeudos;
 non terminal String ROpCode, IOpCode, SOpCode, BOpCode;
 non terminal Data;
 non terminal String DataMode;
 non terminal ArrayList<Integer> DataList;
-non terminal Directive, SectionDir, SymbolDir, AlignDir, CompilerDir;
-non terminal String Section;
+non terminal Directive, SectionDir, SymbolDir, AlignDir;
+non terminal Section;
 non terminal Integer Expr;
 non terminal Integer Const;
 non terminal String Id;
@@ -106,15 +134,29 @@ precedence left TIMES, MOD, DIVIDE;
 precedence right UPLUS, UMINUS, NEG;
 
 /* BNF GRAMMAR */
-Statement   ::= Label Instruction
+Statement   ::= Label RISCVInst:i
+                {: RESULT = i; :}
              |  Label Data
              |  Label
-             |  Instruction
+             |  RISCVInst:i
+                {: RESULT = i; :}
              |  Data
              |  Directive
              ;
 
-Label       ::= IDENTIFIER COLON
+Label       ::= Id:id COLON
+                {:
+                  if (!Assembler.program.addSymbol(id))
+                    Assembler.error("label '" + id + "' is already defined");
+                :}
+             ;
+
+RISCVInst    ::= Instruction:i
+                {:
+                  if (!Assembler.program.inTextSegment())
+                    Assembler.error("instructions can appear only in text segment");
+                  RESULT = i;
+                :}
              ;
 
 Instruction ::= RType:i
@@ -129,19 +171,46 @@ Instruction ::= RType:i
                 {: RESULT = i; :}
              |  JType:i
                 {: RESULT = i; :}
-             |  PSeudos
+             |  PSeudos:p
+                {:
+                  if (!Settings.BARE)
+                    //TODO
+                    ;
+                  else
+                    Parser.invalidInst(p.getName());
+                :}
              ;
 
-RType       ::= ROpCode:opcode  Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+RType       ::= ROpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Register:rs2
                 {: RESULT = new RType(opcode, rd, rs1, rs2); :}
-             |  I_NEG:opcode    Register:rd Delimiter Register:rs
-                {: RESULT = new RType("sub", rd, "x0", rs); :}
-             |  I_SNEZ:opcode   Register:rd Delimiter Register:rs
-                {: RESULT = new RType("sltu", rd, "x0", rs); :}
-             |  I_SLTZ:opcode   Register:rd Delimiter Register:rs
-                {: RESULT = new RType("slt", rd, rs, "x0"); :}
-             |  I_SGTZ:opcode   Register:rd Delimiter Register:rs
-                {: RESULT = new RType("slt", rd, "x0", rs); :}
+             |  I_NEG:opcode Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new RType("sub", rd, "x0", rs);
+                  else
+                    Parser.invalidInst("neg");
+                :}
+             |  I_SNEZ:opcode Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new RType("sltu", rd, "x0", rs);
+                  else
+                    Parser.invalidInst("snez");
+                :}
+             |  I_SLTZ:opcode Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new RType("slt", rd, rs, "x0");
+                  else
+                    Parser.invalidInst("sltz");
+                :}
+             |  I_SGTZ:opcode Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new RType("slt", rd, "x0", rs);
+                  else
+                    Parser.invalidInst("sgtz");
+                :}
              ;
 
 ROpCode     ::= I_SLL:opcode
@@ -182,44 +251,81 @@ ROpCode     ::= I_SLL:opcode
                 {: RESULT = (String)opcode; :}
              ;
 
-IType       ::= IOpCode:opcode  Register:rd Delimiter Register:rs1 Delimiter Number:imm
+IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType(opcode, rd, rs1, imm); :}
-             |  I_JALR   Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_JALR Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("jalr", rd, rs1, imm); :}
-             |  I_LB     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_LB Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("lb", rd, rs1, imm); :}
-             |  I_LBU    Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_LBU Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("lbu", rd, rs1, imm); :}
-             |  I_LH     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_LH Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("lh", rd, rs1, imm); :}
-             |  I_LHU    Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_LHU Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("lhu", rd, rs1, imm); :}
-             |  I_LW     Register:rd Delimiter Register:rs1 Delimiter Number:imm
+             |  I_LW Register:rd Delimiter Register:rs1 Delimiter Number:imm
                 {: RESULT = new IType("lw", rd, rs1, imm); :}
-             |  I_LB     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+             |  I_LB Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new IType("lb", rd, rs1, offset); :}
-             |  I_LBU    Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+             |  I_LBU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new IType("lbu", rd, rs1, offset); :}
-             |  I_LH     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+             |  I_LH Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new IType("lh", rd, rs1, offset); :}
-             |  I_LHU    Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+             |  I_LHU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new IType("lhu", rd, rs1, offset); :}
-             |  I_LW     Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+             |  I_LW Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new IType("lw", rd, rs1, offset); :}
-             |  I_MV     Register:rd Delimiter Register:rs
-                {: RESULT = new IType("addi", rd, rs, 0); :}
-             |  I_NOT    Register:rd Delimiter Register:rs
-                {: RESULT = new IType("xori", rd, rs, -1); :}
-             |  I_SEQZ   Register:rd Delimiter Register:rs
-                {: RESULT = new IType("sltiu", rd, rs, 1); :}
-             |  I_JR     Register:rs
-                {: RESULT = new IType("jalr", "x0", rs, 0); :}
-             |  I_JALR   Register:rs
-                {: RESULT = new IType("jalr", "x1", rs, 0); :}
              |  I_ECALL
                 {: RESULT = new IType("ecall", "x0", "x0", 0); :}
              |  I_NOP
-                {: RESULT = new IType("addi", "x0", "x0", 0); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("addi", "x0", "x0", 0);
+                  else
+                    Parser.invalidInst("nop");
+                :}
+             |  I_MV Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("addi", rd, rs, 0);
+                  else
+                    Parser.invalidInst("mv");
+                :}
+             |  I_NOT Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("xori", rd, rs, -1);
+                  else
+                    Parser.invalidInst("not");
+                :}
+             |  I_SEQZ Register:rd Delimiter Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("sltiu", rd, rs, 1);
+                  else
+                    Parser.invalidInst("seqz");
+                :}
+             |  I_JR Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("jalr", "x0", rs, 0);
+                  else
+                    Parser.invalidInst("jr");
+                :}
+             |  I_JALR Register:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("jalr", "x1", rs, 0);
+                  else
+                    Parser.invalidInst("jalr, rs");
+                :}
+             |  I_RET
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new IType("jalr", "x0", "x1", 0);
+                  else
+                    Parser.invalidInst("ret");
+                :}
              ;
 
 IOpCode     ::= I_SLLI:opcode
@@ -256,50 +362,78 @@ SOpCode     ::= I_SB:opcode
                 {: RESULT = (String)opcode; :}
              ;
 
-BType       ::= BOpCode:opcode  Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
-                {: RESULT = new BType(opcode, rs1, rs2, imm); :}
-             |  BOpCode:opcode  Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {: RESULT = new BType(opcode, rs1, rs2, id); :}
              |  I_BEQZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("beq", rs, "x0", id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("beq", rs, "x0", id);
+                  else
+                    Parser.invalidInst("beqz");
+                :}
              |  I_BNEZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("bne", rs, "x0", id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bne", rs, "x0", id);
+                  else
+                    Parser.invalidInst("bnez");
+                :}
              |  I_BLEZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("bge", "x0", rs, id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bge", "x0", rs, id);
+                  else
+                    Parser.invalidInst("blez");
+                :}
              |  I_BGEZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("bge", rs, "x0", id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bge", rs, "x0", id);
+                  else
+                    Parser.invalidInst("bgez");
+                :}
              |  I_BLTZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("blt", rs, "x0", id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("blt", rs, "x0", id);
+                  else
+                    Parser.invalidInst("bltz");
+                :}
              |  I_BGTZ Register:rs Delimiter Id:id
-                {: RESULT = new BType("blt", "x0", rs, id); :}
-             |  I_BEQZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("beq", rs, "x0", imm); :}
-             |  I_BNEZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("bne", rs, "x0", imm); :}
-             |  I_BLEZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("bge", "x0", rs, imm); :}
-             |  I_BGEZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("bge", rs, "x0", imm); :}
-             |  I_BLTZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("blt", rs, "x0", imm); :}
-             |  I_BGTZ Register:rs Delimiter Number:imm
-                {: RESULT = new BType("blt", "x0", rs, imm); :}
-             |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
-                {: RESULT = new BType("blt", rs2, rs1, imm); :}
-             |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
-                {: RESULT = new BType("bge", rs2, rs1, imm); :}
-             |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
-                {: RESULT = new BType("bltu", rs2, rs1, imm); :}
-             |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Number:imm
-                {: RESULT = new BType("bgeu", rs2, rs1, imm); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("blt", "x0", rs, id);
+                  else
+                    Parser.invalidInst("bgtz");
+                :}
              |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("blt", rs2, rs1, id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("blt", rs2, rs1, id);
+                  else
+                    Parser.invalidInst("bgt");
+                :}
              |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bge", rs2, rs1, id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bge", rs2, rs1, id);
+                  else
+                    Parser.invalidInst("ble");
+                :}
              |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bltu", rs2, rs1, id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bltu", rs2, rs1, id);
+                  else
+                    Parser.invalidInst("bgtu");
+                :}
              |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bgeu", rs2, rs1, id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new BType("bgeu", rs2, rs1, id);
+                  else
+                    Parser.invalidInst("bleu");
+                :}
              ;
 
 BOpCode     ::= I_BEQ:opcode
@@ -322,35 +456,110 @@ UType       ::= I_AUIPC Register:rd Delimiter Number:imm
                 {: RESULT = new UType("lui", rd, imm); :}
              ;
 
-JType       ::= I_JAL Register:rd Delimiter Number:imm
-                {: RESULT = new JType("jal", rd, imm); :}
-             |  I_JAL Register:rd Delimiter Id:id
+JType       ::= I_JAL Register:rd Delimiter Id:id
                 {: RESULT = new JType("jal", rd, id); :}
-             |  I_JAL Number:imm
-                {: RESULT = new JType("jal", "x1", imm); :}
              |  I_JAL Id:id
-                {: RESULT = new JType("jal", "x1", id); :}
-             |  I_J Number:imm
-                {: RESULT = new JType("jal", "x0", imm); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new JType("jal", "x1", id);
+                  else
+                    Parser.invalidInst("jal, target");
+                :}
              |  I_J Id:id
-                {: RESULT = new JType("jal", "x0", id); :}
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new JType("jal", "x0", id);
+                  else
+                    Parser.invalidInst("j");
+                :}
              ;
 
-PSeudos     ::= I_LA Register Delimiter Id
-             |  I_LI Register Delimiter Number
-             |  I_RET
-             |  I_CALL Id
-             |  I_TAIL Id
+PSeudos     ::= I_LA Register:rd Delimiter Id:id
+                {: RESULT = new La(rd, id); :}
+             |  I_LI Register:rd Delimiter Number:n
+                {: RESULT = new Li(rd, n); :}
+             |  I_CALL Id:id
+                {: RESULT = new Call(id); :}
+             |  I_CALL Number:n
+                {: RESULT = new Call(n); :}
+             |  I_TAIL Id:id
+                {: RESULT = new Tail(id); :}
+             |  I_TAIL Number:n
+                {: RESULT = new Tail(n); :}
              ;
+
+/*
+    DATA
+*/
 
 Data        ::= DataMode:mode DataList:l
-                {: System.out.println(mode + ": " + l); :}
+                {:
+                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
+                    int mask = -1;
+                    int length = Data.WORD_LENGTH;
+                    if (mode.equals(".byte")) {
+                      mask = Data.BYTE_MASK;
+                      length = Data.BYTE_LENGTH;
+                    }
+                    else if (mode.equals(".half") || mode.equals(".short") || mode.equals(".2byte")) {
+                      mask = Data.HALF_MASK;
+                      length = Data.HALF_LENGTH;
+                    }
+                    for (int i = 0; i < l.size(); i++) {
+                      int value = l.get(i);
+                      if (mask == Data.BYTE_MASK && Data.validByte(value))
+                        Assembler.warning("lossy conversion to byte: '" + value + "' -> " + (value & mask));
+                      if (mask == Data.HALF_MASK && Data.validHalf(value))
+                        Assembler.warning("lossy conversion to half: '" + value + "' -> " + (value & mask));
+                      for (int j = length - 1; j >= 0; j--)
+                        Assembler.program.addByte((byte)((value >>> j * Data.BYTE_LENGTH_BITS) & mask));
+                    }
+                  }
+                  else
+                    Assembler.error(mode + " directive can not appear in " + Assembler.program.getSegment() + " segment");
+                :}
              |  D_STRING:mode Str:s
-                {: System.out.println(mode + ": " + s); :}
+                {:
+                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment())
+                    for (int i = 0; i < s.length(); i++)
+                      Assembler.program.addByte((byte) s.charAt(i));
+                  else
+                    Assembler.error(".string directive can not appear in " + Assembler.program.getSegment() + " segment");
+                :}
              |  D_ASCIIZ:mode Str:s
-                {: System.out.println(mode + ": " + s); :}
-             |  D_ZERO:mode Expr:e
-                {: System.out.println(mode + ": " + e); :}
+                {:
+                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment())
+                    for (int i = 0; i < s.length(); i++)
+                      Assembler.program.addByte((byte) s.charAt(i));
+                  else
+                    Assembler.error(".asciiz directive can not appear in " + Assembler.program.getSegment() + " segment");
+                :}
+             |  D_ZERO Expr:e
+                {:
+                  if (!Assembler.program.inTextSegment())
+                    for (int i = 0; i < e; i++)
+                      Assembler.program.addByte((byte) 0);
+                  else
+                    Assembler.error(".zero directive can not appear in text segment");
+                :}
+             |  D_COMM Id:id Delimiter Expr:size Delimiter Expr:align
+                {:
+                  if (Assembler.program.inBssSegment()) {
+                    if (align >= 0 && align <= 2) {
+                      Assembler.program.alignVal(align);
+                      if (!Assembler.program.addSymbol(id))
+                        Assembler.error("label '" + id + "' is already defined");
+                      else {
+                        for (int i = 0; i < size; i++)
+                          Assembler.program.addByte((byte) 0);
+                      }
+                    } else
+                      Assembler.error(
+                        "invalid align value: '" + align + "', expected 0, 1 or 2"
+                      );
+                  } else
+                    Assembler.error(".comm/.common directive can only appear in bss segment");
+                :}
              ;
 
 DataMode    ::= D_BYTE:d
@@ -374,41 +583,85 @@ DataList    ::= Expr:e
                 :}
              ;
 
+/*
+    DIRECTIVES
+*/
+
 Directive   ::= SectionDir
              |  SymbolDir
              |  AlignDir
-             |  CompilerDir
+             |  DOT Id:id
+                {: Assembler.error("invalid directive: '." + id + "'"); :}
              ;
 
-SectionDir  ::= D_SECTION Section:s
-                {: System.out.println(".section " + s); :}
-             |  Section:s
-                {: System.out.println(s); :}
+/*
+  .section [{.text, .data, .rodata, .bss}]
+*/
+
+SectionDir  ::= D_SECTION Section
+             |  Section
              ;
 
 Section     ::= D_TEXT:s
-                {: RESULT = (String) s; :}
+                {: Assembler.program.setSegment(Segment.TEXT); :}
              |  D_DATA:s
-                {: RESULT = (String) s; :}
+                {: Assembler.program.setSegment(Segment.DATA); :}
              |  D_RODATA:s
-                {: RESULT = (String) s; :}
+                {: Assembler.program.setSegment(Segment.RODATA); :}
              |  D_BSS:s
-                {: RESULT = (String) s; :}
+                {: Assembler.program.setSegment(Segment.BSS); :}
              ;
+
+/*
+  .globl id
+*/
 
 SymbolDir   ::= D_GLOBL Id:id
-                {: System.out.println(".globl " + id); :}
-             |  D_LOCAL Id:id
-                {: System.out.println(".local " + id); :}
+                {:
+                  if(!Assembler.program.addGlobal(id))
+                    Assembler.error("label '" + id + "' is already defined as global");
+                :}
              ;
 
-AlignDir    ::= D_ALIGN Expr:e
-                {: System.out.println(".align " + e); :}
+/*
+  .align n
+  .p2align n
+  .balign n
+*/
+
+AlignDir    ::= D_ALIGN Number:e
+                {:
+                  if (!Assembler.program.inTextSegment()) {
+                    if (e >= 0 && e <= 2)
+                      Assembler.program.alignVal(e);
+                    else
+                      Assembler.error(
+                        "invalid align value: '" + e + "', expected 0, 1 or 2"
+                      );
+                  } else
+                    Assembler.error(
+                      ".align/.p2align directives can not appear in text segment"
+                    );
+                :}
+             |  D_BALIGN Number:e
+                {:
+                  if (!Assembler.program.inTextSegment()) {
+                    if (e > 0)
+                      Assembler.program.balignVal(e);
+                    else
+                      Assembler.error(
+                        "invalid align value: '" + e + "', expected value > 0"
+                      );
+                  } else
+                    Assembler.error(
+                      ".balign directive can not appear in text segment"
+                    );
+                :}
              ;
 
-CompilerDir ::= D_FILE Str:s
-                {: System.out.println(".file " + s); :}
-             ;
+/*
+    VALUES
+*/
 
 Expr        ::= Expr:e1 PLUS Expr:e2
                 {: RESULT = e1 + e2; :}
@@ -461,7 +714,7 @@ Number      ::= NUMBER:n
              ;
 
 Character   ::= CHARACTER:c
-                {: RESULT = (int)c; :}
+                {: RESULT = (int)(((char) c) & 0xff); :}
              ;
 
 Str         ::= STRING:s
