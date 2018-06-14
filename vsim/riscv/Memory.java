@@ -14,13 +14,13 @@ public final class Memory {
   private Hashtable<Integer, Byte> memory;
 
   private Memory() {
-    this.heapAddress = MemoryConfig.HEAP_SEGMENT;
+    this.heapAddress = MemorySegments.HEAP_SEGMENT;
     this.memory = new Hashtable<Integer, Byte>();
   }
 
   public void reset() {
     this.memory = new Hashtable<Integer, Byte>();
-    this.heapAddress = MemoryConfig.HEAP_SEGMENT;
+    this.heapAddress = MemorySegments.HEAP_SEGMENT;
   }
 
   public void printMemory(int from) {
@@ -99,7 +99,7 @@ public final class Memory {
 
   @Override
   public String toString() {
-    return getMemory(MemoryConfig.DATA_SEGMENT);
+    return getMemory(MemorySegments.DATA_SEGMENT);
   }
 
 }

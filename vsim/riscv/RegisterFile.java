@@ -75,10 +75,10 @@ public final class RegisterFile {
       this.rf.put("x" + i, reg);
     }
     // program counter is a special register
-    this.pc = new Register(32, MemoryConfig.TEXT_SEGMENT, true);
+    this.pc = new Register(32, MemorySegments.TEXT_SEGMENT, true);
     // set default value for stack and global pointer
-    this.rf.get("sp").setValue(MemoryConfig.STACK_SEGMENT);
-    this.rf.get("gp").setValue(MemoryConfig.DATA_SEGMENT);
+    this.rf.get("sp").setValue(MemorySegments.STACK_SEGMENT);
+    this.rf.get("gp").setValue(MemorySegments.DATA_SEGMENT);
   }
 
   public int getRegisterNumber(String name) {
@@ -130,8 +130,8 @@ public final class RegisterFile {
     // use pc default reset value
     this.pc.reset();
     // set default value for stack and global pointer
-    this.rf.get("sp").setValue(MemoryConfig.STACK_SEGMENT);
-    this.rf.get("gp").setValue(MemoryConfig.DATA_SEGMENT);
+    this.rf.get("sp").setValue(MemorySegments.STACK_SEGMENT);
+    this.rf.get("gp").setValue(MemorySegments.DATA_SEGMENT);
   }
 
   @Override
