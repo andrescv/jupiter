@@ -1,7 +1,7 @@
 package vsim.riscv;
 
 
-public final class MemoryConfig {
+public final class MemorySegments {
 
   /*
       Memory "Layout" Configuration
