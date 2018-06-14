@@ -1,5 +1,6 @@
 package vsim.assembler;
 
+import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Message;
 import java.io.FileReader;
@@ -16,11 +17,11 @@ public final class Assembler {
 
   protected static int lineno = 0;
   protected static Program program = null;
-  public static final ArrayList<String> errors = new ArrayList<String>();
+
 
   protected static void error(String msg) {
     String filename = Assembler.program.getFilename();
-    Assembler.errors.add(
+    Globals.errors.add(
       "assembler: " + filename + ": at line: " + Assembler.lineno + ": " + msg
     );
   }
@@ -36,8 +37,6 @@ public final class Assembler {
 
   public static ArrayList<Program> assemble(ArrayList<String> files) {
     ArrayList<Program> programs = new ArrayList<Program>();
-    // clear assembler errors
-    Assembler.errors.clear();
     // assemble all files
     if (files.size() > 0) {
       for (String file: files) {
@@ -58,30 +57,17 @@ public final class Assembler {
             if (line.indexOf('#') != -1)
               line = line.substring(0, line.indexOf('#'));
             // parse line only if != nothing
-            if (!line.trim().equals("")) {
-              Object result = Parser.parse(line);
-              // add statements
-              if (result != null) {
-                // simple statement
-                if (result instanceof Statement)
-                  program.add((Statement) result);
-                // complex pseudo
-                if (result instanceof PSeudo) {
-                  ArrayList<Statement> stmts = ((PSeudo) result).build();
-                  for (Statement stmt: stmts)
-                    program.add(stmt);
-                }
-              }
-            }
+            if (!line.trim().equals(""))
+              Parser.parse(line);
             // increment line count
             Assembler.lineno++;
           }
           // add this processed program
           programs.add(program);
         } catch (FileNotFoundException e) {
-          errors.add("assembler: file '" + file + "' not found");
+          Globals.errors.add("assembler: file '" + file + "' not found");
         } catch (IOException e) {
-          errors.add("assembler: file '" + file + "' could not be read");
+          Globals.errors.add("assembler: file '" + file + "' could not be read");
         }
       }
     }

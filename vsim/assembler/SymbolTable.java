@@ -23,9 +23,21 @@ public final class SymbolTable {
     return null;
   }
 
+  public Sym getSymbol(String label) {
+    return this.table.get(label);
+  }
+
   public boolean set(String label, int address) {
     if (this.table.containsKey(label)) {
       this.table.get(label).setAddress(address);
+      return true;
+    }
+    return false;
+  }
+
+  public boolean add(String label, Sym sym) {
+    if (!this.table.containsKey(label)) {
+      this.table.put(label, sym);
       return true;
     }
     return false;

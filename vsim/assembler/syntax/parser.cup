@@ -104,9 +104,9 @@ terminal ERROR;
 /* NON TERMINALS */
 non terminal Statement;
 non terminal Label;
-non terminal Instruction, RISCVInst;
+non terminal Statement Instruction, RISCVInst;
 non terminal Statement RType, IType, SType, BType, UType, JType;
-non terminal PSeudo PSeudos;
+non terminal PSeudo RISCVPSeudo, PSeudos;
 non terminal String ROpCode, IOpCode, SOpCode, BOpCode;
 non terminal Data;
 non terminal String DataMode;
@@ -134,11 +134,25 @@ precedence right UPLUS, UMINUS, NEG;
 
 /* BNF GRAMMAR */
 Statement   ::= Label RISCVInst:i
-                {: RESULT = i; :}
+                {:
+                  if (i != null)
+                    Assembler.program.add(i);
+                :}
+             |  Label RISCVPSeudo:p
+                {:
+                  // TODO
+                :}
              |  Label Data
              |  Label
              |  RISCVInst:i
-                {: RESULT = i; :}
+                {:
+                  if (i != null)
+                    Assembler.program.add(i);
+                :}
+             |  RISCVPSeudo:p
+                {:
+                  // TODO
+                :}
              |  Data
              |  Directive
              ;
@@ -154,7 +168,8 @@ RISCVInst    ::= Instruction:i
                 {:
                   if (!Assembler.program.inTextSegment())
                     Assembler.error("instructions can appear only in text segment");
-                  RESULT = i;
+                  else
+                    RESULT = i;
                 :}
              ;
 
@@ -170,13 +185,14 @@ Instruction ::= RType:i
                 {: RESULT = i; :}
              |  JType:i
                 {: RESULT = i; :}
-             |  PSeudos:p
+             ;
+
+RISCVPSeudo ::= PSeudos:p
                 {:
-                  if (!Settings.BARE)
-                    //TODO
-                    ;
+                  if (!Assembler.program.inTextSegment())
+                    Assembler.error("instructions can appear only in text segment");
                   else
-                    Parser.invalidInst(p.getName());
+                    RESULT = p;
                 :}
              ;
 
@@ -510,7 +526,7 @@ Data        ::= DataMode:mode DataList:l
                         Assembler.warning("lossy conversion to byte: '" + value + "' -> " + (value & mask));
                       if (mask == Data.HALF_MASK && Data.validHalf(value))
                         Assembler.warning("lossy conversion to half: '" + value + "' -> " + (value & mask));
-                      for (int j = length - 1; j >= 0; j--)
+                      for (int j = 0; j < length; j++)
                         Assembler.program.addByte((byte)((value >>> j * Data.BYTE_LENGTH_BITS) & mask));
                     }
                   }
@@ -519,18 +535,20 @@ Data        ::= DataMode:mode DataList:l
                 :}
              |  D_STRING:mode Str:s
                 {:
-                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment())
+                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
                     for (int i = 0; i < s.length(); i++)
                       Assembler.program.addByte((byte) s.charAt(i));
-                  else
+                    Assembler.program.addByte((byte) 0);
+                  } else
                     Assembler.error(".string directive can not appear in " + Assembler.program.getSegment() + " segment");
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
-                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment())
+                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
                     for (int i = 0; i < s.length(); i++)
                       Assembler.program.addByte((byte) s.charAt(i));
-                  else
+                    Assembler.program.addByte((byte) 0);
+                  } else
                     Assembler.error(".asciiz directive can not appear in " + Assembler.program.getSegment() + " segment");
                 :}
              |  D_ZERO Expr:e
