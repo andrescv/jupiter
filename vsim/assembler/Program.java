@@ -1,6 +1,5 @@
 package vsim.assembler;
 
-import java.util.HashSet;
 import vsim.utils.Message;
 import java.util.ArrayList;
 import vsim.assembler.statements.Statement;
@@ -20,7 +19,7 @@ public final class Program {
   private String filename;
 
   // symbols control
-  private HashSet<String> globals;
+  private ArrayList<String> globals;
   private SymbolTable table;
 
   // segments control
@@ -40,7 +39,7 @@ public final class Program {
     this.alignVal = 0;
     // symbols
     this.table = new SymbolTable();
-    this.globals = new HashSet<String>();
+    this.globals = new ArrayList<String>();
     // segments
     this.segment = Segment.TEXT;
     this.data = new ArrayList<Byte>();
@@ -162,6 +161,10 @@ public final class Program {
 
   public String getFilename() {
     return this.filename;
+  }
+
+  public ArrayList<String> getGlobals() {
+    return this.globals;
   }
 
   @Override

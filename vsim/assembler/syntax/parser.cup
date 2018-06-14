@@ -35,8 +35,7 @@ parser code {:
   public void unrecovered_syntax_error(Symbol cur_token) {
     if (cur_token.sym != Token.ERROR)
       Assembler.error(
-        "(syntax) unexpected " +
-        Token.terminalNames[cur_token.sym] + ": " + cur_token.value +
+        "(syntax) unexpected input: " + cur_token.value +
         " (column " + cur_token.right + ")"
       );
     else
