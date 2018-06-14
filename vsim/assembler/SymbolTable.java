@@ -7,27 +7,33 @@ import java.util.Enumeration;
 
 public final class SymbolTable {
 
-  private Hashtable<String, Integer> table;
+  private Hashtable<String, Sym> table;
 
   public SymbolTable() {
-    this.table = new Hashtable<String, Integer>();
+    this.table = new Hashtable<String, Sym>();
   }
 
   public void reset() {
-    this.table = new Hashtable<String, Integer>();
+    this.table = new Hashtable<String, Sym>();
+  }
+
+  public Integer get(String label) {
+    if (this.table.containsKey(label))
+      return this.table.get(label).getAddress();
+    return null;
   }
 
   public boolean set(String label, int address) {
     if (this.table.containsKey(label)) {
-      this.table.replace(label, address);
+      this.table.get(label).setAddress(address);
       return true;
     }
     return false;
   }
 
-  public boolean add(String label, int address) {
+  public boolean add(String label, Segment segment, int address) {
     if (!this.table.containsKey(label)) {
-      this.table.put(label, address);
+      this.table.put(label, new Sym(segment, address));
       return true;
     }
     return false;
@@ -36,12 +42,13 @@ public final class SymbolTable {
   @Override
   public String toString() {
     String out = "";
+    String newline = System.getProperty("line.separator");
     for (Enumeration<String> e = this.table.keys(); e.hasMoreElements();) {
       String label = e.nextElement();
-      String address = String.format("0x%08x", this.table.get(label));
-      out += Colorize.green(label) + " @ " + Colorize.purple(address);
+      out += "label: " + Colorize.green(label) + " " + this.table.get(label).toString();
+      out += newline;
     }
-    return out;
+    return out.trim();
   }
 
 }
