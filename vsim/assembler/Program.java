@@ -2,6 +2,8 @@ package vsim.assembler;
 
 import vsim.utils.Message;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import vsim.riscv.instructions.Instruction;
 import vsim.assembler.statements.Statement;
 
 
@@ -9,6 +11,8 @@ public final class Program {
 
   // program statements
   private ArrayList<Statement> stmts;
+  private int textIndex;
+  private int textStart;
 
   // align directive
   private boolean align;
@@ -25,10 +29,13 @@ public final class Program {
   // segments control
   private Segment segment;
   private int dataIndex;
+  private int dataStart;
   private ArrayList<Byte> data;
   private int rodataIndex;
+  private int rodataStart;
   private ArrayList<Byte> rodata;
   private int bssIndex;
+  private int bssStart;
   private ArrayList<Byte> bss;
 
   protected Program(String filename) {
@@ -44,16 +51,88 @@ public final class Program {
     this.segment = Segment.TEXT;
     this.data = new ArrayList<Byte>();
     this.dataIndex = 0;
+    this.dataStart = 0;
     this.rodata = new ArrayList<Byte>();
     this.rodataIndex = 0;
+    this.rodataStart = 0;
     this.bss = new ArrayList<Byte>();
     this.bssIndex = 0;
+    this.bssStart = 0;
     // statements
     this.stmts = new ArrayList<Statement>();
+    this.textIndex = 0;
+    this.textStart = 0;
   }
 
   protected void add(Statement stmt) {
     this.stmts.add(stmt);
+    this.textIndex += Instruction.LENGTH;
+  }
+
+  public void setDataStart(int address) {
+    this.dataStart = address;
+  }
+
+  public void setRodataStart(int address) {
+    this.rodataStart = address;
+  }
+
+  public void setBssStart(int address) {
+    this.bssStart = address;
+  }
+
+  public void setTextStart(int address) {
+    this.textStart = address;
+  }
+
+  public String getFilename() {
+    return this.filename;
+  }
+
+  public ArrayList<String> getGlobals() {
+    return this.globals;
+  }
+
+  public SymbolTable getST() {
+    return this.table;
+  }
+
+  public ArrayList<Byte> getData() {
+    return this.data;
+  }
+
+  public ArrayList<Byte> getRodata() {
+    return this.rodata;
+  }
+
+  public ArrayList<Byte> getBss() {
+    return this.bss;
+  }
+
+  public void relocateSymbols() {
+    for (Enumeration<String> e = this.table.labels(); e.hasMoreElements();) {
+      String label = e.nextElement();
+      Sym sym = this.table.getSymbol(label);
+      int offset = sym.getAddress();
+      switch (sym.getSegment()) {
+        case DATA:
+          this.table.set(label, offset + this.dataStart);
+          break;
+        case TEXT:
+          this.table.set(label, offset + this.textStart);
+          break;
+        case RODATA:
+          this.table.set(label, offset + this.rodataStart);
+          break;
+        case BSS:
+          this.table.set(label, offset + this.bssStart);
+          break;
+      }
+    }
+  }
+
+  public int textSize() {
+    return this.stmts.size() * Instruction.LENGTH;
   }
 
   protected boolean addGlobal(String label) {
@@ -76,7 +155,7 @@ public final class Program {
         this.bssIndex = this.align(this.bssIndex, this.bss);
         return this.table.add(label, Segment.BSS, this.bssIndex);
       default:
-        return this.table.add(label, Segment.TEXT, 0);
+        return this.table.add(label, Segment.TEXT, this.textIndex);
     }
   }
 
@@ -94,7 +173,11 @@ public final class Program {
   private int align(int index, ArrayList<Byte> segment) {
     if (this.align) {
       if (this.balign || ((index % this.alignVal) != 0)) {
-        int padding = this.alignVal - index % this.alignVal;
+        int padding;
+        if (this.balign)
+          padding = this.alignVal;
+        else
+          padding = this.alignVal - index % this.alignVal;
         for (int i = 0; i < padding; i++)
           segment.add((byte) 0);
         index += padding;
@@ -159,23 +242,16 @@ public final class Program {
     return this.segment.toString().toLowerCase();
   }
 
-  public String getFilename() {
-    return this.filename;
-  }
-
-  public ArrayList<String> getGlobals() {
-    return this.globals;
-  }
-
   @Override
   public String toString() {
-    int textSize = this.stmts.size() * 4;
+    int textSize = this.stmts.size() * Instruction.LENGTH;
     int dataSize = this.data.size() + this.rodata.size() + this.bss.size();
     return String.format(
-      "RISC-V Program (%s, text size: %d, data size: %d bytes)",
+      "RISC-V Program (%s, text size: %d, data size: %d bytes)\n\n\n%s",
       this.filename,
       textSize,
-      dataSize
+      dataSize,
+      this.table.toString()
     );
   }
 
