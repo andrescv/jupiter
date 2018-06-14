@@ -31,6 +31,14 @@ public final class Data {
     return signExtend(value, HALF_LENGTH_BITS);
   }
 
+  public static boolean validHalf(int value) {
+    return ((value < -32768) || (value > 32767));
+  }
+
+  public static boolean validByte(int value) {
+    return ((value < -128) || (value > 127));
+  }
+
   public static int mulh(int a, int b) {
     long result = ((long) a) * ((long) b);
     return (int)(result >>> WORD_LENGTH_BITS);
