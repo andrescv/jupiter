@@ -1,6 +1,11 @@
 # Build directory
 build/
 
+# Lexer and Parser classes
+vsim/assembler/Lexer.java
+vsim/assembler/Parser.java
+vsim/assembler/Token.java
+
 # Java compiled files
 *.class
 

@@ -63,4 +63,4 @@ doc:
 
 # clean all
 clean:
-	rm -rf build doc VSim.jar
+	rm -rf build doc VSim.jar $(SYNTAX) vsim/assembler/Token.java
