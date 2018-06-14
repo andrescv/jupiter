@@ -39,6 +39,10 @@ public final class SymbolTable {
     return false;
   }
 
+  public Enumeration<String> labels() {
+    return this.table.keys();
+  }
+
   @Override
   public String toString() {
     String out = "";
