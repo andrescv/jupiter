@@ -12,7 +12,7 @@ package vsim.assembler;
   }
 
   private java_cup.runtime.Symbol symbol(int type, Object value) {
-    return new java_cup.runtime.Symbol(type, yyline, yycolumn, value);
+    return new java_cup.runtime.Symbol(type, -1, yycolumn + 1, value);
   }
 
 %}
@@ -26,10 +26,10 @@ package vsim.assembler;
   int state = yystate();
   if (state == STRING || state == SBACKSLASH && this.prevState == STRING) {
     yybegin(YYINITIAL);
-    return symbol(Token.ERROR, "unterminated string constant");
+    return symbol(Token.ERROR, "(syntax) unterminated string constant");
   } else if (state == CHARACTER || state == SBACKSLASH && this.prevState == CHARACTER) {
     yybegin(YYINITIAL);
-    return symbol(Token.ERROR, "unterminated char constant");
+    return symbol(Token.ERROR, "(syntax) unterminated char constant");
   }
   return symbol(Token.EOF);
 %eofval}
@@ -39,7 +39,6 @@ package vsim.assembler;
 %class Lexer
 %final
 %cup
-%line
 %column
 %full
 
@@ -48,6 +47,7 @@ package vsim.assembler;
 %state CHARACTER
 
 // syntax
+DOT = "."
 COMMA = ","
 COLON = ":"
 LPAREN = "("
@@ -78,17 +78,25 @@ D_ZERO = ".zero"
 D_ASCIIZ = ".asciiz"
 D_STRING = ".string"
 D_BYTE = ".byte"
+D_2BYTE = ".2byte"
 D_HALF = ".half"
+D_SHORT = ".short"
+D_4BYTE = ".4byte"
 D_WORD = ".word"
+D_LONG = ".long"
+
+
 D_ALIGN = ".align"
+D_P2ALIGN = ".p2align"
+D_BALIGN = ".balign"
 D_GLOBL = ".globl"
-D_LOCAL = ".local"
-D_FILE = ".file"
 D_SECTION = ".section"
 D_DATA = ".data"
 D_TEXT = ".text"
 D_RODATA = ".rodata"
 D_BSS = ".bss"
+D_COMM = ".comm"
+D_COMMON = ".common"
 
 // B Format
 I_BEQ = [bB][eE][qQ]
@@ -198,6 +206,10 @@ ERROR = .
 <YYINITIAL>{
 
   // syntax symbols
+  {DOT} {
+    return symbol(Token.DOT);
+  }
+
   {COMMA}  {
     return symbol(Token.COMMA);
   }
@@ -300,20 +312,36 @@ ERROR = .
     return symbol(Token.D_WORD);
   }
 
+  {D_2BYTE} {
+    return symbol(Token.D_HALF);
+  }
+
+  {D_SHORT} {
+    return symbol(Token.D_HALF);
+  }
+
+  {D_4BYTE} {
+    return symbol(Token.D_WORD);
+  }
+
+  {D_LONG} {
+    return symbol(Token.D_WORD);
+  }
+
   {D_ALIGN} {
     return symbol(Token.D_ALIGN);
   }
 
+  {D_P2ALIGN} {
+    return symbol(Token.D_ALIGN);
+  }
+
+  {D_BALIGN} {
+    return symbol(Token.D_BALIGN);
+  }
+
   {D_GLOBL} {
     return symbol(Token.D_GLOBL);
-  }
-
-  {D_LOCAL} {
-    return symbol(Token.D_LOCAL);
-  }
-
-  {D_FILE} {
-    return symbol(Token.D_FILE);
   }
 
   {D_SECTION} {
@@ -334,6 +362,14 @@ ERROR = .
 
   {D_BSS} {
     return symbol(Token.D_BSS);
+  }
+
+  {D_COMM} {
+    return symbol(Token.D_COMM);
+  }
+
+  {D_COMMON} {
+    return symbol(Token.D_COMM);
   }
 
   // B Format
@@ -646,7 +682,7 @@ ERROR = .
     try {
       return symbol(Token.NUMBER, Integer.parseInt(yytext()));
     } catch (Exception e) {
-      return symbol(Token.ERROR, "invalid number constant: " + yytext());
+      return symbol(Token.ERROR, "(32 bits only) invalid number constant: '" + yytext() + "'");
     }
   }
 
@@ -655,7 +691,7 @@ ERROR = .
     try {
       return symbol(Token.NUMBER,   Integer.parseUnsignedInt(yytext().substring(2), 16));
     } catch (Exception e) {
-      return symbol(Token.ERROR, "invalid hexadecimal constant: " + yytext());
+      return symbol(Token.ERROR, "(32 bits only) invalid hexadecimal constant: '" + yytext() + "'");
     }
   }
 
@@ -664,7 +700,7 @@ ERROR = .
     try {
       return symbol(Token.NUMBER, Integer.parseUnsignedInt(yytext().substring(2), 2));
     } catch (Exception e) {
-      return symbol(Token.ERROR, "invalid binary constant: " + yytext());
+      return symbol(Token.ERROR, "(32 bits only) invalid binary constant: '" + yytext() + "'");
     }
   }
 
@@ -673,7 +709,7 @@ ERROR = .
 
   // report error
   {ERROR}  {
-    return symbol(Token.ERROR, "unexpected character: " + yytext());
+    return symbol(Token.ERROR, "(syntax) unexpected character: '" + yytext() + "'");
   }
 
 }
@@ -709,7 +745,7 @@ ERROR = .
     if (ch.length() == 1)
       return symbol(Token.CHARACTER, this.text.toString().charAt(0));
     else
-      return symbol(Token.ERROR, "invalid char: " + ch);
+      return symbol(Token.ERROR, "invalid char: '" + ch + "'");
   }
 
   {CHAR} {

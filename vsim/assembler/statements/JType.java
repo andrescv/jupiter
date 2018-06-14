@@ -5,12 +5,12 @@ public final class JType extends Statement {
 
   private String mnemonic;
   private String rd;
-  private Object imm;
+  private String target;
 
-  public JType(String mnemonic, String rd, Object imm) {
+  public JType(String mnemonic, String rd, String target) {
     this.mnemonic = mnemonic;
     this.rd = rd;
-    this.imm = imm;
+    this.target = target;
   }
 
 }
