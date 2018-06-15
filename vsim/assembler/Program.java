@@ -9,37 +9,43 @@ import vsim.assembler.statements.Statement;
 
 public final class Program {
 
+  // program filename
+  private String filename;
+
   // program statements
-  private ArrayList<Statement> stmts;
   private int textIndex;
   private int textStart;
+  private ArrayList<Statement> stmts;
 
-  // align directive
+  // align directives
   private boolean align;
   private boolean balign;
   private int alignVal;
-
-  // program filename
-  private String filename;
 
   // symbols control
   private ArrayList<String> globals;
   private SymbolTable table;
 
-  // segments control
-  private Segment segment;
+  // data segment control
   private int dataIndex;
   private int dataStart;
   private ArrayList<Byte> data;
+  // rodata segment control
   private int rodataIndex;
   private int rodataStart;
   private ArrayList<Byte> rodata;
+  // bss segment control
   private int bssIndex;
   private int bssStart;
   private ArrayList<Byte> bss;
 
   protected Program(String filename) {
+    // filename attached to this program
     this.filename = filename;
+    // statements
+    this.stmts = new ArrayList<Statement>();
+    this.textIndex = 0;
+    this.textStart = 0;
     // align
     this.align = false;
     this.balign = false;
@@ -47,65 +53,18 @@ public final class Program {
     // symbols
     this.table = new SymbolTable();
     this.globals = new ArrayList<String>();
-    // segments
-    this.data = new ArrayList<Byte>();
+    // data segment control
     this.dataIndex = 0;
     this.dataStart = 0;
-    this.rodata = new ArrayList<Byte>();
+    this.data = new ArrayList<Byte>();
+    // rodata segment control
     this.rodataIndex = 0;
     this.rodataStart = 0;
-    this.bss = new ArrayList<Byte>();
+    this.rodata = new ArrayList<Byte>();
+    // bss segment control
     this.bssIndex = 0;
     this.bssStart = 0;
-    // statements
-    this.stmts = new ArrayList<Statement>();
-    this.textIndex = 0;
-    this.textStart = 0;
-  }
-
-  protected void add(Statement stmt) {
-    this.stmts.add(stmt);
-    this.textIndex += Instruction.LENGTH;
-  }
-
-  public void setDataStart(int address) {
-    this.dataStart = address;
-  }
-
-  public void setRodataStart(int address) {
-    this.rodataStart = address;
-  }
-
-  public void setBssStart(int address) {
-    this.bssStart = address;
-  }
-
-  public void setTextStart(int address) {
-    this.textStart = address;
-  }
-
-  public String getFilename() {
-    return this.filename;
-  }
-
-  public ArrayList<String> getGlobals() {
-    return this.globals;
-  }
-
-  public SymbolTable getST() {
-    return this.table;
-  }
-
-  public ArrayList<Byte> getData() {
-    return this.data;
-  }
-
-  public ArrayList<Byte> getRodata() {
-    return this.rodata;
-  }
-
-  public ArrayList<Byte> getBss() {
-    return this.bss;
+    this.bss = new ArrayList<Byte>();
   }
 
   public void relocateSymbols() {
@@ -130,12 +89,37 @@ public final class Program {
     }
   }
 
-  public ArrayList<Statement> getStatements() {
-    return this.stmts;
+  public void setTextStart(int address) {
+    this.textStart = address;
   }
 
-  public int textSize() {
-    return this.stmts.size() * Instruction.LENGTH;
+  public void setDataStart(int address) {
+    this.dataStart = address;
+  }
+
+  public void setRodataStart(int address) {
+    this.rodataStart = address;
+  }
+
+  public void setBssStart(int address) {
+    this.bssStart = address;
+  }
+
+  protected void add(Statement stmt) {
+    this.stmts.add(stmt);
+    this.textIndex += Instruction.LENGTH;
+  }
+
+  protected void align(int alignVal) {
+    this.align = true;
+    this.balign = false;
+    this.alignVal = (int)Math.pow(2, alignVal);
+  }
+
+  protected void balign(int alignVal) {
+    this.align = false;
+    this.balign = true;
+    this.alignVal = alignVal;
   }
 
   protected boolean addGlobal(String label) {
@@ -162,32 +146,24 @@ public final class Program {
     }
   }
 
-  protected void alignVal(int alignVal) {
-    this.align = true;
-    this.alignVal = (int)Math.pow(2, alignVal);
-  }
-
-  protected void balignVal(int alignVal) {
-    this.align = true;
-    this.balign = true;
-    this.alignVal = alignVal;
-  }
-
   private int align(int index, ArrayList<Byte> segment) {
+    int padding = 0;
+    // calculate padding
     if (this.align) {
-      if (this.balign || ((index % this.alignVal) != 0)) {
-        int padding;
-        if (this.balign)
-          padding = this.alignVal;
-        else
-          padding = this.alignVal - index % this.alignVal;
-        for (int i = 0; i < padding; i++)
-          segment.add((byte) 0);
-        index += padding;
-      }
+      if ((index % this.alignVal) != 0)
+        padding = this.alignVal - index % this.alignVal;
       this.align = false;
+    } else if (this.balign) {
+      padding = this.alignVal;
       this.balign = false;
     }
+    // add padding if necessary
+    if (padding != 0) {
+      for (int i = 0; i < padding; i++)
+        segment.add((byte) 0);
+      index += padding;
+    }
+    // return new segment index
     return index;
   }
 
@@ -206,7 +182,7 @@ public final class Program {
     this.rodataIndex = this.addTo(b, this.rodataIndex, this.rodata);
   }
 
-  protected void addToBss(byte b) {
+  private void addToBss(byte b) {
     this.bssIndex = this.addTo(b, this.rodataIndex, this.bss);
   }
 
@@ -221,16 +197,39 @@ public final class Program {
     }
   }
 
+  public String getFilename() {
+    return this.filename;
+  }
+
+  public ArrayList<String> getGlobals() {
+    return this.globals;
+  }
+
+  public SymbolTable getST() {
+    return this.table;
+  }
+
+  public ArrayList<Byte> getData() {
+    return this.data;
+  }
+
+  public ArrayList<Byte> getRodata() {
+    return this.rodata;
+  }
+
+  public ArrayList<Byte> getBss() {
+    return this.bss;
+  }
+
   @Override
   public String toString() {
     int textSize = this.stmts.size() * Instruction.LENGTH;
     int dataSize = this.data.size() + this.rodata.size() + this.bss.size();
     return String.format(
-      "RISC-V Program (%s, text size: %d, data size: %d bytes)\n\n\n%s",
+      "RISC-V Program (%s, text: %d bytes, data: %d bytes)",
       this.filename,
       textSize,
-      dataSize,
-      this.table.toString()
+      dataSize
     );
   }
 

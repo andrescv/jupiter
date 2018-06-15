@@ -26,7 +26,6 @@ public final class Message {
     if (msgs.size() > 0) {
       for (String msg: msgs)
         Message.error(msg);
-      System.out.println();
       System.out.println(msgs.size() + " error(s)");
       System.exit(-1);
     }
