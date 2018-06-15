@@ -3,6 +3,9 @@ package vsim.riscv.instructions;
 
 public final class InstructionField {
 
+  // all bits
+  public static final InstructionField ALL       = new InstructionField(0, 31);
+
   // opcode
   public static final InstructionField OPCODE    = new InstructionField(0, 6);
   // functions
