@@ -221,6 +221,10 @@ public final class Program {
     return this.bss;
   }
 
+  public ArrayList<Statement> getStatements() {
+    return this.stmts;
+  }
+
   @Override
   public String toString() {
     int textSize = this.stmts.size() * Instruction.LENGTH;

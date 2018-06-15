@@ -6,10 +6,8 @@ import vsim.utils.Message;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import vsim.assembler.pseudos.PSeudo;
 import vsim.assembler.statements.Statement;
 
 
@@ -61,6 +59,37 @@ public final class Assembler {
     }
   }
 
+  private static void handleGlobals(ArrayList<Program> programs) {
+    for (Program program: programs) {
+      SymbolTable table = program.getST();
+      String filename = program.getFilename();
+      Globals.local.put(filename, table);
+      for (String global: program.getGlobals()) {
+        Sym sym = table.getSymbol(global);
+        if (sym != null) {
+          if(!Globals.globl.add(global, sym))
+            Assembler.error(
+              "'" + global + "' already defined as global in a different file"
+            );
+        } else
+          Assembler.error(
+            "'" + global + "' declared global label but not defined"
+          );
+      }
+    }
+  }
+
+  private static void firstPass(ArrayList<Program> programs) {
+    // resolve globals
+    Assembler.handleGlobals(programs);
+    // try to eval all statements and collect errors if any
+    for (Program program: programs) {
+      String filename = program.getFilename();
+      for (Statement stmt: program.getStatements())
+        stmt.eval(filename);
+    }
+  }
+
   public static ArrayList<Program> assemble(ArrayList<String> files) {
     ArrayList<Program> programs = new ArrayList<Program>();
     // assemble all files
@@ -103,6 +132,9 @@ public final class Assembler {
         }
       }
     }
+    // do first pass
+    Assembler.firstPass(programs);
+    // return all processed programs, now linking
     return programs;
   }
 
