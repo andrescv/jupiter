@@ -27,7 +27,7 @@ public final class RType extends Statement {
   }
 
   @Override
-  public void build(String filename) {
+  public void build(int pc, String filename) {
     Instruction inst = Globals.iset.get(this.mnemonic);
     int rd  = Globals.regfile.getRegisterNumber(this.rd);
     int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
