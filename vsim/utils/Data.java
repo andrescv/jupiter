@@ -31,6 +31,14 @@ public final class Data {
     return signExtend(value, HALF_LENGTH_BITS);
   }
 
+  public static int alignToWordBoundary(int address) {
+    if (Integer.divideUnsigned(address, 4) != 0) {
+      int offset = WORD_LENGTH - Integer.remainderUnsigned(address, WORD_LENGTH);
+      return address + offset;
+    }
+    return address;
+  }
+
   public static boolean validHalf(int value) {
     return ((value < -32768) || (value > 32767));
   }
