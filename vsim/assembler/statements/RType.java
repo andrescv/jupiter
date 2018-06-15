@@ -13,8 +13,9 @@ public final class RType extends Statement {
   private String rs1;
   private String rs2;
 
-  public RType(String filename, String mnemonic, String rd, String rs1, String rs2) {
-    super(filename);
+  public RType(String filename, String source, int lineno,
+               String mnemonic, String rd, String rs1, String rs2) {
+    super(filename, source, lineno);
     this.mnemonic = mnemonic;
     this.rd = rd;
     this.rs1 = rs1;

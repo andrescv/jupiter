@@ -17,15 +17,15 @@ public final class Li extends PSeudo {
     this.imm = imm;
   }
 
-  public ArrayList<Statement> build(String filename) {
+  public ArrayList<Statement> build(String filename, String source, int lineno) {
     ArrayList<Statement> stmts = new ArrayList<Statement>();
     if (imm > 2047 || imm < -2048) {
       int imm_hi = this.imm >>> 12;
       int imm_lo = this.imm & 0xfff;
-      stmts.add(new UType(filename, "lui", this.rd, imm_hi));
-      stmts.add(new IType(filename, "addi", this.rd, this.rd, imm_lo));
+      stmts.add(new UType(filename, source, lineno, "lui", this.rd, imm_hi));
+      stmts.add(new IType(filename, source, lineno, "addi", this.rd, this.rd, imm_lo));
     } else {
-      stmts.add(new IType(filename, "addi", this.rd, "x0", this.imm));
+      stmts.add(new IType(filename, source, lineno, "addi", this.rd, "x0", this.imm));
     }
     stmts.trimToSize();
     return stmts;

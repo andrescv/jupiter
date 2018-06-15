@@ -18,13 +18,15 @@ public final class La extends PSeudo {
     this.id = id;
   }
 
-  public ArrayList<Statement> build(String filename) {
+  public ArrayList<Statement> build(String filename, String source, int lineno) {
     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
     stmts.add(
-      new UType(filename, "auipc", this.rd, new Relocation(this.id, 12, 31))
+      new UType(filename, source, lineno,
+                "auipc", this.rd, new Relocation(this.id, 12, 31))
     );
     stmts.add(
-      new IType(filename, "addi", this.rd, this.rd, new Relocation(this.id, 0, 11))
+      new IType(filename, source, lineno,
+                "addi", this.rd, this.rd, new Relocation(this.id, 0, 11))
     );
     return stmts;
   }

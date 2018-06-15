@@ -10,8 +10,9 @@ public final class JType extends Statement {
   private String rd;
   private Relocation target;
 
-  public JType(String filename, String mnemonic, String rd, String target) {
-    super(filename);
+  public JType(String filename, String source, int lineno,
+               String mnemonic, String rd, String target) {
+    super(filename, source, lineno);
     this.mnemonic = mnemonic;
     this.rd = rd;
     this.target = new Relocation(target, 0, 31);

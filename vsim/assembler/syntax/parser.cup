@@ -140,7 +140,7 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  Label RISCVPSeudo:p
                 {:
-                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename());
+                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename(), Assembler.line, Assembler.lineno);
                   for (Statement stmt: stmts)
                     Assembler.program.add(stmt);
                 :}
@@ -153,7 +153,7 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  RISCVPSeudo:p
                 {:
-                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename());
+                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename(), Assembler.line, Assembler.lineno);
                   for (Statement stmt: stmts)
                     Assembler.program.add(stmt);
                 :}
@@ -201,32 +201,37 @@ RISCVPSeudo ::= PSeudos:p
              ;
 
 RType       ::= ROpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType(Assembler.program.getFilename(), opcode, rd, rs1, rs2); :}
+                {: RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      opcode, rd, rs1, rs2); :}
              |  I_NEG:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), "sub", rd, "x0", rs);
+                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "sub", rd, "x0", rs);
                   else
                     Parser.invalidInst("neg");
                 :}
              |  I_SNEZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), "sltu", rd, "x0", rs);
+                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "sltu", rd, "x0", rs);
                   else
                     Parser.invalidInst("snez");
                 :}
              |  I_SLTZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), "slt", rd, rs, "x0");
+                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "slt", rd, rs, "x0");
                   else
                     Parser.invalidInst("sltz");
                 :}
              |  I_SGTZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), "slt", rd, "x0", rs);
+                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "slt", rd, "x0", rs);
                   else
                     Parser.invalidInst("sgtz");
                 :}
@@ -271,83 +276,106 @@ ROpCode     ::= I_SLL:opcode
              ;
 
 IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), opcode, rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      opcode, rd, rs1, imm); :}
              |  I_SLLI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), "slli", rd, rs1, imm); :}
+                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "slli", rd, rs1, imm); :}
              |  I_SRLI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), "srli", rd, rs1, imm); :}
+                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "srli", rd, rs1, imm); :}
              |  I_SRAI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), "srai", rd, rs1, imm); :}
+                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "srai", rd, rs1, imm); :}
              |  I_JALR Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "jalr", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "jalr", rd, rs1, imm); :}
              |  I_LB Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "lb", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lb", rd, rs1, imm); :}
              |  I_LBU Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "lbu", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lbu", rd, rs1, imm); :}
              |  I_LH Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "lh", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lh", rd, rs1, imm); :}
              |  I_LHU Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "lhu", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lhu", rd, rs1, imm); :}
              |  I_LW Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), "lw", rd, rs1, imm); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lw", rd, rs1, imm); :}
              |  I_LB Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), "lb", rd, rs1, offset); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lb", rd, rs1, offset); :}
              |  I_LBU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), "lbu", rd, rs1, offset); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lbu", rd, rs1, offset); :}
              |  I_LH Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), "lh", rd, rs1, offset); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lh", rd, rs1, offset); :}
              |  I_LHU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), "lhu", rd, rs1, offset); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lhu", rd, rs1, offset); :}
              |  I_LW Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), "lw", rd, rs1, offset); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lw", rd, rs1, offset); :}
              |  I_ECALL
-                {: RESULT = new IType(Assembler.program.getFilename(), "ecall", "x0", "x0", 0); :}
+                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "ecall", "x0", "x0", 0); :}
              |  I_NOP
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "addi", "x0", "x0", 0);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "addi", "x0", "x0", 0);
                   else
                     Parser.invalidInst("nop");
                 :}
              |  I_MV Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "addi", rd, rs, 0);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "addi", rd, rs, 0);
                   else
                     Parser.invalidInst("mv");
                 :}
              |  I_NOT Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "xori", rd, rs, -1);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "xori", rd, rs, -1);
                   else
                     Parser.invalidInst("not");
                 :}
              |  I_SEQZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "sltiu", rd, rs, 1);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "sltiu", rd, rs, 1);
                   else
                     Parser.invalidInst("seqz");
                 :}
              |  I_JR Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "jalr", "x0", rs, 0);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "jalr", "x0", rs, 0);
                   else
                     Parser.invalidInst("jr");
                 :}
              |  I_JALR Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "jalr", "x1", rs, 0);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "jalr", "x1", rs, 0);
                   else
                     Parser.invalidInst("jalr, rs");
                 :}
              |  I_RET
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), "jalr", "x0", "x1", 0);
+                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "jalr", "x0", "x1", 0);
                   else
                     Parser.invalidInst("ret");
                 :}
@@ -368,9 +396,11 @@ IOpCode     ::= I_ADDI:opcode
              ;
 
 SType       ::= SOpCode:opcode Register:rs1 Delimiter Register:rs2 Number:imm
-                {: RESULT = new SType(Assembler.program.getFilename(), opcode, rs1, rs2, imm); :}
+                {: RESULT = new SType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      opcode, rs1, rs2, imm); :}
              |  SOpCode:opcode Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType(Assembler.program.getFilename(), opcode, rs1, rs2, offset); :}
+                {: RESULT = new SType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      opcode, rs1, rs2, offset); :}
              ;
 
 SOpCode     ::= I_SB:opcode
@@ -382,74 +412,85 @@ SOpCode     ::= I_SB:opcode
              ;
 
 BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType(Assembler.program.getFilename(), opcode, rs1, rs2, id); :}
+                {: RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      opcode, rs1, rs2, id); :}
              |  I_BEQZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "beq", rs, "x0", id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "beq", rs, "x0", id);
                   else
                     Parser.invalidInst("beqz");
                 :}
              |  I_BNEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bne", rs, "x0", id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bne", rs, "x0", id);
                   else
                     Parser.invalidInst("bnez");
                 :}
              |  I_BLEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bge", "x0", rs, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bge", "x0", rs, id);
                   else
                     Parser.invalidInst("blez");
                 :}
              |  I_BGEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bge", rs, "x0", id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bge", rs, "x0", id);
                   else
                     Parser.invalidInst("bgez");
                 :}
              |  I_BLTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "blt", rs, "x0", id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "blt", rs, "x0", id);
                   else
                     Parser.invalidInst("bltz");
                 :}
              |  I_BGTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "blt", "x0", rs, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "blt", "x0", rs, id);
                   else
                     Parser.invalidInst("bgtz");
                 :}
              |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "blt", rs2, rs1, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "blt", rs2, rs1, id);
                   else
                     Parser.invalidInst("bgt");
                 :}
              |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bge", rs2, rs1, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bge", rs2, rs1, id);
                   else
                     Parser.invalidInst("ble");
                 :}
              |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bltu", rs2, rs1, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bltu", rs2, rs1, id);
                   else
                     Parser.invalidInst("bgtu");
                 :}
              |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), "bgeu", rs2, rs1, id);
+                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "bgeu", rs2, rs1, id);
                   else
                     Parser.invalidInst("bleu");
                 :}
@@ -470,24 +511,29 @@ BOpCode     ::= I_BEQ:opcode
              ;
 
 UType       ::= I_AUIPC Register:rd Delimiter Number:imm
-                {: RESULT = new UType(Assembler.program.getFilename(), "auipc", rd, imm); :}
+                {: RESULT = new UType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "auipc", rd, imm); :}
              |  I_LUI   Register:rd Delimiter Number:imm
-                {: RESULT = new UType(Assembler.program.getFilename(), "lui", rd, imm); :}
+                {: RESULT = new UType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "lui", rd, imm); :}
              ;
 
 JType       ::= I_JAL Register:rd Delimiter Id:id
-                {: RESULT = new JType(Assembler.program.getFilename(), "jal", rd, id); :}
+                {: RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                      "jal", rd, id); :}
              |  I_JAL Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new JType(Assembler.program.getFilename(), "jal", "x1", id);
+                    RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "jal", "x1", id);
                   else
                     Parser.invalidInst("jal, target");
                 :}
              |  I_J Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new JType(Assembler.program.getFilename(), "jal", "x0", id);
+                    RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
+                                       "jal", "x0", id);
                   else
                     Parser.invalidInst("j");
                 :}

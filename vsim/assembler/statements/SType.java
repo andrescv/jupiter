@@ -16,8 +16,9 @@ public final class SType extends Statement {
   private String rs2;
   private int imm;
 
-  public SType(String filename, String mnemonic, String rd, String rs1, int imm) {
-    super(filename);
+  public SType(String filename, String source, int lineno,
+               String mnemonic, String rd, String rs1, int imm) {
+    super(filename, source, lineno);
     this.mnemonic = mnemonic;
     this.rs1 = rs1;
     this.rs2 = rs2;
@@ -26,7 +27,7 @@ public final class SType extends Statement {
 
   @Override
   public void eval() {
-    if (!((this.imm > SType.MAX_VAL) && (this.imm < SType.MIN_VAL))) {
+    if (!((this.imm > SType.MAX_VAL) || (this.imm < SType.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
       int rs2 = Globals.regfile.getRegisterNumber(this.rs2);
@@ -40,8 +41,8 @@ public final class SType extends Statement {
       this.code.set(InstructionField.IMM_11_5, this.imm >> 5);
     } else
       Globals.errors.add(
-        "instruction: " + this.filename + ": '" +
-        "immediate out of range: '" + this.imm + "', should be between -2048 and 2047"
+        "instruction: " + this.filename + ": at line: " + this.lineno +
+        " immediate '" + this.imm + "' out of range should be between -2048 and 2047"
       );
   }
 

@@ -16,8 +16,9 @@ public final class Shift extends Statement {
   private String rs1;
   private int shamt;
 
-  public Shift(String filename, String mnemonic, String rd, String rs1, int shamt) {
-    super(filename);
+  public Shift(String filename, String source, int lineno,
+               String mnemonic, String rd, String rs1, int shamt) {
+    super(filename, source, lineno);
     this.mnemonic = mnemonic;
     this.rd = rd;
     this.rs1 = rs1;
@@ -26,7 +27,7 @@ public final class Shift extends Statement {
 
   @Override
   public void eval() {
-    if (!((this.shamt > Shift.MAX_VAL) && (this.shamt < Shift.MIN_VAL))) {
+    if (!((this.shamt > Shift.MAX_VAL) || (this.shamt < Shift.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rd  = Globals.regfile.getRegisterNumber(this.rd);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
@@ -41,8 +42,8 @@ public final class Shift extends Statement {
       this.code.set(InstructionField.FUNCT7, funct7);
     } else
       Globals.errors.add(
-        "instruction: " + this.filename + ": '" +
-        "immediate out of range: '" + this.shamt + "', should be between 0 and 31"
+        "instruction: " + this.filename + ": at line: " + this.lineno +
+        " shift amount '" + this.shamt + "' out of range should be between 0 and 31"
       );
   }
 
