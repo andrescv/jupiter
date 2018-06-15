@@ -70,9 +70,13 @@ public final class Assembler {
 
   private static void handleGlobals(ArrayList<Program> programs) {
     for (Program program: programs) {
+      // set current assembler program
+      Assembler.program = program;
+      // add program ST to globals
       SymbolTable table = program.getST();
       String filename = program.getFilename();
       Globals.local.put(filename, table);
+      // check globals of program
       for (String global: program.getGlobals()) {
         Sym sym = table.getSymbol(global);
         if (sym != null) {
@@ -95,6 +99,8 @@ public final class Assembler {
     Assembler.handleGlobals(programs);
     // try to eval all statements and collect errors if any
     for (Program program: programs) {
+      // set current assembler program
+      Assembler.program = program;
       String filename = program.getFilename();
       for (Statement stmt: program.getStatements()) {
         // set current debug info
