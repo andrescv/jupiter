@@ -6,42 +6,43 @@ import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
-public final class SType extends Statement {
+public final class Shift extends Statement {
 
-  private static final int MIN_VAL = -2048;
-  private static final int MAX_VAL = 2047;
+  private static final int MIN_VAL = 0;
+  private static final int MAX_VAL = 31;
 
   private String mnemonic;
+  private String rd;
   private String rs1;
-  private String rs2;
-  private int imm;
+  private int shamt;
 
-  public SType(String filename, String mnemonic, String rd, String rs1, int imm) {
+  public Shift(String filename, String mnemonic, String rd, String rs1, int shamt) {
     super(filename);
     this.mnemonic = mnemonic;
+    this.rd = rd;
     this.rs1 = rs1;
-    this.rs2 = rs2;
-    this.imm = imm;
+    this.shamt = shamt;
   }
 
   @Override
   public void eval() {
-    if (!((this.imm > SType.MAX_VAL) && (this.imm < SType.MIN_VAL))) {
+    if (!((this.shamt > Shift.MAX_VAL) && (this.shamt < Shift.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);
+      int rd  = Globals.regfile.getRegisterNumber(this.rd);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
-      int rs2 = Globals.regfile.getRegisterNumber(this.rs2);
       int opcode = inst.getOpCode();
       int funct3 = inst.getFunct3();
+      int funct7 = inst.getFunct7();
+      this.code.set(InstructionField.RD,  rd);
       this.code.set(InstructionField.RS1, rs1);
-      this.code.set(InstructionField.RS2, rs2);
+      this.code.set(InstructionField.SHAMT, this.shamt);
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
-      this.code.set(InstructionField.IMM_4_0, this.imm);
-      this.code.set(InstructionField.IMM_11_5, this.imm >> 5);
+      this.code.set(InstructionField.FUNCT7, funct7);
     } else
       Globals.errors.add(
         "instruction: " + this.filename + ": '" +
-        "immediate out of range: '" + this.imm + "', should be between -2048 and 2047"
+        "immediate out of range: '" + this.shamt + "', should be between 0 and 31"
       );
   }
 
