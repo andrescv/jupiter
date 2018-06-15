@@ -28,6 +28,7 @@ public final class JType extends Statement {
   public void build(int pc, String filename) {
     Instruction inst = Globals.iset.get(this.mnemonic);
     int rd = Globals.regfile.getRegisterNumber(this.rd);
+    int imm = this.target.resolve(filename) - pc;
     int opcode = inst.getOpCode();
     this.code.set(InstructionField.IMM_20, imm >>> 20);
     this.code.set(InstructionField.IMM_10_1, imm >>> 1);
