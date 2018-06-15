@@ -21,6 +21,12 @@ public final class La extends PSeudo {
 
   public ArrayList<Statement> build() {
     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
+    stmts.add(
+      new UType("auipc", this.debug, this.rd, new Relocation(this.id, 12, 31))
+    );
+    stmts.add(
+      new IType("addi", this.debug, this.rd, this.rd, new Relocation(this.id, 0, 11))
+    );
     return stmts;
   }
 
