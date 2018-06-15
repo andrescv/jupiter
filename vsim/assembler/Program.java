@@ -131,6 +131,10 @@ public final class Program {
     }
   }
 
+  public ArrayList<Statement> getStatements() {
+    return this.stmts;
+  }
+
   public int textSize() {
     return this.stmts.size() * Instruction.LENGTH;
   }
