@@ -1,6 +1,7 @@
 package vsim.assembler.pseudos;
 
 import java.util.ArrayList;
+import vsim.assembler.DebugInfo;
 import vsim.assembler.statements.UType;
 import vsim.assembler.statements.IType;
 import vsim.assembler.statements.Statement;
@@ -12,22 +13,14 @@ public final class La extends PSeudo {
   private String rd;
   private String id;
 
-  public La(String rd, String id) {
-    super("la");
+  public La(DebugInfo debug, String rd, String id) {
+    super("la", debug);
     this.rd = rd;
     this.id = id;
   }
 
-  public ArrayList<Statement> build(String filename, String source, int lineno) {
+  public ArrayList<Statement> build() {
     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-    stmts.add(
-      new UType(filename, source, lineno,
-                "auipc", this.rd, new Relocation(this.id, 12, 31))
-    );
-    stmts.add(
-      new IType(filename, source, lineno,
-                "addi", this.rd, this.rd, new Relocation(this.id, 0, 11))
-    );
     return stmts;
   }
 

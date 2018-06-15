@@ -15,23 +15,48 @@ import vsim.assembler.statements.Statement;
 
 public final class Assembler {
 
-  protected static int lineno = 0;
-  protected static String line = "";
+  protected static Segment segment = Segment.TEXT;
   protected static Program program = null;
+  protected static DebugInfo debug = null;
 
+  protected static boolean inTextSegment() {
+    return Assembler.segment == Segment.TEXT;
+  }
+
+  protected static boolean inDataSegment() {
+    return Assembler.segment == Segment.DATA;
+  }
+
+  protected static boolean inRodataSegment() {
+    return Assembler.segment == Segment.RODATA;
+  }
+
+  protected static boolean inBssSegment() {
+    return Assembler.segment == Segment.BSS;
+  }
 
   protected static void error(String msg) {
     String filename = Assembler.program.getFilename();
+    String newline = System.getProperty("line.separator");
+    String source = Assembler.debug.getSource();
+    int lineno = Assembler.debug.getLineNumber();
     Globals.errors.add(
-      "assembler: " + filename + ": at line: " + Assembler.lineno + ": " + msg
+      filename + ":" + "assembler:" + lineno + ": " + msg +
+      newline + "    |" +
+      newline + "    └─> " + source + newline
     );
   }
 
   protected static void warning(String msg) {
     if (!Settings.QUIET) {
       String filename = Assembler.program.getFilename();
+      String newline = System.getProperty("line.separator");
+      String source = Assembler.debug.getSource();
+      int lineno = Assembler.debug.getLineNumber();
       Message.warning(
-        "assembler: " + filename + ": at line: " + Assembler.lineno + ": " + msg
+        filename + ":" + "assembler:" + lineno + ": " + msg +
+        newline + "    |" +
+        newline + "    └─> " + source + newline
       );
     }
   }
@@ -42,6 +67,8 @@ public final class Assembler {
     if (files.size() > 0) {
       for (String file: files) {
         try {
+          // start in text segment
+          Assembler.segment = Segment.TEXT;
           // create a new RISC-V Program
           Program program = new Program(file);
           // set current program
@@ -50,20 +77,22 @@ public final class Assembler {
           BufferedReader br = new BufferedReader(new FileReader(file));
           String line;
           // reset line count
-          Assembler.lineno = 1;
+          int lineno = 1;
           while ((line = br.readLine()) != null) {
-            // set current line
-            Assembler.line = line;
             // remove comments
             if (line.indexOf(';') != -1)
               line = line.substring(0, line.indexOf(';'));
             if (line.indexOf('#') != -1)
               line = line.substring(0, line.indexOf('#'));
             // parse line only if != nothing
-            if (!line.trim().equals(""))
+            if (!line.trim().equals("")) {
+              // set current debug
+              Assembler.debug = new DebugInfo(lineno, line.trim());
+              // parse line
               Parser.parse(line);
+            }
             // increment line count
-            Assembler.lineno++;
+            lineno++;
           }
           // add this processed program
           programs.add(program);

@@ -1,25 +1,34 @@
 package vsim.assembler.statements;
 
+import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.MachineCode;
 
 
 public abstract class Statement {
 
-  protected int lineno;
-  protected String source;
-  protected String filename;
+  protected String mnemonic;
+  protected DebugInfo debug;
   protected MachineCode code;
 
-  public Statement(String filename, String source, int lineno) {
-    this.lineno = lineno;
-    this.filename = filename;
-    this.source = source;
+  public Statement(String mnemonic, DebugInfo debug) {
+    this.debug = debug;
+    this.mnemonic = mnemonic;
     this.code = new MachineCode();
   }
 
-  public abstract void eval();
+  public abstract void eval(String filename);
 
-  public abstract MachineCode result();
+  public MachineCode result() {
+    return this.code;
+  }
+
+  public String getMnemonic() {
+    return this.mnemonic;
+  }
+
+  public DebugInfo getDebugInfo() {
+    return this.debug;
+  }
 
   @Override
   public String toString() {
