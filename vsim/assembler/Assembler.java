@@ -16,6 +16,7 @@ import vsim.assembler.statements.Statement;
 public final class Assembler {
 
   protected static int lineno = 0;
+  protected static String line = "";
   protected static Program program = null;
 
 
@@ -51,6 +52,8 @@ public final class Assembler {
           // reset line count
           Assembler.lineno = 1;
           while ((line = br.readLine()) != null) {
+            // set current line
+            Assembler.line = line;
             // remove comments
             if (line.indexOf(';') != -1)
               line = line.substring(0, line.indexOf(';'));

@@ -16,13 +16,15 @@ public final class Tail extends PSeudo {
     this.offset = offset;
   }
 
-  public ArrayList<Statement> build(String filename) {
+  public ArrayList<Statement> build(String filename, String source, int lineno) {
     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
     stmts.add(
-      new UType(filename, "auipc", "x6", new Relocation(this.offset, 12, 31))
+      new UType(filename, source, lineno,
+                "auipc", "x6", new Relocation(this.offset, 12, 31))
     );
     stmts.add(
-      new IType(filename, "jalr", "x0", "x6", new Relocation(this.offset, 0, 11))
+      new IType(filename, source, lineno,
+                "jalr", "x0", "x6", new Relocation(this.offset, 0, 11))
     );
     return stmts;
   }

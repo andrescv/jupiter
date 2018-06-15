@@ -5,11 +5,15 @@ import vsim.riscv.instructions.MachineCode;
 
 public abstract class Statement {
 
+  protected int lineno;
+  protected String source;
   protected String filename;
   protected MachineCode code;
 
-  public Statement(String filename) {
+  public Statement(String filename, String source, int lineno) {
+    this.lineno = lineno;
     this.filename = filename;
+    this.source = source;
     this.code = new MachineCode();
   }
 
