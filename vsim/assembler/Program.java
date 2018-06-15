@@ -1,5 +1,6 @@
 package vsim.assembler;
 
+import vsim.Globals;
 import vsim.utils.Message;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -68,6 +69,7 @@ public final class Program {
   }
 
   public void relocateSymbols() {
+    // first locals
     for (Enumeration<String> e = this.table.labels(); e.hasMoreElements();) {
       String label = e.nextElement();
       Sym sym = this.table.getSymbol(label);
@@ -87,6 +89,9 @@ public final class Program {
           break;
       }
     }
+    // then globals
+    for (String global: this.globals)
+      Globals.globl.set(global, this.table.get(global));
   }
 
   public void setTextStart(int address) {
@@ -225,15 +230,21 @@ public final class Program {
     return this.stmts;
   }
 
+  public int getTextSize() {
+    return this.stmts.size() * Instruction.LENGTH;
+  }
+
+  public int getDataSize() {
+    return this.data.size() + this.rodata.size() + this.bss.size();
+  }
+
   @Override
   public String toString() {
-    int textSize = this.stmts.size() * Instruction.LENGTH;
-    int dataSize = this.data.size() + this.rodata.size() + this.bss.size();
     return String.format(
       "RISC-V Program (%s, text: %d bytes, data: %d bytes)",
       this.filename,
-      textSize,
-      dataSize
+      this.getTextSize(),
+      this.getDataSize()
     );
   }
 
