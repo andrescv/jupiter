@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
@@ -31,7 +32,24 @@ public final class Shift extends Statement {
 
   @Override
   public void build(String filename) {
-
+    // check range
+    if (!((this.shamt > Shift.MAX_VAL) || (this.shamt < Shift.MIN_VAL))) {
+      Instruction inst = Globals.iset.get(this.mnemonic);
+      int rd  = Globals.regfile.getRegisterNumber(this.rd);
+      int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
+      int opcode = inst.getOpCode();
+      int funct3 = inst.getFunct3();
+      int funct7 = inst.getFunct7();
+      this.code.set(InstructionField.RD,  rd);
+      this.code.set(InstructionField.RS1, rs1);
+      this.code.set(InstructionField.SHAMT, this.shamt);
+      this.code.set(InstructionField.OPCODE, opcode);
+      this.code.set(InstructionField.FUNCT3, funct3);
+      this.code.set(InstructionField.FUNCT7, funct7);
+    } else
+      Assembler.error(
+        "shift amount '" + this.shamt + "' out of range should be between 0 and 31"
+      );
   }
 
 }
