@@ -1,5 +1,6 @@
 package vsim.utils;
 
+import vsim.Globals;
 import java.util.ArrayList;
 
 
@@ -22,11 +23,11 @@ public final class Message {
     System.exit(-1);
   }
 
-  public static void errors(ArrayList<String> msgs) {
-    if (msgs.size() > 0) {
-      for (String msg: msgs)
+  public static void errors() {
+    if (Globals.errors.size() > 0) {
+      for (String msg: Globals.errors)
         Message.error(msg);
-      System.out.println(msgs.size() + " error(s)");
+      System.out.println(Globals.errors.size() + " error(s)");
       System.exit(-1);
     }
   }
