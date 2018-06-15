@@ -608,7 +608,7 @@ Data        ::= DataMode:mode DataList:l
                 {:
                   if (Assembler.inBssSegment()) {
                     if (align >= 0 && align <= 2) {
-                      Assembler.program.alignVal(align);
+                      Assembler.program.align(align);
                       if (!Assembler.program.addSymbol(Assembler.segment, id))
                         Assembler.error("label '" + id + "' is already defined");
                       else {
@@ -695,7 +695,7 @@ AlignDir    ::= D_ALIGN Number:e
                 {:
                   if (!Assembler.inTextSegment()) {
                     if (e >= 0 && e <= 2)
-                      Assembler.program.alignVal(e);
+                      Assembler.program.align(e);
                     else
                       Assembler.error(
                         "invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)"
@@ -709,7 +709,7 @@ AlignDir    ::= D_ALIGN Number:e
                 {:
                   if (!Assembler.inTextSegment()) {
                     if (e > 0)
-                      Assembler.program.balignVal(e);
+                      Assembler.program.balign(e);
                     else
                       Assembler.error(
                         "invalid align value: '" + e + "', expected value > 0"
