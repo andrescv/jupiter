@@ -48,7 +48,6 @@ public final class Program {
     this.table = new SymbolTable();
     this.globals = new ArrayList<String>();
     // segments
-    this.segment = Segment.TEXT;
     this.data = new ArrayList<Byte>();
     this.dataIndex = 0;
     this.dataStart = 0;
@@ -147,8 +146,8 @@ public final class Program {
     return false;
   }
 
-  protected boolean addSymbol(String label) {
-    switch (this.segment) {
+  protected boolean addSymbol(Segment segment, String label) {
+    switch (segment) {
       case DATA:
         this.dataIndex = this.align(this.dataIndex, this.data);
         return this.table.add(label, Segment.DATA, this.dataIndex);
@@ -211,8 +210,8 @@ public final class Program {
     this.bssIndex = this.addTo(b, this.rodataIndex, this.bss);
   }
 
-  protected void addByte(byte b) {
-    switch (this.segment) {
+  protected void addByte(Segment segment, byte b) {
+    switch (segment) {
       case DATA:
         this.addToData(b); break;
       case RODATA:
@@ -220,30 +219,6 @@ public final class Program {
       case BSS:
         this.addToBss(b); break;
     }
-  }
-
-  protected void setSegment(Segment segment) {
-    this.segment = segment;
-  }
-
-  protected boolean inTextSegment() {
-    return this.segment == Segment.TEXT;
-  }
-
-  protected boolean inDataSegment() {
-    return this.segment == Segment.DATA;
-  }
-
-  protected boolean inRodataSegment() {
-    return this.segment == Segment.RODATA;
-  }
-
-  protected boolean inBssSegment() {
-    return this.segment == Segment.BSS;
-  }
-
-  protected String getSegment() {
-    return this.segment.toString().toLowerCase();
   }
 
   @Override

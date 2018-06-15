@@ -1,31 +1,26 @@
 package vsim.assembler.statements;
 
+import vsim.Globals;
+import vsim.assembler.DebugInfo;
+import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
 public final class JType extends Statement {
 
-  private String mnemonic;
   private String rd;
   private Relocation target;
 
-  public JType(String filename, String source, int lineno,
-               String mnemonic, String rd, String target) {
-    super(filename, source, lineno);
-    this.mnemonic = mnemonic;
+  public JType(String mnemonic, DebugInfo debug, String rd, String target) {
+    super(mnemonic, debug);
     this.rd = rd;
     this.target = new Relocation(target, 0, 31);
   }
 
   @Override
-  public void eval() {
+  public void eval(String filename) {
     // TODO
-  }
-
-  @Override
-  public MachineCode result() {
-    return this.code;
   }
 
 }

@@ -24,10 +24,6 @@ parser code {:
     return null;
   }
 
-  public static void invalidInst(String opcode) {
-    Assembler.error("invalid instruction: '" + opcode + "', change assembler mode with -asm flag");
-  }
-
   public void syntax_error(Symbol cur_token) {
     /* DO NOTHING */
   }
@@ -140,8 +136,7 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  Label RISCVPSeudo:p
                 {:
-                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename(), Assembler.line, Assembler.lineno);
-                  for (Statement stmt: stmts)
+                  for (Statement stmt: p.build())
                     Assembler.program.add(stmt);
                 :}
              |  Label Data
@@ -153,8 +148,7 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  RISCVPSeudo:p
                 {:
-                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename(), Assembler.line, Assembler.lineno);
-                  for (Statement stmt: stmts)
+                  for (Statement stmt: p.build())
                     Assembler.program.add(stmt);
                 :}
              |  Data
@@ -163,14 +157,14 @@ Statement   ::= Label RISCVInst:i
 
 Label       ::= Id:id COLON
                 {:
-                  if (!Assembler.program.addSymbol(id))
+                  if (!Assembler.program.addSymbol(Assembler.segment, id))
                     Assembler.error("label '" + id + "' is already defined");
                 :}
              ;
 
 RISCVInst    ::= Instruction:i
                 {:
-                  if (!Assembler.program.inTextSegment())
+                  if (!Assembler.inTextSegment())
                     Assembler.error("instructions can appear only in text segment");
                   else
                     RESULT = i;
@@ -193,47 +187,55 @@ Instruction ::= RType:i
 
 RISCVPSeudo ::= PSeudos:p
                 {:
-                  if (!Assembler.program.inTextSegment())
+                  if (!Assembler.inTextSegment())
                     Assembler.error("instructions can appear only in text segment");
                   else
-                    RESULT = p;
+                    if (!Settings.BARE)
+                      RESULT = p;
+                    else
+                      Assembler.error(
+                        "invalid instruction: use -asm flag to use pseudos"
+                      );
                 :}
              ;
 
 RType       ::= ROpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      opcode, rd, rs1, rs2); :}
+                {: RESULT = new RType(opcode, Assembler.debug, rd, rs1, rs2); :}
              |  I_NEG:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "sub", rd, "x0", rs);
+                    RESULT = new RType("sub", Assembler.debug, rd, "x0", rs);
                   else
-                    Parser.invalidInst("neg");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_SNEZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "sltu", rd, "x0", rs);
+                    RESULT = new RType("sltu", Assembler.debug, rd, "x0", rs);
                   else
-                    Parser.invalidInst("snez");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_SLTZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "slt", rd, rs, "x0");
+                    RESULT = new RType("slt", Assembler.debug, rd, rs, "x0");
                   else
-                    Parser.invalidInst("sltz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_SGTZ:opcode Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new RType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "slt", rd, "x0", rs);
+                    RESULT = new RType("slt", Assembler.debug, rd, "x0", rs);
                   else
-                    Parser.invalidInst("sgtz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              ;
 
@@ -276,108 +278,99 @@ ROpCode     ::= I_SLL:opcode
              ;
 
 IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      opcode, rd, rs1, imm); :}
+                {: RESULT = new IType(opcode, Assembler.debug, rd, rs1, imm); :}
              |  I_SLLI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "slli", rd, rs1, imm); :}
+                {: RESULT = new Shift("slli", Assembler.debug, rd, rs1, imm); :}
              |  I_SRLI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "srli", rd, rs1, imm); :}
+                {: RESULT = new Shift("srli", Assembler.debug, rd, rs1, imm); :}
              |  I_SRAI Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new Shift(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "srai", rd, rs1, imm); :}
+                {: RESULT = new Shift("srai", Assembler.debug, rd, rs1, imm); :}
              |  I_JALR Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "jalr", rd, rs1, imm); :}
+                {: RESULT = new IType("jalr", Assembler.debug, rd, rs1, imm); :}
              |  I_LB Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lb", rd, rs1, imm); :}
+                {: RESULT = new IType("lb", Assembler.debug, rd, rs1, imm); :}
              |  I_LBU Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lbu", rd, rs1, imm); :}
+                {: RESULT = new IType("lbu", Assembler.debug, rd, rs1, imm); :}
              |  I_LH Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lh", rd, rs1, imm); :}
+                {: RESULT = new IType("lh", Assembler.debug, rd, rs1, imm); :}
              |  I_LHU Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lhu", rd, rs1, imm); :}
+                {: RESULT = new IType("lhu", Assembler.debug, rd, rs1, imm); :}
              |  I_LW Register:rd Delimiter Register:rs1 Delimiter Number:imm
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lw", rd, rs1, imm); :}
+                {: RESULT = new IType("lw", Assembler.debug, rd, rs1, imm); :}
              |  I_LB Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lb", rd, rs1, offset); :}
+                {: RESULT = new IType("lb", Assembler.debug, rd, rs1, offset); :}
              |  I_LBU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lbu", rd, rs1, offset); :}
+                {: RESULT = new IType("lbu", Assembler.debug, rd, rs1, offset); :}
              |  I_LH Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lh", rd, rs1, offset); :}
+                {: RESULT = new IType("lh", Assembler.debug, rd, rs1, offset); :}
              |  I_LHU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lhu", rd, rs1, offset); :}
+                {: RESULT = new IType("lhu", Assembler.debug, rd, rs1, offset); :}
              |  I_LW Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lw", rd, rs1, offset); :}
+                {: RESULT = new IType("lw", Assembler.debug, rd, rs1, offset); :}
              |  I_ECALL
-                {: RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "ecall", "x0", "x0", 0); :}
+                {: RESULT = new IType("ecall", Assembler.debug, "x0", "x0", 0); :}
              |  I_NOP
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "addi", "x0", "x0", 0);
+                    RESULT = new IType("addi", Assembler.debug, "x0", "x0", 0);
                   else
-                    Parser.invalidInst("nop");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_MV Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "addi", rd, rs, 0);
+                    RESULT = new IType("addi", Assembler.debug, rd, rs, 0);
                   else
-                    Parser.invalidInst("mv");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_NOT Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "xori", rd, rs, -1);
+                    RESULT = new IType("xori", Assembler.debug, rd, rs, -1);
                   else
-                    Parser.invalidInst("not");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_SEQZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "sltiu", rd, rs, 1);
+                    RESULT = new IType("sltiu", Assembler.debug, rd, rs, 1);
                   else
-                    Parser.invalidInst("seqz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_JR Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "jalr", "x0", rs, 0);
+                    RESULT = new IType("jalr", Assembler.debug, "x0", rs, 0);
                   else
-                    Parser.invalidInst("jr");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_JALR Register:rs
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "jalr", "x1", rs, 0);
+                    RESULT = new IType("jalr", Assembler.debug, "x1", rs, 0);
                   else
-                    Parser.invalidInst("jalr, rs");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_RET
                 {:
                   if (!Settings.BARE)
-                    RESULT = new IType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "jalr", "x0", "x1", 0);
+                    RESULT = new IType("jalr", Assembler.debug, "x0", "x1", 0);
                   else
-                    Parser.invalidInst("ret");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              ;
 
@@ -396,11 +389,9 @@ IOpCode     ::= I_ADDI:opcode
              ;
 
 SType       ::= SOpCode:opcode Register:rs1 Delimiter Register:rs2 Number:imm
-                {: RESULT = new SType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      opcode, rs1, rs2, imm); :}
+                {: RESULT = new SType(opcode, Assembler.debug, rs1, rs2, imm); :}
              |  SOpCode:opcode Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      opcode, rs1, rs2, offset); :}
+                {: RESULT = new SType(opcode, Assembler.debug, rs1, rs2, offset); :}
              ;
 
 SOpCode     ::= I_SB:opcode
@@ -412,87 +403,96 @@ SOpCode     ::= I_SB:opcode
              ;
 
 BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      opcode, rs1, rs2, id); :}
+                {: RESULT = new BType(opcode, Assembler.debug, rs1, rs2, id); :}
              |  I_BEQZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "beq", rs, "x0", id);
+                    RESULT = new BType("beq", Assembler.debug, rs, "x0", id);
                   else
-                    Parser.invalidInst("beqz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BNEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bne", rs, "x0", id);
+                    RESULT = new BType("bne", Assembler.debug, rs, "x0", id);
                   else
-                    Parser.invalidInst("bnez");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BLEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bge", "x0", rs, id);
+                    RESULT = new BType("bge", Assembler.debug, "x0", rs, id);
                   else
-                    Parser.invalidInst("blez");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BGEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bge", rs, "x0", id);
+                    RESULT = new BType("bge", Assembler.debug, rs, "x0", id);
                   else
-                    Parser.invalidInst("bgez");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BLTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "blt", rs, "x0", id);
+                    RESULT = new BType("blt", Assembler.debug, rs, "x0", id);
                   else
-                    Parser.invalidInst("bltz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BGTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "blt", "x0", rs, id);
+                    RESULT = new BType("blt", Assembler.debug, "x0", rs, id);
                   else
-                    Parser.invalidInst("bgtz");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "blt", rs2, rs1, id);
+                    RESULT = new BType("blt", Assembler.debug, rs2, rs1, id);
                   else
-                    Parser.invalidInst("bgt");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bge", rs2, rs1, id);
+                    RESULT = new BType("bge", Assembler.debug, rs2, rs1, id);
                   else
-                    Parser.invalidInst("ble");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bltu", rs2, rs1, id);
+                    RESULT = new BType("bltu", Assembler.debug, rs2, rs1, id);
                   else
-                    Parser.invalidInst("bgtu");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new BType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "bgeu", rs2, rs1, id);
+                    RESULT = new BType("bgeu", Assembler.debug, rs2, rs1, id);
                   else
-                    Parser.invalidInst("bleu");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              ;
 
@@ -511,42 +511,41 @@ BOpCode     ::= I_BEQ:opcode
              ;
 
 UType       ::= I_AUIPC Register:rd Delimiter Number:imm
-                {: RESULT = new UType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "auipc", rd, imm); :}
+                {: RESULT = new UType("auipc", Assembler.debug, rd, imm); :}
              |  I_LUI   Register:rd Delimiter Number:imm
-                {: RESULT = new UType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "lui", rd, imm); :}
+                {: RESULT = new UType("lui", Assembler.debug, rd, imm); :}
              ;
 
 JType       ::= I_JAL Register:rd Delimiter Id:id
-                {: RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                      "jal", rd, id); :}
+                {: RESULT = new JType("jal", Assembler.debug, rd, id); :}
              |  I_JAL Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "jal", "x1", id);
+                    RESULT = new JType("jal", Assembler.debug, "x1", id);
                   else
-                    Parser.invalidInst("jal, target");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              |  I_J Id:id
                 {:
                   if (!Settings.BARE)
-                    RESULT = new JType(Assembler.program.getFilename(), Assembler.line, Assembler.lineno,
-                                       "jal", "x0", id);
+                    RESULT = new JType("jal", Assembler.debug, "x0", id);
                   else
-                    Parser.invalidInst("j");
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
                 :}
              ;
 
 PSeudos     ::= I_LA Register:rd Delimiter Id:id
-                {: RESULT = new La(rd, id); :}
+                {: RESULT = new La(Assembler.debug, rd, id); :}
              |  I_LI Register:rd Delimiter Number:n
-                {: RESULT = new Li(rd, n); :}
+                {: RESULT = new Li(Assembler.debug, rd, n); :}
              |  I_CALL Id:id
-                {: RESULT = new Call(id); :}
+                {: RESULT = new Call(Assembler.debug, id); :}
              |  I_TAIL Id:id
-                {: RESULT = new Tail(id); :}
+                {: RESULT = new Tail(Assembler.debug, id); :}
              ;
 
 /*
@@ -555,14 +554,14 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
 
 Data        ::= DataMode:mode DataList:l
                 {:
-                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
+                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
                     int mask = -1;
                     int length = Data.WORD_LENGTH;
                     if (mode.equals(".byte")) {
                       mask = Data.BYTE_MASK;
                       length = Data.BYTE_LENGTH;
                     }
-                    else if (mode.equals(".half") || mode.equals(".short") || mode.equals(".2byte")) {
+                    else if (mode.equals(".half")) {
                       mask = Data.HALF_MASK;
                       length = Data.HALF_LENGTH;
                     }
@@ -573,52 +572,52 @@ Data        ::= DataMode:mode DataList:l
                       if (mask == Data.HALF_MASK && Data.validHalf(value))
                         Assembler.warning("lossy conversion to half: '" + value + "' -> " + (value & mask));
                       for (int j = 0; j < length; j++)
-                        Assembler.program.addByte((byte)((value >>> j * Data.BYTE_LENGTH_BITS) & mask));
+                        Assembler.program.addByte(Assembler.segment, (byte)((value >>> j * Data.BYTE_LENGTH_BITS) & mask));
                     }
                   }
                   else
-                    Assembler.error(mode + " directive can not appear in " + Assembler.program.getSegment() + " segment");
+                    Assembler.error(mode + " directive can not appear in " + Assembler.segment + " segment");
                 :}
              |  D_STRING:mode Str:s
                 {:
-                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
+                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
                     for (int i = 0; i < s.length(); i++)
-                      Assembler.program.addByte((byte) s.charAt(i));
-                    Assembler.program.addByte((byte) 0);
+                      Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
+                    Assembler.program.addByte(Assembler.segment, (byte) 0);
                   } else
-                    Assembler.error(".string directive can not appear in " + Assembler.program.getSegment() + " segment");
+                    Assembler.error(".string directive can not appear in " + Assembler.segment + " segment");
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
-                  if (Assembler.program.inDataSegment() || Assembler.program.inRodataSegment()) {
+                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
                     for (int i = 0; i < s.length(); i++)
-                      Assembler.program.addByte((byte) s.charAt(i));
-                    Assembler.program.addByte((byte) 0);
+                      Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
+                    Assembler.program.addByte(Assembler.segment, (byte) 0);
                   } else
-                    Assembler.error(".asciiz directive can not appear in " + Assembler.program.getSegment() + " segment");
+                    Assembler.error(".asciiz directive can not appear in " + Assembler.segment + " segment");
                 :}
              |  D_ZERO Expr:e
                 {:
-                  if (!Assembler.program.inTextSegment())
+                  if (!Assembler.inTextSegment())
                     for (int i = 0; i < e; i++)
-                      Assembler.program.addByte((byte) 0);
+                      Assembler.program.addByte(Assembler.segment, (byte) 0);
                   else
                     Assembler.error(".zero directive can not appear in text segment");
                 :}
              |  D_COMM Id:id Delimiter Expr:size Delimiter Expr:align
                 {:
-                  if (Assembler.program.inBssSegment()) {
+                  if (Assembler.inBssSegment()) {
                     if (align >= 0 && align <= 2) {
                       Assembler.program.alignVal(align);
-                      if (!Assembler.program.addSymbol(id))
+                      if (!Assembler.program.addSymbol(Assembler.segment, id))
                         Assembler.error("label '" + id + "' is already defined");
                       else {
                         for (int i = 0; i < size; i++)
-                          Assembler.program.addByte((byte) 0);
+                          Assembler.program.addByte(Assembler.segment, (byte) 0);
                       }
                     } else
                       Assembler.error(
-                        "invalid align value: '" + align + "', expected 0, 1 or 2"
+                        "invalid align value: '" + align + "', expected 0 (byte), 1 (half) or 2 (word)"
                       );
                   } else
                     Assembler.error(".comm/.common directive can only appear in bss segment");
@@ -666,13 +665,13 @@ SectionDir  ::= D_SECTION Section
              ;
 
 Section     ::= D_TEXT:s
-                {: Assembler.program.setSegment(Segment.TEXT); :}
+                {: Assembler.segment = Segment.TEXT; :}
              |  D_DATA:s
-                {: Assembler.program.setSegment(Segment.DATA); :}
+                {: Assembler.segment = Segment.DATA; :}
              |  D_RODATA:s
-                {: Assembler.program.setSegment(Segment.RODATA); :}
+                {: Assembler.segment = Segment.RODATA; :}
              |  D_BSS:s
-                {: Assembler.program.setSegment(Segment.BSS); :}
+                {: Assembler.segment = Segment.BSS; :}
              ;
 
 /*
@@ -694,12 +693,12 @@ SymbolDir   ::= D_GLOBL Id:id
 
 AlignDir    ::= D_ALIGN Number:e
                 {:
-                  if (!Assembler.program.inTextSegment()) {
+                  if (!Assembler.inTextSegment()) {
                     if (e >= 0 && e <= 2)
                       Assembler.program.alignVal(e);
                     else
                       Assembler.error(
-                        "invalid align value: '" + e + "', expected 0, 1 or 2"
+                        "invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)"
                       );
                   } else
                     Assembler.error(
@@ -708,7 +707,7 @@ AlignDir    ::= D_ALIGN Number:e
                 :}
              |  D_BALIGN Number:e
                 {:
-                  if (!Assembler.program.inTextSegment()) {
+                  if (!Assembler.inTextSegment()) {
                     if (e > 0)
                       Assembler.program.balignVal(e);
                     else
