@@ -28,6 +28,13 @@ public final class Globals {
   // errors
   public static final ArrayList<String> errors = new ArrayList<String>();
 
+  // add error to error list
+  public static void error(String msg) {
+    // ignore duplicated errors
+    if (!Globals.errors.contains(msg))
+      Globals.errors.add(msg);
+  }
+
   // reset state
   public static void resetState() {
     // reset memory
