@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
@@ -31,7 +32,22 @@ public final class SType extends Statement {
 
   @Override
   public void build(String filename) {
-
+    if (!((this.imm > SType.MAX_VAL) || (this.imm < SType.MIN_VAL))) {
+      Instruction inst = Globals.iset.get(this.mnemonic);
+      int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
+      int rs2 = Globals.regfile.getRegisterNumber(this.rs2);
+      int opcode = inst.getOpCode();
+      int funct3 = inst.getFunct3();
+      this.code.set(InstructionField.RS1, rs1);
+      this.code.set(InstructionField.RS2, rs2);
+      this.code.set(InstructionField.OPCODE, opcode);
+      this.code.set(InstructionField.FUNCT3, funct3);
+      this.code.set(InstructionField.IMM_4_0, this.imm);
+      this.code.set(InstructionField.IMM_11_5, this.imm >>> 5);
+    } else
+      Assembler.error(
+        "immediate '" + imm + "' out of range should be between -2048 and 2047"
+      );
   }
 
 }
