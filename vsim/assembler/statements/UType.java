@@ -28,7 +28,7 @@ public final class UType extends Statement {
   }
 
   @Override
-  public void build(String filename) {
+  public void build(int pc, String filename) {
     int imm;
     // get imm
     if (this.imm instanceof Relocation)

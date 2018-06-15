@@ -31,7 +31,7 @@ public final class Shift extends Statement {
   }
 
   @Override
-  public void build(String filename) {
+  public void build(int pc, String filename) {
     // check range
     if (!((this.shamt > Shift.MAX_VAL) || (this.shamt < Shift.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);

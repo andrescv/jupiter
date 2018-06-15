@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
@@ -24,8 +25,16 @@ public final class JType extends Statement {
   }
 
   @Override
-  public void build(String filename) {
-    // TODO
+  public void build(int pc, String filename) {
+    Instruction inst = Globals.iset.get(this.mnemonic);
+    int rd = Globals.regfile.getRegisterNumber(this.rd);
+    int opcode = inst.getOpCode();
+    this.code.set(InstructionField.IMM_20, imm >>> 20);
+    this.code.set(InstructionField.IMM_10_1, imm >>> 1);
+    this.code.set(InstructionField.IMM_19_12, imm >>> 12);
+    this.code.set(InstructionField.IMM_11J, imm >>> 11);
+    this.code.set(InstructionField.OPCODE, opcode);
+    this.code.set(InstructionField.RD, rd);
   }
 
 }

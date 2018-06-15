@@ -12,7 +12,7 @@ public final class Jal extends JType {
       "set rd = pc + 4 and pc = pc + imm"
     );
     // set opcode
-    this.opcode = 1101111;
+    this.opcode = 0b1101111;
   }
 
   @Override

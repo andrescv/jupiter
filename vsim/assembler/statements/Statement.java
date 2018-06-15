@@ -18,7 +18,7 @@ public abstract class Statement {
 
   public abstract void resolve(String filename);
 
-  public abstract void build(String filename);
+  public abstract void build(int pc, String filename);
 
   public MachineCode result() {
     return this.code;

@@ -31,7 +31,7 @@ public final class SType extends Statement {
   }
 
   @Override
-  public void build(String filename) {
+  public void build(int pc, String filename) {
     if (!((this.imm > SType.MAX_VAL) || (this.imm < SType.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
