@@ -11,19 +11,19 @@ public final class BType extends Statement {
 
   private String rs1;
   private String rs2;
-  private String offset;
+  private Relocation offset;
 
   public BType(String mnemonic, DebugInfo debug,
                String rs1, String rs2, String offset) {
     super(mnemonic, debug);
     this.rs1 = rs1;
     this.rs2 = rs2;
-    this.offset = offset;
+    this.offset = new Relocation(offset, 0, 31);
   }
 
   @Override
   public void resolve(String filename) {
-    // TODO
+    this.offset.resolve(filename);
   }
 
   @Override
