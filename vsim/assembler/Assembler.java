@@ -14,8 +14,8 @@ import vsim.assembler.statements.Statement;
 public final class Assembler {
 
   protected static Segment segment = Segment.TEXT;
-  protected static Program program = null;
-  protected static DebugInfo debug = null;
+  public static Program program = null;
+  public static DebugInfo debug = null;
 
   protected static boolean inTextSegment() {
     return Assembler.segment == Segment.TEXT;
