@@ -25,13 +25,13 @@ public final class Shift extends Statement {
   }
 
   @Override
-  public void eval(String filename) {
-
+  public void resolve(String filename) {
+    /* DO NOTHING */
   }
 
   @Override
-  public MachineCode result() {
-    return this.code;
+  public void build(String filename) {
+
   }
 
 }

@@ -16,7 +16,9 @@ public abstract class Statement {
     this.code = new MachineCode();
   }
 
-  public abstract void eval(String filename);
+  public abstract void resolve(String filename);
+
+  public abstract void build(String filename);
 
   public MachineCode result() {
     return this.code;
