@@ -19,6 +19,12 @@ public final class Tail extends PSeudo {
 
   public ArrayList<Statement> build() {
     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
+    stmts.add(
+      new UType("auipc", this.debug, "x6", new Relocation(this.offset, 12, 31))
+    );
+    stmts.add(
+      new IType("jalr", this.debug, "x0", "x6", new Relocation(this.offset, 0, 11))
+    );
     return stmts;
   }
 

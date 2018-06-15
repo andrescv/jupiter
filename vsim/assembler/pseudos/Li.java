@@ -20,6 +20,15 @@ public final class Li extends PSeudo {
 
   public ArrayList<Statement> build() {
     ArrayList<Statement> stmts = new ArrayList<Statement>();
+    if (imm > 2047 || imm < -2048) {
+      int imm_hi = this.imm >>> 12;
+      int imm_lo = this.imm & 0xfff;
+      stmts.add(new UType("lui", this.debug, this.rd, imm_hi));
+      stmts.add(new IType("addi", this.debug, this.rd, this.rd, imm_lo));
+    } else {
+      stmts.add(new IType("addi", this.debug, this.rd, "x0", this.imm));
+    }
+    stmts.trimToSize();
     return stmts;
   }
 
