@@ -33,7 +33,28 @@ public class IType extends Statement {
 
   @Override
   public void build(String filename) {
-    // TODO
+    int imm;
+    // get imm
+    if (this.imm instanceof Relocation)
+      imm = ((Relocation) this.imm).resolve(filename);
+    else
+      imm = (int) this.imm;
+    // check range
+    if (!((imm > IType.MAX_VAL) || (imm < IType.MIN_VAL))) {
+      Instruction inst = Globals.iset.get(this.mnemonic);
+      int rd  = Globals.regfile.getRegisterNumber(this.rd);
+      int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
+      int opcode = inst.getOpCode();
+      int funct3 = inst.getFunct3();
+      this.code.set(InstructionField.RD,  rd);
+      this.code.set(InstructionField.RS1, rs1);
+      this.code.set(InstructionField.IMM_11_0, imm);
+      this.code.set(InstructionField.OPCODE, opcode);
+      this.code.set(InstructionField.FUNCT3, funct3);
+    } else
+      Assembler.error(
+        "immediate '" + imm + "' out of range should be between -2048 and 2047"
+      );
   }
 
 }
