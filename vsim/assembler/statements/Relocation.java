@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.SymbolTable;
 
 
@@ -18,18 +19,25 @@ public final class Relocation {
   }
 
   public int resolve(String filename) {
+    int address = -1;
     SymbolTable table = Globals.local.get(filename);
+    // local lookup
     if (table.get(this.target) != null) {
-      int address = table.get(this.target);
-      return (address & (this.mask << this.min)) >>> this.min;
-    } else if (Globals.globl.get(this.target) != null) {
-      int address = table.get(this.target);
-      return (address & (this.mask << this.min)) >>> this.min;
-    } else
-      Globals.errors.add(
+      address = table.get(this.target);
+      address = (address & (this.mask << this.min)) >>> this.min;
+    }
+    // global lookup
+    else if (Globals.globl.get(this.target) != null) {
+      address = table.get(this.target);
+      address = (address & (this.mask << this.min)) >>> this.min;
+    }
+    // relocation error
+    else {
+      Assembler.error(
         "label: '" + this.target + "' used but not defined"
       );
-    return -1;
+    }
+    return address;
   }
 
 }

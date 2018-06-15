@@ -33,19 +33,28 @@ public final class Assembler {
     return Assembler.segment == Segment.BSS;
   }
 
-  protected static void error(String msg) {
+  public static void error(String msg, boolean showSource) {
     String filename = Assembler.program.getFilename();
     String newline = System.getProperty("line.separator");
     String source = Assembler.debug.getSource();
     int lineno = Assembler.debug.getLineNumber();
-    Globals.errors.add(
-      filename + ":" + "assembler:" + lineno + ": " + msg +
-      newline + "    |" +
-      newline + "    └─> " + source + newline
-    );
+    if (showSource)
+      Globals.error(
+        filename + ":" + "assembler:" + lineno + ": " + msg +
+        newline + "    |" +
+        newline + "    └─> " + source + newline
+      );
+    else
+      Globals.error(
+        filename + ":" + "assembler:" + lineno + ": " + msg + newline
+      );
   }
 
-  protected static void warning(String msg) {
+  public static void error(String msg) {
+    Assembler.error(msg, true);
+  }
+
+  public static void warning(String msg) {
     if (!Settings.QUIET) {
       String filename = Assembler.program.getFilename();
       String newline = System.getProperty("line.separator");
@@ -69,11 +78,13 @@ public final class Assembler {
         if (sym != null) {
           if(!Globals.globl.add(global, sym))
             Assembler.error(
-              "'" + global + "' already defined as global in a different file"
+              "'" + global + "' already defined as global in a different file",
+              false
             );
         } else
           Assembler.error(
-            "'" + global + "' declared global label but not defined"
+            "'" + global + "' declared global label but not defined",
+            false
           );
       }
     }
@@ -85,8 +96,11 @@ public final class Assembler {
     // try to eval all statements and collect errors if any
     for (Program program: programs) {
       String filename = program.getFilename();
-      for (Statement stmt: program.getStatements())
-        stmt.eval(filename);
+      for (Statement stmt: program.getStatements()) {
+        // set current debug info
+        Assembler.debug = stmt.getDebugInfo();
+        stmt.resolve(filename);
+      }
     }
   }
 
@@ -126,9 +140,9 @@ public final class Assembler {
           // add this processed program
           programs.add(program);
         } catch (FileNotFoundException e) {
-          Globals.errors.add("assembler: file '" + file + "' not found");
+          Globals.error("assembler: file '" + file + "' not found");
         } catch (IOException e) {
-          Globals.errors.add("assembler: file '" + file + "' could not be read");
+          Globals.error("assembler: file '" + file + "' could not be read");
         }
       }
     }

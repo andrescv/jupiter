@@ -25,7 +25,12 @@ public final class SType extends Statement {
   }
 
   @Override
-  public void eval(String filename) {
+  public void resolve(String filename) {
+    /* DO NOTHING */
+  }
+
+  @Override
+  public void build(String filename) {
 
   }
 

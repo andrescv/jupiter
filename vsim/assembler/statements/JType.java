@@ -19,7 +19,12 @@ public final class JType extends Statement {
   }
 
   @Override
-  public void eval(String filename) {
+  public void resolve(String filename) {
+    this.target.resolve(filename);
+  }
+
+  @Override
+  public void build(String filename) {
     // TODO
   }
 

@@ -22,7 +22,12 @@ public final class BType extends Statement {
   }
 
   @Override
-  public void eval(String filename) {
+  public void resolve(String filename) {
+    // TODO
+  }
+
+  @Override
+  public void build(String filename) {
     // TODO
   }
 

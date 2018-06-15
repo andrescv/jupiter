@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
@@ -25,8 +26,14 @@ public class IType extends Statement {
   }
 
   @Override
-  public void eval(String filename) {
+  public void resolve(String filename) {
+    if (this.imm instanceof Relocation)
+      ((Relocation) this.imm).resolve(filename);
+  }
 
+  @Override
+  public void build(String filename) {
+    // TODO
   }
 
 }
