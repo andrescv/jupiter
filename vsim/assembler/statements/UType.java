@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
@@ -28,7 +29,24 @@ public final class UType extends Statement {
 
   @Override
   public void build(String filename) {
-    // TODO
+    int imm;
+    // get imm
+    if (this.imm instanceof Relocation)
+      imm = ((Relocation) this.imm).resolve(filename);
+    else
+      imm = (int) this.imm;
+    // check range
+    if (!((imm > UType.MAX_VAL) || (imm < UType.MIN_VAL))) {
+      Instruction inst = Globals.iset.get(this.mnemonic);
+      int rd = Globals.regfile.getRegisterNumber(this.rd);
+      int opcode = inst.getOpCode();
+      this.code.set(InstructionField.RD, rd);
+      this.code.set(InstructionField.OPCODE, opcode);
+      this.code.set(InstructionField.IMM_31_12, imm);
+    } else
+      Assembler.error(
+        "immediate '" + imm + "' out of range should be between 0 and 1048575"
+      );
   }
 
 }
