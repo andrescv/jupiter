@@ -140,7 +140,9 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  Label RISCVPSeudo:p
                 {:
-                  // TODO
+                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename());
+                  for (Statement stmt: stmts)
+                    Assembler.program.add(stmt);
                 :}
              |  Label Data
              |  Label
@@ -151,7 +153,9 @@ Statement   ::= Label RISCVInst:i
                 :}
              |  RISCVPSeudo:p
                 {:
-                  // TODO
+                  ArrayList<Statement> stmts = p.build(Assembler.program.getFilename());
+                  for (Statement stmt: stmts)
+                    Assembler.program.add(stmt);
                 :}
              |  Data
              |  Directive
@@ -495,12 +499,8 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
                 {: RESULT = new Li(rd, n); :}
              |  I_CALL Id:id
                 {: RESULT = new Call(id); :}
-             |  I_CALL Number:n
-                {: RESULT = new Call(n); :}
              |  I_TAIL Id:id
                 {: RESULT = new Tail(id); :}
-             |  I_TAIL Number:n
-                {: RESULT = new Tail(n); :}
              ;
 
 /*

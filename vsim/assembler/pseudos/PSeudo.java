@@ -12,7 +12,7 @@ public abstract class PSeudo {
     this.name = name;
   }
 
-  public abstract ArrayList<Statement> build();
+  public abstract ArrayList<Statement> build(String filename);
 
   public String getName() {
     return this.name;
