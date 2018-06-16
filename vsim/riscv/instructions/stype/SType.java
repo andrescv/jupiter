@@ -23,6 +23,7 @@ abstract class SType extends Instruction {
     int imm_4_0 = code.get(InstructionField.IMM_4_0);
     int imm = (imm_11_5 << 5) | imm_4_0;
     this.setMemory(rs1, rs2, Data.signExtend(imm, 12));
+    Globals.regfile.incProgramCounter();
   }
 
 }
