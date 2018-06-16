@@ -786,6 +786,11 @@ ERROR = .
     yybegin(this.prevState);
   }
 
+  "r" {
+    this.text.append((char)'\r');
+    yybegin(this.prevState);
+  }
+
   "\"" {
     this.text.append("\"");
     yybegin(this.prevState);
