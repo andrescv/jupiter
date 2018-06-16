@@ -2,7 +2,9 @@ package vsim.linker;
 
 import vsim.Globals;
 import vsim.utils.Data;
+import vsim.utils.Message;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import vsim.assembler.Program;
 import vsim.assembler.Assembler;
 import vsim.riscv.MemorySegments;
@@ -68,10 +70,10 @@ public final class Linker {
     }
   }
 
-  private static ArrayList<Statement> build(ArrayList<Program> programs) {
+  private static LinkedProgram build(ArrayList<Program> programs) {
     // reset text address
     Linker.reset();
-    ArrayList<Statement> all = new ArrayList<Statement>();
+    Hashtable<Integer, Statement> all = new Hashtable<Integer, Statement>();
     for (Program program: programs) {
       // set current program
       Assembler.program = program;
@@ -83,23 +85,24 @@ public final class Linker {
         // store result in text segment
         int code = stmt.result().get(InstructionField.ALL);
         Globals.memory.storeWord(Linker.textAddress, code);
-        Linker.textAddress += Instruction.LENGTH;
         // add this statement
-        all.add(stmt);
+        all.put(Linker.textAddress, stmt);
+        // next word align address
+        Linker.textAddress += Instruction.LENGTH;
       }
     }
-    all.trimToSize();
-    return all;
+    // report errors
+    Message.errors();
+    return new LinkedProgram(all);
   }
 
-  public static void link(ArrayList<Program> programs) {
+  public static LinkedProgram link(ArrayList<Program> programs) {
     Linker.reset();
     Linker.handleRodata(programs);
     Linker.handleBss(programs);
     Linker.handleData(programs);
     Linker.handleSymbols(programs);
-    // TODO
-    Linker.build(programs);
+    return Linker.build(programs);
   }
 
 }
