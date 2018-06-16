@@ -136,8 +136,8 @@ public final class Syscall {
   }
 
   private static void printChar() {
-    int address = Globals.regfile.getRegister("a1");
-    System.out.print((char)Globals.memory.loadByte(address));
+    char c = (char)Globals.regfile.getRegister("a1");
+    System.out.print(c);
   }
 
   private static void readChar() {
