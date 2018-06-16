@@ -2,6 +2,7 @@ package vsim.riscv;
 
 import vsim.utils.Colorize;
 import java.util.Hashtable;
+import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
 public final class RegisterFile {
@@ -120,6 +121,10 @@ public final class RegisterFile {
 
   public void setProgramCounter(int value) {
     this.pc.setValue(value);
+  }
+
+  public void incProgramCounter() {
+    this.pc.setValue(this.pc.getValue() + LENGTH);
   }
 
   public void reset() {
