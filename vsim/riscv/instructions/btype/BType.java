@@ -29,7 +29,7 @@ abstract class BType extends Instruction {
       int imm = (imm_12 << 11 | imm_11 << 10 | imm_10_5 << 4 | imm_4_1) << 1;
       Globals.regfile.setProgramCounter(pc + Data.signExtend(imm, 13));
     } else
-      Gñpbañs-regfile.incProgramCounter();
+      Globals.regfile.incProgramCounter();
   }
 
 }
