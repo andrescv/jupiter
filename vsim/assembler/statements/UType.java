@@ -24,7 +24,7 @@ public final class UType extends Statement {
   @Override
   public void resolve(String filename) {
     if (this.imm instanceof Relocation)
-      ((Relocation) this.imm).resolve(filename);
+      ((Relocation) this.imm).resolve(0, filename);
   }
 
   @Override
@@ -32,7 +32,7 @@ public final class UType extends Statement {
     int imm;
     // get imm
     if (this.imm instanceof Relocation)
-      imm = ((Relocation) this.imm).resolve(filename);
+      imm = ((Relocation) this.imm).resolve(pc, filename);
     else
       imm = (int) this.imm;
     // check range

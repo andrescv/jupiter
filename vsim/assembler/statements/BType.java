@@ -24,17 +24,17 @@ public final class BType extends Statement {
     this.rs1 = rs1;
     this.rs2 = rs2;
     this.label = offset;
-    this.offset = new Relocation(offset, 0, 31);
+    this.offset = new Relocation(RelocationType.BRANCH, offset, 0, 31);
   }
 
   @Override
   public void resolve(String filename) {
-    this.offset.resolve(filename);
+    this.offset.resolve(0, filename);
   }
 
   @Override
   public void build(int pc, String filename) {
-    int imm = this.offset.resolve(filename) - pc;
+    int imm = this.offset.resolve(pc, filename);
     if (!((imm > BType.MAX_VAL) || (imm < BType.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rs1  = Globals.regfile.getRegisterNumber(this.rs1);
