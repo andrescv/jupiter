@@ -13,7 +13,7 @@ public abstract class Instruction {
   public static enum Format {R, I, S, B, U, J};
 
   private Format format;
-  private String mnemonic;
+  protected String mnemonic;
   private String usage;
   private String description;
   protected int opcode;
