@@ -20,6 +20,7 @@ abstract class UType extends Instruction {
       code.get(InstructionField.RD),
       this.compute(code.get(InstructionField.IMM_31_12))
     );
+    Globals.regfile.incProgramCounter();
   }
 
 }

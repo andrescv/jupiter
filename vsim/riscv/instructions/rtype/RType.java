@@ -22,6 +22,7 @@ abstract class RType extends Instruction {
       code.get(InstructionField.RD),
       this.compute(rs1, rs2)
     );
+    Globals.regfile.incProgramCounter();
   }
 
 }
