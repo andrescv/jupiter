@@ -17,7 +17,7 @@ public final class Auipc extends UType {
 
   @Override
   protected int compute(int imm) {
-    return ((imm << 20) & 0xfffff000) + Globals.regfile.getProgramCounter();
+    return (imm << 12) + Globals.regfile.getProgramCounter();
   }
 
 }

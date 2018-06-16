@@ -15,7 +15,7 @@ public final class Lui extends UType {
 
   @Override
   protected int compute(int imm) {
-    return (imm << 20) & 0xfffff000;
+    return imm << 12;
   }
 
 }

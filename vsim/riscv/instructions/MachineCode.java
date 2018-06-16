@@ -16,7 +16,7 @@ public final class MachineCode {
   }
 
   public int get(InstructionField field) {
-    return (this.code & (field.mask << field.lo)) >>> field.lo;
+    return (this.code >>> field.lo) & field.mask;
   }
 
   public void set(InstructionField field, int value) {
