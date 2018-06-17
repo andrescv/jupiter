@@ -5,7 +5,7 @@ import vsim.utils.Data;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 import java.io.StringReader;
-import vsim.assembler.pseudos.*;
+import vsim.linker.Relocation;
 import vsim.assembler.statements.*;
 
 
@@ -108,8 +108,8 @@ non terminal Statement;
 non terminal Label;
 non terminal Statement Instruction, RISCVInst;
 non terminal Statement RType, IType, SType, BType, UType, JType;
-non terminal PSeudo RISCVPSeudo, PSeudos;
-non terminal String ROpCode, IOpCode, SOpCode, BOpCode;
+non terminal RISCVPSeudo, PSeudos;
+non terminal String ROpCode, IOpCode, BOpCode;
 non terminal Data;
 non terminal String DataMode;
 non terminal ArrayList<Integer> DataList;
@@ -140,11 +140,7 @@ Statement   ::= Label RISCVInst:i
                   if (i != null)
                     Assembler.program.add(i);
                 :}
-             |  Label RISCVPSeudo:p
-                {:
-                  for (Statement stmt: p.build())
-                    Assembler.program.add(stmt);
-                :}
+             |  Label RISCVPSeudo
              |  Label Data
              |  Label
              |  RISCVInst:i
@@ -152,11 +148,7 @@ Statement   ::= Label RISCVInst:i
                   if (i != null)
                     Assembler.program.add(i);
                 :}
-             |  RISCVPSeudo:p
-                {:
-                  for (Statement stmt: p.build())
-                    Assembler.program.add(stmt);
-                :}
+             |  RISCVPSeudo
              |  Data
              |  Directive
              ;
@@ -191,14 +183,12 @@ Instruction ::= RType:i
                 {: RESULT = i; :}
              ;
 
-RISCVPSeudo ::= PSeudos:p
+RISCVPSeudo ::= PSeudos
                 {:
                   if (!Assembler.inTextSegment())
                     Assembler.error("instructions can appear only in text segment");
                   else
-                    if (!Settings.BARE)
-                      RESULT = p;
-                    else
+                    if (Settings.BARE)
                       Assembler.error(
                         "invalid instruction: use -asm flag to use pseudos"
                       );
@@ -378,6 +368,36 @@ IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Cons
                       "invalid instruction: use -asm flag to use pseudos"
                     );
                 :}
+              |  I_LB Register:rd Delimiter Id:id
+                 {:
+                  if (!Settings.BARE) {
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
+                    Assembler.program.add(new IType("lb", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                  } else
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
+                 :}
+              |  I_LH Register:rd Delimiter Id:id
+                 {:
+                  if (!Settings.BARE) {
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
+                    Assembler.program.add(new IType("lh", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                  } else
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
+                 :}
+              |  I_LW Register:rd Delimiter Id:id
+                 {:
+                  if (!Settings.BARE) {
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
+                    Assembler.program.add(new IType("lw", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                  } else
+                    Assembler.error(
+                      "invalid instruction: use -asm flag to use pseudos"
+                    );
+                 :}
              ;
 
 IOpCode     ::= I_ADDI:opcode
@@ -394,18 +414,33 @@ IOpCode     ::= I_ADDI:opcode
                 {: RESULT = (String)opcode; :}
              ;
 
-SType       ::= SOpCode:opcode Register:rs1 Delimiter Register:rs2 Number:imm
-                {: RESULT = new SType(opcode, Assembler.debug, rs1, rs2, imm); :}
-             |  SOpCode:opcode Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType(opcode, Assembler.debug, rs1, rs2, offset); :}
-             ;
-
-SOpCode     ::= I_SB:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SH:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SW:opcode
-                {: RESULT = (String)opcode; :}
+SType       ::= I_SB Register:rs1 Delimiter Register:rs2 Number:imm
+                {: RESULT = new SType("sb", Assembler.debug, rs1, rs2, imm); :}
+             |  I_SH Register:rs1 Delimiter Register:rs2 Number:imm
+                {: RESULT = new SType("sh", Assembler.debug, rs1, rs2, imm); :}
+             |  I_SW Register:rs1 Delimiter Register:rs2 Number:imm
+                {: RESULT = new SType("sw", Assembler.debug, rs1, rs2, imm); :}
+             |  I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sb", Assembler.debug, rs1, rs2, offset); :}
+             |  I_SH Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sh", Assembler.debug, rs1, rs2, offset); :}
+             |  I_SW Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sw", Assembler.debug, rs1, rs2, offset); :}
+             |  I_SB Register:rd Delimiter Id:id Delimiter Register:rt
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new SType("sb", Assembler.debug, rd, rt, new Relocation(Relocation.PCRELLO, id)));
+                :}
+             |  I_SH Register:rd Delimiter Id:id Delimiter Register:rt
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new SType("sh", Assembler.debug, rd, rt, new Relocation(Relocation.PCRELLO, id)));
+                :}
+             |  I_SW Register:rd Delimiter Id:id Delimiter Register:rt
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new SType("sw", Assembler.debug, rd, rt, new Relocation(Relocation.PCRELLO, id)));
+                :}
              ;
 
 BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:id
@@ -545,15 +580,32 @@ JType       ::= I_JAL Register:rd Delimiter Id:id
              ;
 
 PSeudos     ::= I_LA Register:rd Delimiter Id:id
-                {: RESULT = new La(Assembler.debug, rd, id); :}
-             |  I_LI Register:rd Delimiter Const:n
-                {: RESULT = new Li(Assembler.debug, rd, n); :}
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new IType("addi", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                :}
+             |  I_LI Register:rd Delimiter Const:imm
+                {:
+                  if (imm > 2047 || imm < -2048) {
+                    int imm_hi = imm >>> 12;
+                    int imm_lo = imm & 0xfff;
+                    Assembler.program.add(new UType("lui", Assembler.debug, rd, imm_hi));
+                    Assembler.program.add(new IType("addi", Assembler.debug, rd, rd, imm_lo));
+                  } else {
+                    Assembler.program.add(new IType("addi", Assembler.debug, rd, "x0", imm));
+                  }
+                :}
              |  I_CALL Id:id
-                {: RESULT = new Call(Assembler.debug, id); :}
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new IType("jalr", Assembler.debug, "x1", "x6", new Relocation(Relocation.PCRELLO, id)));
+                :}
              |  I_TAIL Id:id
-                {: RESULT = new Tail(Assembler.debug, id); :}
+                {:
+                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id)));
+                  Assembler.program.add(new IType("jalr", Assembler.debug, "x0", "x6", new Relocation(Relocation.PCRELLO, id)));
+                :}
              ;
-
 /*
     DATA
 */
