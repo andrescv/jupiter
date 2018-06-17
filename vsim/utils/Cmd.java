@@ -52,14 +52,14 @@ public final class Cmd {
         else if (option.equals("debug"))
           Settings.DEBUG = true;
         else {
-          Message.warning("unknown argument: " + args[i]);
+          Message.warning("unknown argument: " + args[i] + newline);
           Cmd.exit();
         }
       } else
         firstFile = Math.min(firstFile, i);
     }
     if (firstFile < lastArg) {
-      Message.warning("unexpected argument: " + args[firstFile]);
+      Message.warning("unexpected argument: " + args[firstFile] + newline);
       Cmd.exit();
     }
     ArrayList<String> files = new ArrayList<String>();
@@ -80,8 +80,6 @@ public final class Cmd {
   }
 
   public static void exit() {
-    System.out.println(Cmd.HEADER);
-    System.out.println(Cmd.SUBHEADER);
     System.out.println(Cmd.USAGE);
     System.exit(0);
   }
