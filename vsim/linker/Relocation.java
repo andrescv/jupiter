@@ -1,6 +1,7 @@
 package vsim.linker;
 
 import vsim.Globals;
+import vsim.utils.Data;
 import vsim.assembler.Assembler;
 import vsim.assembler.SymbolTable;
 
@@ -48,7 +49,7 @@ public final class Relocation {
         target = (delta >>> 12) + ((delta >>> 11) & 0x1);
         break;
       case PCRELLO:
-        target = ((delta + 4) & 0xfff);
+        target = Data.signExtend(((delta + 4) & 0xfff), 12);
         break;
       case DEFAULT:
         target = delta;
