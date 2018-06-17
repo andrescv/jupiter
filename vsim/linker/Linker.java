@@ -91,18 +91,25 @@ public final class Linker {
         Linker.textAddress += Instruction.LENGTH;
       }
     }
-    // report errors
-    Message.errors();
     return new LinkedProgram(all);
   }
 
   public static LinkedProgram link(ArrayList<Program> programs) {
     Linker.reset();
+    // handle static data
     Linker.handleRodata(programs);
     Linker.handleBss(programs);
     Linker.handleData(programs);
     Linker.handleSymbols(programs);
-    return Linker.build(programs);
+    // build all statements
+    LinkedProgram program = Linker.build(programs);
+    // report errors
+    Message.errors();
+    // clean all
+    programs = null;
+    System.gc();
+    // return linked program, now simulate ?
+    return program;
   }
 
 }
