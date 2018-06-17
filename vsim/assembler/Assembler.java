@@ -154,6 +154,10 @@ public final class Assembler {
     }
     // do first pass
     Assembler.firstPass(programs);
+    // garbage collection
+    System.gc();
+    // report errors
+    Message.errors();
     // return all processed programs, now linking
     return programs;
   }
