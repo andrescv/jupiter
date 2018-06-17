@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
@@ -24,7 +25,7 @@ public final class BType extends Statement {
     this.rs1 = rs1;
     this.rs2 = rs2;
     this.label = offset;
-    this.offset = new Relocation(RelocationType.BRANCH, offset, 0, 31);
+    this.offset = new Relocation(Relocation.DEFAULT, offset);
   }
 
   @Override

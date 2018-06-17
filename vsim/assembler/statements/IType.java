@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
