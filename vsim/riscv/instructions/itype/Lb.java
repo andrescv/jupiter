@@ -9,7 +9,7 @@ public final class Lb extends IType {
     super(
       "lb",
       "lb rd, offset(rs1)",
-      "set rd = signExtend(byte(memory[rs1 + offset]))"
+      "set rd = sext(memory[rs1 + sext(offset)][7:0])"
     );
     // set opcode
     this.opcode = 0b0000011;

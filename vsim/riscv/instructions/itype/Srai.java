@@ -6,8 +6,8 @@ public final class Srai extends IType {
   public Srai() {
     super(
       "srai",
-      "srai rd, rs1, imm",
-      "set rd = rs1 >> imm[0:4], arithmetic shift right"
+      "srai rd, rs1, shamt",
+      "set rd = rs1 >> shamt, arithmetic shift right"
     );
     // set opcode
     this.opcode = 0b0010011;

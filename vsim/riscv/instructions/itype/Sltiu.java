@@ -9,7 +9,7 @@ public final class Sltiu extends IType {
     super(
       "sltiu",
       "sltiu rd, rs1, imm",
-      "set rd = 1 if rs1 < imm else 0, unsigned comparison"
+      "set rd = 1 if rs1 < sext(imm) else 0, unsigned comparison"
     );
     // set opcode
     this.opcode = 0b0010011;

@@ -23,8 +23,8 @@ abstract class JType extends Instruction {
     int imm_20 = code.get(InstructionField.IMM_20);
     int imm = (imm_20 << 19 | imm_19_12 << 11 | imm_11 << 10 | imm_10_1) << 1;
     Globals.regfile.setRegister(
-        code.get(InstructionField.RD),
-        this.compute(Data.signExtend(imm, 21))
+      code.get(InstructionField.RD),
+      this.compute(Data.signExtend(imm, 21))
     );
   }
 

@@ -7,7 +7,7 @@ public final class Srl extends RType {
     super(
       "srl",
       "srl rd, rs1, rs2",
-      "set rd = rs1 >> rs2[0:4], logical shift right"
+      "set rd = rs1 >>> rs2[4:0], logical shift right"
     );
     // set opcode
     this.opcode = 0b0110011;

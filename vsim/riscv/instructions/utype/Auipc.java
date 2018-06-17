@@ -9,7 +9,7 @@ public final class Auipc extends UType {
     super(
       "auipc",
       "auipc rd, imm",
-      "set rd = (imm << 20) + pc"
+      "set rd = imm << 12 + pc"
     );
     // set opcode
     this.opcode = 0b0010111;

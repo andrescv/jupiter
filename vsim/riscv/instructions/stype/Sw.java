@@ -9,7 +9,7 @@ public final class Sw extends SType {
     super(
       "sw",
       "sw rs2, offset(rs1)",
-      "set memory[rs1 + offset] = rs2"
+      "set memory[rs1 + sext(offset)] = rs2[31:0]"
     );
     // set opcode
     this.opcode = 0b0100011;

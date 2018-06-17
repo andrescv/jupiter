@@ -9,7 +9,7 @@ public final class Mulh extends RType {
     super(
       "mulh",
       "mulh rd, rs1, rs2",
-      "set rd = High XLEN bits of rs1 * rs2"
+      "set rd = (rs1 * rs2) >> XLEN"
     );
     // set opcode
     this.opcode = 0b0110011;

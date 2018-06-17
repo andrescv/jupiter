@@ -9,7 +9,7 @@ public final class Sh extends SType {
     super(
       "sh",
       "sh rs2, offset(rs1)",
-      "set memory[rs1 + offset] = rs2[0:15]"
+      "set memory[rs1 + sext(offset)] = rs2[15:0]"
     );
     // set opcode
     this.opcode = 0b0100011;

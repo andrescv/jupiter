@@ -6,8 +6,8 @@ public final class Bne extends BType {
   public Bne() {
     super(
       "bne",
-      "bne rs1, rs2, imm",
-      "set pc = pc + imm if rs1 != rs2"
+      "bne rs1, rs2, offset",
+      "set pc = pc + sext(offset), if rs1 != rs2"
     );
     // set opcode
     this.opcode = 0b1100011;

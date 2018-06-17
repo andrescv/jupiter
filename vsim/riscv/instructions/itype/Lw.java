@@ -9,7 +9,7 @@ public final class Lw extends IType {
     super(
       "lw",
       "lw rd, offset(rs1)",
-      "set rd = word(memory[rs1 + offset])"
+      "set rd = sext(memory[rs1 + sext(offset)][31:0])"
     );
     // set opcode
     this.opcode = 0b0000011;

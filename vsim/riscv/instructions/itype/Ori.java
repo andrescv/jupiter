@@ -7,7 +7,7 @@ public final class Ori extends IType {
     super(
       "ori",
       "ori rd, rs1, imm",
-      "set rd = rs1 | imm, bitwise or"
+      "set rd = rs1 | sext(imm), bitwise or"
     );
     // set opcode
     this.opcode = 0b0010011;

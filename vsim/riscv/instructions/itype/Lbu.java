@@ -9,7 +9,7 @@ public final class Lbu extends IType {
     super(
       "lbu",
       "lbu rd, offset(rs1)",
-      "set rd = byte(memory[rs1 + offset])"
+      "set rd = memory[rs1 + sext(offset)][7:0]"
     );
     // set opcode
     this.opcode = 0b0000011;

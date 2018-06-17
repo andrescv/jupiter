@@ -6,8 +6,8 @@ public final class Srli extends IType {
   public Srli() {
     super(
       "srli",
-      "srli rd, rs1, imm",
-      "set rd = rs1 >> imm[0:4], logical shift right"
+      "srli rd, rs1, shamt",
+      "set rd = rs1 >>> shamt, logical shift right"
     );
     // set opcode
     this.opcode = 0b0010011;

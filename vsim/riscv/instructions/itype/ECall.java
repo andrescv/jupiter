@@ -9,7 +9,7 @@ public final class ECall extends IType {
     super(
       "ecall",
       "ecall",
-      "used to make a request to the supporting execution environment"
+      "makes a request to the supporting execution environment"
     );
     // set opcode
     this.opcode = 0b1110011;

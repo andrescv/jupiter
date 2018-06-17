@@ -9,7 +9,7 @@ public final class Mul extends RType {
     super(
       "mul",
       "mul rd, rs1, rs2",
-      "set rd = low XLEN bits of rs1 * rs2"
+      "set rd = rs1 * rs2, overflow is ignored"
     );
     // set opcode
     this.opcode = 0b0110011;

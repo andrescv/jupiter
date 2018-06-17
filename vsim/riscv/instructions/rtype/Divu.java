@@ -9,7 +9,7 @@ public final class Divu extends RType {
     super(
       "divu",
       "divu rd, rs1, rs2",
-      "set rd = unsigned(rs1) / unsigned(rs2)"
+      "set rd = rs1 unsigned(/) rs2"
     );
     // set opcode
     this.opcode = 0b0110011;

@@ -7,7 +7,7 @@ public final class Andi extends IType {
     super(
       "andi",
       "andi rd, rs1, imm",
-      "set rd = rs1 & imm, bitwise and"
+      "set rd = rs1 & sext(imm), bitwise and"
     );
     // set opcode
     this.opcode = 0b0010011;

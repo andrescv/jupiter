@@ -9,7 +9,7 @@ public final class Mulhsu extends RType {
     super(
       "mulhsu",
       "mulhsu rd, rs1, rs2",
-      "set rd = High XLEN bits of rs1 * unsigned(rs2)"
+      "set rd = (rs1 * unsigned(rs2)) >> XLEN"
     );
     // set opcode
     this.opcode = 0b0110011;
