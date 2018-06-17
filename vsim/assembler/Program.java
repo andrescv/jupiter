@@ -20,7 +20,6 @@ public final class Program {
 
   // align directives
   private boolean align;
-  private boolean balign;
   private int alignVal;
 
   // symbols control
@@ -49,7 +48,6 @@ public final class Program {
     this.textStart = 0;
     // align
     this.align = false;
-    this.balign = false;
     this.alignVal = 0;
     // symbols
     this.table = new SymbolTable();
@@ -117,13 +115,11 @@ public final class Program {
 
   protected void align(int alignVal) {
     this.align = true;
-    this.balign = false;
     this.alignVal = (int)Math.pow(2, alignVal);
   }
 
   protected void balign(int alignVal) {
-    this.align = false;
-    this.balign = true;
+    this.align = true;
     this.alignVal = alignVal;
   }
 
@@ -158,9 +154,6 @@ public final class Program {
       if ((index % this.alignVal) != 0)
         padding = this.alignVal - index % this.alignVal;
       this.align = false;
-    } else if (this.balign) {
-      padding = this.alignVal;
-      this.balign = false;
     }
     // add padding if necessary
     if (padding != 0) {
