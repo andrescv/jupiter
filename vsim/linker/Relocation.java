@@ -29,7 +29,7 @@ public final class Relocation {
     }
     // global lookup
     else if (Globals.globl.get(this.target) != null) {
-      address = table.get(this.target);
+      address = Globals.globl.get(this.target);
     }
     // relocation error
     else {
