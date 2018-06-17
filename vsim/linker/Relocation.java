@@ -1,4 +1,4 @@
-package vsim.assembler.statements;
+package vsim.linker;
 
 import vsim.Globals;
 import vsim.assembler.Assembler;
@@ -7,17 +7,16 @@ import vsim.assembler.SymbolTable;
 
 public final class Relocation {
 
-  private String target;
-  private int min;
-  private int mask;
-  private RelocationType type;
+  public static final int PCRELHI = 0;
+  public static final int PCRELLO = 1;
+  public static final int DEFAULT = 2;
 
-  public Relocation(RelocationType type, String target, int min, int max) {
-    this.target = target;
-    this.min = min;
+  private int type;
+  private String target;
+
+  public Relocation(int type, String target) {
     this.type = type;
-    for (int i = min, j = 0; i <= max; i++, j++)
-      this.mask |= 1 << j;
+    this.target = target;
   }
 
   public int getTargetAddress(String filename) {
@@ -42,18 +41,17 @@ public final class Relocation {
 
   public int resolve(int pc, String filename) {
     int target = this.getTargetAddress(filename);
-    target = (target & (this.mask << this.min)) >>> this.min;
+    int delta = target - pc;
     // correct target given a relocation type
     switch (this.type) {
-      case PCLO:
-        target -= (pc - 4);
+      case PCRELHI:
+        target = (delta >>> 12) + ((delta >>> 11) & 0x1);
         break;
-      case JAL:
-      case BRANCH:
-        target -= pc;
+      case PCRELLO:
+        target = ((delta + 4) & 0xfff);
         break;
       case DEFAULT:
-        /* NOTHING */
+        target = delta;
         break;
     }
     return target;
