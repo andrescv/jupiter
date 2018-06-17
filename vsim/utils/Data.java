@@ -4,9 +4,9 @@ package vsim.utils;
 public final class Data {
 
   // masks
-  public static final int  BYTE_MASK = 0xff;
-  public static final int  HALF_MASK = 0xffff;
-  public static final long WORD_MASK = 0xffffffffL;
+  public static final int BYTE_MASK = 0xff;
+  public static final int HALF_MASK = 0xffff;
+  public static final int WORD_MASK = 0xffffffff;
 
   // lengths [bytes]
   public static final int BYTE_LENGTH = 1;
@@ -40,11 +40,11 @@ public final class Data {
   }
 
   public static boolean validHalf(int value) {
-    return ((value < -32768) || (value > 32767));
+    return !((value < -32768) || (value > 32767));
   }
 
   public static boolean validByte(int value) {
-    return ((value < -128) || (value > 127));
+    return !((value < -128) || (value > 127));
   }
 
   public static int mulh(int a, int b) {
