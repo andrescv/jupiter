@@ -23,8 +23,8 @@ public final class Memory {
     this.heapAddress = MemorySegments.HEAP_SEGMENT;
   }
 
-  public void printMemory(int from) {
-    System.out.println(this.getMemory(from));
+  public void printMemory(int from, int rows) {
+    System.out.println(this.getMemory(from, rows));
   }
 
   public void storeByte(int address, int value) {
@@ -76,12 +76,12 @@ public final class Memory {
     return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
   }
 
-  private String getMemory(int from) {
-    // 12 rows of 4 words
+  private String getMemory(int from, int rows) {
+    // n rows of 4 words
     String newline = System.getProperty("line.separator");
     String header = "Value (+0) Value (+4) Value (+8) Value (+c)";
     String out = "             " + Colorize.red(header + newline);
-    for (int i = 0; i < Data.WORD_LENGTH * 12; i++) {
+    for (int i = 0; i < Data.WORD_LENGTH * rows; i++) {
         int address = from + i * Data.WORD_LENGTH;
         // include address
         if (i % Data.WORD_LENGTH == 0)
@@ -99,7 +99,7 @@ public final class Memory {
 
   @Override
   public String toString() {
-    return getMemory(MemorySegments.DATA_SEGMENT);
+    return getMemory(MemorySegments.DATA_SEGMENT, 24);
   }
 
 }
