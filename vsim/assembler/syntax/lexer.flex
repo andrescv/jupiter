@@ -49,7 +49,6 @@ package vsim.assembler;
 // syntax
 DOT = "."
 COMMA = ","
-COLON = ":"
 LPAREN = "("
 RPAREN = ")"
 
@@ -191,6 +190,9 @@ REGISTER = ({R_NUMBER}|{R_NAME})
 // ids
 IDENTIFIER = [a-zA-Z_][a-zA-Z0-9_]*
 
+// labels
+LABEL = {IDENTIFIER}:
+
 // numbers
 NUMBER = [+-]?[0-9]+
 HEXADECIMAL = 0[xX][0-9a-fA-F]+
@@ -212,10 +214,6 @@ ERROR = .
 
   {COMMA}  {
     return symbol(Token.COMMA);
-  }
-
-  {COLON} {
-    return symbol(Token.COLON);
   }
 
   {LPAREN} {
@@ -287,6 +285,11 @@ ERROR = .
     yybegin(CHARACTER);
   }
 
+  // labels
+  {LABEL} {
+    return symbol(Token.LABEL);
+  }
+
   // directives
   {D_ZERO} {
     return symbol(Token.D_ZERO);
@@ -297,7 +300,7 @@ ERROR = .
   }
 
   {D_STRING} {
-    return symbol(Token.D_STRING);
+    return symbol(Token.D_ASCIIZ);
   }
 
   {D_BYTE} {
