@@ -4,25 +4,27 @@ package vsim.riscv;
 public final class MemorySegments {
 
   /*
-      Memory "Layout" Configuration
+      Memory Segments Configuration
 
-                                                 base
-                      +-------------------+
-                      |     reserved      | <- 0x80000000
-      SP 0x7ffffffc-> +-------------------+ <- 0x7ffffffc
-                      |      stack        |
-                      |                   |
-                      *********************
-                      |                   |
-                      |       heap        |
-                      +-------------------+ <- 0x10008000
-                      |    data segment   |
-      GP 0x10000000-> +-------------------+ <- 0x10000000
-                      |    text segment   |
-      PC 0x00000000-> +-------------------+ <- 0x00000000
+      Ref: Chapter 3: RISC-V Assembly Language, The RISC-V Reader
+
+                      +------------------+
+                      |     reserved     |
+                      +------------------+<- 0x7ffffffc
+      SP 0xbffffff0 ->|      stack       |
+                      |                  |
+                      ********************
+                      |                  |
+                      |       heap       |
+                      +------------------+
+                      |   static data    |
+      GP 0x10000000 ->+------------------+<- 0x10000000
+                      |       text       |
+      PC 0x00010000 ->+------------------+<- 0x00010000
+                      |     reserved     |
+                      +------------------+<- 0x00000000
 
                       <------XLENGTH------>
-
   */
 
   // memory address where the stack segment starts
@@ -35,6 +37,6 @@ public final class MemorySegments {
   public static final int DATA_SEGMENT   = 0x10000000;
 
   // memory addres where the text segment starts
-  public static final int TEXT_SEGMENT   = 0x00000000;
+  public static final int TEXT_SEGMENT   = 0x00010000;
 
 }
