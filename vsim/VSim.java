@@ -12,11 +12,11 @@ import java.io.InputStreamReader;
 public final class VSim {
 
   public static void main(String[] args) {
+    Cmd.title();
     ArrayList<String> files = Cmd.parse(args);
     if (files.size() > 0) {
       Simulator.simulate(files);
     } else {
-      Cmd.title();
       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
       while (true) {
         Cmd.prompt();
