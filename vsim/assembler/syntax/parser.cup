@@ -40,8 +40,8 @@ parser code {:
     }
     if (cur_token.sym != Token.ERROR)
       Assembler.error(
-        "(syntax) invalid statement: " + cur_token.value +
-        " (column " + cur_token.right + ")"
+        "(syntax) invalid statement: unexpected '" + cur_token.value +
+        "' (column " + cur_token.right + ")"
       );
     else
       Assembler.error((String)cur_token.value);
