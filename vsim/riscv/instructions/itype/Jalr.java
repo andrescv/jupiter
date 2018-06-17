@@ -8,8 +8,8 @@ public final class Jalr extends IType {
   public Jalr() {
     super(
       "jalr",
-      "jalr rd, imm",
-      "set rd = pc + 4 and pc = pc + ((rs1 + imm) & ~0x1)"
+      "jalr rd, offset",
+      "set rd = pc + 4 and pc = pc + ((rs1 + sext(offset)) & ~1)"
     );
     // set opcode
     this.opcode = 0b1100111;
@@ -20,7 +20,7 @@ public final class Jalr extends IType {
   protected int compute(int rs1, int imm) {
     int pc = Globals.regfile.getProgramCounter();
     // set the least-significant bit of the result to zero
-    Globals.regfile.setProgramCounter(((rs1 + imm) >> 1) << 1);
+    Globals.regfile.setProgramCounter((rs1 + imm) & ~1);
     return pc + 4;
   }
 

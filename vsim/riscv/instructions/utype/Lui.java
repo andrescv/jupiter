@@ -7,7 +7,7 @@ public final class Lui extends UType {
     super(
       "lui",
       "lui rd, imm",
-      "set rd[31:13] = imm"
+      "set rd = imm << 12"
     );
     // set opcode
     this.opcode = 0b0110111;

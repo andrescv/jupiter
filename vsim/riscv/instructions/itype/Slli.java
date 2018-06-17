@@ -6,8 +6,8 @@ public final class Slli extends IType {
   public Slli() {
     super(
       "slli",
-      "slli rd, rs1, imm",
-      "set rd = rs1 << imm[0:4], logical shift left"
+      "slli rd, rs1, shamt",
+      "set rd = rs1 << shamt, logical shift left"
     );
     // set opcode
     this.opcode = 0b0010011;

@@ -8,8 +8,8 @@ public final class Bgeu extends BType {
   public Bgeu() {
     super(
       "bgeu",
-      "bgeu rs1, rs2, imm",
-      "set pc = pc + imm if rs1 >= rs2, unsigned comparison"
+      "bgeu rs1, rs2, offset",
+      "set pc = pc + sext(offset), if rs1 >= rs2, unsigned comparison"
     );
     // set opcode
     this.opcode = 0b1100011;

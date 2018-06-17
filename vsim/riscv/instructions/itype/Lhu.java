@@ -9,7 +9,7 @@ public final class Lhu extends IType {
     super(
       "lhu",
       "lhu rd, offset(rs1)",
-      "set rd = half(memory[rs1 + offset])"
+      "set rd = memory[rs1 + sext(offset)][15:0]"
     );
     // set opcode
     this.opcode = 0b0000011;

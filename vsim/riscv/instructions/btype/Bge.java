@@ -6,8 +6,8 @@ public final class Bge extends BType {
   public Bge() {
     super(
       "bge",
-      "bge rs1, rs2, imm",
-      "set pc = pc + imm if rs1 >= rs2, signed comparison"
+      "bge rs1, rs2, offset",
+      "set pc = pc + sext(offset), if rs1 >= rs2, signed comparison"
     );
     // set opcode
     this.opcode = 0b1100011;

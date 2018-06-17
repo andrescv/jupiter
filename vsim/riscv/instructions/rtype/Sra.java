@@ -7,7 +7,7 @@ public final class Sra extends RType {
     super(
       "sra",
       "sra rd, rs1, rs2",
-      "set rd = rs1 >> rs2[0:4], arithmetic shift right"
+      "set rd = rs1 >> rs2[4:0], arithmetic shift right"
     );
     // set opcode
     this.opcode = 0b0110011;

@@ -9,7 +9,7 @@ public final class Lh extends IType {
     super(
       "lh",
       "lh rd, offset(rs1)",
-      "set rd = signExtend(half(memory[rs1 + offset]))"
+      "set rd = sext(memory[rs1 + sext(offset)][15:0])"
     );
     // set opcode
     this.opcode = 0b0000011;

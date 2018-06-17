@@ -7,7 +7,7 @@ public final class Addi extends IType {
     super(
       "addi",
       "addi rd, rs1, imm",
-      "set rd = rs1 + imm, overflow is ignored"
+      "set rd = rs1 + sext(imm), overflow is ignored"
     );
     // set opcode
     this.opcode = 0b0010011;
