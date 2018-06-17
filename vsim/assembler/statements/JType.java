@@ -1,6 +1,7 @@
 package vsim.assembler.statements;
 
 import vsim.Globals;
+import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
@@ -16,7 +17,7 @@ public final class JType extends Statement {
   public JType(String mnemonic, DebugInfo debug, String rd, String target) {
     super(mnemonic, debug);
     this.rd = rd;
-    this.target = new Relocation(RelocationType.JAL, target, 0, 31);
+    this.target = new Relocation(Relocation.DEFAULT, target);
   }
 
   @Override
