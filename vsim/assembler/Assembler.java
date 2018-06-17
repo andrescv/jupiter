@@ -97,7 +97,7 @@ public final class Assembler {
   private static void firstPass(ArrayList<Program> programs) {
     // resolve globals
     Assembler.handleGlobals(programs);
-    // try to eval all statements and collect errors if any
+    // try to resolve all statements and collect errors if any
     for (Program program: programs) {
       // set current assembler program
       Assembler.program = program;
@@ -146,19 +146,22 @@ public final class Assembler {
           // add this processed program
           programs.add(program);
         } catch (FileNotFoundException e) {
-          Globals.error("assembler: file '" + file + "' not found");
+          Globals.error("assembler: file '" + file + "' not found" + System.getProperty("line.separator"));
         } catch (IOException e) {
-          Globals.error("assembler: file '" + file + "' could not be read");
+          Globals.error("assembler: file '" + file + "' could not be read" + System.getProperty("line.separator"));
         }
       }
     }
     // do first pass
     Assembler.firstPass(programs);
-    // garbage collection
-    System.gc();
     // report errors
     Message.errors();
-    // return all processed programs, now linking
+    // clean all
+    Assembler.program = null;
+    Assembler.debug = null;
+    System.gc();
+    programs.trimToSize();
+    // return all processed programs, now linking ?
     return programs;
   }
 
