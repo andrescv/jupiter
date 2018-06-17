@@ -1,6 +1,7 @@
 package vsim.linker;
 
 import vsim.Globals;
+import vsim.Settings;
 import vsim.utils.Data;
 import vsim.utils.Message;
 import java.util.ArrayList;
@@ -74,23 +75,26 @@ public final class Linker {
     // reset text address
     Linker.reset();
     Hashtable<Integer, Statement> all = new Hashtable<Integer, Statement>();
-    for (Program program: programs) {
-      // set current program
-      Assembler.program = program;
-      for (Statement stmt: program.getStatements()) {
-        // set current debug info
-        Assembler.debug = stmt.getDebugInfo();
-        // build machine code
-        stmt.build(Linker.textAddress, program.getFilename());
-        // store result in text segment
-        int code = stmt.result().get(InstructionField.ALL);
-        Globals.memory.storeWord(Linker.textAddress, code);
-        // add this statement
-        all.put(Linker.textAddress, stmt);
-        // next word align address
-        Linker.textAddress += Instruction.LENGTH;
+    if (Globals.globl.get(Settings.START) != null) {
+      for (Program program: programs) {
+        // set current program
+        Assembler.program = program;
+        for (Statement stmt: program.getStatements()) {
+          // set current debug info
+          Assembler.debug = stmt.getDebugInfo();
+          // build machine code
+          stmt.build(Linker.textAddress, program.getFilename());
+          // store result in text segment
+          int code = stmt.result().get(InstructionField.ALL);
+          Globals.memory.storeWord(Linker.textAddress, code);
+          // add this statement
+          all.put(Linker.textAddress, stmt);
+          // next word align address
+          Linker.textAddress += Instruction.LENGTH;
+        }
       }
-    }
+    } else
+      Globals.error("no global start label: '" + Settings.START + "' set" + System.getProperty("line.separator"));
     return new LinkedProgram(all);
   }
 
