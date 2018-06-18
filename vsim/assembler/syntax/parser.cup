@@ -72,19 +72,19 @@ terminal I_JAL;
 // S Format
 terminal I_SB, I_SH, I_SW;
 // single-precision floating point
-terminal I_FSW;
+terminal F_FSW;
 
 // R Format
 terminal I_ADD, I_AND, I_DIVU, I_DIV, I_MULHSU, I_MULHU;
 terminal I_MULH, I_MUL, I_OR, I_REMU, I_REM, I_SLTU;
 terminal I_SLL, I_SLT, I_SRA, I_SRL, I_SUB, I_XOR;
 // single-precision floating point
-terminal I_FMVWX, I_FMVXW, I_FCVTSW, I_FCVTSWU, I_FCVTWS, I_FCVTWUS;
-terminal I_FADDS, I_FSUBS, I_FMULS, I_FDIVS, I_FSQRTS;
-terminal I_FMADDS, I_FMSUBS, I_FNMSUBS, I_FNMADDS;
-terminal I_FSGNJS, I_FSGNJNS, I_FSGNJXS;
-terminal I_FMINS, I_FMAXS;
-terminal I_FEQS, I_FLTS, I_FLES, I_FCLASSS;
+terminal F_FMVWX, F_FMVXW, F_FCVTSW, F_FCVTSWU, F_FCVTWS, F_FCVTWUS;
+terminal F_FADDS, F_FSUBS, F_FMULS, F_FDIVS, F_FSQRTS;
+terminal F_FMADDS, F_FMSUBS, F_FNMSUBS, F_FNMADDS;
+terminal F_FSGNJS, F_FSGNJNS, F_FSGNJXS;
+terminal F_FMINS, F_FMAXS;
+terminal F_FEQS, F_FLTS, F_FLES, F_FCLASSS;
 
 // I Format
 terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
@@ -92,7 +92,7 @@ terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
 terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
 terminal I_FENCE, I_FENCEI;
 // single-precision floating point
-terminal I_FLW;
+terminal F_FLW;
 
 // Pseudos
 terminal I_LA, I_NOP, I_LI, I_MV, I_NOT, I_NEG;
@@ -121,7 +121,6 @@ non terminal Label;
 non terminal Statement Instruction, RISCVInst;
 non terminal Statement RType, IType, SType, BType, UType, JType;
 non terminal RISCVPSeudo, PSeudos;
-non terminal String ROpCode, IOpCode, BOpCode;
 non terminal Data;
 non terminal String DataMode;
 non terminal ArrayList<Integer> DataList;
@@ -227,76 +226,76 @@ RISCVPSeudo ::= PSeudos
   divu rd, rs1, rs2
   rem rd, rs1, rs2
   remu rd, rs1, rs2
+  neg rd, rs
+  snez rd, rs
+  sltz rd, rs
+  sgtz rd, rs
 */
 
-RType       ::= ROpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType(opcode, Assembler.debug, rd, rs1, rs2); :}
-             |  I_NEG:opcode Register:rd Delimiter Register:rs
+RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sll", Assembler.debug, rd, rs1, rs2); :}
+             |  I_SRL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("srl", Assembler.debug, rd, rs1, rs2); :}
+             |  I_SRA Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sra", Assembler.debug, rd, rs1, rs2); :}
+             |  I_ADD Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("add", Assembler.debug, rd, rs1, rs2); :}
+             |  I_SUB Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sub", Assembler.debug, rd, rs1, rs2); :}
+             |  I_XOR Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("xor", Assembler.debug, rd, rs1, rs2); :}
+             |  I_OR Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("or", Assembler.debug, rd, rs1, rs2); :}
+             |  I_AND Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("and", Assembler.debug, rd, rs1, rs2); :}
+             |  I_SLT Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("slt", Assembler.debug, rd, rs1, rs2); :}
+             |  I_SLTU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sltu", Assembler.debug, rd, rs1, rs2); :}
+             |  I_MUL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mul", Assembler.debug, rd, rs1, rs2); :}
+             |  I_MULH Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulh", Assembler.debug, rd, rs1, rs2); :}
+             |  I_MULHSU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulhsu", Assembler.debug, rd, rs1, rs2); :}
+             |  I_MULHU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulhu", Assembler.debug, rd, rs1, rs2); :}
+             |  I_DIV Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("div", Assembler.debug, rd, rs1, rs2); :}
+             |  I_DIVU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("divu", Assembler.debug, rd, rs1, rs2); :}
+             |  I_REM Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("rem", Assembler.debug, rd, rs1, rs2); :}
+             |  I_REMU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("remu", Assembler.debug, rd, rs1, rs2); :}
+             |  I_NEG Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("sub", Assembler.debug, rd, "x0", rs);
                   else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
-             |  I_SNEZ:opcode Register:rd Delimiter Register:rs
+             |  I_SNEZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("sltu", Assembler.debug, rd, "x0", rs);
                   else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
-             |  I_SLTZ:opcode Register:rd Delimiter Register:rs
+             |  I_SLTZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("slt", Assembler.debug, rd, rs, "x0");
                   else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
-             |  I_SGTZ:opcode Register:rd Delimiter Register:rs
+             |  I_SGTZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("slt", Assembler.debug, rd, "x0", rs);
                   else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
-             ;
-
-ROpCode     ::= I_SLL:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SRL:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SRA:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_ADD:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SUB:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_XOR:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_OR:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_AND:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SLT:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SLTU:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_MUL:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_MULH:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_MULHSU:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_MULHU:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_DIV:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_DIVU:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_REM:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_REMU:opcode
-                {: RESULT = (String)opcode; :}
              ;
 
 /*
@@ -318,6 +317,8 @@ ROpCode     ::= I_SLL:opcode
   lhu rd, offset(rs1)
   lw rd, offset(rs1)
   ecall
+  fence
+  fence.i
   nop
   mv rd, rs
   not rd, rs
@@ -330,8 +331,18 @@ ROpCode     ::= I_SLL:opcode
   lw rd, symbol
 */
 
-IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType(opcode, Assembler.debug, rd, rs1, imm); :}
+IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("addi", Assembler.debug, rd, rs1, imm); :}
+             |  I_XORI Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("xori", Assembler.debug, rd, rs1, imm); :}
+             |  I_ORI Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("ori", Assembler.debug, rd, rs1, imm); :}
+             |  I_ANDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("andi", Assembler.debug, rd, rs1, imm); :}
+             |  I_SLTI Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("slti", Assembler.debug, rd, rs1, imm); :}
+             |  I_SLTIU Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("sltiu", Assembler.debug, rd, rs1, imm); :}
              |  I_SLLI Register:rd Delimiter Register:rs1 Delimiter Const:imm
                 {: RESULT = new Shift("slli", Assembler.debug, rd, rs1, imm); :}
              |  I_SRLI Register:rd Delimiter Register:rs1 Delimiter Const:imm
@@ -431,20 +442,6 @@ IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Cons
                  :}
              ;
 
-IOpCode     ::= I_ADDI:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_XORI:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_ORI:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_ANDI:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SLTI:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_SLTIU:opcode
-                {: RESULT = (String)opcode; :}
-             ;
-
 /*
   STYPE
 
@@ -509,8 +506,18 @@ SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RP
   bleu rs1, rs2, symbol
 */
 
-BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType(opcode, Assembler.debug, rs1, rs2, id); :}
+BType       ::= I_BEQ Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("beq", Assembler.debug, rs1, rs2, id); :}
+             |  I_BNE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bne", Assembler.debug, rs1, rs2, id); :}
+             |  I_BLT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("blt", Assembler.debug, rs1, rs2, id); :}
+             |  I_BGE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bge", Assembler.debug, rs1, rs2, id); :}
+             |  I_BLTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bltu", Assembler.debug, rs1, rs2, id); :}
+             |  I_BGEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bgeu", Assembler.debug, rs1, rs2, id); :}
              |  I_BEQZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
@@ -581,20 +588,6 @@ BType       ::= BOpCode:opcode Register:rs1 Delimiter Register:rs2 Delimiter Id:
                   else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
-             ;
-
-BOpCode     ::= I_BEQ:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_BNE:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_BLT:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_BGE:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_BLTU:opcode
-                {: RESULT = (String)opcode; :}
-             |  I_BGEU:opcode
-                {: RESULT = (String)opcode; :}
              ;
 
 /*
