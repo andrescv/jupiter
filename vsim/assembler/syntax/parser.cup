@@ -90,6 +90,7 @@ terminal I_FEQS, I_FLTS, I_FLES, I_FCLASSS;
 terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
 terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
 terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
+terminal I_FENCE, I_FENCEI;
 // single-precision floating point
 terminal I_FLW;
 
@@ -351,6 +352,10 @@ IType       ::= IOpCode:opcode Register:rd Delimiter Register:rs1 Delimiter Cons
                 {: RESULT = new IType("lw", Assembler.debug, rd, rs1, offset); :}
              |  I_ECALL
                 {: RESULT = new IType("ecall", Assembler.debug, "x0", "x0", 0); :}
+             |  I_FENCE
+                {: RESULT = new IType("fence", Assembler.debug, "x0", "x0", 0); :}
+             |  I_FENCEI
+                {: RESULT = new IType("fence.i", Assembler.debug, "x0", "x0", 0); :}
              |  I_NOP
                 {:
                   if (!Settings.BARE)
