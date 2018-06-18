@@ -79,4 +79,130 @@ public final class Data {
     return Integer.compareUnsigned(a, b) < 0;
   }
 
+  public static float sqrt(float a) {
+    return (float)Math.sqrt(a);
+  }
+
+  public static float fsgnj(float a, float b) {
+    int ax = Float.floatToRawIntBits(a);
+    int bx = Float.floatToRawIntBits(b);
+    int cx = (bx & 0x80000000) | (ax & 0x7FFFFFFF);
+    return Float.intBitsToFloat(cx);
+  }
+
+  public static float fsgnjn(float a, float b) {
+    int ax = Float.floatToRawIntBits(a);
+    int bx = Float.floatToRawIntBits(b);
+    int cx = (~bx & 0x80000000) | (ax & 0x7FFFFFFF);
+    return Float.intBitsToFloat(cx);
+  }
+
+  public static float fsgnjx(float a, float b) {
+    int ax = Float.floatToRawIntBits(a);
+    int bx = Float.floatToRawIntBits(b);
+    int cx = ((ax ^ bx) & 0x80000000) | (ax & 0x7FFFFFFF);
+    return Float.intBitsToFloat(cx);
+  }
+
+  public static float fcvtsw(Integer a) {
+    return a.floatValue();
+  }
+
+  public static float fcvtswu(Integer a) {
+    return ((Long) Integer.toUnsignedLong(a)).floatValue();
+  }
+
+  public static int fcvtws(float a) {
+    if (Float.isNaN(a))
+      return Integer.MAX_VALUE;
+    else
+      return Math.round(a);
+  }
+
+  public static int fcvtwus(float a) {
+    if (a < Integer.MIN_VALUE)
+      return 0;
+    else if (a > Integer.MAX_VALUE || Float.isNaN(a))
+      return Integer.MAX_VALUE;
+    else
+      // TODO: check this
+      return Math.round(a);
+  }
+
+  private static boolean signallingNaN(float f) {
+    return Float.isNaN(f) && ((Float.floatToRawIntBits(f) & 0x00400000) == 0);
+  }
+
+  private static boolean quietNaN(float f) {
+    return Float.isNaN(f) && ((Float.floatToRawIntBits(f) & 0x00400000) != 0);
+  }
+
+  public static float fmin(float a, float b) {
+    // if at least one input is a signaling NaN, return canonical NaN
+    if (signallingNaN(a) || signallingNaN(b))
+      return Float.NaN;
+    // if both inputs are quiet nans, return canonical NaN
+    else if (quietNaN(a) && quietNaN(b))
+      return Float.NaN;
+    // if one operand is a quiet NaN and the other is not a NaN, return
+    // the non-NaN operand
+    else if (quietNaN(a) || quietNaN(b)) {
+      if (!quietNaN(a))
+        return a;
+      else
+        return b;
+    } else
+      return Math.min(a, b);
+  }
+
+  public static float fmax(float a, float b) {
+    // if at least one input is a signaling NaN, return canonical NaN
+    if (signallingNaN(a) || signallingNaN(b))
+      return Float.NaN;
+    // if both inputs are quiet nans, return canonical NaN
+    else if (quietNaN(a) && quietNaN(b))
+      return Float.NaN;
+    // if one operand is a quiet NaN and the other is not a NaN, return
+    // the non-NaN operand
+    else if (quietNaN(a) || quietNaN(b)) {
+      if (!quietNaN(a))
+        return a;
+      else
+        return b;
+    } else
+      return Math.max(a, b);
+  }
+
+  public static int fclass(float f) {
+    int out = 0;
+    int bits = Float.floatToRawIntBits(f);
+    boolean infOrNaN = Float.isNaN(f) || Float.isInfinite(f);
+    boolean subnormalOrZero = (bits & 0x7F800000) == 0;
+    boolean sign = ((bits >>> 31) & 0x1) != 0;
+    boolean fracZero = (bits & 0x007FFFFF) == 0;
+    boolean isNaN = Float.isNaN(f);
+    boolean isSNaN = signallingNaN(f);
+    if (sign && infOrNaN && fracZero)
+      out |= 1 << 0;
+    if (sign && !infOrNaN && !subnormalOrZero)
+      out |= 1 << 1;
+    if (sign && subnormalOrZero && !fracZero)
+      out |= 1 << 2;
+    if (sign && subnormalOrZero && fracZero)
+      out |= 1 << 3;
+    if (!sign && infOrNaN && fracZero)
+      out |= 1 << 7;
+    if (!sign && !infOrNaN && !subnormalOrZero)
+      out |= 1 << 6;
+    if (!sign && subnormalOrZero && !fracZero)
+      out |= 1 << 5;
+    if (!sign && subnormalOrZero && fracZero)
+      out |= 1 << 4;
+    if (isNaN &&  isSNaN)
+      out |= 1 << 8;
+    if (isNaN && !isSNaN)
+      out |= 1 << 9;
+    return out;
+  }
+
 }
