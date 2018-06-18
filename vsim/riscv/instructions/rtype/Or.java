@@ -1,7 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.Globals;
-
 
 public final class Or extends RType {
 
@@ -18,11 +16,8 @@ public final class Or extends RType {
   }
 
   @Override
-  protected void compute(int rd, int rs1, int rs2) {
-    Globals.regfile.setRegister(
-      rd,
-      Globals.regfile.getRegister(rs1) | Globals.regfile.getRegister(rs2)
-    );
+  protected int compute(int rs1, int rs2) {
+    return rs1 | rs2;
   }
 
 }
