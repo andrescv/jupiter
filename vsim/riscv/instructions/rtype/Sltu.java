@@ -1,5 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
+import vsim.Globals;
 import vsim.utils.Data;
 
 
@@ -18,8 +19,11 @@ public final class Sltu extends RType {
   }
 
   @Override
-  protected int compute(int rs1, int rs2) {
-    return Data.ltu(rs1, rs2) ? 1 : 0;
+  protected void compute(int rd, int rs1, int rs2) {
+    Globals.regfile.setRegister(
+      rd,
+      Data.ltu(Globals.regfile.getRegister(rs1), Globals.regfile.getRegister(rs2)) ? 1 : 0
+    );
   }
 
 }
