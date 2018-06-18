@@ -8,7 +8,7 @@ package vsim.assembler;
   private StringBuffer text;
 
   private java_cup.runtime.Symbol symbol(int type) {
-    return this.symbol(type, yytext().toLowerCase());
+    return this.symbol(type, yytext());
   }
 
   private java_cup.runtime.Symbol symbol(int type, Object value) {
@@ -131,33 +131,31 @@ I_SRA = [sS][rR][aA]
 I_SRL = [sS][rR][lL]
 I_SUB = [sS][uU][bB]
 I_XOR = [xX][oO][rR]
-I_FENCE = [fF][eE][nN][cC][eE]
-I_FENCEI = [fF][eE][nN][cC][eE]"."[iI]
 // single-precision floating point
-I_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
-I_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
-I_FCVTSW = [fF][cC][vV][tT]"."[sS]"."[wW]
-I_FCVTSWU = [fF][cC][vV][tT]"."[sS]"."[wW][uU]
-I_FCVTWS = [fF][cC][vV][tT]"."[wW]"."[sS]
-I_FCVTWUS = [fF][cC][vV][tT]"."[wW][uU]"."[sS]
-I_FADDS = [fF][aA][dD][dD]"."[sS]
-I_FSUBS = [fF][sS][uU][bB]"."[sS]
-I_FMULS = [fF][mM][uU][lL]"."[sS]
-I_FDIVS = [fF][dD][iI][vV]"."[sS]
-I_FSQRTS = [fF][sS][qQ][rR][tT]"."[sS]
-I_FMADDS = [fF][mM][aA][dD][dD]"."[sS]
-I_FMSUBS = [fF][mM][sS][uU][bB]"."[sS]
-I_FNMSUBS = [fF][nN][mM][sS][uU][bB]"."[sS]
-I_FNMADDS = [fF][nN][mM][aA][dD][dD]"."[sS]
-I_FSGNJS = [fF][sS][gG][nN][jJ]"."[sS]
-I_FSGNJNS = [fF][sS][gG][nN][jJ][nN]"."[sS]
-I_FSGNJXS = [fF][sS][gG][nN][jJ][xX]"."[sS]
-I_FMINS = [fF][mM][iI][nN]"."[sS]
-I_FMAXS = [fF][mM][aA][xX]"."[sS]
-I_FEQS = [fF][eE][qQ]"."[sS]
-I_FLTS = [fF][lL][tT]"."[sS]
-I_FLES = [fF][lL][eE]"."[sS]
-I_FCLASSS = [fF][cC][lL][aA][sS][sS]"."[sS]
+F_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
+F_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
+F_FCVTSW = [fF][cC][vV][tT]"."[sS]"."[wW]
+F_FCVTSWU = [fF][cC][vV][tT]"."[sS]"."[wW][uU]
+F_FCVTWS = [fF][cC][vV][tT]"."[wW]"."[sS]
+F_FCVTWUS = [fF][cC][vV][tT]"."[wW][uU]"."[sS]
+F_FADDS = [fF][aA][dD][dD]"."[sS]
+F_FSUBS = [fF][sS][uU][bB]"."[sS]
+F_FMULS = [fF][mM][uU][lL]"."[sS]
+F_FDIVS = [fF][dD][iI][vV]"."[sS]
+F_FSQRTS = [fF][sS][qQ][rR][tT]"."[sS]
+F_FMADDS = [fF][mM][aA][dD][dD]"."[sS]
+F_FMSUBS = [fF][mM][sS][uU][bB]"."[sS]
+F_FNMSUBS = [fF][nN][mM][sS][uU][bB]"."[sS]
+F_FNMADDS = [fF][nN][mM][aA][dD][dD]"."[sS]
+F_FSGNJS = [fF][sS][gG][nN][jJ]"."[sS]
+F_FSGNJNS = [fF][sS][gG][nN][jJ][nN]"."[sS]
+F_FSGNJXS = [fF][sS][gG][nN][jJ][xX]"."[sS]
+F_FMINS = [fF][mM][iI][nN]"."[sS]
+F_FMAXS = [fF][mM][aA][xX]"."[sS]
+F_FEQS = [fF][eE][qQ]"."[sS]
+F_FLTS = [fF][lL][tT]"."[sS]
+F_FLES = [fF][lL][eE]"."[sS]
+F_FCLASSS = [fF][cC][lL][aA][sS][sS]"."[sS]
 
 
 // I Format
@@ -177,15 +175,17 @@ I_SLTIU = [sS][lL][tT][iI][uU]
 I_SRAI = [sS][rR][aA][iI]
 I_SRLI = [sS][rR][lL][iI]
 I_XORI = [xX][oO][rR][iI]
+I_FENCE = [fF][eE][nN][cC][eE]
+I_FENCEI = [fF][eE][nN][cC][eE]"."[iI]
 // single-precision floating point
-I_FLW = [fF][lL][wW]
+F_FLW = [fF][lL][wW]
 
 // S Format
 I_SB = [sS][bB]
 I_SH = [sS][hH]
 I_SW = [sS][wW]
 // single-precision floating point
-I_FSW = [fF][sS][wW]
+F_FSW = [fF][sS][wW]
 
 // Pseudos
 I_LA = [lL][aA]
@@ -324,7 +324,7 @@ ERROR = .
 
   // labels
   {LABEL} {
-    return symbol(Token.LABEL, yytext());
+    return symbol(Token.LABEL);
   }
 
   // directives
@@ -464,8 +464,8 @@ ERROR = .
     return symbol(Token.I_SW);
   }
 
-  {I_FSW} {
-    return symbol(Token.I_FSW);
+  {F_FSW} {
+    return symbol(Token.F_FSW);
   }
 
   // R Format
@@ -541,100 +541,100 @@ ERROR = .
     return symbol(Token.I_XOR);
   }
 
-  {I_FMVWX} {
-    return symbol(Token.I_FMVWX);
+  {F_FMVWX} {
+    return symbol(Token.F_FMVWX);
   }
 
-  {I_FMVXW} {
-    return symbol(Token.I_FMVXW);
+  {F_FMVXW} {
+    return symbol(Token.F_FMVXW);
   }
 
-  {I_FCVTSW} {
-    return symbol(Token.I_FCVTSW);
+  {F_FCVTSW} {
+    return symbol(Token.F_FCVTSW);
   }
 
-  {I_FCVTSWU} {
-    return symbol(Token.I_FCVTSWU);
+  {F_FCVTSWU} {
+    return symbol(Token.F_FCVTSWU);
   }
 
-  {I_FCVTWS} {
-    return symbol(Token.I_FCVTWS);
+  {F_FCVTWS} {
+    return symbol(Token.F_FCVTWS);
   }
 
-  {I_FCVTWUS} {
-    return symbol(Token.I_FCVTWUS);
+  {F_FCVTWUS} {
+    return symbol(Token.F_FCVTWUS);
   }
 
-  {I_FADDS} {
-    return symbol(Token.I_FADDS);
+  {F_FADDS} {
+    return symbol(Token.F_FADDS);
   }
 
-  {I_FSUBS} {
-    return symbol(Token.I_FSUBS);
+  {F_FSUBS} {
+    return symbol(Token.F_FSUBS);
   }
 
-  {I_FMULS} {
-    return symbol(Token.I_FMULS);
+  {F_FMULS} {
+    return symbol(Token.F_FMULS);
   }
 
-  {I_FDIVS} {
-    return symbol(Token.I_FDIVS);
+  {F_FDIVS} {
+    return symbol(Token.F_FDIVS);
   }
 
-  {I_FSQRTS} {
-    return symbol(Token.I_FSQRTS);
+  {F_FSQRTS} {
+    return symbol(Token.F_FSQRTS);
   }
 
-  {I_FMADDS} {
-    return symbol(Token.I_FMADDS);
+  {F_FMADDS} {
+    return symbol(Token.F_FMADDS);
   }
 
-  {I_FMSUBS} {
-    return symbol(Token.I_FMSUBS);
+  {F_FMSUBS} {
+    return symbol(Token.F_FMSUBS);
   }
 
-  {I_FNMSUBS} {
-    return symbol(Token.I_FNMSUBS);
+  {F_FNMSUBS} {
+    return symbol(Token.F_FNMSUBS);
   }
 
-  {I_FNMADDS} {
-    return symbol(Token.I_FNMADDS);
+  {F_FNMADDS} {
+    return symbol(Token.F_FNMADDS);
   }
 
-  {I_FSGNJS} {
-    return symbol(Token.I_FSGNJS);
+  {F_FSGNJS} {
+    return symbol(Token.F_FSGNJS);
   }
 
-  {I_FSGNJNS} {
-    return symbol(Token.I_FSGNJNS);
+  {F_FSGNJNS} {
+    return symbol(Token.F_FSGNJNS);
   }
 
-  {I_FSGNJXS} {
-    return symbol(Token.I_FSGNJXS);
+  {F_FSGNJXS} {
+    return symbol(Token.F_FSGNJXS);
   }
 
-  {I_FMINS} {
-    return symbol(Token.I_FMINS);
+  {F_FMINS} {
+    return symbol(Token.F_FMINS);
   }
 
-  {I_FMAXS} {
-    return symbol(Token.I_FMAXS);
+  {F_FMAXS} {
+    return symbol(Token.F_FMAXS);
   }
 
-  {I_FEQS} {
-    return symbol(Token.I_FEQS);
+  {F_FEQS} {
+    return symbol(Token.F_FEQS);
   }
 
-  {I_FLTS} {
-    return symbol(Token.I_FLTS);
+  {F_FLTS} {
+    return symbol(Token.F_FLTS);
   }
 
-  {I_FLES} {
-    return symbol(Token.I_FLES);
+  {F_FLES} {
+    return symbol(Token.F_FLES);
   }
 
-  {I_FCLASSS} {
-    return symbol(Token.I_FCLASSS);
+  {F_FCLASSS} {
+    return symbol(Token.F_FCLASSS);
   }
 
   // I Format
@@ -710,8 +710,8 @@ ERROR = .
     return symbol(Token.I_XORI);
   }
 
-  {I_FLW} {
-    return symbol(Token.I_FLW);
+  {F_FLW} {
+    return symbol(Token.F_FLW);
   }
 
   // Pseudos
@@ -830,7 +830,7 @@ ERROR = .
 
   // identifiers
   {IDENTIFIER} {
-    return symbol(Token.IDENTIFIER, yytext());
+    return symbol(Token.IDENTIFIER);
   }
 
   // number
