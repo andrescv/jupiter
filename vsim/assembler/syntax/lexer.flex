@@ -8,7 +8,7 @@ package vsim.assembler;
   private StringBuffer text;
 
   private java_cup.runtime.Symbol symbol(int type) {
-    return this.symbol(type, yytext());
+    return this.symbol(type, yytext().toLowerCase());
   }
 
   private java_cup.runtime.Symbol symbol(int type, Object value) {
@@ -131,6 +131,8 @@ I_SRA = [sS][rR][aA]
 I_SRL = [sS][rR][lL]
 I_SUB = [sS][uU][bB]
 I_XOR = [xX][oO][rR]
+I_FENCE = [fF][eE][nN][cC][eE]
+I_FENCEI = [fF][eE][nN][cC][eE]"."[iI]
 // single-precision floating point
 I_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
 I_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
@@ -322,7 +324,7 @@ ERROR = .
 
   // labels
   {LABEL} {
-    return symbol(Token.LABEL);
+    return symbol(Token.LABEL, yytext());
   }
 
   // directives
@@ -648,6 +650,14 @@ ERROR = .
     return symbol(Token.I_ECALL);
   }
 
+  {I_FENCE} {
+    return symbol(Token.I_FENCE);
+  }
+
+  {I_FENCEI} {
+    return symbol(Token.I_FENCEI);
+  }
+
   {I_JALR} {
     return symbol(Token.I_JALR);
   }
@@ -820,7 +830,7 @@ ERROR = .
 
   // identifiers
   {IDENTIFIER} {
-      return symbol(Token.IDENTIFIER);
+    return symbol(Token.IDENTIFIER, yytext());
   }
 
   // number
