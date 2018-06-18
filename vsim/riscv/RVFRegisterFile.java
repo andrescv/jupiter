@@ -56,6 +56,20 @@ public final class RVFRegisterFile {
     return 0.0f;
   }
 
+  public int getRegisterInt(int number) {
+    Register reg = this.rf.get("f" + number);
+    if (reg != null)
+      return reg.getValue();
+    return 0;
+  }
+
+  public int getRegisterInt(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null)
+      return reg.getValue();
+    return 0;
+  }
+
   public void setRegister(int number, float value) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
