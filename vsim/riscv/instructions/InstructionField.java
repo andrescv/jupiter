@@ -15,6 +15,7 @@ public final class InstructionField {
   public static final InstructionField RD        = new InstructionField(7, 11);
   public static final InstructionField RS1       = new InstructionField(15, 19);
   public static final InstructionField RS2       = new InstructionField(20, 24);
+  public static final InstructionField RS3       = new InstructionField(27, 31);
   // shift amount
   public static final InstructionField SHAMT     = new InstructionField(20, 24);
   // immediates
