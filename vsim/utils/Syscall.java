@@ -1,6 +1,7 @@
 package vsim.utils;
 
 import vsim.Globals;
+import vsim.Settings;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -33,7 +34,7 @@ public final class Syscall {
         Syscall.printInt();
         break;
       case PRINT_FLOAT:
-        Message.warning("ecall: print float not implemented yet, only (RV32IM)");
+        Syscall.printFloat();
         break;
       case PRINT_STRING:
         Syscall.printString();
@@ -42,7 +43,7 @@ public final class Syscall {
         Syscall.readInt();
         break;
       case READ_FLOAT:
-        Message.warning("ecall: read float not implemented yet, only (RV32IM)");
+        Syscall.readFloat();
         break;
       case READ_STRING:
         Syscall.readString();
@@ -84,6 +85,11 @@ public final class Syscall {
     System.out.print(num);
   }
 
+  private static void printFloat() {
+    float num = Globals.fregfile.getRegister("f12");
+    System.out.print(num);
+  }
+
   private static void printString() {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer();
@@ -101,9 +107,30 @@ public final class Syscall {
     try {
       Globals.regfile.setRegister("a0", Integer.parseInt(br.readLine()));
     } catch (IOException e) {
-      Message.warning("ecall: could not read integer");
+      if (!Settings.QUIET)
+        Message.warning("ecall: could not read integer");
     } catch (NumberFormatException e) {
-      Message.warning("ecall: invalid integer input");
+      if (!Settings.QUIET)
+        Message.warning("ecall: invalid integer input");
+    } catch (NullPointerException e) {
+      if (!Settings.QUIET)
+        Message.warning("ecall: no input");
+    }
+  }
+
+  private static void readFloat() {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    try {
+      Globals.fregfile.setRegister("f0", Float.parseFloat(br.readLine()));
+    } catch (IOException e) {
+      if (!Settings.QUIET)
+        Message.warning("ecall: could not read float");
+    } catch (NumberFormatException e) {
+      if (!Settings.QUIET)
+        Message.warning("ecall: invalid float input");
+    } catch (NullPointerException e) {
+      if (!Settings.QUIET)
+        Message.warning("ecall: no input");
     }
   }
 
@@ -118,7 +145,11 @@ public final class Syscall {
         Globals.memory.storeByte(buffer++, c);
       }
     } catch (IOException e) {
-      Message.warning("ecall: could not read string");
+      if (!Settings.QUIET)
+        Message.warning("ecall: could not read string");
+    } catch (NullPointerException e) {
+      if (!Settings.QUIET)
+        Message.warning("ecall: no input");
     }
   }
 
@@ -127,8 +158,10 @@ public final class Syscall {
     if (numBytes > 0) {
       int address = Globals.memory.allocateBytesFromHeap(numBytes);
       Globals.regfile.setRegister("a0", address);
-    } else
-      Message.warning("ecall: number of bytes should be > 0");
+    } else {
+      if (!Settings.QUIET)
+        Message.warning("ecall: number of bytes should be > 0");
+    }
   }
 
   private static void exit() {
@@ -146,7 +179,8 @@ public final class Syscall {
     try {
       Globals.regfile.setRegister("a0", br.read());
     } catch (IOException e) {
-      Message.warning("ecall: could not read char");
+      if (!Settings.QUIET)
+        Message.warning("ecall: could not read char");
     }
   }
 
