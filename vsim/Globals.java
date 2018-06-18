@@ -3,8 +3,8 @@ package vsim;
 import vsim.riscv.Memory;
 import java.util.Hashtable;
 import java.util.ArrayList;
-import vsim.riscv.RegisterFile;
 import vsim.riscv.InstructionSet;
+import vsim.riscv.RVIRegisterFile;
 import vsim.assembler.SymbolTable;
 
 
@@ -14,7 +14,7 @@ public final class Globals {
   public static final Memory memory = Memory.ram;
 
   // RV register file
-  public static final RegisterFile regfile = RegisterFile.regfile;
+  public static final RVIRegisterFile regfile = RVIRegisterFile.regfile;
 
   // RV instruction set
   public static final InstructionSet iset = InstructionSet.insts;
