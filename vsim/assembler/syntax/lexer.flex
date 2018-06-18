@@ -131,6 +131,32 @@ I_SRA = [sS][rR][aA]
 I_SRL = [sS][rR][lL]
 I_SUB = [sS][uU][bB]
 I_XOR = [xX][oO][rR]
+// single-precision floating point
+I_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
+I_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
+I_FCVTSW = [fF][cC][vV][tT]"."[sS]"."[wW]
+I_FCVTSWU = [fF][cC][vV][tT]"."[sS]"."[wW][uU]
+I_FCVTWS = [fF][cC][vV][tT]"."[wW]"."[sS]
+I_FCVTWUS = [fF][cC][vV][tT]"."[wW][uU]"."[sS]
+I_FADDS = [fF][aA][dD][dD]"."[sS]
+I_FSUBS = [fF][sS][uU][bB]"."[sS]
+I_FMULS = [fF][mM][uU][lL]"."[sS]
+I_FDIVS = [fF][dD][iI][vV]"."[sS]
+I_FSQRTS = [fF][sS][qQ][rR][tT]"."[sS]
+I_FMADDS = [fF][mM][aA][dD][dD]"."[sS]
+I_FMSUBS = [fF][mM][sS][uU][bB]"."[sS]
+I_FNMSUBS = [fF][nN][mM][sS][uU][bB]"."[sS]
+I_FNMADDS = [fF][nN][mM][aA][dD][dD]"."[sS]
+I_FSGNJS = [fF][sS][gG][nN][jJ]"."[sS]
+I_FSGNJNS = [fF][sS][gG][nN][jJ][nN]"."[sS]
+I_FSGNJXS = [fF][sS][gG][nN][jJ][xX]"."[sS]
+I_FMINS = [fF][mM][iI][nN]"."[sS]
+I_FMAXS = [fF][mM][aA][xX]"."[sS]
+I_FEQS = [fF][eE][qQ]"."[sS]
+I_FLTS = [fF][lL][tT]"."[sS]
+I_FLES = [fF][lL][eE]"."[sS]
+I_FCLASSS = [fF][cC][lL][aA][sS][sS]"."[sS]
+
 
 // I Format
 I_ADDI = [aA][dD][dD][iI]
@@ -149,11 +175,15 @@ I_SLTIU = [sS][lL][tT][iI][uU]
 I_SRAI = [sS][rR][aA][iI]
 I_SRLI = [sS][rR][lL][iI]
 I_XORI = [xX][oO][rR][iI]
+// single-precision floating point
+I_FLW = [fF][lL][wW]
 
 // S Format
 I_SB = [sS][bB]
 I_SH = [sS][hH]
 I_SW = [sS][wW]
+// single-precision floating point
+I_FSW = [fF][sS][wW]
 
 // Pseudos
 I_LA = [lL][aA]
@@ -186,6 +216,11 @@ I_TAIL = [tT][aA][iI][lL]
 R_NUMBER = [xX]([0-9]|[12][0-9]|[3][01])
 R_NAME = ("zero"|"ra"|"sp"|"gp"|"tp"|"fp"|"t"[0-6]|"a"[0-7]|"s"([0-9]|1[01]))
 REGISTER = ({R_NUMBER}|{R_NAME})
+
+// floating point registers
+F_NUMBER = [fF]([0-9]|[12][0-9]|[3][01])
+F_NAME = ("ft"([0-9]|1[01])|"fa"[0-8]|"fs"([0-9]|1[01]))
+FREGISTER = ({F_NUMBER}|{F_NAME})
 
 // ids
 IDENTIFIER = [a-zA-Z_][a-zA-Z0-9_]*
@@ -427,6 +462,10 @@ ERROR = .
     return symbol(Token.I_SW);
   }
 
+  {I_FSW} {
+    return symbol(Token.I_FSW);
+  }
+
   // R Format
   {I_ADD} {
     return symbol(Token.I_ADD);
@@ -500,6 +539,102 @@ ERROR = .
     return symbol(Token.I_XOR);
   }
 
+  {I_FMVWX} {
+    return symbol(Token.I_FMVWX);
+  }
+
+  {I_FMVXW} {
+    return symbol(Token.I_FMVXW);
+  }
+
+  {I_FCVTSW} {
+    return symbol(Token.I_FCVTSW);
+  }
+
+  {I_FCVTSWU} {
+    return symbol(Token.I_FCVTSWU);
+  }
+
+  {I_FCVTWS} {
+    return symbol(Token.I_FCVTWS);
+  }
+
+  {I_FCVTWUS} {
+    return symbol(Token.I_FCVTWUS);
+  }
+
+  {I_FADDS} {
+    return symbol(Token.I_FADDS);
+  }
+
+  {I_FSUBS} {
+    return symbol(Token.I_FSUBS);
+  }
+
+  {I_FMULS} {
+    return symbol(Token.I_FMULS);
+  }
+
+  {I_FDIVS} {
+    return symbol(Token.I_FDIVS);
+  }
+
+  {I_FSQRTS} {
+    return symbol(Token.I_FSQRTS);
+  }
+
+  {I_FMADDS} {
+    return symbol(Token.I_FMADDS);
+  }
+
+  {I_FMSUBS} {
+    return symbol(Token.I_FMSUBS);
+  }
+
+  {I_FNMSUBS} {
+    return symbol(Token.I_FNMSUBS);
+  }
+
+  {I_FNMADDS} {
+    return symbol(Token.I_FNMADDS);
+  }
+
+  {I_FSGNJS} {
+    return symbol(Token.I_FSGNJS);
+  }
+
+  {I_FSGNJNS} {
+    return symbol(Token.I_FSGNJNS);
+  }
+
+  {I_FSGNJXS} {
+    return symbol(Token.I_FSGNJXS);
+  }
+
+  {I_FMINS} {
+    return symbol(Token.I_FMINS);
+  }
+
+  {I_FMAXS} {
+    return symbol(Token.I_FMAXS);
+  }
+
+  {I_FEQS} {
+    return symbol(Token.I_FEQS);
+  }
+
+  {I_FLTS} {
+    return symbol(Token.I_FLTS);
+  }
+
+  {I_FLES} {
+    return symbol(Token.I_FLES);
+  }
+
+  {I_FCLASSS} {
+    return symbol(Token.I_FCLASSS);
+  }
+
   // I Format
   {I_ADDI} {
     return symbol(Token.I_ADDI);
@@ -563,6 +698,10 @@ ERROR = .
 
   {I_XORI} {
     return symbol(Token.I_XORI);
+  }
+
+  {I_FLW} {
+    return symbol(Token.I_FLW);
   }
 
   // Pseudos
@@ -672,12 +811,16 @@ ERROR = .
 
   // registers
   {REGISTER} {
-    return symbol(Token.REGISTER, yytext());
+    return symbol(Token.REGISTER);
+  }
+
+  {FREGISTER} {
+    return symbol(Token.FREGISTER);
   }
 
   // identifiers
   {IDENTIFIER} {
-      return symbol(Token.IDENTIFIER, yytext());
+      return symbol(Token.IDENTIFIER);
   }
 
   // number

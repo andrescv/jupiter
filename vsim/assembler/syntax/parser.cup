@@ -71,16 +71,27 @@ terminal I_JAL;
 
 // S Format
 terminal I_SB, I_SH, I_SW;
+// single-precision floating point
+terminal I_FSW;
 
 // R Format
 terminal I_ADD, I_AND, I_DIVU, I_DIV, I_MULHSU, I_MULHU;
 terminal I_MULH, I_MUL, I_OR, I_REMU, I_REM, I_SLTU;
 terminal I_SLL, I_SLT, I_SRA, I_SRL, I_SUB, I_XOR;
+// single-precision floating point
+terminal I_FMVWX, I_FMVXW, I_FCVTSW, I_FCVTSWU, I_FCVTWS, I_FCVTWUS;
+terminal I_FADDS, I_FSUBS, I_FMULS, I_FDIVS, I_FSQRTS;
+terminal I_FMADDS, I_FMSUBS, I_FNMSUBS, I_FNMADDS;
+terminal I_FSGNJS, I_FSGNJNS, I_FSGNJXS;
+terminal I_FMINS, I_FMAXS;
+terminal I_FEQS, I_FLTS, I_FLES, I_FCLASSS;
 
 // I Format
 terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
 terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
 terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
+// single-precision floating point
+terminal I_FLW;
 
 // Pseudos
 terminal I_LA, I_NOP, I_LI, I_MV, I_NOT, I_NEG;
@@ -93,7 +104,7 @@ terminal I_RET, I_CALL, I_TAIL;
 terminal NUMBER, STRING, CHARACTER;
 
 // Ids and Registers
-terminal REGISTER, IDENTIFIER;
+terminal REGISTER, FREGISTER, IDENTIFIER;
 
 // Directives
 terminal D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
