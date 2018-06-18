@@ -49,12 +49,12 @@ public final class Data {
 
   public static int mulh(int a, int b) {
     long result = ((long) a) * ((long) b);
-    return (int)(result >>> WORD_LENGTH_BITS);
+    return (int)(result >> WORD_LENGTH_BITS);
   }
 
   public static int mulhsu(int a, int b) {
     long result = ((long) a) * Integer.toUnsignedLong(b);
-    return (int)(result >>> WORD_LENGTH_BITS);
+    return (int)(result >> WORD_LENGTH_BITS);
   }
 
   public static int mulhu(int a, int b) {
