@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.ArrayList;
 import vsim.riscv.InstructionSet;
 import vsim.riscv.RVIRegisterFile;
+import vsim.riscv.RVFRegisterFile;
 import vsim.assembler.SymbolTable;
 
 
@@ -13,8 +14,11 @@ public final class Globals {
   // RAM
   public static final Memory memory = Memory.ram;
 
-  // RV register file
+  // RVI register file
   public static final RVIRegisterFile regfile = RVIRegisterFile.regfile;
+
+  // RVF register file
+  public static final RVFRegisterFile fregfile = RVFRegisterFile.regfile;
 
   // RV instruction set
   public static final InstructionSet iset = InstructionSet.insts;
@@ -41,6 +45,8 @@ public final class Globals {
     Globals.memory.reset();
     // reset registers
     Globals.regfile.reset();
+    // reset floating point registers
+    Globals.fregfile.reset();
   }
 
   // reset symbol table
