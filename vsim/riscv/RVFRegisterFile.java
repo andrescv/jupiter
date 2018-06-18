@@ -82,6 +82,12 @@ public final class RVFRegisterFile {
       reg.setValue(Float.floatToRawIntBits(value));
   }
 
+  public void setRegisterInt(int number, int value) {
+    Register reg = this.rf.get("f" + number);
+    if (reg != null)
+      reg.setValue(value);
+  }
+
   public void reset() {
     // reset all 32 registers
     for (int i = 0; i < MNEMONICS.length; i++) {
