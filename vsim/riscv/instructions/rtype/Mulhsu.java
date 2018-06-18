@@ -1,6 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.Globals;
 import vsim.utils.Data;
 
 
@@ -19,11 +18,8 @@ public final class Mulhsu extends RType {
   }
 
   @Override
-  protected void compute(int rd, int rs1, int rs2) {
-    Globals.regfile.setRegister(
-      rd,
-      Data.mulhsu(Globals.regfile.getRegister(rs1), Globals.regfile.getRegister(rs2))
-    );
+  protected int compute(int rs1, int rs2) {
+    return Data.mulhsu(rs1, rs2);
   }
 
 }
