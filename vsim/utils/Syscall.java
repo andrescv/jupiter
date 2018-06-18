@@ -108,13 +108,13 @@ public final class Syscall {
       Globals.regfile.setRegister("a0", Integer.parseInt(br.readLine()));
     } catch (IOException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: could not read integer");
+        Message.warning("ecall: integer number could not be read");
     } catch (NumberFormatException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: invalid integer input");
+        Message.warning("ecall: invalid integer number");
     } catch (NullPointerException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: no input");
+        Message.warning("ecall: no input (null)");
     }
   }
 
@@ -124,13 +124,13 @@ public final class Syscall {
       Globals.fregfile.setRegister("f0", Float.parseFloat(br.readLine()));
     } catch (IOException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: could not read float");
+        Message.warning("ecall: float number could not be read");
     } catch (NumberFormatException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: invalid float input");
+        Message.warning("ecall: invalid float number");
     } catch (NullPointerException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: no input");
+        Message.warning("ecall: no input (null)");
     }
   }
 
@@ -146,10 +146,10 @@ public final class Syscall {
       }
     } catch (IOException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: could not read string");
+        Message.warning("ecall: string could not be read");
     } catch (NullPointerException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: no input");
+        Message.warning("ecall: no input (null)");
     }
   }
 
@@ -180,7 +180,7 @@ public final class Syscall {
       Globals.regfile.setRegister("a0", br.read());
     } catch (IOException e) {
       if (!Settings.QUIET)
-        Message.warning("ecall: could not read char");
+        Message.warning("ecall: char could not be read");
     }
   }
 
