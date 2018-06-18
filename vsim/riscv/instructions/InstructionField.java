@@ -5,11 +5,11 @@ public final class InstructionField {
 
   // all bits
   public static final InstructionField ALL       = new InstructionField(0, 31);
-
   // opcode
   public static final InstructionField OPCODE    = new InstructionField(0, 6);
   // functions
   public static final InstructionField FUNCT3    = new InstructionField(12, 14);
+  public static final InstructionField FUNCT5    = new InstructionField(27, 31);
   public static final InstructionField FUNCT7    = new InstructionField(25, 31);
   // registers
   public static final InstructionField RD        = new InstructionField(7, 11);
@@ -30,6 +30,12 @@ public final class InstructionField {
   public static final InstructionField IMM_11J   = new InstructionField(20);
   public static final InstructionField IMM_10_1  = new InstructionField(21, 30);
   public static final InstructionField IMM_20    = new InstructionField(31);
+  // rounding method
+  public static final InstructionField RM        = new InstructionField(12, 14);
+  // format
+  public static final InstructionField FMT       = new InstructionField(25, 26);
+  // width
+  public static final InstructionField WIDTH     = new InstructionField(12, 14);
 
   protected int lo;
   protected int hi;
