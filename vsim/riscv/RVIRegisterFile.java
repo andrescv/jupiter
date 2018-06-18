@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
-public final class RegisterFile {
+public final class RVIRegisterFile {
 
   private static final String[] MNEMONICS = {
     "zero", "ra", "sp", "gp",
@@ -19,50 +19,12 @@ public final class RegisterFile {
   };
 
   // only 1 instance
-  public static final RegisterFile regfile = new RegisterFile();
-
-  private final class Register {
-
-    private int number;
-    private int value;
-    private int resetValue;
-    private boolean editable;
-
-    private Register(int number, int value, boolean editable) {
-      this.number = number;
-      this.value = value;
-      this.resetValue = value;
-      this.editable = editable;
-    }
-
-    private int getNumber() {
-      return this.number;
-    }
-
-    private int getValue() {
-      return this.value;
-    }
-
-    private void setValue(int value) {
-      if (this.editable)
-        this.value = value;
-    }
-
-    private void setResetValue(int resetValue) {
-      if (this.editable)
-        this.resetValue = resetValue;
-    }
-
-    private void reset() {
-      this.value = this.resetValue;
-    }
-
-  }
+  public static final RVIRegisterFile regfile = new RVIRegisterFile();
 
   private Hashtable<String, Register> rf;
   private Register pc;
 
-  private RegisterFile() {
+  private RVIRegisterFile() {
     this.rf = new Hashtable<String, Register>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
@@ -151,14 +113,14 @@ public final class RegisterFile {
         regfmt,
         Colorize.green("x" + i),
         (i >= 10) ? "" : " ",
-        Colorize.blue(String.format("0x%08x", reg.getValue())),
+        reg.toString(),
         Colorize.purple(MNEMONICS[i])
       ) + newline;
     }
     // and pc
     out += newline + String.format(
       "PC  [%s]",
-      Colorize.blue(String.format("0x%08x", this.pc.getValue()))
+      this.pc.toString()
     );
     return out;
   }
