@@ -94,7 +94,7 @@ public final class Memory {
             out += newline;
     }
     // right strip whitespace
-    return out.replaceAll("\\s+$","");
+    return out.replaceAll("\\s+$", "");
   }
 
   @Override
