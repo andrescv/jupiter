@@ -1,4 +1,4 @@
-package vsim.riscv.instructions.frtype;
+package vsim.riscv.instructions.rtype;
 
 
 public final class Fdivs extends FRType {

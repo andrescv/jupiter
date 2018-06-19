@@ -10,14 +10,13 @@ import vsim.riscv.instructions.Instruction;
 public final class InstructionSet {
 
   // packages
-  private static final String RTYPE   = "vsim.riscv.instructions.rtype";
-  private static final String ITYPE   = "vsim.riscv.instructions.itype";
-  private static final String STYPE   = "vsim.riscv.instructions.stype";
-  private static final String BTYPE   = "vsim.riscv.instructions.btype";
-  private static final String UTYPE   = "vsim.riscv.instructions.utype";
-  private static final String JTYPE   = "vsim.riscv.instructions.jtype";
-  private static final String FR4TYPE = "vsim.riscv.instructions.fr4type";
-  private static final String FRTYPE  = "vsim.riscv.instructions.frtype";
+  private static final String RTYPE  = "vsim.riscv.instructions.rtype";
+  private static final String ITYPE  = "vsim.riscv.instructions.itype";
+  private static final String STYPE  = "vsim.riscv.instructions.stype";
+  private static final String BTYPE  = "vsim.riscv.instructions.btype";
+  private static final String UTYPE  = "vsim.riscv.instructions.utype";
+  private static final String JTYPE  = "vsim.riscv.instructions.jtype";
+  private static final String R4TYPE = "vsim.riscv.instructions.r4type";
 
   // current classes in rtype package
   private static final String[] RClasses = {
@@ -26,7 +25,14 @@ public final class InstructionSet {
     "Srl", "Sra", "Or",
     "And", "Div", "Divu",
     "Mul", "Mulh", "Mulhu",
-    "Mulhsu", "Rem", "Remu"
+    "Mulhsu", "Rem", "Remu",
+    "Fmvwx", "Fmvxw", "Fcvtsw",
+    "Fcvtswu", "Fcvtws", "Fcvtwus",
+    "Fadds", "Fsubs", "Fmuls",
+    "Fdivs", "Fsqrts", "Fsgnjs",
+    "Fsgnjns", "Fsgnjxs", "Feqs",
+    "Flts", "Fles", "Fclasss",
+    "Fmins", "Fmaxs"
   };
 
   // current classes in itype package
@@ -60,19 +66,8 @@ public final class InstructionSet {
     "Jal"
   };
 
-  // current classes in frtype package
-  private static final String[] FRClasses = {
-    "Fmvwx", "Fmvxw", "Fcvtsw",
-    "Fcvtswu", "Fcvtws", "Fcvtwus",
-    "Fadds", "Fsubs", "Fmuls",
-    "Fdivs", "Fsqrts", "Fsgnjs",
-    "Fsgnjns", "Fsgnjxs", "Feqs",
-    "Flts", "Fles", "Fclasss",
-    "Fmins", "Fmaxs"
-  };
-
-  // current classes in fr4type package
-  private static final String[] FR4Classes = {
+  // current classes in r4type package
+  private static final String[] R4Classes = {
     "Fmadds", "Fmsubs",
     "Fnmadds", "Fnmsubs"
   };
@@ -117,8 +112,7 @@ public final class InstructionSet {
     this.add(BClasses, BTYPE);
     this.add(UClasses, UTYPE);
     this.add(JClasses, JTYPE);
-    this.add(FRClasses, FRTYPE);
-    this.add(FR4Classes, FR4TYPE);
+    this.add(R4Classes, R4TYPE);
   }
 
   public Instruction get(String mnemonic) {
