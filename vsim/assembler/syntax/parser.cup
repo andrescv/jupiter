@@ -487,6 +487,8 @@ RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
   lb rd, symbol
   lh rd, symbol
   lw rd, symbol
+  flw frd, offset(rs1)
+  flw frd, symbol, rt
 */
 
 IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
@@ -525,6 +527,12 @@ IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
                 {: RESULT = new IType("fence", Assembler.debug, "x0", "x0", 0); :}
              |  I_FENCEI
                 {: RESULT = new IType("fence.i", Assembler.debug, "x0", "x0", 0); :}
+             |  F_FLW FRegister:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {:
+                  // hack to re-use IType Statement
+                  int num = Globals.fregfile.getRegisterNumber(rd);
+                  RESULT = new IType("flw", Assembler.debug, "x" + num, rs1, offset);
+                :}
              |  I_NOP
                 {:
                   if (!Settings.BARE)
@@ -598,6 +606,16 @@ IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
                     } else
                       Assembler.error("invalid instruction: use -asm flag to use pseudos");
                  :}
+              |  F_FLW FRegister:rd Delimiter Id:id Delimiter Register:rt
+                 {:
+                    if (!Settings.BARE) {
+                      // hack to re-use IType Statement
+                      int num = Globals.fregfile.getRegisterNumber(rd);
+                      Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
+                      Assembler.program.add(new IType("flw", Assembler.debug, "x" + num, rt, new Relocation(Relocation.PCRELLO, id)));
+                    } else
+                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                 :}
              ;
 
 /*
@@ -617,6 +635,12 @@ SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RP
                 {: RESULT = new SType("sh", Assembler.debug, rs1, rs2, offset); :}
              |  I_SW Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {: RESULT = new SType("sw", Assembler.debug, rs1, rs2, offset); :}
+             |  F_FSW FRegister:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {:
+                  // hack to re-use SType Statement
+                  int num = Globals.fregfile.getRegisterNumber(rs2);
+                  RESULT = new SType("fsw", Assembler.debug, rs1, "x" + num, offset);
+                :}
              |  I_SB Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
                   if (!Settings.BARE) {
@@ -638,6 +662,16 @@ SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RP
                   if (!Settings.BARE) {
                     Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
                     Assembler.program.add(new SType("sw", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id)));
+                  } else
+                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                :}
+             |  F_FSW FRegister:rd Delimiter Id:id Delimiter Register:rt
+                {:
+                  if (!Settings.BARE) {
+                    // hack to re-use SType Statement
+                    int num = Globals.fregfile.getRegisterNumber(rd);
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
+                    Assembler.program.add(new SType("fsw", Assembler.debug, rt, "x" + num, new Relocation(Relocation.PCRELLO, id)));
                   } else
                     Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
