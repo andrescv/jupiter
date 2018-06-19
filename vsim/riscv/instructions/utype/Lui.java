@@ -9,8 +9,11 @@ public final class Lui extends UType {
       "lui rd, imm",
       "set rd = imm << 12"
     );
-    // set opcode
-    this.opcode = 0b0110111;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0110111;
   }
 
   @Override

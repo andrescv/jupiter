@@ -11,8 +11,11 @@ public final class Auipc extends UType {
       "auipc rd, imm",
       "set rd = imm << 12 + pc"
     );
-    // set opcode
-    this.opcode = 0b0010111;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0010111;
   }
 
   @Override
