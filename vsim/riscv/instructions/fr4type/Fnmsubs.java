@@ -9,6 +9,8 @@ public final class Fnmsubs extends FR4Type {
       "fnmsub.s frd, frs1, frs2, frs3",
       "set frd = -frs1 * frs2 + frs3"
     );
+    // set opcode
+    this.opcode = 0b1001011;
   }
 
   @Override

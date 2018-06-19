@@ -9,13 +9,17 @@ import vsim.riscv.instructions.InstructionField;
 
 public final class Flts extends Instruction {
 
-  protected Flts() {
+  public Flts() {
     super(
       Instruction.Format.R,
       "flt.s",
       "flt.s rd, frs1, frs2",
       "set rd = 1 if frs1 < frs2 else 0"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b10100;
+    this.funct3 = 0b001;
   }
 
   @Override

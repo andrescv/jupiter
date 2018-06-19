@@ -9,13 +9,17 @@ import vsim.riscv.instructions.InstructionField;
 
 public final class Fclasss extends Instruction {
 
-  protected Fclasss() {
+  public Fclasss() {
     super(
       Instruction.Format.R,
       "fclass.s",
       "fclass.s rd, frs1",
       "set rd = 10-bit mask that indicates the class of the floating-point number"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b11100;
+    this.funct3 = 0b001;
   }
 
   @Override

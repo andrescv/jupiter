@@ -3,14 +3,18 @@ package vsim.riscv.instructions.frtype;
 import vsim.utils.Data;
 
 
-public final class Fsgnjx extends FRType {
+public final class Fsgnjxs extends FRType {
 
-  public Fsgnjx() {
+  public Fsgnjxs() {
     super(
       "fsgnjx.s",
       "fsgnjx.s frd, frs1, frs2",
       "set frd = {frs1[31] ^ frs2[31], frs1[30:0]}"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b00100;
+    this.funct3 = 0b010;
   }
 
   @Override

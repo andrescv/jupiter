@@ -18,6 +18,7 @@ public abstract class Instruction {
   private String description;
   protected int opcode;
   protected int funct3;
+  protected int funct5;
   protected int funct7;
 
   protected Instruction(Format format, String mnemonic, String usage, String description) {
@@ -27,6 +28,7 @@ public abstract class Instruction {
     this.description = description;
     this.opcode = 0b0000000;
     this.funct3 = -1;
+    this.funct5 = -1;
     this.funct7 = -1;
   }
 
@@ -38,6 +40,10 @@ public abstract class Instruction {
 
   public int getFunct3() {
     return this.funct3;
+  }
+
+  public int getFunct5() {
+    return this.funct5;
   }
 
   public int getFunct7() {

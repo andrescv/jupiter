@@ -9,6 +9,8 @@ public final class Fnmadds extends FR4Type {
       "fnmadd.s frd, frs1, frs2, frs3",
       "set frd = -frs1 * frs2 - frs3"
     );
+    // set opcode
+    this.opcode = 0b1001111;
   }
 
   @Override
