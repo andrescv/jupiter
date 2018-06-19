@@ -1,7 +1,7 @@
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Data;
+import vsim.utils.ALU;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -26,7 +26,7 @@ public final class Fcvtwus extends Instruction {
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(
       code.get(InstructionField.RD),
-      Data.fcvtwus(Globals.fregfile.getRegister(code.get(InstructionField.RS1)))
+      ALU.fcvtwus(Globals.fregfile.getRegister(code.get(InstructionField.RS1)))
     );
     Globals.regfile.incProgramCounter();
   }

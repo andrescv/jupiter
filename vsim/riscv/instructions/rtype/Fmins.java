@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Fmins extends FRType {
@@ -19,7 +19,7 @@ public final class Fmins extends FRType {
 
   @Override
   public float compute(float rs1, float rs2) {
-    return Data.fmin(rs1, rs2);
+    return ALU.fmin(rs1, rs2);
   }
 
 }
