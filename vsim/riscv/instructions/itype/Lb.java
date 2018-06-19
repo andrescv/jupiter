@@ -11,9 +11,11 @@ public final class Lb extends IType {
       "lb rd, offset(rs1)",
       "set rd = sext(memory[rs1 + sext(offset)][7:0])"
     );
-    // set opcode
-    this.opcode = 0b0000011;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0000011;
   }
 
   @Override

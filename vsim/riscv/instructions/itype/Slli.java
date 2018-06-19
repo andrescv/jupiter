@@ -9,10 +9,16 @@ public final class Slli extends IType {
       "slli rd, rs1, shamt",
       "set rd = rs1 << shamt, logical shift left"
     );
-    // set opcode
-    this.opcode = 0b0010011;
-    this.funct3 = 0b001;
-    this.funct7 = 0b0000000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b001;
   }
 
   @Override

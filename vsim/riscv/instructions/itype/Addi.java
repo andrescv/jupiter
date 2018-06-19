@@ -9,9 +9,11 @@ public final class Addi extends IType {
       "addi rd, rs1, imm",
       "set rd = rs1 + sext(imm), overflow is ignored"
     );
-    // set opcode
-    this.opcode = 0b0010011;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0010011;
   }
 
   @Override

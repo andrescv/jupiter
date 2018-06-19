@@ -9,9 +9,16 @@ public final class Xori extends IType {
       "xori rd, rs1, imm",
       "set rd = rs1 ^ sext(imm), bitwise xor"
     );
-    // set opcode
-    this.opcode = 0b0010011;
-    this.funct3 = 0b100;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b100;
   }
 
   @Override

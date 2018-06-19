@@ -11,9 +11,11 @@ public final class Jalr extends IType {
       "jalr rd, offset",
       "set rd = pc + 4 and pc = pc + ((rs1 + sext(offset)) & ~1)"
     );
-    // set opcode
-    this.opcode = 0b1100111;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1100111;
   }
 
   @Override
