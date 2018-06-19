@@ -51,9 +51,7 @@ public final class BType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
-      Assembler.error(
-        "branch to '" + this.label + "' too far"
-      );
+      Assembler.error("branch to '" + this.label + "' too far");
   }
 
 }

@@ -47,9 +47,7 @@ public final class Shift extends Statement {
       this.code.set(InstructionField.FUNCT3, funct3);
       this.code.set(InstructionField.FUNCT7, funct7);
     } else
-      Assembler.error(
-        "shift amount '" + this.shamt + "' out of range should be between 0 and 31"
-      );
+      Assembler.error("shift amount '" + this.shamt + "' out of range should be between 0 and 31");
   }
 
 }

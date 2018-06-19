@@ -53,9 +53,7 @@ public class IType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
-      Assembler.error(
-        "immediate '" + imm + "' out of range should be between -2048 and 2047"
-      );
+      Assembler.error("immediate '" + imm + "' out of range should be between -2048 and 2047");
   }
 
 }
