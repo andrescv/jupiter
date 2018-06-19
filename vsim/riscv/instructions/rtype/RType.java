@@ -15,6 +15,11 @@ abstract class RType extends Instruction {
   protected abstract int compute(int rs1, int rs2);
 
   @Override
+  public int getOpCode() {
+    return 0b0110011;
+  }
+
+  @Override
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));

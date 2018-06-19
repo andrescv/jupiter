@@ -11,10 +11,16 @@ public final class Divu extends RType {
       "divu rd, rs1, rs2",
       "set rd = rs1 unsigned(/) rs2"
     );
-    // set opcode
-    this.opcode = 0b0110011;
-    this.funct3 = 0b101;
-    this.funct7 = 0b0000001;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b101;
+  }
+
+  @Override
+  public int getFunct7() {
+    return 0b0000001;
   }
 
   @Override

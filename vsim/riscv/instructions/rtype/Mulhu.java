@@ -11,10 +11,16 @@ public final class Mulhu extends RType {
       "mulhu rd, rs1, rs2",
       "set rd = (unsigned(rs1) * unsigned(rs2)) >>> XLEN"
     );
-    // set opcode
-    this.opcode = 0b0110011;
-    this.funct3 = 0b011;
-    this.funct7 = 0b0000001;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b011;
+  }
+
+  @Override
+  public int getFunct7() {
+    return 0b0000001;
   }
 
   @Override

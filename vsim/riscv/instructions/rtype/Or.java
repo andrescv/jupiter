@@ -9,10 +9,11 @@ public final class Or extends RType {
       "or rd, rs1, rs2",
       "set rd = rs1 | rs2, bitwise or"
     );
-    // set opcode
-    this.opcode = 0b0110011;
-    this.funct3 = 0b110;
-    this.funct7 = 0b0000000;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b110;
   }
 
   @Override
