@@ -1,4 +1,4 @@
-package vsim.riscv.instructions.frtype;
+package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Data;
@@ -7,29 +7,26 @@ import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
-public final class Feqs extends Instruction {
+public final class Fcvtwus extends Instruction {
 
-  public Feqs() {
+  public Fcvtwus() {
     super(
       Instruction.Format.R,
-      "feq.s",
-      "feq.s rd, frs1, frs2",
-      "set rd = 1 if frs1 == frs2 else 0"
+      "fcvt.wu.s",
+      "fcvt.wu.s rd, frs1",
+      "set rd = (int)(unsigned(frs1))"
     );
     // set opcode
     this.opcode = 0b1010011;
-    this.funct5 = 0b10100;
-    this.funct3 = 0b010;
+    this.funct5 = 0b11000;
+    this.funct3 = 0b111;
   }
 
   @Override
   public void execute(MachineCode code) {
-    float rs1 = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
-    float rs2 = Globals.fregfile.getRegister(code.get(InstructionField.RS2));
-    int result = (rs1 == rs2) ? 1 : 0;
     Globals.regfile.setRegister(
       code.get(InstructionField.RD),
-      result
+      Data.fcvtwus(Globals.fregfile.getRegister(code.get(InstructionField.RS1)))
     );
     Globals.regfile.incProgramCounter();
   }

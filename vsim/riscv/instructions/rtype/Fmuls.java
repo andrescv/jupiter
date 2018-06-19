@@ -1,4 +1,4 @@
-package vsim.riscv.instructions.frtype;
+package vsim.riscv.instructions.rtype;
 
 
 public final class Fmuls extends FRType {

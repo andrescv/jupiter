@@ -1,31 +1,32 @@
-package vsim.riscv.instructions.frtype;
+package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
+import vsim.utils.Data;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
-public final class Fmvxw extends Instruction {
+public final class Fcvtswu extends Instruction {
 
-  public Fmvxw() {
+  public Fcvtswu() {
     super(
       Instruction.Format.R,
-      "fmv.x.w",
-      "fmv.x.w rd, frs1",
-      "set rd = frs1[31:0]"
+      "fcvt.s.wu",
+      "fcvt.s.wu frd, rs1",
+      "set frd = (float)(unsigned(rs1))"
     );
     // set opcode
     this.opcode = 0b1010011;
-    this.funct5 = 0b11100;
-    this.funct3 = 0b000;
+    this.funct5 = 0b11010;
+    this.funct3 = 0b111;
   }
 
   @Override
   public void execute(MachineCode code) {
-    Globals.regfile.setRegister(
+    Globals.fregfile.setRegister(
       code.get(InstructionField.RD),
-      Globals.fregfile.getRegisterInt(code.get(InstructionField.RS1))
+      Data.fcvtswu(Globals.regfile.getRegister(code.get(InstructionField.RS1)))
     );
     Globals.regfile.incProgramCounter();
   }

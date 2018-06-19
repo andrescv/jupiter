@@ -1,4 +1,4 @@
-package vsim.riscv.instructions.fr4type;
+package vsim.riscv.instructions.r4type;
 
 
 public final class Fnmadds extends FR4Type {
