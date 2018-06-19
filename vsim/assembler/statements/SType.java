@@ -52,9 +52,7 @@ public final class SType extends Statement {
       this.code.set(InstructionField.IMM_4_0, imm);
       this.code.set(InstructionField.IMM_11_5, imm >>> 5);
     } else
-      Assembler.error(
-        "immediate '" + imm + "' out of range should be between -2048 and 2047"
-      );
+      Assembler.error("immediate '" + imm + "' out of range should be between -2048 and 2047");
   }
 
 }
