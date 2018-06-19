@@ -15,10 +15,16 @@ public final class Fmvwx extends Instruction {
       "fmv.w.x frd, rs1",
       "set frd = rs1[31:0]"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b11110;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1010011;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b11110;
   }
 
   @Override

@@ -15,10 +15,21 @@ public final class Feqs extends Instruction {
       "feq.s rd, frs1, frs2",
       "set rd = 1 if frs1 == frs2 else 0"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b10100;
-    this.funct3 = 0b010;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b010;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b10100;
   }
 
   @Override

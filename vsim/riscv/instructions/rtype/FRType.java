@@ -15,6 +15,11 @@ abstract class FRType extends Instruction {
   protected abstract float compute(float rs1, float rs2);
 
   @Override
+  public int getOpCode() {
+    return 0b1010011;
+  }
+
+  @Override
   public void execute(MachineCode code) {
     float rs1 = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
     float rs2 = Globals.fregfile.getRegister(code.get(InstructionField.RS2));

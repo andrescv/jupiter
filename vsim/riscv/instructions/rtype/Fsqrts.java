@@ -11,10 +11,16 @@ public final class Fsqrts extends FRType {
       "fsqrt.s frd, frs1",
       "set frd = sqrt(frs1)"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b01011;
-    this.funct3 = 0b111;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b111;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b01011;
   }
 
   @Override
