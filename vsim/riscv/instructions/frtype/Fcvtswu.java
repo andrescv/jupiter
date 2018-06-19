@@ -9,13 +9,17 @@ import vsim.riscv.instructions.InstructionField;
 
 public final class Fcvtswu extends Instruction {
 
-  protected Fcvtswu() {
+  public Fcvtswu() {
     super(
       Instruction.Format.R,
       "fcvt.s.wu",
       "fcvt.s.wu frd, rs1",
       "set frd = (float)(unsigned(rs1))"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b11010;
+    this.funct3 = 0b111;
   }
 
   @Override

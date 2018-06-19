@@ -8,13 +8,17 @@ import vsim.riscv.instructions.InstructionField;
 
 public final class Fmvwx extends Instruction {
 
-  protected Fmvwx() {
+  public Fmvwx() {
     super(
       Instruction.Format.R,
       "fmv.w.x",
       "fmv.w.x frd, rs1",
       "set frd = rs1[31:0]"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b11110;
+    this.funct3 = 0b000;
   }
 
   @Override

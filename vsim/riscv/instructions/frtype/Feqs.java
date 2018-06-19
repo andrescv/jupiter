@@ -9,13 +9,17 @@ import vsim.riscv.instructions.InstructionField;
 
 public final class Feqs extends Instruction {
 
-  protected Feqs() {
+  public Feqs() {
     super(
       Instruction.Format.R,
       "feq.s",
       "feq.s rd, frs1, frs2",
       "set rd = 1 if frs1 == frs2 else 0"
     );
+    // set opcode
+    this.opcode = 0b1010011;
+    this.funct5 = 0b10100;
+    this.funct3 = 0b010;
   }
 
   @Override
