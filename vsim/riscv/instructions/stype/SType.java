@@ -16,6 +16,11 @@ abstract class SType extends Instruction {
   protected abstract void setMemory(int rs1, int rs2, int imm);
 
   @Override
+  public int getOpCode() {
+    return 0b0100011;
+  }
+
+  @Override
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));

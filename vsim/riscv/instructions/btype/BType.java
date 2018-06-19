@@ -16,6 +16,11 @@ abstract class BType extends Instruction {
   protected abstract boolean comparison(int rs1, int rs2);
 
   @Override
+  public int getOpCode() {
+    return 0b1100011;
+  }
+
+  @Override
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));

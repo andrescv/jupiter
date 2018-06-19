@@ -11,8 +11,11 @@ public final class Jal extends JType {
       "jal rd, offset",
       "set rd = pc + 4 and pc = pc + sext(offset)"
     );
-    // set opcode
-    this.opcode = 0b1101111;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1101111;
   }
 
   @Override

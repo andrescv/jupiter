@@ -9,9 +9,16 @@ public final class Bge extends BType {
       "bge rs1, rs2, offset",
       "set pc = pc + sext(offset), if rs1 >= rs2, signed comparison"
     );
-    // set opcode
-    this.opcode = 0b1100011;
-    this.funct3 = 0b101;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1100011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b101;
   }
 
   @Override
