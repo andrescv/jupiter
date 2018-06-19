@@ -12,11 +12,6 @@ public final class Bge extends BType {
   }
 
   @Override
-  public int getOpCode() {
-    return 0b1100011;
-  }
-
-  @Override
   public int getFunct3() {
     return 0b101;
   }
