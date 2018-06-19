@@ -13,7 +13,7 @@ public final class Slt extends RType {
 
   @Override
   public int getFunct3() {
-    return 0b101;
+    return 0b010;
   }
 
   @Override
