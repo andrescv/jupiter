@@ -83,6 +83,7 @@ D_SHORT = ".short"
 D_4BYTE = ".4byte"
 D_WORD = ".word"
 D_LONG = ".long"
+D_FLOAT = ".float"
 
 
 D_ALIGN = ".align"
@@ -234,6 +235,9 @@ LABEL = {IDENTIFIER}:
 NUMBER = [+-]?[0-9]+
 HEXADECIMAL = 0[xX][0-9a-fA-F]+
 BINARY = 0[bB][01]+
+
+// floats
+FLOAT = [+-]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
 
 // valid whitespace
 WHITESPACE = (" "|\t)
@@ -410,6 +414,10 @@ ERROR = .
 
   {D_COMMON} {
     return symbol(Token.D_COMM);
+  }
+
+  {D_FLOAT} {
+    return symbol(Token.D_FLOAT);
   }
 
   // B Format
@@ -839,6 +847,15 @@ ERROR = .
       return symbol(Token.NUMBER, Integer.parseInt(yytext()));
     } catch (Exception e) {
       return symbol(Token.ERROR, "(32 bits only) invalid number constant: '" + yytext() + "'");
+    }
+  }
+
+  // floats
+  {FLOAT} {
+    try {
+      return symbol(Token.FLOAT, Float.parseFloat(yytext()));
+    } catch (Exception e) {
+      return symbol(Token.ERROR, "invalid floating-point constat: '" + yytext() + "'");
     }
   }
 

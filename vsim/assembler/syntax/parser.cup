@@ -1,5 +1,6 @@
 package vsim.assembler;
 
+import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Data;
 import java_cup.runtime.*;
@@ -102,7 +103,7 @@ terminal I_BGT, I_BLE, I_BGTU, I_BLEU, I_J, I_JR;
 terminal I_RET, I_CALL, I_TAIL;
 
 // Literals
-terminal NUMBER, STRING, CHARACTER;
+terminal NUMBER, FLOAT, STRING, CHARACTER;
 
 // Ids and Registers
 terminal REGISTER, FREGISTER, IDENTIFIER;
@@ -110,7 +111,7 @@ terminal REGISTER, FREGISTER, IDENTIFIER;
 // Directives
 terminal D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
 terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
-terminal D_ALIGN, D_BALIGN, D_GLOBL, D_COMM;
+terminal D_ALIGN, D_BALIGN, D_GLOBL, D_COMM, D_FLOAT;
 
 // error token
 terminal ERROR;
@@ -119,11 +120,12 @@ terminal ERROR;
 non terminal Statement;
 non terminal Label;
 non terminal Statement Instruction, RISCVInst;
-non terminal Statement RType, IType, SType, BType, UType, JType;
+non terminal Statement FRType, RType, IType, SType, BType, UType, JType, R4Type;
 non terminal RISCVPSeudo, PSeudos;
 non terminal Data;
 non terminal String DataMode;
 non terminal ArrayList<Integer> DataList;
+non terminal ArrayList<Float> FloatList;
 non terminal Directive, SectionDir, SymbolDir, AlignDir;
 non terminal Section;
 non terminal Integer Expr;
@@ -131,8 +133,9 @@ non terminal Integer Const;
 non terminal String Id;
 non terminal String Str;
 non terminal Integer Number;
+non terminal Float Float;
 non terminal Integer Character;
-non terminal String Register;
+non terminal String Register, FRegister;
 non terminal Delimiter;
 non terminal Epsilon;
 
@@ -194,6 +197,10 @@ Instruction ::= RType:i
                 {: RESULT = i; :}
              |  JType:i
                 {: RESULT = i; :}
+             |  R4Type:i
+                {: RESULT = i; :}
+             |  FRType:i
+                {: RESULT = i; :}
              ;
 
 RISCVPSeudo ::= PSeudos
@@ -204,6 +211,132 @@ RISCVPSeudo ::= PSeudos
                     if (Settings.BARE)
                       Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
+             ;
+
+/*
+  FRTYPE
+
+  fadd.s rd, rs1, rs2
+  fsub.s rd, rs1, rs2
+  fmul.s rd, rs1, rs2
+  fdiv.s rd, rs1, rs2
+  fsqrt.s rd, rs1, rs2
+  fsgnj.s rd, rs1, rs2
+  fsgnjn.s rd, rs1, rs2
+  fsgnjx.s rd, rs1, rs2
+  fmin.s rd, rs1, rs2
+  fmax.s rd, rs1, rs2
+  fmv.w.x frd, rs1
+  fmv.x.w rd, frs1
+  fcvt.s.w frd, rs1
+  fcvt.s.wu frd, rs1
+  fcvt.w.s rd, frs1
+  fcvt.wu.s rd, frs1
+  feq.s rd, frs1, frs2
+  flt.s rd, frs1, frs2
+  fle.s rd, frs1, frs2
+  fclass.s rd, frs1
+*/
+
+FRType      ::= F_FADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fadd.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsub.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FMULS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmul.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FDIVS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fdiv.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FSQRTS FRegister:rd Delimiter FRegister:rs1
+                {: RESULT = new FRType("fsqrt.s", Assembler.debug, rd, rs1, "f0"); :}
+             |  F_FSGNJS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnj.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FSGNJNS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnjn.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FSGNJXS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnjx.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FMINS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmin.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FMAXS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmax.s", Assembler.debug, rd, rs1, rs2); :}
+             |  F_FMVXW Register:rd Delimiter FRegister:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fmv.x.w", Assembler.debug, "f" + num, rs1, "f0");
+                :}
+             |  F_FMVWX FRegister:rd Delimiter Register:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rs1);
+                  RESULT = new FRType("fmv.w.x", Assembler.debug, rd, "f" + num, "f0");
+                :}
+             |  F_FCVTSW FRegister:rd Delimiter Register:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rs1);
+                  RESULT = new FRType("fcvt.s.w", Assembler.debug, rd, "f" + num, "f0");
+                :}
+             |  F_FCVTSWU FRegister:rd Delimiter Register:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rs1);
+                  RESULT = new FRType("fcvt.s.wu", Assembler.debug, rd, "f" + num, "f1");
+                :}
+             |  F_FCVTWS Register:rd Delimiter FRegister:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.w.s", Assembler.debug, "f" + num, rs1, "f0");
+                :}
+             |  F_FCVTWUS Register:rd Delimiter FRegister:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, "f1");
+                :}
+             |  F_FEQS Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                :}
+             |  F_FLTS Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                :}
+             |  F_FLES Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                :}
+             |  F_FCLASSS Register:rd Delimiter FRegister:rs1
+                {:
+                  // hack to re-use FRType Statement
+                  int num = Globals.regfile.getRegisterNumber(rd);
+                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, "f1");
+                :}
+             ;
+
+/*
+  R4TYPE
+
+  fmadd.s rd, rs1, rs2, rs3
+  fmsub.s rd, rs1, rs2, rs3
+  fnmadd.s rd, rs1, rs2, rs3
+  fnmsub.s rd, rs1, rs2, rs3
+*/
+
+R4Type      ::= F_FMADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fmadd.s", Assembler.debug, rd, rs1, rs2, rs3); :}
+             |  F_FMSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fmsub.s", Assembler.debug, rd, rs1, rs2, rs3); :}
+             |  F_FNMADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fnmadd.s", Assembler.debug, rd, rs1, rs2, rs3); :}
+             |  F_FNMSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fnmsub.s", Assembler.debug, rd, rs1, rs2, rs3); :}
              ;
 
 /*
@@ -672,6 +805,7 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
   .asciiz str
   .zero expr
   .comm id, size, align
+  .float float [, float]*
 */
 
 Data        ::= DataMode:mode DataList:l
@@ -738,6 +872,23 @@ Data        ::= DataMode:mode DataList:l
                   } else
                     Assembler.error(".comm/.common directive can only appear in bss segment");
                 :}
+             |  D_FLOAT FloatList:l
+                {:
+                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
+                    // set mask and length
+                    int mask = Data.WORD_MASK;
+                    int length = Data.WORD_LENGTH;
+                    for (int i = 0; i < l.size(); i++) {
+                      int value = Float.floatToRawIntBits(l.get(i));
+                      // store byte by byte
+                      for (int j = 0; j < length; j++) {
+                        byte byteVal = (byte)((value >>> (j * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK);
+                        Assembler.program.addByte(Assembler.segment, byteVal);
+                      }
+                    }
+                  } else
+                    Assembler.error(".float directive can not appear in " + Assembler.segment + " segment");
+                :}
              ;
 
 DataMode    ::= D_BYTE:d
@@ -757,6 +908,30 @@ DataList    ::= Expr:e
              |  DataList:l Delimiter Expr:e
                 {:
                   l.add(e);
+                  RESULT = l;
+                :}
+             ;
+
+FloatList   ::= Float:f
+                {:
+                  ArrayList<Float> l = new ArrayList<Float>();
+                  l.add(f);
+                  RESULT = l;
+                :}
+             |  Number:n
+                {:
+                  ArrayList<Float> l = new ArrayList<Float>();
+                  l.add((float) n);
+                  RESULT = l;
+                :}
+             |  FloatList:l Delimiter Number:n
+                {:
+                  l.add((float) n);
+                  RESULT = l;
+                :}
+             |  FloatList:l Delimiter Float:f
+                {:
+                  l.add(f);
                   RESULT = l;
                 :}
              ;
@@ -888,6 +1063,10 @@ Number      ::= NUMBER:n
                 {: RESULT = (int)n; :}
              ;
 
+Float       ::= FLOAT:f
+                {: RESULT = (float)f; :}
+             ;
+
 Character   ::= CHARACTER:c
                 {: RESULT = (int)(((char) c) & 0xff); :}
              ;
@@ -897,6 +1076,10 @@ Str         ::= STRING:s
              ;
 
 Register    ::= REGISTER:reg
+                {: RESULT = (String)reg; :}
+             ;
+
+FRegister   ::= FREGISTER:reg
                 {: RESULT = (String)reg; :}
              ;
 
