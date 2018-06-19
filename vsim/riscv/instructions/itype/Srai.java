@@ -9,10 +9,21 @@ public final class Srai extends IType {
       "srai rd, rs1, shamt",
       "set rd = rs1 >> shamt, arithmetic shift right"
     );
-    // set opcode
-    this.opcode = 0b0010011;
-    this.funct3 = 0b101;
-    this.funct7 = 0b0100000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b101;
+  }
+
+  @Override
+  public int getFunct7() {
+    return 0b0100000;
   }
 
   @Override

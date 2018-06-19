@@ -11,9 +11,11 @@ public final class ECall extends IType {
       "ecall",
       "makes a request to the supporting execution environment"
     );
-    // set opcode
-    this.opcode = 0b1110011;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1110011;
   }
 
   @Override

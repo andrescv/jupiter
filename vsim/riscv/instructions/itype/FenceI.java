@@ -9,9 +9,16 @@ public final class FenceI extends IType {
       "fence.i",
       "renders stores to instruction memory observable to subsequent instruction fetches"
     );
-    // set opcode
-    this.opcode = 0b0001111;
-    this.funct3 = 0b001;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0001111;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b001;
   }
 
   @Override

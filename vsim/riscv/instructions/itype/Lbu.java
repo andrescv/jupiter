@@ -11,9 +11,16 @@ public final class Lbu extends IType {
       "lbu rd, offset(rs1)",
       "set rd = memory[rs1 + sext(offset)][7:0]"
     );
-    // set opcode
-    this.opcode = 0b0000011;
-    this.funct3 = 0b100;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0000011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b100;
   }
 
   @Override

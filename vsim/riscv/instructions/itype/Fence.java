@@ -9,9 +9,11 @@ public final class Fence extends IType {
       "fence",
       "used to order device I/O and memory accesses as viewed by other RISC-V harts, external devices or coprocessors"
     );
-    // set opcode
-    this.opcode = 0b0001111;
-    this.funct3 = 0b000;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b0001111;
   }
 
   @Override
