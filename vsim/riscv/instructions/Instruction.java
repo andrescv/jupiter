@@ -13,45 +13,37 @@ public abstract class Instruction {
   public static enum Format {R, I, S, B, U, J};
 
   private Format format;
-  protected String mnemonic;
+  private String mnemonic;
   private String usage;
   private String description;
-  protected int opcode;
-  protected int funct3;
-  protected int funct5;
-  protected int funct7;
 
   protected Instruction(Format format, String mnemonic, String usage, String description) {
     this.format = format;
     this.mnemonic = mnemonic;
     this.usage = usage;
     this.description = description;
-    this.opcode = 0b0000000;
-    this.funct3 = -1;
-    this.funct5 = -1;
-    this.funct7 = -1;
   }
 
   public abstract void execute(MachineCode code);
 
+  public Format getFormat() {
+    return this.format;
+  }
+
   public int getOpCode() {
-    return this.opcode;
+    return 0;
   }
 
   public int getFunct3() {
-    return this.funct3;
+    return 0;
   }
 
   public int getFunct5() {
-    return this.funct5;
+    return 0;
   }
 
   public int getFunct7() {
-    return this.funct7;
-  }
-
-  public Format getFormat() {
-    return this.format;
+    return 0;
   }
 
   public String getMnemonic() {
