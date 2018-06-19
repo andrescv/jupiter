@@ -1,7 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.Data;
-
 
 public final class Mul extends RType {
 

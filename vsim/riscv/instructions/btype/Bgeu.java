@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.btype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Bgeu extends BType {
@@ -18,7 +18,7 @@ public final class Bgeu extends BType {
 
   @Override
   protected boolean comparison(int rs1, int rs2) {
-    return Data.geu(rs1, rs2);
+    return ALU.geu(rs1, rs2);
   }
 
 }

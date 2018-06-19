@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Fsgnjns extends FRType {
@@ -19,7 +19,7 @@ public final class Fsgnjns extends FRType {
 
   @Override
   public float compute(float rs1, float rs2) {
-    return Data.fsgnjn(rs1, rs2);
+    return ALU.fsgnjn(rs1, rs2);
   }
 
 }

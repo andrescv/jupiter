@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.itype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Sltiu extends IType {
@@ -18,7 +18,7 @@ public final class Sltiu extends IType {
 
   @Override
   protected int compute(int rs1, int imm) {
-    return Data.ltu(rs1, imm) ? 1 : 0;
+    return ALU.ltu(rs1, imm) ? 1 : 0;
   }
 
 }

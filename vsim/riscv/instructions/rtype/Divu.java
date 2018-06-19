@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Divu extends RType {
@@ -19,7 +19,7 @@ public final class Divu extends RType {
 
   @Override
   protected int compute(int rs1, int rs2) {
-    return Data.divu(rs1, rs2);
+    return ALU.divu(rs1, rs2);
   }
 
 }

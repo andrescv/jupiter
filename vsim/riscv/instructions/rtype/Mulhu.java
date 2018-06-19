@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.Data;
+import vsim.utils.ALU;
 
 
 public final class Mulhu extends RType {
@@ -19,7 +19,7 @@ public final class Mulhu extends RType {
 
   @Override
   protected int compute(int rs1, int rs2) {
-    return Data.mulhu(rs1, rs2);
+    return ALU.mulhu(rs1, rs2);
   }
 
 }

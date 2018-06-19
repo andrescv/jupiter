@@ -1,7 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Data;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
