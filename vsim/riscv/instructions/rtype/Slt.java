@@ -16,6 +16,11 @@ public final class Slt extends RType {
   }
 
   @Override
+  public int getFunct3() {
+    return 0b101;
+  }
+
+  @Override
   protected int compute(int rs1, int rs2) {
     return (rs1 < rs2) ? 1 : 0;
   }

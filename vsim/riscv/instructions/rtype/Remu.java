@@ -11,10 +11,16 @@ public final class Remu extends RType {
       "remu rd, rs1, rs2",
       "set rd = rs1 unsigned(%) rs2"
     );
-    // set opcode
-    this.opcode = 0b0110011;
-    this.funct3 = 0b111;
-    this.funct7 = 0b0000001;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b111;
+  }
+
+  @Override
+  public int getFunct7() {
+    return 0b0000001;
   }
 
   @Override
