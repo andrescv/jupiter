@@ -16,10 +16,21 @@ public final class Fclasss extends Instruction {
       "fclass.s rd, frs1",
       "set rd = 10-bit mask that indicates the class of the floating-point number"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b11100;
-    this.funct3 = 0b001;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b001;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b11100;
   }
 
   @Override

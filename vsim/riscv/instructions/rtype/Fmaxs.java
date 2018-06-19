@@ -11,10 +11,16 @@ public final class Fmaxs extends FRType {
       "fmax.s frd, frs1, frs2",
       "set frd = max(frs1, frs2)"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b00101;
-    this.funct3 = 0b001;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b001;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b00101;
   }
 
   @Override

@@ -16,10 +16,21 @@ public final class Fcvtws extends Instruction {
       "fcvt.w.s rd, frs1",
       "set rd = (int)(frs1)"
     );
-    // set opcode
-    this.opcode = 0b1010011;
-    this.funct5 = 0b11000;
-    this.funct3 = 0b111;
+  }
+
+  @Override
+  public int getOpCode() {
+    return 0b1010011;
+  }
+
+  @Override
+  public int getFunct3() {
+    return 0b111;
+  }
+
+  @Override
+  public int getFunct5() {
+    return 0b11000;
   }
 
   @Override
