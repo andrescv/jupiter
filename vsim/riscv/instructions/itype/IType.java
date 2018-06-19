@@ -23,7 +23,7 @@ abstract class IType extends Instruction {
       code.get(InstructionField.RD),
       this.compute(rs1, Data.signExtend(imm, 12))
     );
-    if (!this.mnemonic.equals("jalr"))
+    if (!this.getMnemonic().equals("jalr"))
       Globals.regfile.incProgramCounter();
   }
 
