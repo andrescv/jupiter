@@ -68,7 +68,7 @@ public final class InstructionSet {
     "Fdivs", "Fsqrts", "Fsgnjs",
     "Fsgnjns", "Fsgnjxs", "Feqs",
     "Flts", "Fles", "Fclasss",
-    "Fmin", "Fmax"
+    "Fmins", "Fmaxs"
   };
 
   // current classes in fr4type package
