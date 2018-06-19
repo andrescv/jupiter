@@ -77,17 +77,10 @@ D_ZERO = ".zero"
 D_ASCIIZ = ".asciiz"
 D_STRING = ".string"
 D_BYTE = ".byte"
-D_2BYTE = ".2byte"
 D_HALF = ".half"
-D_SHORT = ".short"
-D_4BYTE = ".4byte"
 D_WORD = ".word"
-D_LONG = ".long"
 D_FLOAT = ".float"
-
-
 D_ALIGN = ".align"
-D_P2ALIGN = ".p2align"
 D_BALIGN = ".balign"
 D_GLOBL = ".globl"
 D_SECTION = ".section"
@@ -95,8 +88,6 @@ D_DATA = ".data"
 D_TEXT = ".text"
 D_RODATA = ".rodata"
 D_BSS = ".bss"
-D_COMM = ".comm"
-D_COMMON = ".common"
 
 // B Format
 I_BEQ = [bB][eE][qQ]
@@ -105,6 +96,17 @@ I_BGEU = [bB][gG][eE][uU]
 I_BLT = [bB][lL][tT]
 I_BLTU = [bB][lL][tT][uU]
 I_BNE = [bB][nN][eE]
+// B Pseudos
+I_BEQZ = [bB][eE][qQ][zZ]
+I_BNEZ = [bB][nN][eE][zZ]
+I_BLEZ = [bB][lL][eE][zZ]
+I_BGEZ = [bB][gG][eE][zZ]
+I_BLTZ = [bB][lL][tT][zZ]
+I_BGTZ = [bB][gG][tT][zZ]
+I_BGT = [bB][gG][tT]
+I_BLE = [bB][lL][eE]
+I_BGTU = [bB][gG][tT][uU]
+I_BLEU = [bB][lL][eE][uU]
 
 // U Format
 I_AUIPC = [aA][uU][iI][pP][cC]
@@ -112,6 +114,8 @@ I_LUI = [lL][uU][iI]
 
 // J Format
 I_JAL = [jJ][aA][lL]
+// J Pseudos
+I_J = [jJ]
 
 // R Format
 I_ADD = [aA][dD][dD]
@@ -132,6 +136,11 @@ I_SRA = [sS][rR][aA]
 I_SRL = [sS][rR][lL]
 I_SUB = [sS][uU][bB]
 I_XOR = [xX][oO][rR]
+// R Pseudos
+I_NEG = [nN][eE][gG]
+I_SNEZ = [sS][nN][eE][zZ]
+I_SLTZ = [sS][lL][tT][zZ]
+I_SGTZ = [sS][gG][tT][zZ]
 // single-precision floating point
 F_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
 F_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
@@ -157,7 +166,10 @@ F_FEQS = [fF][eE][qQ]"."[sS]
 F_FLTS = [fF][lL][tT]"."[sS]
 F_FLES = [fF][lL][eE]"."[sS]
 F_FCLASSS = [fF][cC][lL][aA][sS][sS]"."[sS]
-
+// floating point Pseudos
+F_FMVS = [fF][mM][vV]"."[sS]
+F_FABSS = [fF][aA][bB][sS]"."[sS]
+F_FNEGS = [fF][nN][eE][gG]"."[sS]
 
 // I Format
 I_ADDI = [aA][dD][dD][iI]
@@ -178,6 +190,13 @@ I_SRLI = [sS][rR][lL][iI]
 I_XORI = [xX][oO][rR][iI]
 I_FENCE = [fF][eE][nN][cC][eE]
 I_FENCEI = [fF][eE][nN][cC][eE]"."[iI]
+// I Pseudos
+I_NOP = [nN][oO][pP]
+I_MV = [mM][vV]
+I_NOT = [nN][oO][tT]
+I_SEQZ = [sS][eE][qQ][zZ]
+I_JR = [jJ][rR]
+I_RET = [rR][eE][tT]
 // single-precision floating point
 F_FLW = [fF][lL][wW]
 
@@ -190,28 +209,7 @@ F_FSW = [fF][sS][wW]
 
 // Pseudos
 I_LA = [lL][aA]
-I_NOP = [nN][oO][pP]
 I_LI = [lL][iI]
-I_MV = [mM][vV]
-I_NOT = [nN][oO][tT]
-I_NEG = [nN][eE][gG]
-I_SEQZ = [sS][eE][qQ][zZ]
-I_SNEZ = [sS][nN][eE][zZ]
-I_SLTZ = [sS][lL][tT][zZ]
-I_SGTZ = [sS][gG][tT][zZ]
-I_BEQZ = [bB][eE][qQ][zZ]
-I_BNEZ = [bB][nN][eE][zZ]
-I_BLEZ = [bB][lL][eE][zZ]
-I_BGEZ = [bB][gG][eE][zZ]
-I_BLTZ = [bB][lL][tT][zZ]
-I_BGTZ = [bB][gG][tT][zZ]
-I_BGT = [bB][gG][tT]
-I_BLE = [bB][lL][eE]
-I_BGTU = [bB][gG][tT][uU]
-I_BLEU = [bB][lL][eE][uU]
-I_J = [jJ]
-I_JR = [jJ][rR]
-I_RET = [rR][eE][tT]
 I_CALL = [cC][aA][lL][lL]
 I_TAIL = [tT][aA][iI][lL]
 
@@ -356,27 +354,7 @@ ERROR = .
     return symbol(Token.D_WORD);
   }
 
-  {D_2BYTE} {
-    return symbol(Token.D_HALF);
-  }
-
-  {D_SHORT} {
-    return symbol(Token.D_HALF);
-  }
-
-  {D_4BYTE} {
-    return symbol(Token.D_WORD);
-  }
-
-  {D_LONG} {
-    return symbol(Token.D_WORD);
-  }
-
   {D_ALIGN} {
-    return symbol(Token.D_ALIGN);
-  }
-
-  {D_P2ALIGN} {
     return symbol(Token.D_ALIGN);
   }
 
@@ -406,14 +384,6 @@ ERROR = .
 
   {D_BSS} {
     return symbol(Token.D_BSS);
-  }
-
-  {D_COMM} {
-    return symbol(Token.D_COMM);
-  }
-
-  {D_COMMON} {
-    return symbol(Token.D_COMM);
   }
 
   {D_FLOAT} {
@@ -825,6 +795,18 @@ ERROR = .
 
   {I_TAIL} {
     return symbol(Token.I_TAIL);
+  }
+
+  {F_FMVS} {
+    return symbol(Token.F_FMVS);
+  }
+
+  {F_FABSS} {
+    return symbol(Token.F_FABSS);
+  }
+
+  {F_FNEGS} {
+    return symbol(Token.F_FNEGS);
   }
 
   // registers

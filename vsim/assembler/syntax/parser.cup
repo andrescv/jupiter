@@ -86,6 +86,7 @@ terminal F_FMADDS, F_FMSUBS, F_FNMSUBS, F_FNMADDS;
 terminal F_FSGNJS, F_FSGNJNS, F_FSGNJXS;
 terminal F_FMINS, F_FMAXS;
 terminal F_FEQS, F_FLTS, F_FLES, F_FCLASSS;
+terminal F_FMVS, F_FABSS, F_FNEGS;
 
 // I Format
 terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
@@ -111,7 +112,7 @@ terminal REGISTER, FREGISTER, IDENTIFIER;
 // Directives
 terminal D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
 terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
-terminal D_ALIGN, D_BALIGN, D_GLOBL, D_COMM, D_FLOAT;
+terminal D_ALIGN, D_BALIGN, D_GLOBL, D_FLOAT;
 
 // error token
 terminal ERROR;
@@ -236,6 +237,9 @@ RISCVPSeudo ::= PSeudos
   flt.s rd, frs1, frs2
   fle.s rd, frs1, frs2
   fclass.s rd, frs1
+  fmv.s rd, rs
+  fabs.s rd, rs
+  fneg.s rd, rs
 */
 
 FRType      ::= F_FADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
@@ -298,25 +302,46 @@ FRType      ::= F_FADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("feq.s", Assembler.debug, "f" + num, rs1, rs2);
                 :}
              |  F_FLTS Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("flt.s", Assembler.debug, "f" + num, rs1, rs2);
                 :}
              |  F_FLES Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("fle.s", Assembler.debug, "f" + num, rs1, rs2);
                 :}
              |  F_FCLASSS Register:rd Delimiter FRegister:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, "f1");
+                  RESULT = new FRType("fclass.s", Assembler.debug, "f" + num, rs1, "f1");
+                :}
+             |  F_FMVS FRegister:rd Delimiter FRegister:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new FRType("fsgnj.s", Assembler.debug, rd, rs, rs);
+                  else
+                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                :}
+             |  F_FABSS FRegister:rd Delimiter FRegister:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new FRType("fsgnjx.s", Assembler.debug, rd, rs, rs);
+                  else
+                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                :}
+             |  F_FNEGS FRegister:rd Delimiter FRegister:rs
+                {:
+                  if (!Settings.BARE)
+                    RESULT = new FRType("fsgnjn.s", Assembler.debug, rd, rs, rs);
+                  else
+                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
                 :}
              ;
 
@@ -824,9 +849,9 @@ Data        ::= DataMode:mode DataList:l
                     for (int i = 0; i < l.size(); i++) {
                       int value = l.get(i);
                       // lossy conversion ?
-                      if (mask == Data.BYTE_MASK && !Data.validByte(value))
+                      if (mask == Data.BYTE_MASK && !Data.validByte(value) && !Settings.QUIET)
                         Assembler.warning("lossy conversion to byte: '" + value + "' -> " + (value & mask));
-                      if (mask == Data.HALF_MASK && !Data.validHalf(value))
+                      if (mask == Data.HALF_MASK && !Data.validHalf(value) && !Settings.QUIET)
                         Assembler.warning("lossy conversion to half: '" + value + "' -> " + (value & mask));
                       // store byte by byte
                       for (int j = 0; j < length; j++) {
@@ -850,27 +875,14 @@ Data        ::= DataMode:mode DataList:l
                 :}
              |  D_ZERO Expr:e
                 {:
-                  if (!Assembler.inTextSegment())
-                    for (int i = 0; i < e; i++)
-                      Assembler.program.addByte(Assembler.segment, (byte) 0);
-                  else
-                    Assembler.error(".zero directive can not appear in text segment");
-                :}
-             |  D_COMM Id:id Delimiter Expr:size Delimiter Expr:align
-                {:
-                  if (Assembler.inBssSegment()) {
-                    if (align >= 0 && align <= 2) {
-                      Assembler.program.align(align);
-                      if (!Assembler.program.addSymbol(Assembler.segment, id))
-                        Assembler.error("label '" + id + "' is already defined");
-                      else {
-                        for (int i = 0; i < size; i++)
-                          Assembler.program.addByte(Assembler.segment, (byte) 0);
-                      }
-                    } else
-                      Assembler.error("invalid align value: '" + align + "', expected 0 (byte), 1 (half) or 2 (word)");
+                  if (e > 0) {
+                    if (!Assembler.inTextSegment())
+                      for (int i = 0; i < e; i++)
+                        Assembler.program.addByte(Assembler.segment, (byte) 0);
+                    else
+                      Assembler.error(".zero directive can not appear in text segment");
                   } else
-                    Assembler.error(".comm/.common directive can only appear in bss segment");
+                    Assembler.error("invalid .zero argument: '" + e + "', expected value > 0");
                 :}
              |  D_FLOAT FloatList:l
                 {:
@@ -879,7 +891,7 @@ Data        ::= DataMode:mode DataList:l
                     int mask = Data.WORD_MASK;
                     int length = Data.WORD_LENGTH;
                     for (int i = 0; i < l.size(); i++) {
-                      int value = Float.floatToRawIntBits(l.get(i));
+                      int value = Float.floatToIntBits(l.get(i));
                       // store byte by byte
                       for (int j = 0; j < length; j++) {
                         byte byteVal = (byte)((value >>> (j * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK);
@@ -995,7 +1007,7 @@ AlignDir    ::= D_ALIGN Number:e
                     else
                       Assembler.error("invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)");
                   } else
-                    Assembler.error(".align/.p2align directives can not appear in text segment");
+                    Assembler.error(".align directive can not appear in text segment");
                 :}
              |  D_BALIGN Number:e
                 {:
