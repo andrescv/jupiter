@@ -73,13 +73,13 @@ public final class RVFRegisterFile {
   public void setRegister(int number, float value) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
-      reg.setValue(Float.floatToRawIntBits(value));
+      reg.setValue(Float.floatToIntBits(value));
   }
 
   public void setRegister(String name, float value) {
     Register reg = this.rf.get(name);
     if (reg != null)
-      reg.setValue(Float.floatToRawIntBits(value));
+      reg.setValue(Float.floatToIntBits(value));
   }
 
   public void setRegisterInt(int number, int value) {
