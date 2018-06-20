@@ -98,20 +98,22 @@ public final class RVFRegisterFile {
   @Override
   public String toString() {
     String out = "";
-    String regfmt = "%s%s [%s] (%s)";
+    String regfmt = "%s%s [%s] (%s)%s{~= %.4f}";
     String newline = System.getProperty("line.separator");
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
       Register reg = this.rf.get("f" + i);
       out += String.format(
         regfmt,
-        Colorize.green("x" + i),
+        Colorize.green("f" + i),
         (i >= 10) ? "" : " ",
         reg.toString(),
-        Colorize.purple(MNEMONICS[i])
+        Colorize.purple(MNEMONICS[i]),
+        (MNEMONICS[i].length() < 4) ? "  " : " ",
+        Float.intBitsToFloat(reg.getValue())
       ) + newline;
     }
-    return out.trim();
+    return out.replaceAll("\\s+$", "");
   }
 
 }
