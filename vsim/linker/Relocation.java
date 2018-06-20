@@ -46,7 +46,7 @@ public final class Relocation {
     // correct target given a relocation type
     switch (this.type) {
       case PCRELHI:
-        target = (delta >>> 12) + ((delta >>> 11) & 0x1);
+        target = ((delta >>> 12) + ((delta >>> 11) & 0x1)) & 0x000fffff;
         break;
       case PCRELLO:
         target = Data.signExtend(((delta + 4) & 0xfff), 12);
