@@ -178,7 +178,7 @@ public final class Debugger {
       if (address.startsWith("0x"))
         addr = Integer.parseInt(address.substring(2), 16);
       else
-        addr = Integer.parseInt(address, 16);
+        addr = Integer.parseInt(address);
     } catch (Exception e) {
       Message.error("invalid address: " + address);
       return;
@@ -209,7 +209,7 @@ public final class Debugger {
       if (address.startsWith("0x"))
         addr = Integer.parseInt(address.substring(2), 16);
       else
-        addr = Integer.parseInt(address, 16);
+        addr = Integer.parseInt(address);
     } catch (Exception e) {
       Message.error("invalid address: " + address);
       return;
