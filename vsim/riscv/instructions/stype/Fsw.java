@@ -35,7 +35,7 @@ public final class Fsw extends Instruction {
     int imm_11_5 = code.get(InstructionField.IMM_11_5);
     int imm_4_0 = code.get(InstructionField.IMM_4_0);
     int imm = (imm_11_5 << 5) | imm_4_0;
-    Globals.memory.storeByte(rs1 + Data.signExtend(imm, 12), rs2);
+    Globals.memory.storeWord(rs1 + Data.signExtend(imm, 12), rs2);
     Globals.regfile.incProgramCounter();
   }
 
