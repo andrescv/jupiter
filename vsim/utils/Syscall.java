@@ -165,6 +165,7 @@ public final class Syscall {
   }
 
   private static void exit() {
+    System.out.println();
     Message.log("exit(0)");
     System.exit(0);
   }
@@ -186,6 +187,7 @@ public final class Syscall {
 
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
+    System.out.println();
     Message.log("exit(" + status + ")");
     System.exit(status);
   }
