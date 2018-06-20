@@ -104,7 +104,7 @@ public final class RVIRegisterFile {
   @Override
   public String toString() {
     String out = "";
-    String regfmt = "%s%s [%s] (%s)";
+    String regfmt = "%s%s [%s] (%s)%s{= %d}";
     String newline = System.getProperty("line.separator");
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
@@ -114,7 +114,12 @@ public final class RVIRegisterFile {
         Colorize.green("x" + i),
         (i >= 10) ? "" : " ",
         reg.toString(),
-        Colorize.purple(MNEMONICS[i])
+        Colorize.purple(MNEMONICS[i]),
+        (MNEMONICS[i].length() == 5) ?
+          " " : (MNEMONICS[i].length() == 2) ?
+          "    " : (MNEMONICS[i].length() == 3) ?
+          "   " : "  ",
+        reg.getValue()
       ) + newline;
     }
     // and pc
