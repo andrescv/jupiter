@@ -122,7 +122,7 @@ public final class Debugger {
       )
     );
     // execute instruction
-    Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
+    Globals.iset.get(stmt.getMnemonic()).execute(result);
     // reset breakpoint
     if (this.breakpoints.containsKey(pcVal))
       this.breakpoints.put(pcVal, true);
