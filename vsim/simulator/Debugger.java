@@ -5,6 +5,7 @@ import vsim.utils.Data;
 import vsim.utils.Message;
 import java.util.Hashtable;
 import vsim.utils.Colorize;
+import java.util.Enumeration;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.instructions.MachineCode;
 import vsim.assembler.statements.Statement;
@@ -189,9 +190,12 @@ public final class Debugger {
   }
 
   private void list() {
-    System.out.println("Breakpoints: " + newline);
-    for(Object addr: this.breakpoints.values().toArray())
-      System.out.println(Colorize.purple(String.format("    0x%08x", (Integer) addr)));
+    if (this.breakpoints.size() > 0) {
+      System.out.println("Breakpoints: " + newline);
+      for(Enumeration<Integer> e = this.breakpoints.keys(); e.hasMoreElements();)
+        System.out.println(Colorize.purple(String.format("    0x%08x", e.nextElement())));
+    } else
+      System.out.println("no breakpoints yet");
   }
 
   private void reset() {
