@@ -26,6 +26,8 @@ public abstract class Instruction {
 
   public abstract void execute(MachineCode code);
 
+  public abstract String disassemble(MachineCode code);
+
   public Format getFormat() {
     return this.format;
   }
