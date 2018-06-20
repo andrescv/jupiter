@@ -69,10 +69,9 @@ public final class Cmd {
       Cmd.exit();
     }
     ArrayList<String> files = new ArrayList<String>();
-    if (firstFile != lastArg) {
-      for (int i = firstFile; i < args.length; i++) {
+    for (int i = firstFile; i < args.length; i++) {
+      if (!args[i].startsWith("-"))
         files.add(args[i]);
-      }
     }
     files.trimToSize();
     return files;
