@@ -2,6 +2,8 @@ package vsim.utils;
 
 import vsim.Settings;
 import java.util.ArrayList;
+import java.io.StringReader;
+import java.io.BufferedReader;
 
 
 public final class Cmd {
@@ -10,13 +12,13 @@ public final class Cmd {
   private static final String newline = System.getProperty("line.separator");
 
   // VSim header
-  private static final String HEADER = Colorize.red("__   _____ _") + newline +
-                                       Colorize.green("\\ \\ / / __(_)_ ___") + newline +
-                                       Colorize.blue(" \\ V /\\__ \\ | '   \\") + newline +
-                                       Colorize.yellow("  \\_/ |___/_|_|_|_|") + newline;
+  private static final String HEADER = "__   _____ _" + newline +
+                                       "\\ \\ / / __(_)_ ___" + newline +
+                                       " \\ V /\\__ \\ | '   \\" + newline +
+                                       "  \\_/ |___/_|_|_|_|";
 
   // slogan and license
-  private static final String SUBHEADER = Colorize.cyan("RISC-V Assembler & Runtime Simulator") + newline +
+  private static final String SUBHEADER = "RISC-V Assembler & Runtime Simulator" + newline +
                                           newline + "MIT License" + newline +
                                           "Copyright (c) 2018 Andres Castellanos" + newline +
                                           "All Rights Reserved." + newline +
@@ -78,7 +80,22 @@ public final class Cmd {
   }
 
   public static void title() {
-    System.out.println(Cmd.HEADER);
+    if (Settings.COLORIZE) {
+      try {
+        String out = "";
+        BufferedReader br = new BufferedReader(new StringReader(Cmd.HEADER));
+        out += Colorize.red(br.readLine()) + newline;
+        out += Colorize.green(br.readLine()) + newline;
+        out += Colorize.blue(br.readLine()) + newline;
+        out += Colorize.yellow(br.readLine()) + newline + newline;
+        out += Colorize.cyan(Cmd.SUBHEADER.substring(0, 37));
+        out += Cmd.SUBHEADER.substring(37);
+        System.out.println(out);
+        return;
+      } catch (Exception e) {/* DO NOTHING */}
+    }
+    // if error/exception print title without color
+    System.out.println(Cmd.HEADER + newline);
     System.out.println(Cmd.SUBHEADER);
   }
 
