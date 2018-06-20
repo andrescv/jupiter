@@ -2,8 +2,8 @@ package vsim.simulator;
 
 import vsim.Globals;
 import vsim.utils.Data;
-import java.util.HashSet;
 import vsim.utils.Message;
+import java.util.Hashtable;
 import vsim.utils.Colorize;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.instructions.MachineCode;
@@ -12,43 +12,42 @@ import vsim.assembler.statements.Statement;
 
 public final class Debugger {
 
-  private static int SPACE = 0;
+  // help message
   private static final String newline = System.getProperty("line.separator");
   private static final String HELP_MSG = "Available commands: " + newline + newline +
                                          // help
-                                         "help/?           - show this message" + newline +
+                                         "help/?            - show this message" + newline +
                                          // exit
-                                         "exit/quit        - exit the simulator" + newline +
+                                         "exit/quit         - exit the simulator" + newline +
                                          // execute previous
-                                         "!                - execute previous command" + newline +
+                                         "!                 - execute previous command" + newline +
                                          // print state
-                                         "showx            - print all RVI registers" + newline +
-                                         "showf            - print all RVF registers" + newline +
-                                         "print reg        - print register reg" + newline +
-                                         "memory addr      - print 48 cells of memory at address" + newline +
-                                         "memory addr rows - print rows x 4 cells of memory at address" + newline +
-                                         "symbols          - print global symbols" + newline +
+                                         "showx             - print all RVI registers" + newline +
+                                         "showf             - print all RVF registers" + newline +
+                                         "print reg         - print register reg" + newline +
+                                         "memory addr       - print 48 cells of memory at address" + newline +
+                                         "memory addr rows  - print rows x 4 cells of memory at address" + newline +
+                                         "symbols           - print global symbols" + newline +
                                          // execution
-                                         "step             - step the program for 1 instruction" + newline +
-                                         "step N           - step the program for N instructions" + newline +
-                                         "continue         - continue program execution without stepping" + newline +
-                                         "breakpoint addr  - set a breakpoint at address" + newline +
-                                         "clear            - clear all breakpoints" + newline +
-                                         "delete addr      - delete breakpoint at address" + newline +
-                                         "list             - list all breakpoints" + newline +
+                                         "step/s            - step the program for 1 instruction" + newline +
+                                         "continue/c        - continue program execution without stepping" + newline +
+                                         "breakpoint/b addr - set a breakpoint at address" + newline +
+                                         "clear/cl          - clear all breakpoints" + newline +
+                                         "delete/del addr   - delete breakpoint at address" + newline +
+                                         "list/ls           - list all breakpoints" + newline +
                                          // reset state
-                                         "reset            - reset all state (regs, memory, start)" + newline +
+                                         "reset             - reset all state (regs, memory, start)" + newline +
                                          // start address
-                                         "start addr       - start the program at address";
+                                         "start addr        - start the program at address";
 
   private LinkedProgram program;
-  private HashSet<Integer> breakpoints;
+  private Hashtable<Integer, Boolean> breakpoints;
   private int space;
   private String[] args;
 
   public Debugger(LinkedProgram program) {
     this.program = program;
-    this.breakpoints = new HashSet<Integer>();
+    this.breakpoints = new Hashtable<Integer, Boolean>();
     this.space = 1;
     this.args = null;
     for (Statement stmt: program.getStatements())
@@ -94,67 +93,60 @@ public final class Debugger {
     Globals.globl.print();
   }
 
-  private void step(String n) {
-    int steps =  1;
-    // step [N] ?
-    try {
-      steps = Math.max(Integer.parseInt(n), 1);
-    } catch (Exception e ) {/* DO NOTHING */}
-    for (int i = 0; i < steps; i++) {
-      boolean breakpoint = false;
-      Statement stmt = program.next();
-      int pcVal = Globals.regfile.getProgramCounter();
-      String pc = String.format("0x%08x", pcVal);
-      // no more statements
-      if (stmt == null) {
-        Message.error("attempt to execute non-instruction at " + pc);
-        break;
-      }
-      // print debugging info
-      String space = "";
-      MachineCode result = stmt.result();
-      String source = stmt.getDebugInfo().getSource();
-      // calculate space (pretty print)
-      for (int j = 0; j < (this.space - source.length()); j++)
-        space += " ";
-      System.out.println(
-        String.format(
-          "PC [%s] CODE:%s    %s %s» %s",
-          Colorize.cyan(pc),
-          result.toString(),
-          Colorize.purple(source),
-          space,
-          Globals.iset.get(stmt.getMnemonic()).disassemble(result)
-        )
-      );
-      // breakpoint at this point ?
-      if (this.breakpoints.contains(pcVal))
-        breakpoint = true;
-      // execute instruction
-      Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
-      // break after execute ?
-      if (breakpoint)
-        break;
+  private void step() {
+    Statement stmt = program.next();
+    int pcVal = Globals.regfile.getProgramCounter();
+    String pc = String.format("0x%08x", pcVal);
+    // no more statements
+    if (stmt == null) {
+      Message.error("attempt to execute non-instruction at " + pc);
+      return;
     }
+    // print debugging info
+    String space = "";
+    MachineCode result = stmt.result();
+    String source = stmt.getDebugInfo().getSource();
+    // calculate space (pretty print)
+    for (int j = 0; j < (this.space - source.length()); j++)
+      space += " ";
+    // format all debugging info
+    System.out.println(
+      String.format(
+        "PC [%s] CODE:%s    %s %s» %s",
+        Colorize.cyan(pc),
+        result.toString(),
+        Colorize.purple(source),
+        space,
+        Globals.iset.get(stmt.getMnemonic()).disassemble(result)
+      )
+    );
+    // execute instruction
+    Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
+    // reset breakpoint
+    if (this.breakpoints.containsKey(pcVal))
+      this.breakpoints.put(pcVal, true);
   }
 
-  private void Contine() {
+  private void forward() {
     Statement stmt;
     int pcVal = Globals.regfile.getProgramCounter();
-    boolean breakpoint = false;
+    boolean enter = false;
     while ((stmt = this.program.next()) != null) {
+      // get actual program counter
       pcVal = Globals.regfile.getProgramCounter();
       // breakpoint at this point ?
-      if (this.breakpoints.contains(pcVal))
-        breakpoint = true;
+      if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal))
+        break;
       // execute instruction
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
-      // break after execute ?
-      if (breakpoint)
-        break;
+      // reset breakpoint
+      if (this.breakpoints.containsKey(pcVal))
+        this.breakpoints.put(pcVal, true);
+      // useful flag
+      enter = true;
     }
     // only display if no breakpoint was set
-    if (!breakpoint) {
+    if (!enter || (enter && (stmt == null))) {
       // error if no exit/exit2 ecall
       String pc = String.format("0x%08x", pcVal);
       Message.error("attempt to execute non-instruction at " + pc);
@@ -168,9 +160,10 @@ public final class Debugger {
         addr = Integer.parseInt(address.substring(2), 16);
       else
         addr = Integer.parseInt(address);
-      if (Data.isWordAligned(addr))
-        this.breakpoints.add(addr);
-      else
+      if (Data.isWordAligned(addr)) {
+        if (!this.breakpoints.containsKey(addr))
+          this.breakpoints.put(addr, true);
+      } else
         Message.warning("address is not aligned to a word boundary");
     } catch (Exception e) {
       Message.warning("invalid address: " + address);
@@ -178,7 +171,7 @@ public final class Debugger {
   }
 
   private void clear() {
-    this.breakpoints = new HashSet<Integer>();
+    this.breakpoints.clear();
     System.gc();
   }
 
@@ -193,7 +186,7 @@ public final class Debugger {
       Message.warning("invalid address: " + address);
       return;
     }
-    if (this.breakpoints.contains(addr))
+    if (this.breakpoints.containsKey(addr))
       this.breakpoints.remove(addr);
     else
       Message.warning("no breakpoint at address: " + address);
@@ -201,7 +194,7 @@ public final class Debugger {
 
   private void list() {
     System.out.println("Breakpoints: " + newline);
-    for(Object addr: this.breakpoints.toArray())
+    for(Object addr: this.breakpoints.values().toArray())
       System.out.println(Colorize.purple(String.format("    0x%08x", (Integer) addr)));
   }
 
@@ -253,47 +246,45 @@ public final class Debugger {
       if (args.length == 2)
         this.print(args[1]);
       else
-        Message.warning("invalid usage of print, valid usage 'print reg'");
+        Message.warning("invalid usage of print cmd, valid usage 'print reg'");
     }
+    // memory
     else if (args[0].equals("memory")) {
       if (args.length == 2)
         this.memory(args[1], null);
       else if (args.length == 3)
         this.memory(args[1], args[2]);
       else
-        Message.warning("invalid usage of memory, valid usage 'memory addr [rows]'");
+        Message.warning("invalid usage of memory cmd, valid usage 'memory addr [rows]'");
     }
+    // symbols
     else if (args[0].equals("symbols"))
       this.symbols();
-    else if (args[0].equals("step")) {
-      if (args.length == 1)
-        this.step(null);
-      else if (args.length == 2)
-        this.step(args[1]);
-      else
-        Message.warning("invalid usage of step, valid usage 'step [N]'");
-    }
+    // step
+    else if (args[0].equals("step") || args[0].equals("s"))
+      this.step();
     // continue
-    else if (args[0].equals("continue"))
-      this.Contine();
-    else if (args[0].equals("breakpoint")) {
+    else if (args[0].equals("continue")  || args[0].equals("c"))
+      this.forward();
+    // breakpoint
+    else if (args[0].equals("breakpoint") || args[0].equals("b")) {
       if (args.length == 2)
         this.breakpoint(args[1]);
       else
-        Message.warning("invalid usage of breakpoint, valid usage 'breakpoint addr'");
+        Message.warning("invalid usage of breakpoint cmd, valid usage 'breakpoint/b addr'");
     }
     // clear
-    else if (args[0].equals("clear"))
+    else if (args[0].equals("clear") || args[0].equals("cl"))
       this.clear();
     // delete addr
-    else if (args[0].equals("delete")) {
+    else if (args[0].equals("delete") || args[0].equals("del")) {
       if (args.length == 2)
         this.delete(args[1]);
       else
-        Message.warning("invalid usage of delete, valid usage 'delete addr'");
+        Message.warning("invalid usage of delete cmd, valid usage 'delete/del addr'");
     }
     // list
-    else if (args[0].equals("list"))
+    else if (args[0].equals("list") || args[0].equals("ls"))
       this.list();
     // reset
     else if (args[0].equals("reset"))
@@ -303,7 +294,7 @@ public final class Debugger {
       if (args.length == 2)
         this.start(args[1]);
       else
-        Message.warning("invalid usage of start, valid usage 'start addr'");
+        Message.warning("invalid usage of start cmd, valid usage 'start addr'");
     }
     else
       Message.warning("unknown command '" + args[0] + "'");
