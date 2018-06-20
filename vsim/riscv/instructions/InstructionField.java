@@ -35,8 +35,6 @@ public final class InstructionField {
   public static final InstructionField RM        = new InstructionField(12, 14);
   // format
   public static final InstructionField FMT       = new InstructionField(25, 26);
-  // width
-  public static final InstructionField WIDTH     = new InstructionField(12, 14);
 
   protected int lo;
   protected int hi;
