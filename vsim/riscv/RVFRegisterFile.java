@@ -111,7 +111,7 @@ public final class RVFRegisterFile {
         Colorize.purple(MNEMONICS[i])
       ) + newline;
     }
-    return out.replaceAll("\\s+$", "");
+    return out.trim();
   }
 
 }
