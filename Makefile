@@ -2,7 +2,7 @@ JAR=jar
 JAVA=java
 JAVAC=javac
 JAVADOC=javadoc
-JFLAGS=-d build
+JFLAGS=-d build -Xlint:unchecked 
 
 # JCUP
 JCUP=lib/java-cup-11b.jar
