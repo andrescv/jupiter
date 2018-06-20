@@ -11,8 +11,8 @@ public final class Cmd {
 
   // VSim header
   private static final String HEADER = Colorize.red("__   _____ _") + newline +
-                                       Colorize.green("\\ \\ / / __(_)_ __") + newline +
-                                       Colorize.blue(" \\ V /\\__ \\ | '  \\") + newline +
+                                       Colorize.green("\\ \\ / / __(_)_ ___") + newline +
+                                       Colorize.blue(" \\ V /\\__ \\ | '   \\") + newline +
                                        Colorize.yellow("  \\_/ |___/_|_|_|_|") + newline;
 
   // slogan and license
@@ -23,13 +23,15 @@ public final class Cmd {
                                           "See the file README for a full copyright notice." + newline;
 
   // usage [-h]
-  private static final String USAGE = "usage: vsim [-h] [-asm] [-bare] [-quiet] [-noquiet] [-debug] [<files>]" +
-                                      newline + newline + "optional arguments:" + newline +
+  private static final String USAGE = "usage: vsim [flags] <files>" +
+                                      newline + newline + "optional flags:" + newline +
                                       "  -h        show this help message and exit" + newline +
                                       "  -asm      extended machine (pseudo-ops) (default)" + newline +
                                       "  -bare     bare machine (no pseudo-ops)" + newline +
                                       "  -quiet    do not print warnings" + newline +
                                       "  -noquiet  print warnings (default)" + newline +
+                                      "  -nocolor  dont colorize output (only on linux)" + newline +
+                                      "  -color    colorize output (only on linux) (default)" + newline +
                                       "  -debug    debug program";
 
   public static ArrayList<String> parse(String[] args) {
@@ -49,6 +51,10 @@ public final class Cmd {
           Settings.QUIET = true;
         else if (option.equals("noquiet"))
           Settings.QUIET = false;
+        else if (option.equals("nocolor"))
+          Settings.COLORIZE = false;
+        else if (option.equals("color"))
+          Settings.COLORIZE = true;
         else if (option.equals("debug"))
           Settings.DEBUG = true;
         else {
@@ -63,8 +69,10 @@ public final class Cmd {
       Cmd.exit();
     }
     ArrayList<String> files = new ArrayList<String>();
-    for (int i = firstFile; i < args.length; i++) {
-      files.add(args[i]);
+    if (firstFile != lastArg) {
+      for (int i = firstFile; i < args.length; i++) {
+        files.add(args[i]);
+      }
     }
     files.trimToSize();
     return files;

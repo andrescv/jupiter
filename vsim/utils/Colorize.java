@@ -1,5 +1,7 @@
 package vsim.utils;
 
+import vsim.Settings;
+
 
 public final class Colorize {
 
@@ -18,7 +20,7 @@ public final class Colorize {
   private static final String CYAN   = "\u001B[36m";
 
   private static String color(String color, String text) {
-    if (ENABLED)
+    if (ENABLED && Settings.COLORIZE)
       return color + text + RESET;
     return text;
   }
