@@ -23,7 +23,7 @@ public final class Memory {
     this.heapAddress = MemorySegments.HEAP_SEGMENT;
   }
 
-  public void printMemory(int from, int rows) {
+  public void print(int from, int rows) {
     System.out.println(this.getMemory(from, rows));
   }
 

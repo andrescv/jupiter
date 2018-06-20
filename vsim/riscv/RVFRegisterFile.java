@@ -95,6 +95,26 @@ public final class RVFRegisterFile {
     }
   }
 
+  public void print() {
+    System.out.println(this);
+  }
+
+  public void printReg(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null) {
+      int i = reg.getNumber();
+      System.out.println(
+        String.format(
+          "%s [%s] (%s) {~= %.4f}",
+          Colorize.green("f" + i),
+          reg.toString(),
+          Colorize.purple(MNEMONICS[i]),
+          Float.intBitsToFloat(reg.getValue())
+        )
+      );
+    }
+  }
+
   @Override
   public String toString() {
     String out = "";

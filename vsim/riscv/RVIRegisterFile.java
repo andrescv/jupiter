@@ -101,6 +101,32 @@ public final class RVIRegisterFile {
     this.rf.get("gp").setValue(MemorySegments.DATA_SEGMENT);
   }
 
+  public void print() {
+    System.out.println(this);
+  }
+
+  public void printReg(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null) {
+      int i = reg.getNumber();
+      System.out.println(
+        String.format(
+          "%s [%s] (%s) {= %d}",
+          Colorize.green("x" + i),
+          reg.toString(),
+          Colorize.purple(MNEMONICS[i]),
+          reg.getValue()
+        )
+      );
+    } else if (name.equals("pc"))
+      System.out.println(
+        String.format(
+          "PC  [%s]",
+          this.pc.toString()
+        )
+      );
+  }
+
   @Override
   public String toString() {
     String out = "";

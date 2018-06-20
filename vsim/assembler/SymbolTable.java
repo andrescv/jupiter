@@ -17,6 +17,10 @@ public final class SymbolTable {
     this.table = new Hashtable<String, Sym>();
   }
 
+  public void print() {
+    System.out.println(this);
+  }
+
   public Integer get(String label) {
     if (this.table.containsKey(label))
       return this.table.get(label).getAddress();
@@ -61,10 +65,10 @@ public final class SymbolTable {
     String newline = System.getProperty("line.separator");
     for (Enumeration<String> e = this.table.keys(); e.hasMoreElements();) {
       String label = e.nextElement();
-      out += "label: " + Colorize.green(label) + " " + this.table.get(label).toString();
+      out += Colorize.green(label) + " " + this.table.get(label).toString();
       out += newline;
     }
-    return out.trim();
+    return out.replaceAll("\\s+$", "");
   }
 
 }

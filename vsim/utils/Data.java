@@ -37,6 +37,10 @@ public final class Data {
     return signExtend(value, HALF_LENGTH_BITS);
   }
 
+  public static boolean isWordAligned(int address) {
+    return Integer.remainderUnsigned(address, WORD_LENGTH) == 0;
+  }
+
   public static int alignToWordBoundary(int address) {
     if (Integer.divideUnsigned(address, WORD_LENGTH) != 0) {
       int offset = WORD_LENGTH - Integer.remainderUnsigned(address, WORD_LENGTH);
