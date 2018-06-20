@@ -42,12 +42,14 @@ public final class InstructionSet {
     "Addi", "Slti", "Sltiu",
     "Xori", "Ori", "Andi",
     "Slli", "Srli", "Srai",
-    "ECall", "Fence", "FenceI"
+    "ECall", "Fence", "FenceI",
+    "Flw"
   };
 
   // current classes in stype package
   private static final String[] SClasses = {
-    "Sb", "Sh", "Sw"
+    "Sb", "Sh", "Sw",
+    "Fsw"
   };
 
   // current classes in btype package
