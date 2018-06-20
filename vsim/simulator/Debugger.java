@@ -130,27 +130,23 @@ public final class Debugger {
   private void forward() {
     Statement stmt;
     int pcVal = Globals.regfile.getProgramCounter();
-    boolean enter = false;
     while ((stmt = this.program.next()) != null) {
       // get actual program counter
       pcVal = Globals.regfile.getProgramCounter();
       // breakpoint at this point ?
-      if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal))
-        break;
+      if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
+        this.breakpoints.put(pcVal, false);
+        return;
+      }
       // execute instruction
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       // reset breakpoint
       if (this.breakpoints.containsKey(pcVal))
         this.breakpoints.put(pcVal, true);
-      // useful flag
-      enter = true;
     }
-    // only display if no breakpoint was set
-    if (!enter || (enter && (stmt == null))) {
-      // error if no exit/exit2 ecall
-      String pc = String.format("0x%08x", pcVal);
-      Message.error("attempt to execute non-instruction at " + pc);
-    }
+    // error if no exit/exit2 ecall
+    String pc = String.format("0x%08x", pcVal);
+    Message.error("attempt to execute non-instruction at " + pc);
   }
 
   private void breakpoint(String address) {
