@@ -243,7 +243,7 @@ public final class Debugger {
       this.showf();
     // print
     else if (args[0].equals("print")) {
-      if (args.length == 2)
+      if (args.length > 1)
         this.print(args[1]);
       else
         Message.error("invalid usage of print cmd, valid usage 'print reg'");
@@ -252,7 +252,7 @@ public final class Debugger {
     else if (args[0].equals("memory")) {
       if (args.length == 2)
         this.memory(args[1], null);
-      else if (args.length == 3)
+      else if (args.length > 2)
         this.memory(args[1], args[2]);
       else
         Message.error("invalid usage of memory cmd, valid usage 'memory addr [rows]'");
@@ -268,7 +268,7 @@ public final class Debugger {
       this.forward();
     // breakpoint
     else if (args[0].equals("breakpoint") || args[0].equals("b")) {
-      if (args.length == 2)
+      if (args.length > 1)
         this.breakpoint(args[1]);
       else
         Message.error("invalid usage of breakpoint cmd, valid usage 'breakpoint/b addr'");
@@ -278,7 +278,7 @@ public final class Debugger {
       this.clear();
     // delete addr
     else if (args[0].equals("delete") || args[0].equals("del")) {
-      if (args.length == 2)
+      if (args.length > 1)
         this.delete(args[1]);
       else
         Message.error("invalid usage of delete cmd, valid usage 'delete/del addr'");
@@ -291,7 +291,7 @@ public final class Debugger {
       this.reset();
     // start addr
     else if (args[0].equals("start")) {
-      if (args.length == 2)
+      if (args.length > 1)
         this.start(args[1]);
       else
         Message.error("invalid usage of start cmd, valid usage 'start addr'");
