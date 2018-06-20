@@ -68,7 +68,7 @@ public final class Debugger {
     else if (Globals.fregfile.getRegisterNumber(reg) != -1)
       Globals.fregfile.printReg(reg);
     else
-      Message.warning("invalid register: " + reg);
+      Message.error("invalid register: " + reg);
   }
 
   private void memory(String address, String rows) {
@@ -83,7 +83,7 @@ public final class Debugger {
       else
         addr = Integer.parseInt(address);
     } catch (Exception e) {
-      Message.warning("invalid address: " + address);
+      Message.error("invalid address: " + address);
       return;
     }
     Globals.memory.print(addr, n);
@@ -160,9 +160,9 @@ public final class Debugger {
         if (!this.breakpoints.containsKey(addr))
           this.breakpoints.put(addr, true);
       } else
-        Message.warning("address is not aligned to a word boundary");
+        Message.error("address is not aligned to a word boundary");
     } catch (Exception e) {
-      Message.warning("invalid address: " + address);
+      Message.error("invalid address: " + address);
     }
   }
 
@@ -179,13 +179,13 @@ public final class Debugger {
       else
         addr = Integer.parseInt(address, 16);
     } catch (Exception e) {
-      Message.warning("invalid address: " + address);
+      Message.error("invalid address: " + address);
       return;
     }
     if (this.breakpoints.containsKey(addr))
       this.breakpoints.remove(addr);
     else
-      Message.warning("no breakpoint at address: " + address);
+      Message.error("no breakpoint at address: " + address);
   }
 
   private void list() {
@@ -207,13 +207,13 @@ public final class Debugger {
       else
         addr = Integer.parseInt(address, 16);
     } catch (Exception e) {
-      Message.warning("invalid address: " + address);
+      Message.error("invalid address: " + address);
       return;
     }
     if (Data.isWordAligned(addr))
       Globals.regfile.setProgramCounter(addr);
     else
-      Message.warning("address is not aligned to a word boundary");
+      Message.error("address is not aligned to a word boundary");
   }
 
   public void interpret(String[] args) {
@@ -242,7 +242,7 @@ public final class Debugger {
       if (args.length == 2)
         this.print(args[1]);
       else
-        Message.warning("invalid usage of print cmd, valid usage 'print reg'");
+        Message.error("invalid usage of print cmd, valid usage 'print reg'");
     }
     // memory
     else if (args[0].equals("memory")) {
@@ -251,7 +251,7 @@ public final class Debugger {
       else if (args.length == 3)
         this.memory(args[1], args[2]);
       else
-        Message.warning("invalid usage of memory cmd, valid usage 'memory addr [rows]'");
+        Message.error("invalid usage of memory cmd, valid usage 'memory addr [rows]'");
     }
     // symbols
     else if (args[0].equals("symbols"))
@@ -267,7 +267,7 @@ public final class Debugger {
       if (args.length == 2)
         this.breakpoint(args[1]);
       else
-        Message.warning("invalid usage of breakpoint cmd, valid usage 'breakpoint/b addr'");
+        Message.error("invalid usage of breakpoint cmd, valid usage 'breakpoint/b addr'");
     }
     // clear
     else if (args[0].equals("clear") || args[0].equals("cl"))
@@ -277,7 +277,7 @@ public final class Debugger {
       if (args.length == 2)
         this.delete(args[1]);
       else
-        Message.warning("invalid usage of delete cmd, valid usage 'delete/del addr'");
+        Message.error("invalid usage of delete cmd, valid usage 'delete/del addr'");
     }
     // list
     else if (args[0].equals("list") || args[0].equals("ls"))
@@ -290,10 +290,10 @@ public final class Debugger {
       if (args.length == 2)
         this.start(args[1]);
       else
-        Message.warning("invalid usage of start cmd, valid usage 'start addr'");
+        Message.error("invalid usage of start cmd, valid usage 'start addr'");
     }
     else
-      Message.warning("unknown command '" + args[0] + "'");
+      Message.error("unknown command '" + args[0] + "'");
   }
 
 }
