@@ -54,7 +54,7 @@ vsim/assembler/Parser.java: vsim/assembler/syntax/parser.cup
 	mv Token.java vsim/assembler
 
 test: VSim.jar
-	python test.py
+	python3 test.py
 
 .PHONY: clean doc test
 
