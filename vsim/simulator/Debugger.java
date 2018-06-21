@@ -53,6 +53,9 @@ public final class Debugger {
     this.args = null;
     for (Statement stmt: program.getStatements())
       this.space = Math.max(this.space, stmt.getDebugInfo().getSource().length());
+    // set program breakpoints
+    for (Integer breakpoint: program.getBreakpoints())
+      this.breakpoints.put(breakpoint, true);
   }
 
   private void showx() {

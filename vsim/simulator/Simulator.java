@@ -1,6 +1,7 @@
 package vsim.simulator;
 
 import vsim.Globals;
+import vsim.Settings;
 import vsim.utils.Cmd;
 import vsim.utils.Message;
 import vsim.linker.Linker;
@@ -24,16 +25,23 @@ public final class Simulator {
     program.reset();
     // execute all program
     Statement stmt;
-    while ((stmt = program.next()) != null)
+    while ((stmt = program.next()) != null) {
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
-    // panic if no exit/exit2 ecall
-    String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
-    Message.panic("attempt to execute non-instruction at " + pc);
+      // if debugging is activated
+      if (Settings.DEBUG)
+        break;
+    }
+    if (!Settings.DEBUG) {
+      // panic if no exit/exit2 ecall
+      String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
+      Message.panic("attempt to execute non-instruction at " + pc);
+    } else {
+      Message.log("starting debugger...");
+      Simulator.debug(program);
+    }
   }
 
   public static void debug(LinkedProgram program) {
-    // set start address
-    program.reset();
     // create a debugger
     Debugger debugger = new Debugger(program);
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -59,6 +67,8 @@ public final class Simulator {
     Globals.reset();
     // assemble -> link -> debug
     LinkedProgram program = Linker.link(Assembler.assemble(files));
+    // set start address
+    program.reset();
     // debug linked program
     Simulator.debug(program);
   }

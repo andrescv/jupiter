@@ -175,6 +175,7 @@ F_FNEGS = [fF][nN][eE][gG]"."[sS]
 I_ADDI = [aA][dD][dD][iI]
 I_ANDI = [aA][nN][dD][iI]
 I_ECALL = [eE][cC][aA][lL][lL]
+I_BREAK = [eE][bB][rR][eE][aA][kK]
 I_JALR = [jJ][aA][lL][rR]
 I_LB = [lL][bB]
 I_LBU = [lL][bB][uU]
@@ -626,6 +627,10 @@ ERROR = .
 
   {I_ECALL} {
     return symbol(Token.I_ECALL);
+  }
+
+  {I_BREAK} {
+    return symbol(Token.I_BREAK);
   }
 
   {I_FENCE} {
