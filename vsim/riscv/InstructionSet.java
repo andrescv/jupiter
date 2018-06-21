@@ -43,7 +43,7 @@ public final class InstructionSet {
     "Xori", "Ori", "Andi",
     "Slli", "Srli", "Srai",
     "ECall", "Fence", "FenceI",
-    "Flw"
+    "Flw", "Ebreak"
   };
 
   // current classes in stype package
