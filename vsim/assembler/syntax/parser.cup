@@ -840,8 +840,8 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
              |  I_LI Register:rd Delimiter Const:imm
                 {:
                   if (imm > 2047 || imm < -2048) {
-                    int imm_hi = imm >>> 12;
-                    int imm_lo = Data.signExtend(imm & 0xfff, 12);
+                    int imm_hi =  ((imm >>> 12) + ((imm >>> 11) & 0x1)) & 0x000fffff;
+                    int imm_lo = Data.signExtend((imm & 0xfff), 12);
                     Assembler.program.add(new UType("lui", Assembler.debug, rd, imm_hi));
                     Assembler.program.add(new IType("addi", Assembler.debug, rd, rd, imm_lo));
                   } else {
