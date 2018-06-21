@@ -2,7 +2,7 @@ JAR=jar
 JAVA=java
 JAVAC=javac
 JAVADOC=javadoc
-JFLAGS=-d build -Xlint:unchecked 
+JFLAGS=-d build -Xlint:unchecked
 
 # JCUP
 JCUP=lib/java-cup-11b.jar
@@ -53,7 +53,10 @@ vsim/assembler/Parser.java: vsim/assembler/syntax/parser.cup
 	mv Parser.java vsim/assembler
 	mv Token.java vsim/assembler
 
-.PHONY: clean doc
+test: VSim.jar
+	python test.py
+
+.PHONY: clean doc test
 
 # create documentation
 doc:
