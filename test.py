@@ -4,7 +4,7 @@ import subprocess
 from glob import glob
 
 newline = os.linesep
-CMD = 'java -jar VSim.jar -nocolor %s 1>/dev/null'
+CMD = 'java -jar VSim.jar -nocolor %s'
 
 
 def main():
