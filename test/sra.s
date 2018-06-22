@@ -448,7 +448,7 @@ test42:
   li x29, 0x00000000
   bne x0, x29, fail
 
-sucess:
+success:
   li a0, 10
   ecall
 

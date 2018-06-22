@@ -30,7 +30,7 @@ label3_test01:
   nop
   ret
 
-sucess:
+success:
   li a0, 10
   ecall
 

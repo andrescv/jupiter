@@ -20,7 +20,7 @@ target_2:
   la  x2, linkaddr_2
   bne x2, x4, fail
 
-sucess:
+success:
   li a0, 10
   ecall
 
