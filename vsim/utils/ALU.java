@@ -49,21 +49,21 @@ public final class ALU {
   public static float fsgnj(float a, float b) {
     int ax = Float.floatToIntBits(a);
     int bx = Float.floatToIntBits(b);
-    int cx = (bx & 0x80000000) | (ax & 0x7FFFFFFF);
+    int cx = (bx & SIGN_MASK) | (ax & (EXPONENT_MASK | FRACTION_MASK));
     return Float.intBitsToFloat(cx);
   }
 
   public static float fsgnjn(float a, float b) {
     int ax = Float.floatToIntBits(a);
     int bx = Float.floatToIntBits(b);
-    int cx = (~bx & 0x80000000) | (ax & 0x7FFFFFFF);
+    int cx = (~bx & SIGN_MASK) | (ax & (EXPONENT_MASK | FRACTION_MASK));
     return Float.intBitsToFloat(cx);
   }
 
   public static float fsgnjx(float a, float b) {
     int ax = Float.floatToIntBits(a);
     int bx = Float.floatToIntBits(b);
-    int cx = ((ax ^ bx) & 0x80000000) | (ax & 0x7FFFFFFF);
+    int cx = ((ax ^ bx) & SIGN_MASK) | (ax & (EXPONENT_MASK | FRACTION_MASK));
     return Float.intBitsToFloat(cx);
   }
 
