@@ -23,7 +23,9 @@ public final class Div extends RType {
 
   @Override
   protected int compute(int rs1, int rs2) {
-    return rs1 / rs2;
+    if (rs2 != 0)
+      return rs1 / rs2;
+    return 0xffffffff;
   }
 
 }
