@@ -76,7 +76,7 @@ test09:
   li a1, 9
   la x1, tdat
   addi x1, x1, -32
-  lh x5, 32(x1)
+  lw x5, 32(x1)
   li x29, 0x00ff00ff
   bne x5, x29, fail
 
@@ -84,7 +84,7 @@ test10:
   li a1, 10
   la x1, tdat
   addi x1, x1, -3
-  lh x5, 7(x1)
+  lw x5, 7(x1)
   li x29, 0xff00ff00
   bne x5, x29, fail
 
@@ -172,7 +172,7 @@ label1_test16:
 test17:
   li a1, 17
   la x5, tdat
-  lhu x2, 0(x4)
+  lw x2, 0(x4)
   li x2, 2
   li x29, 0x00000002
   bne x2, x29, fail
@@ -180,7 +180,7 @@ test17:
 test18:
   li a1, 18
   la x5, tdat
-  lhu x2, 0(x5)
+  lw x2, 0(x5)
   nop
   li x2, 2
   li x29, 0x00000002

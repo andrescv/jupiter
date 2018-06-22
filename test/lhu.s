@@ -76,7 +76,7 @@ test09:
   li a1, 9
   la x1, tdat
   addi x1, x1, -32
-  lh x5, 32(x1)
+  lhu x5, 32(x1)
   li x29, 0x000000ff
   bne x5, x29, fail
 
@@ -84,7 +84,7 @@ test10:
   li a1, 10
   la x1, tdat
   addi x1, x1, -5
-  lh x5, 7(x1)
+  lhu x5, 7(x1)
   li x29, 0x0000ff00
   bne x5, x29, fail
 
