@@ -16,6 +16,9 @@ def main():
     errors = []
     try:
         for f in sorted(glob('test/*')):
+            # ignore readme and license files
+            if not f.endswith('.s'):
+                continue
             total += 1
             command = CMD % f
             process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
