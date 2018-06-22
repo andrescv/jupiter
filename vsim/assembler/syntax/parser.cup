@@ -104,7 +104,7 @@ terminal I_BGT, I_BLE, I_BGTU, I_BLEU, I_J, I_JR;
 terminal I_RET, I_CALL, I_TAIL;
 
 // Literals
-terminal NUMBER, FLOAT, STRING, CHARACTER;
+terminal NUMBER, HEXNUM, BINARY, FLOAT, STRING, CHARACTER;
 
 // Ids and Registers
 terminal REGISTER, FREGISTER, IDENTIFIER;
@@ -134,6 +134,8 @@ non terminal Integer Const;
 non terminal String Id;
 non terminal String Str;
 non terminal Integer Number;
+non terminal Integer Hexnum;
+non terminal Integer Binary;
 non terminal Float Float;
 non terminal Integer Character;
 non terminal String Register, FRegister;
@@ -966,15 +968,15 @@ FloatList   ::= Float:f
                   l.add(f);
                   RESULT = l;
                 :}
-             |  Number:n
+             |  NUMBER:n
                 {:
                   ArrayList<Float> l = new ArrayList<Float>();
-                  l.add((float) n);
+                  l.add((float)((int) n));
                   RESULT = l;
                 :}
-             |  FloatList:l Delimiter Number:n
+             |  FloatList:l Delimiter NUMBER:n
                 {:
-                  l.add((float) n);
+                  l.add((float)((int)n));
                   RESULT = l;
                 :}
              |  FloatList:l Delimiter Float:f
@@ -1109,10 +1111,26 @@ Id          ::= IDENTIFIER:id
 
 Number      ::= NUMBER:n
                 {: RESULT = (int)n; :}
+             |  Hexnum:n
+                {: RESULT = n; :}
+             |  Binary:n
+                {: RESULT = n; :}
+             ;
+
+Hexnum      ::= HEXNUM:n
+                {: RESULT = (int)n; :}
+             ;
+
+Binary      ::= BINARY:n
+                {: RESULT = (int)n; :}
              ;
 
 Float       ::= FLOAT:f
                 {: RESULT = (float)f; :}
+             |  Hexnum:n
+                {: RESULT = Float.intBitsToFloat(n); :}
+             |  Binary:n
+                {: RESULT = Float.intBitsToFloat(n); :}
              ;
 
 Character   ::= CHARACTER:c
