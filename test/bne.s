@@ -244,7 +244,7 @@ label1_test19:
   li x5, 2
   bne x4, x5, label1_test19
 
-sucess:
+success:
   li a0, 10
   ecall
 

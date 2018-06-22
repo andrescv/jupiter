@@ -58,7 +58,7 @@ label2_test04:
   li x5, 2
   bne x4, x5, label1_test04
 
-sucess:
+success:
   li a0, 10
   ecall
 

@@ -282,7 +282,7 @@ label1_test22:
   li x5, 2
   bne x4, x5, label1_test22
 
-sucess:
+success:
   li a0, 10
   ecall
 
