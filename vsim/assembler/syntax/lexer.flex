@@ -144,6 +144,8 @@ I_SGTZ = [sS][gG][tT][zZ]
 // single-precision floating point
 F_FMVWX = [fF][mM][vV]"."[wW]"."[xX]
 F_FMVXW = [fF][mM][vV]"."[xX]"."[wW]
+F_FMVSX = [fF][mM][vV]"."[sS]"."[xX]
+F_FMVXS = [fF][mM][vV]"."[xX]"."[sS]
 F_FCVTSW = [fF][cC][vV][tT]"."[sS]"."[wW]
 F_FCVTSWU = [fF][cC][vV][tT]"."[sS]"."[wW][uU]
 F_FCVTWS = [fF][cC][vV][tT]"."[wW]"."[sS]
@@ -524,7 +526,15 @@ ERROR = .
     return symbol(Token.F_FMVWX);
   }
 
+  {F_FMVSX} {
+    return symbol(Token.F_FMVWX);
+  }
+
   {F_FMVXW} {
+    return symbol(Token.F_FMVXW);
+  }
+
+  {F_FMVXS} {
     return symbol(Token.F_FMVXW);
   }
 
@@ -849,7 +859,7 @@ ERROR = .
   // hex number
   {HEXADECIMAL} {
     try {
-      return symbol(Token.NUMBER,   Integer.parseUnsignedInt(yytext().substring(2), 16));
+      return symbol(Token.HEXNUM,   Integer.parseUnsignedInt(yytext().substring(2), 16));
     } catch (Exception e) {
       return symbol(Token.ERROR, "(32 bits only) invalid hexadecimal constant: '" + yytext() + "'");
     }
@@ -858,7 +868,7 @@ ERROR = .
   // binary number
   {BINARY} {
     try {
-      return symbol(Token.NUMBER, Integer.parseUnsignedInt(yytext().substring(2), 2));
+      return symbol(Token.BINARY, Integer.parseUnsignedInt(yytext().substring(2), 2));
     } catch (Exception e) {
       return symbol(Token.ERROR, "(32 bits only) invalid binary constant: '" + yytext() + "'");
     }
