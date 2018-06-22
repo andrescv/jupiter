@@ -25,7 +25,9 @@ public final class Divu extends RType {
 
   @Override
   protected int compute(int rs1, int rs2) {
-    return ALU.divu(rs1, rs2);
+    if (rs2 != 0)
+      return ALU.divu(rs1, rs2);
+    return 0xffffffff;
   }
 
 }
