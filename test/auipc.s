@@ -21,7 +21,7 @@ label1_test01:
   tail label1_test01
 label2_test01:
   call label3_test01
-  j sucess
+  j success
   nop
   nop
   nop
