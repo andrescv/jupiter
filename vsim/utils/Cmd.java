@@ -19,10 +19,10 @@ public final class Cmd {
 
   // slogan and license
   private static final String SUBHEADER = "RISC-V Assembler & Runtime Simulator" + newline +
-                                          newline + "MIT License" + newline +
+                                          newline + "GPL-3.0 License" + newline +
                                           "Copyright (c) 2018 Andres Castellanos" + newline +
                                           "All Rights Reserved." + newline +
-                                          "See the file README for a full copyright notice." + newline;
+                                          "See the file LICENSE for a full copyright notice." + newline;
 
   // usage [-h]
   private static final String USAGE = "usage: vsim [flags] <files>" +
@@ -32,9 +32,9 @@ public final class Cmd {
                                       "  -bare     bare machine (no pseudo-ops)" + newline +
                                       "  -quiet    do not print warnings" + newline +
                                       "  -noquiet  print warnings (default)" + newline +
-                                      "  -nocolor  dont colorize output (only on linux)" + newline +
+                                      "  -nocolor  do not colorize output (only on linux)" + newline +
                                       "  -color    colorize output (only on linux) (default)" + newline +
-                                      "  -debug    debug program";
+                                      "  -debug    start the debugger";
 
   public static ArrayList<String> parse(String[] args) {
     int lastArg = 0;
@@ -43,8 +43,10 @@ public final class Cmd {
       if (args[i].startsWith("-")) {
         lastArg = i;
         String option = args[i].substring(1);
-        if (option.equals("h"))
+        if (option.equals("h")) {
+          Cmd.title();
           Cmd.exit();
+        }
         else if (option.equals("asm"))
           Settings.BARE = false;
         else if (option.equals("bare"))
@@ -60,6 +62,7 @@ public final class Cmd {
         else if (option.equals("debug"))
           Settings.DEBUG = true;
         else {
+          Cmd.title();
           Message.warning("unknown argument: " + args[i] + newline);
           Cmd.exit();
         }
