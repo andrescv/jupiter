@@ -88,14 +88,14 @@ public final class InstructionSet {
     for(String className: classes) {
       String classPath = pkg + "." + className;
       try {
-        Class cls = Class.forName(classPath);
+        Class<?> cls = Class.forName(classPath);
         // only final classes
         if (!Instruction.class.isAssignableFrom(cls) ||
           Modifier.isAbstract(cls.getModifiers()) ||
           Modifier.isInterface(cls.getModifiers()))
           continue;
         // add this new instruction to isa
-        Instruction inst = (Instruction) cls.newInstance();
+        Instruction inst = (Instruction)(cls.getConstructor().newInstance());
         String mnemonic = inst.getMnemonic();
         if (this.instructions.containsKey(mnemonic))
           Message.warning("duplicated instruction name: '" + mnemonic + "', skip this");
