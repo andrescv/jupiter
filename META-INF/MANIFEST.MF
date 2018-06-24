@@ -1,4 +1,2 @@
-Manifest-Version: 1.0
-Built-By: Andres Castellanos
 Main-Class: vsim.VSim
-Class-Path: . lib/java-cup-11b.jar
+Class-Path: . ./lib/java-cup-11b.jar
