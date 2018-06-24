@@ -2,7 +2,7 @@ JAR=jar
 JAVA=java
 JAVAC=javac
 JAVADOC=javadoc
-JFLAGS=-d build -Xlint:unchecked
+JFLAGS=-d build -Xlint:unchecked -Xlint:deprecation
 
 # JCUP
 JCUP=lib/java-cup-11b.jar
@@ -29,8 +29,6 @@ SYNTAX=vsim/assembler/Lexer.java vsim/assembler/Parser.java
 # VSim script
 VSim.jar: build META-INF/MANIFEST.MF Makefile $(SYNTAX) $(OBJS)
 	$(RM) VSim.jar
-	mkdir -p build/vsim/lib
-	cp lib/java-cup-11b.jar build/vsim/lib
 	$(JAR) -cvfm VSim.jar META-INF/MANIFEST.MF -C build/ .
 
 # create build directory
