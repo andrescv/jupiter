@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler;
 
 import vsim.Globals;
@@ -8,6 +25,10 @@ import vsim.riscv.instructions.Instruction;
 import vsim.assembler.statements.Statement;
 
 
+/**
+ * The class Program is used to represent an assembler program
+ * before becoming a linked program.
+ */
 public final class Program {
 
   // program filename
@@ -30,15 +51,22 @@ public final class Program {
   private int dataIndex;
   private int dataStart;
   private ArrayList<Byte> data;
+
   // rodata segment control
   private int rodataIndex;
   private int rodataStart;
   private ArrayList<Byte> rodata;
+
   // bss segment control
   private int bssIndex;
   private int bssStart;
   private ArrayList<Byte> bss;
 
+  /**
+   * Unique constructor that initializes a newly and empty Program object.
+   *
+   * @param filename the filename of this program
+   */
   protected Program(String filename) {
     // filename attached to this program
     this.filename = filename;
@@ -66,6 +94,10 @@ public final class Program {
     this.bss = new ArrayList<Byte>();
   }
 
+  /**
+   * This method is used to relocate all symbols of the program and is called
+   * inside the {@link vsim.linker.Linker} class.
+   */
   public void relocateSymbols() {
     // first locals
     for (Enumeration<String> e = this.table.labels(); e.hasMoreElements();) {
@@ -92,37 +124,81 @@ public final class Program {
       Globals.globl.set(global, this.table.get(global));
   }
 
+  /**
+   * This method sets the text segment start address of this program.
+   *
+   * @param address the start address
+   */
   public void setTextStart(int address) {
     this.textStart = address;
   }
 
+  /**
+   * This method sets the data segment start address of this program.
+   *
+   * @param address the start address
+   */
   public void setDataStart(int address) {
     this.dataStart = address;
   }
 
+  /**
+   * This method sets the rodata segment start address of this program.
+   *
+   * @param address the start address
+   */
   public void setRodataStart(int address) {
     this.rodataStart = address;
   }
 
+  /**
+   * This method sets the bss segment start address of this program.
+   *
+   * @param address the start address
+   */
   public void setBssStart(int address) {
     this.bssStart = address;
   }
 
+  /**
+   * This method adds a new statement to the program.
+   *
+   * @param stmt the new statement
+   * @see vsim.assembler.statements.Statement
+   */
   protected void add(Statement stmt) {
     this.stmts.add(stmt);
     this.textIndex += Instruction.LENGTH;
   }
 
+  /**
+   * This method is used to indicate that the next datum needs to be
+   * aligned to a 2 ^ n byte boundary.
+   *
+   * @param alignVal the alignment value
+   */
   protected void align(int alignVal) {
     this.align = true;
     this.alignVal = (int)Math.pow(2, alignVal);
   }
 
+  /**
+   * This method is used to indicate that the next datum needs to be
+   * aligned to a n byte boundary.
+   *
+   * @param alignVal the alignment value
+   */
   protected void balign(int alignVal) {
     this.align = true;
     this.alignVal = alignVal;
   }
 
+  /**
+   * This method tries to add a new global label attached to this program.
+   *
+   * @param label the global label
+   * @return true if the label does not already exists, false otherwise
+   */
   protected boolean addGlobal(String label) {
     if (!this.globals.contains(label)) {
       this.globals.add(label);
@@ -131,6 +207,15 @@ public final class Program {
     return false;
   }
 
+  /**
+   * This method tries to add a new local label attached to this program.
+   *
+   * @param segment the segment of this label
+   * @param label the label
+   * @see vsim.assembler.Segment
+   * @see vsim.assembler.SymbolTable
+   * @return true if the label does not already exists, false otherwise
+   */
   protected boolean addSymbol(Segment segment, String label) {
     switch (segment) {
       case DATA:
@@ -147,6 +232,13 @@ public final class Program {
     }
   }
 
+  /**
+   * This method aligns a segment to a n byte boundary if necessary.
+   *
+   * @param index the segment current index
+   * @param segment the segment data
+   * @return the aligned segment index
+   */
   private int align(int index, ArrayList<Byte> segment) {
     int padding = 0;
     // calculate padding
@@ -165,6 +257,14 @@ public final class Program {
     return index;
   }
 
+  /**
+   * This method is used add a new byte to a given segment.
+   *
+   * @param b the byte to add
+   * @param index the current index of the segment
+   * @param segment the current segment data
+   * @return the new segment index
+   */
   private int addTo(byte b, int index, ArrayList<Byte> segment) {
     index = this.align(index, segment);
     segment.add(b);
@@ -172,73 +272,94 @@ public final class Program {
     return index;
   }
 
-  private void addToData(byte b) {
-    this.dataIndex = this.addTo(b, this.dataIndex, this.data);
-  }
-
-  private void addToRodata(byte b) {
-    this.rodataIndex = this.addTo(b, this.rodataIndex, this.rodata);
-  }
-
-  private void addToBss(byte b) {
-    this.bssIndex = this.addTo(b, this.rodataIndex, this.bss);
-  }
-
+  /**
+   * This method is used to add a new byte to a given segment.
+   *
+   * @param segment the segment to add the byte
+   * @param b the byte to add
+   */
   protected void addByte(Segment segment, byte b) {
     switch (segment) {
       case DATA:
-        this.addToData(b); break;
+        this.addTo(b, this.dataIndex, this.data); break;
       case RODATA:
-        this.addToRodata(b); break;
+        this.addTo(b, this.rodataIndex, this.rodata); break;
       case BSS:
-        this.addToBss(b); break;
+        this.addTo(b, this.bssIndex, this.bss); break;
     }
   }
 
+  /**
+   * This method returns the program filename.
+   *
+   * @return the program filename
+   */
   public String getFilename() {
     return this.filename;
   }
 
+  /**
+   * This method returns all the global labels.
+   *
+   * @return all the global labels
+   */
   public ArrayList<String> getGlobals() {
+    this.globals.trimToSize();
     return this.globals;
   }
 
+  /**
+   * This method returns the local symbol table attached to the program.
+   *
+   * @return the local symbol table
+   */
   public SymbolTable getST() {
     return this.table;
   }
 
+  /**
+   * This method returns all the data segment content of the program.
+   *
+   * @return the data segment content of the program
+   */
   public ArrayList<Byte> getData() {
     return this.data;
   }
 
+  /**
+   * This method returns all the rodata segment content of the program.
+   *
+   * @return the rodata segment content of the program
+   */
   public ArrayList<Byte> getRodata() {
     return this.rodata;
   }
 
+  /**
+   * This method returns all the bss segment content of the program.
+   *
+   * @return the bss segment content of the program
+   */
   public ArrayList<Byte> getBss() {
     return this.bss;
   }
 
+  /**
+   * This method returns all the statements of the program.
+   *
+   * @return all the statements of the program
+   */
   public ArrayList<Statement> getStatements() {
     return this.stmts;
   }
 
+  /**
+   * This method returns the text segment size in bytes.
+   *
+   * @return the text segment size in bytes
+   */
   public int getTextSize() {
     return this.stmts.size() * Instruction.LENGTH;
-  }
-
-  public int getDataSize() {
-    return this.data.size() + this.rodata.size() + this.bss.size();
-  }
-
-  @Override
-  public String toString() {
-    return String.format(
-      "RISC-V Program (%s, text: %d bytes, data: %d bytes)",
-      this.filename,
-      this.getTextSize(),
-      this.getDataSize()
-    );
   }
 
 }

@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler;
 
 import vsim.Globals;
@@ -13,26 +30,63 @@ import vsim.assembler.statements.Statement;
 
 public final class Assembler {
 
+  private Assembler() { /* NOTHING */ }
+
+  /** current assembler segment */
   protected static Segment segment = Segment.TEXT;
+  /** current assembler program */
   public static Program program = null;
+  /** current assembler debug info */
   public static DebugInfo debug = null;
 
+  /**
+   * This method checks if the current assembler segment is the text segment.
+   *
+   * @see vsim.assembler.Segment
+   * @return true if the text segment is the current segment, false otherwise
+   */
   protected static boolean inTextSegment() {
     return Assembler.segment == Segment.TEXT;
   }
 
+  /**
+   * This method checks if the current assembler segment is the data segment.
+   *
+   * @see vsim.assembler.Segment
+   * @return true if the data segment is the current segment, false otherwise
+   */
   protected static boolean inDataSegment() {
     return Assembler.segment == Segment.DATA;
   }
 
+  /**
+   * This method checks if the current assembler segment is the rodata segment.
+   *
+   * @see vsim.assembler.Segment
+   * @return true if the rodata segment is the current segment, false otherwise
+   */
   protected static boolean inRodataSegment() {
     return Assembler.segment == Segment.RODATA;
   }
 
+  /**
+   * This method checks if the current assembler segment is the bss segment.
+   *
+   * @see vsim.assembler.Segment
+   * @return true if the bss segment is the current segment, false otherwise
+   */
   protected static boolean inBssSegment() {
     return Assembler.segment == Segment.BSS;
   }
 
+  /**
+   * This method checks is used to create a pretty formatted error and
+   * adds this error to the error list {@link Globals#errros}.
+   *
+   * @param msg the error message
+   * @param showSource true if you want to show the source line
+   * @see Globals#errors
+   */
   public static void error(String msg, boolean showSource) {
     String filename = Assembler.program.getFilename();
     String newline = System.getProperty("line.separator");
@@ -50,10 +104,22 @@ public final class Assembler {
       );
   }
 
+  /**
+   * This method is an alias for {@link Globals#error} that sets to
+   * true the parameter showSource.
+   *
+   * @param msg the error message
+   * @see Globals#error
+   */
   public static void error(String msg) {
     Assembler.error(msg, true);
   }
 
+  /**
+   * This method is used to pretty print a warning.
+   *
+   * @param msg the warning message
+   */
   public static void warning(String msg) {
     if (!Settings.QUIET) {
       String filename = Assembler.program.getFilename();
@@ -68,6 +134,14 @@ public final class Assembler {
     }
   }
 
+  /**
+   * This method handle all the global symbols of each program and
+   * adds every symbol if possible to the global symbol table. This
+   * method is part of the first pass of the assembler.
+   *
+   * @param programs all the assembled programs
+   * @see Globals#globl
+   */
   private static void handleGlobals(ArrayList<Program> programs) {
     for (Program program: programs) {
       // set current assembler program
@@ -94,6 +168,12 @@ public final class Assembler {
     }
   }
 
+  /**
+   * This method is used to make the first pass of the assembler.
+   *
+   * @param programs assembled programs
+   * @see Assembler#handleGlobals
+   */
   private static void firstPass(ArrayList<Program> programs) {
     // resolve globals
     Assembler.handleGlobals(programs);
@@ -110,6 +190,12 @@ public final class Assembler {
     }
   }
 
+  /**
+   * This method is used to assemble all the RISC-V files and it is
+   * called before the linkage process.
+   *
+   * @param files the RISC-V files to assemble
+   */
   public static ArrayList<Program> assemble(ArrayList<String> files) {
     ArrayList<Program> programs = new ArrayList<Program>();
     // assemble all files
