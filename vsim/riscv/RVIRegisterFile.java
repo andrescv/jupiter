@@ -74,7 +74,7 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method returns the register number of a register given a name.
+   * This method returns the number of a register given a name.
    *
    * @param name register ABI name
    * @return register number or -1 if the name is invalid
@@ -87,7 +87,7 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method returns the register content of a register.
+   * This method returns the content of a register.
    *
    * @param number register number
    * @return register value or 0 if the number is invalid
@@ -100,7 +100,7 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method returns the register content of a register.
+   * This method returns the content of a register.
    *
    * @param name register ABI name
    * @return register value or 0 if the name is invalid
@@ -155,7 +155,8 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method increments the program counter.
+   * This method increments the program counter by
+   * {@link vsim.riscv.instructions.Instruction#LENGTH}.
    *
    * @see vsim.riscv.instructions.Instruction#LENGTH
    */
