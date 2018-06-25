@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.riscv;
 
 import vsim.utils.Message;
@@ -7,9 +24,12 @@ import java.lang.reflect.Modifier;
 import vsim.riscv.instructions.Instruction;
 
 
+/**
+ * The class InstructionSet represents the available instruction set.
+ */
 public final class InstructionSet {
 
-  // packages
+  /** instruction packages */
   private static final String RTYPE  = "vsim.riscv.instructions.rtype";
   private static final String ITYPE  = "vsim.riscv.instructions.itype";
   private static final String STYPE  = "vsim.riscv.instructions.stype";
@@ -18,7 +38,7 @@ public final class InstructionSet {
   private static final String JTYPE  = "vsim.riscv.instructions.jtype";
   private static final String R4TYPE = "vsim.riscv.instructions.r4type";
 
-  // current classes in rtype package
+  /** current classes in rtype package */
   private static final String[] RClasses = {
     "Add", "Sub", "Sll",
     "Slt", "Sltu", "Xor",
@@ -35,7 +55,7 @@ public final class InstructionSet {
     "Fmins", "Fmaxs"
   };
 
-  // current classes in itype package
+  /** current classes in itype package */
   private static final String[] IClasses = {
     "Jalr", "Lb", "Lh",
     "Lw", "Lbu", "Lhu",
@@ -46,44 +66,57 @@ public final class InstructionSet {
     "Flw", "Ebreak"
   };
 
-  // current classes in stype package
+  /** current classes in stype package */
   private static final String[] SClasses = {
     "Sb", "Sh", "Sw",
     "Fsw"
   };
 
-  // current classes in btype package
+  /** current classes in btype package */
   private static final String[] BClasses = {
     "Beq", "Bge", "Bgeu",
     "Blt", "Bltu", "Bne"
   };
 
-  // current classes in utype package
+  /** current classes in utype package */
   private static final String[] UClasses = {
     "Auipc", "Lui"
   };
 
-  // current classes in jtype package
+  /** current classes in jtype package */
   private static final String[] JClasses = {
     "Jal"
   };
 
-  // current classes in r4type package
+  /** current classes in r4type package */
   private static final String[] R4Classes = {
     "Fmadds", "Fmsubs",
     "Fnmadds", "Fnmsubs"
   };
 
-  // only 1 instruction set instance
+  /** the only available instance of the InstructionSet class */
   public static final InstructionSet insts = new InstructionSet();
 
+  /** instructions dictionary */
   private Hashtable<String, Instruction> instructions;
 
+  /**
+   * Unique constructor that initializes a newly InstructionSet object.
+   *
+   * @see vsim.riscv.instructions.Instruction
+   */
   private InstructionSet() {
     this.instructions = new Hashtable<String, Instruction>();
     this.populate();
   }
 
+  /**
+   * This method adds all the instruction classes in the given package.
+   *
+   * @param classes the classes to add
+   * @param pkg the package of the classes
+   * @see vsim.riscv.instructions.Instruction
+   */
   private void add(String[] classes, String pkg) {
     for(String className: classes) {
       String classPath = pkg + "." + className;
@@ -107,6 +140,12 @@ public final class InstructionSet {
     }
   }
 
+  /**
+   * This method populates the instruction set instance with all
+   * the instructions available.
+   *
+   * @see vsim.riscv.instructions.Instruction
+   */
   private void populate() {
     this.add(RClasses, RTYPE);
     this.add(IClasses, ITYPE);
@@ -117,14 +156,22 @@ public final class InstructionSet {
     this.add(R4Classes, R4TYPE);
   }
 
+  /**
+   * This method returns the intruction that represent the given mnemonic.
+   *
+   * @param mnemonic the instruction mnemonic
+   * @see vsim.riscv.instructions.Instruction
+   * @return the instruction or null if the mnemonic is invalid
+   */
   public Instruction get(String mnemonic) {
     return this.instructions.get(mnemonic);
   }
 
-  public int size() {
-    return this.instructions.size();
-  }
-
+  /**
+   * This method returns a String representation of an InstructionSet object.
+   *
+   * @return the String representation
+   */
   @Override
   public String toString() {
     String out = "";
