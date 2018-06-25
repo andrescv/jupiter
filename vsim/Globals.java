@@ -45,10 +45,10 @@ public final class Globals {
   /** RISC-V instruction set */
   public static final InstructionSet iset = InstructionSet.insts;
 
-  /** .globl symbol table */
+  /** .globl symbol table (used for debugging) */
   public static final SymbolTable globl = new SymbolTable();
 
-  /** .local symbol table */
+  /** .local symbol table (used for debugging) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
   /** VSim assembler and linker errors */
