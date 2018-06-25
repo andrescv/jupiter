@@ -101,8 +101,6 @@ public final class InstructionField {
   protected int hi;
   /** field mask */
   protected int mask;
-  /** field length in bits */
-  protected int length;
 
   /**
    * Constructor that initializes a newly InstructionField object.
@@ -123,7 +121,6 @@ public final class InstructionField {
     this.lo = lo;
     this.hi = hi;
     this.mask = 0;
-    this.length = hi - lo + 1;
     for (int i = lo, j = 0; i <= hi; i++, j++)
       this.mask |= 1 << j;
   }
