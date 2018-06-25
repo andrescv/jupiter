@@ -123,8 +123,8 @@ public final class Debugger {
   /**
    * This methods prints a portion of the RISC-V memory
    *
-   * @param address The address to start printing memory in hex or decimal
-   * @param rows How many rows of 4 memory cells to print
+   * @param address the address to start printing memory in hex or decimal
+   * @param rows how many rows of 4 memory cells to print
    * @see vsim.riscv.Memory
    */
   private void memory(String address, String rows) {
@@ -286,7 +286,6 @@ public final class Debugger {
    * This method resets the program and the state of the simulator.
    */
   private void reset() {
-    Globals.resetState();
     this.program.reset();
   }
 
