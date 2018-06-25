@@ -28,6 +28,9 @@ import java.io.FileNotFoundException;
 import vsim.assembler.statements.Statement;
 
 
+/**
+ * The Assembler class contains useful methods to assemble RISC-V source files.
+ */
 public final class Assembler {
 
   private Assembler() { /* NOTHING */ }
@@ -80,8 +83,8 @@ public final class Assembler {
   }
 
   /**
-   * This method checks is used to create a pretty formatted error and
-   * adds this error to the error list {@link Globals#errros}.
+   * This method is used to create a pretty formatted error and
+   * adds this error to the error list {@link Globals#errors}.
    *
    * @param msg the error message
    * @param showSource true if you want to show the source line
@@ -105,11 +108,11 @@ public final class Assembler {
   }
 
   /**
-   * This method is an alias for {@link Globals#error} that sets to
+   * This method is an alias for {@link Assembler#error} that sets to
    * true the parameter showSource.
    *
    * @param msg the error message
-   * @see Globals#error
+   * @see Assembler#error
    */
   public static void error(String msg) {
     Assembler.error(msg, true);
@@ -195,6 +198,8 @@ public final class Assembler {
    * called before the linkage process.
    *
    * @param files the RISC-V files to assemble
+   * @see vsim.assembler.Program
+   * @return all the assembled files
    */
   public static ArrayList<Program> assemble(ArrayList<String> files) {
     ArrayList<Program> programs = new ArrayList<Program>();

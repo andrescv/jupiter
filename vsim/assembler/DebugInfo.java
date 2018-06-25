@@ -41,6 +41,8 @@ public final class DebugInfo {
 
   /**
    * This method returns the line number of the debug information.
+   *
+   * @return the line number
    */
   public int getLineNumber() {
     return this.lineno;
@@ -48,6 +50,8 @@ public final class DebugInfo {
 
   /**
    * This method returns the source line of the debug information.
+   *
+   * @return the source line
    */
   public String getSource() {
     return this.source;
