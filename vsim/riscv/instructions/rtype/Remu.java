@@ -1,7 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.ALU;
-
 
 public final class Remu extends RType {
 
@@ -26,7 +24,7 @@ public final class Remu extends RType {
   @Override
   protected int compute(int rs1, int rs2) {
     if (rs2 != 0)
-      return ALU.remu(rs1, rs2);
+      return Integer.remainderUnsigned(rs1, rs2);
     return rs1;
   }
 

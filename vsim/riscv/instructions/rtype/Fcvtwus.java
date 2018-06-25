@@ -1,7 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.ALU;
 import vsim.utils.Colorize;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
@@ -36,9 +35,17 @@ public final class Fcvtwus extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
+    float value = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    int result;
+    if (value < Integer.MIN_VALUE)
+      result = 0;
+    else if (value > Integer.MAX_VALUE || Float.isNaN(value))
+      result = Integer.MAX_VALUE;
+    else
+      result = Math.round(value);
     Globals.regfile.setRegister(
       code.get(InstructionField.RD),
-      ALU.fcvtwus(Globals.fregfile.getRegister(code.get(InstructionField.RS1)))
+      result
     );
     Globals.regfile.incProgramCounter();
   }

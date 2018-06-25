@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.ALU;
+import vsim.utils.Data;
 
 
 public final class Mulh extends RType {
@@ -25,7 +25,8 @@ public final class Mulh extends RType {
 
   @Override
   protected int compute(int rs1, int rs2) {
-    return ALU.mulh(rs1, rs2);
+    long result = ((long) rs1) * ((long) rs2);
+    return (int)(result >> Data.WORD_LENGTH_BITS);
   }
 
 }

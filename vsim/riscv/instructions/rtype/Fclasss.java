@@ -1,7 +1,7 @@
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.ALU;
+import vsim.utils.Data;
 import vsim.utils.Colorize;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
@@ -36,9 +36,40 @@ public final class Fclasss extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
+    int out = 0;
+    float f = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    int bits = Float.floatToRawIntBits(f);
+    // set flags
+    boolean infOrNaN = Float.isNaN(f) || Float.isInfinite(f);
+    boolean subnormalOrZero = (bits & Data.EXPONENT_MASK) == 0;
+    boolean sign = ((bits & Data.SIGN_MASK) >> 31) != 0;
+    boolean fracZero = (bits & Data.FRACTION_MASK) == 0;
+    boolean isNaN = Float.isNaN(f);
+    boolean isSNaN = Data.signalingNaN(f);
+    // build 10-bit mask
+    if (sign && infOrNaN && fracZero)
+      out |= 1 << 0;
+    if (sign && !infOrNaN && !subnormalOrZero)
+      out |= 1 << 1;
+    if (sign && subnormalOrZero && !fracZero)
+      out |= 1 << 2;
+    if (sign && subnormalOrZero && fracZero)
+      out |= 1 << 3;
+    if (!sign && infOrNaN && fracZero)
+      out |= 1 << 7;
+    if (!sign && !infOrNaN && !subnormalOrZero)
+      out |= 1 << 6;
+    if (!sign && subnormalOrZero && !fracZero)
+      out |= 1 << 5;
+    if (!sign && subnormalOrZero && fracZero)
+      out |= 1 << 4;
+    if (isNaN &&  isSNaN)
+      out |= 1 << 8;
+    if (isNaN && !isSNaN)
+      out |= 1 << 9;
     Globals.regfile.setRegister(
       code.get(InstructionField.RD),
-      ALU.fclass(Globals.fregfile.getRegister(code.get(InstructionField.RS1)))
+      out
     );
     Globals.regfile.incProgramCounter();
   }

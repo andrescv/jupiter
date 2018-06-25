@@ -1,7 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.ALU;
 import vsim.utils.Colorize;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
@@ -36,9 +35,10 @@ public final class Fcvtsw extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
+    int value = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     Globals.fregfile.setRegister(
       code.get(InstructionField.RD),
-      ALU.fcvtsw(Globals.regfile.getRegister(code.get(InstructionField.RS1)))
+      ((Integer) value).floatValue()
     );
     Globals.regfile.incProgramCounter();
   }

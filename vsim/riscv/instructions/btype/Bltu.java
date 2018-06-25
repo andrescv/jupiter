@@ -1,7 +1,5 @@
 package vsim.riscv.instructions.btype;
 
-import vsim.utils.ALU;
-
 
 public final class Bltu extends BType {
 
@@ -20,7 +18,7 @@ public final class Bltu extends BType {
 
   @Override
   protected boolean comparison(int rs1, int rs2) {
-    return ALU.ltu(rs1, rs2);
+    return Integer.compareUnsigned(rs1, rs2) < 0;
   }
 
 }
