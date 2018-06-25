@@ -1,6 +1,6 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.ALU;
+import vsim.utils.Data;
 
 
 public final class Fsgnjxs extends FRType {
@@ -25,7 +25,11 @@ public final class Fsgnjxs extends FRType {
 
   @Override
   public float compute(float rs1, float rs2) {
-    return ALU.fsgnjx(rs1, rs2);
+    int ax = Float.floatToIntBits(rs1);
+    int bx = Float.floatToIntBits(rs2);
+    int sign = (ax ^ bx) & Data.SIGN_MASK;
+    int cx = ax & (Data.EXPONENT_MASK | Data.FRACTION_MASK);
+    return Float.intBitsToFloat(sign | cx);
   }
 
 }

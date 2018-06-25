@@ -1,7 +1,5 @@
 package vsim.riscv.instructions.rtype;
 
-import vsim.utils.ALU;
-
 
 public final class Divu extends RType {
 
@@ -26,7 +24,7 @@ public final class Divu extends RType {
   @Override
   protected int compute(int rs1, int rs2) {
     if (rs2 != 0)
-      return ALU.divu(rs1, rs2);
+      return Integer.divideUnsigned(rs1, rs2);
     return 0xffffffff;
   }
 
