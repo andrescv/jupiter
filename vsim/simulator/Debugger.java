@@ -286,6 +286,7 @@ public final class Debugger {
    * This method resets the program and the state of the simulator.
    */
   private void reset() {
+    Globals.resetState();
     this.program.reset();
   }
 

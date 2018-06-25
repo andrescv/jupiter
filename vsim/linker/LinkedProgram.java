@@ -57,13 +57,11 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method resets the program, first resets the state and then
-   * localizes the global start address that is set in VSim settings and
-   * makes the program counter point to this address.
+   * This method resets the program, localizes the global start address
+   * that is set in VSim settings and makes the program counter point
+   * to this address.
    */
   public void reset() {
-    // reset program state
-    Globals.resetState();
     // set PC to global start label (simulate far-away call)
     int startAddress = Globals.globl.get(Settings.START);
     Globals.regfile.setProgramCounter(startAddress);
