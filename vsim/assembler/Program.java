@@ -281,11 +281,14 @@ public final class Program {
   protected void addByte(Segment segment, byte b) {
     switch (segment) {
       case DATA:
-        this.addTo(b, this.dataIndex, this.data); break;
+        this.dataIndex = this.addTo(b, this.dataIndex, this.data);
+        break;
       case RODATA:
-        this.addTo(b, this.rodataIndex, this.rodata); break;
+        this.rodataIndex = this.addTo(b, this.rodataIndex, this.rodata);
+        break;
       case BSS:
-        this.addTo(b, this.bssIndex, this.bss); break;
+        this.bssIndex = this.addTo(b, this.bssIndex, this.bss);
+        break;
     }
   }
 
