@@ -146,7 +146,7 @@ public final class Linker {
           // set current debug info
           Assembler.debug = stmt.getDebugInfo();
           // build machine code
-          stmt.build(Linker.textAddress, program.getFilename());
+          stmt.build(Linker.textAddress);
           // store result in text segment
           int code = stmt.result().get(InstructionField.ALL);
           Globals.memory.storeWord(Linker.textAddress, code);

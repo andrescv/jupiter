@@ -184,11 +184,10 @@ public final class Assembler {
     for (Program program: programs) {
       // set current assembler program
       Assembler.program = program;
-      String filename = program.getFilename();
       for (Statement stmt: program.getStatements()) {
         // set current debug info
         Assembler.debug = stmt.getDebugInfo();
-        stmt.resolve(filename);
+        stmt.resolve();
       }
     }
   }
@@ -227,7 +226,7 @@ public final class Assembler {
             // parse line only if != nothing
             if (!line.trim().equals("")) {
               // set current debug
-              Assembler.debug = new DebugInfo(lineno, line.trim());
+              Assembler.debug = new DebugInfo(lineno, line.trim(), file);
               // parse line
               Parser.parse(line);
             }

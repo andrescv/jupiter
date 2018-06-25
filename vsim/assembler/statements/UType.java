@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler.statements;
 
 import vsim.Globals;
@@ -8,14 +25,29 @@ import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
+
+/**
+ * The class UType represents a u-type RISC-V statement.
+ */
 public final class UType extends Statement {
 
+  // min and max values of a u-type statement
   private static final int MIN_VAL = 0;
   private static final int MAX_VAL = 1048575;
 
+  /** register destiny */
   private String rd;
+  /** immediate value or relocation */
   private Object imm;
 
+  /**
+   * Unique constructor that initializes a newly UType object.
+   *
+   * @param mnemonic statement mnemonic
+   * @param debug statement debug information
+   * @param rd register destiny
+   * @param imm immediate value or relocation
+   */
   public UType(String mnemonic, DebugInfo debug, String rd, Object imm) {
     super(mnemonic, debug);
     this.rd = rd;
@@ -23,13 +55,15 @@ public final class UType extends Statement {
   }
 
   @Override
-  public void resolve(String filename) {
+  public void resolve() {
+    String filename = this.getDebugInfo().getFilename();
     if (this.imm instanceof Relocation)
       ((Relocation) this.imm).resolve(0, filename);
   }
 
   @Override
-  public void build(int pc, String filename) {
+  public void build(int pc) {
+    String filename = this.getDebugInfo().getFilename();
     int imm;
     // get imm
     if (this.imm instanceof Relocation)
