@@ -62,7 +62,7 @@ public final class InstructionSet {
     "Addi", "Slti", "Sltiu",
     "Xori", "Ori", "Andi",
     "Slli", "Srli", "Srai",
-    "ECall", "Fence", "FenceI",
+    "Ecall", "Fence", "FenceI",
     "Flw", "Ebreak"
   };
 

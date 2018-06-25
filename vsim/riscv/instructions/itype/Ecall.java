@@ -17,40 +17,37 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-import vsim.Globals;
+import vsim.utils.Syscall;
 
 
 /**
- * The Lw class represents a lw instruction.
+ * The Ecall class represents an ecall instruction.
  */
-public final class Lw extends IType {
+public final class Ecall extends IType {
 
   /**
-   * Unique constructor that initializes a newly Lw object.
+   * Unique constructor that initializes a newly Ecall object.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
-  public Lw() {
+  public Ecall() {
     super(
-      "lw",
-      "lw rd, offset(rs1)",
-      "set rd = sext(memory[rs1 + sext(offset)][31:0])"
+      "ecall",
+      "ecall",
+      "makes a request to the supporting execution environment"
     );
   }
 
   @Override
   public int getOpCode() {
-    return 0b0000011;
-  }
-
-  @Override
-  public int getFunct3() {
-    return 0b010;
+    return 0b1110011;
   }
 
   @Override
   protected int compute(int rs1, int imm) {
-    return Globals.memory.loadWord(rs1 + imm);
+    // call syscall handler
+    Syscall.handler();
+    return 0;
   }
 
 }
