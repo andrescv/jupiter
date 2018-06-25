@@ -43,7 +43,7 @@ abstract class UType extends Instruction {
   /**
    * This method computes the result of the instruction.
    *
-   * @param imm register source 1
+   * @param imm immediate value
    * @return the computed result
    */
   protected abstract int compute(int imm);
