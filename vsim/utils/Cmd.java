@@ -62,7 +62,7 @@ public final class Cmd {
    * This method implements a simple argument parser.
    *
    * @param args arguments to parse
-   * @return RISC-V assembler files to simulate (if any)
+   * @return an ArrayList of RISC-V assembler filenames to simulate (if any)
    */
   public static ArrayList<String> parse(String[] args) {
     int lastArg = 0;
