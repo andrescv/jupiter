@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim;
 
 import vsim.riscv.Memory;
@@ -9,37 +26,48 @@ import vsim.riscv.RVFRegisterFile;
 import vsim.assembler.SymbolTable;
 
 
+/**
+ * The Globals class contains a collection of globally-available data structures.
+ */
 public final class Globals {
 
-  // RAM
+  private Globals() { /* NOTHING */ }
+
+  /** RISC-V principal memory (RAM) */
   public static final Memory memory = Memory.ram;
 
-  // RVI register file
+  /** RVI register file */
   public static final RVIRegisterFile regfile = RVIRegisterFile.regfile;
 
-  // RVF register file
+  /** RVF register file */
   public static final RVFRegisterFile fregfile = RVFRegisterFile.regfile;
 
-  // RV instruction set
+  /** RISC-V instruction set */
   public static final InstructionSet iset = InstructionSet.insts;
 
-  // .globl
+  /** .globl symbol table */
   public static final SymbolTable globl = new SymbolTable();
 
-  // .local
+  /** .local symbol table */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
-  // errors
+  /** VSim assembler and linker errors */
   public static final ArrayList<String> errors = new ArrayList<String>();
 
-  // add error to error list
+  /**
+   * This method adds an error to the error list {@link Globals#errors}
+   *
+   * @param msg an error message
+   */
   public static void error(String msg) {
     // ignore duplicated errors
     if (!Globals.errors.contains(msg))
       Globals.errors.add(msg);
   }
 
-  // reset state
+  /**
+   * This method resets the simulator state
+   */
   public static void resetState() {
     // reset memory
     Globals.memory.reset();
@@ -49,13 +77,17 @@ public final class Globals {
     Globals.fregfile.reset();
   }
 
-  // reset symbol table
+  /**
+   * This method resets the local and global symbol tables
+   */
   public static void resetST() {
     Globals.globl.reset();
     Globals.local = new Hashtable<String, SymbolTable>();
   }
 
-  // hard reset
+  /**
+   * This method reset the simulator state and global and local symbol tables
+   */
   public static void reset() {
     Globals.resetST();
     Globals.resetState();
