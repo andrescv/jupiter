@@ -1,3 +1,25 @@
+/*
+This is the syntax analysis of the VSim simulator. This file
+is used with JCup to generate a Parser class. The content of
+this file represents all the syntax rules of the RISC-V assembly
+language.
+
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler;
 
 import vsim.Globals;
@@ -25,11 +47,14 @@ parser code {:
     return null;
   }
 
+  @Override
   public void syntax_error(Symbol cur_token) {
     /* DO NOTHING */
   }
 
+  @Override
   public void unrecovered_syntax_error(Symbol cur_token) {
+    // show all escaped sequences
     if (cur_token.value instanceof String) {
       cur_token.value = ((String) cur_token.value).replaceAll("\n", "\\\\n");
       cur_token.value = ((String) cur_token.value).replaceAll("\r", "\\\\r");

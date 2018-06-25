@@ -1,3 +1,25 @@
+/*
+This is the lexical analysis of the VSim simulator. This file
+is used with JFlex to generate a Lexer class. The content of
+this file represents all the lexical rules of the RISC-V assembly
+language.
+
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler;
 
 %%
@@ -7,10 +29,24 @@ package vsim.assembler;
   private int prevState;
   private StringBuffer text;
 
+  /**
+   * This method creates a new cup Symbol with a predefined value
+   * obtained with the yytext() method.
+   *
+   * @param type the symbol type
+   * @return the cup symbol
+   */
   private java_cup.runtime.Symbol symbol(int type) {
     return this.symbol(type, yytext());
   }
 
+  /**
+   * This method creates a new cup Symbol with a given value.
+   *
+   * @param type the symbol type
+   * @param value the symbol value
+   * @return the cup symbol
+   */
   private java_cup.runtime.Symbol symbol(int type, Object value) {
     return new java_cup.runtime.Symbol(type, -1, yycolumn + 1, value);
   }
