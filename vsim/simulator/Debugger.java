@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.simulator;
 
 import vsim.Globals;
@@ -11,6 +28,9 @@ import vsim.riscv.instructions.MachineCode;
 import vsim.assembler.statements.Statement;
 
 
+/**
+ * The class Debugger implements a simple debugger for RISC-V programs.
+ */
 public final class Debugger {
 
   // help message
@@ -36,16 +56,24 @@ public final class Debugger {
                                          "clear/cl          - clear all breakpoints" + newline +
                                          "delete/del addr   - delete breakpoint at address" + newline +
                                          "list/ls           - list all breakpoints" + newline +
-                                         // reset state
-                                         "reset             - reset all state (regs, memory, start)" + newline +
-                                         // start address
-                                         "start addr        - start the program at address";
+                                         // reset state and start again
+                                         "reset             - reset all state (regs, memory, start)";
 
+  /** a linked program to debug */
   private LinkedProgram program;
+  /** a history of breakpoints */
   private Hashtable<Integer, Boolean> breakpoints;
+  /** calculated space for pretty printed statements */
   private int space;
+  /** previous command */
   private String[] args;
 
+  /**
+   * Unique constructor that takes a linked program
+   *
+   * @param program the linked program
+   * @see vsim.linker.LinkedProgram
+   */
   public Debugger(LinkedProgram program) {
     this.program = program;
     this.breakpoints = new Hashtable<Integer, Boolean>();
@@ -58,14 +86,31 @@ public final class Debugger {
       this.breakpoints.put(breakpoint, true);
   }
 
+  /**
+   * This method prints the RVI register file.
+   *
+   * @see vsim.riscv.RVIRegisterFile
+   */
   private void showx() {
     Globals.regfile.print();
   }
 
+  /**
+   * This method prints the RVF register file.
+   *
+   * @see vsim.riscv.RVFRegisterFile
+   */
   private void showf() {
     Globals.fregfile.print();
   }
 
+  /**
+   * This method tries to print a register of the RVI or RVF register file.
+   *
+   * @param reg the register to print
+   * @see vsim.riscv.RVIRegisterFile
+   * @see vsim.riscv.RVFRegisterFile
+   */
   private void print(String reg) {
     if (Globals.regfile.getRegisterNumber(reg) != -1 || reg.equals("pc"))
       Globals.regfile.printReg(reg);
@@ -75,6 +120,13 @@ public final class Debugger {
       Message.error("invalid register: " + reg);
   }
 
+  /**
+   * This methods prints a portion of the RISC-V memory
+   *
+   * @param address The address to start printing memory in hex or decimal
+   * @param rows How many rows of 4 memory cells to print
+   * @see vsim.riscv.Memory
+   */
   private void memory(String address, String rows) {
     int n = 12;
     int addr = Globals.regfile.getRegister("gp");
@@ -93,10 +145,19 @@ public final class Debugger {
     Globals.memory.print(addr, n);
   }
 
+  /**
+   * This method prints the global symbol table.
+   *
+   * @see vsim.Globals#globl
+   */
   private void symbols() {
     Globals.globl.print();
   }
 
+  /**
+   * This method tries to step the program by one statement and pretty prints
+   * useful debug information.
+   */
   private void step() {
     Statement stmt = program.next();
     int pcVal = Globals.regfile.getProgramCounter();
@@ -131,6 +192,10 @@ public final class Debugger {
       this.breakpoints.put(pcVal, true);
   }
 
+  /**
+   * This method continues the program execution until a breakpoint or
+   * no more available statements are found.
+   */
   private void forward() {
     Statement stmt;
     int pcVal = Globals.regfile.getProgramCounter();
@@ -153,6 +218,11 @@ public final class Debugger {
     Message.error("attempt to execute non-instruction at " + pc);
   }
 
+  /**
+   * This method tries to create a breakpoint at the given an address.
+   *
+   * @param address the address of the breakpoint in hex or decimal
+   */
   private void breakpoint(String address) {
     try {
       int addr;
@@ -170,11 +240,19 @@ public final class Debugger {
     }
   }
 
+  /**
+   * This method clears all the breakpoints that a user set.
+   */
   private void clear() {
     this.breakpoints.clear();
     System.gc();
   }
 
+  /**
+   * This method tries to delete a breakpoint that a user set.
+   *
+   * @param address a string representing the address in hex or decimal
+   */
   private void delete(String address) {
     int addr;
     try {
@@ -192,6 +270,9 @@ public final class Debugger {
       Message.error("no breakpoint at address: " + address);
   }
 
+  /**
+   * This method lists the breakpoints that the user set.
+   */
   private void list() {
     if (this.breakpoints.size() > 0) {
       System.out.println("Breakpoints: " + newline);
@@ -201,28 +282,20 @@ public final class Debugger {
       System.out.println("no breakpoints yet");
   }
 
+  /**
+   * This method resets the program and the state of the simulator.
+   */
   private void reset() {
     Globals.resetState();
     this.program.reset();
   }
 
-  private void start(String address) {
-    int addr;
-    try {
-      if (address.startsWith("0x"))
-        addr = Integer.parseInt(address.substring(2), 16);
-      else
-        addr = Integer.parseInt(address);
-    } catch (Exception e) {
-      Message.error("invalid address: " + address);
-      return;
-    }
-    if (Data.isWordAligned(addr))
-      Globals.regfile.setProgramCounter(addr);
-    else
-      Message.error("address is not aligned to a word boundary");
-  }
-
+  /**
+   * This method takes an array of arguments and tries to match this
+   * with an available debug command and interprets it.
+   *
+   * @param args the command arguments
+   */
   public void interpret(String[] args) {
     // save previous args
     if (!args[0].equals("!"))
@@ -292,13 +365,6 @@ public final class Debugger {
     // reset
     else if (args[0].equals("reset"))
       this.reset();
-    // start addr
-    else if (args[0].equals("start")) {
-      if (args.length > 1)
-        this.start(args[1]);
-      else
-        Message.error("invalid usage of start cmd, valid usage 'start addr'");
-    }
     else
       Message.error("unknown command '" + args[0] + "'");
   }
