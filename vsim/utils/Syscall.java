@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.utils;
 
 import vsim.Globals;
@@ -7,25 +24,36 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
+/**
+ * The class Syscall contains methods that implement syscalls such
+ * as the SPIM simulator.
+ */
 public final class Syscall {
 
-  // syscall codes
-  public static final int PRINT_INT = 1;
-  public static final int PRINT_FLOAT = 2;
-  public static final int PRINT_STRING = 4;
-  public static final int READ_INT = 5;
-  public static final int READ_FLOAT = 6;
-  public static final int READ_STRING = 8;
-  public static final int SBRK = 9;
-  public static final int EXIT = 10;
-  public static final int PRINT_CHAR = 11;
-  public static final int READ_CHAR = 12;
-  public static final int OPEN = 13;
-  public static final int READ = 14;
-  public static final int WRITE = 15;
-  public static final int CLOSE = 16;
-  public static final int EXIT2 = 17;
+  // available syscall codes
+  private static final int PRINT_INT    = 1;
+  private static final int PRINT_FLOAT  = 2;
+  private static final int PRINT_STRING = 4;
+  private static final int READ_INT     = 5;
+  private static final int READ_FLOAT   = 6;
+  private static final int READ_STRING  = 8;
+  private static final int SBRK         = 9;
+  private static final int EXIT         = 10;
+  private static final int PRINT_CHAR   = 11;
+  private static final int READ_CHAR    = 12;
+  private static final int OPEN         = 13;
+  private static final int READ         = 14;
+  private static final int WRITE        = 15;
+  private static final int CLOSE        = 16;
+  private static final int EXIT2        = 17;
 
+  /**
+   * This method is used to simulate the ecall instruction, it is
+   * called in {@link vsim.riscv.instructions.itype.ECall#compute} to handle
+   * the ecall request. First obtains the syscall code from register a0 and then
+   * tries to match this code with the available syscalls. If the code does not
+   * match an available syscall a warning is generated.
+   */
   public static void handler() {
     int syscode = Globals.regfile.getRegister("a0");
     // match syscall code
@@ -80,16 +108,29 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the PRINT_INT syscall, first gets the int
+   * value from a1 register and then prints it to stdout.
+   */
   private static void printInt() {
     int num = Globals.regfile.getRegister("a1");
     System.out.print(num);
   }
 
+  /**
+   * This method implements the PRINT_FLOAT syscall, first gets the float
+   * value from f12 register and then prints it to stdout.
+   */
   private static void printFloat() {
     float num = Globals.fregfile.getRegister("f12");
     System.out.print(num);
   }
 
+  /**
+   * This method implements the PRINT_STRING syscall, first gets the address
+   * of the buffer to print from register a1 and then obtains char by char
+   * the null terminated string from memory, then prints it.
+   */
   private static void printString() {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer();
@@ -102,6 +143,10 @@ public final class Syscall {
     System.out.print(s);
   }
 
+  /**
+   * This method implements the READ_INT syscall, first tries to get the int
+   * value from stdin and then saves it in register a0.
+   */
   private static void readInt() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
@@ -118,6 +163,10 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the READ_FLOAT syscall, first tries to get the float
+   * value from stdin and then saves it in register f0.
+   */
   private static void readFloat() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
@@ -134,15 +183,26 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the READ_STRING syscall, first tries to read a
+   * line from stdin, then stores char by char the string in memory starting
+   * at address given in register a1 until length given in register a2 is reached.
+   */
   private static void readString() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
       String s = br.readLine();
       int buffer = Globals.regfile.getRegister("a1");
       int length = Globals.regfile.getRegister("a2");
-      for (int i = 0; i < Math.min(length, s.length()); i++) {
-        char c = s.charAt(i);
-        Globals.memory.storeByte(buffer++, c);
+      int minLength = Math.min(length, s.length());
+      for (int i = 0; i < minLength; i++) {
+        // null terminated string
+        if (i == (minLength - 1))
+          Globals.memory.storeByte(buffer++, 0);
+        else {
+          char c = s.charAt(i);
+          Globals.memory.storeByte(buffer++, c);
+        }
       }
     } catch (IOException e) {
       if (!Settings.QUIET)
@@ -153,6 +213,12 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the SBRK syscall, first gets the number of
+   * bytes to allocate from register a1, then calls {@link vsim.riscv.Memory#allocateBytesFromHeap}
+   * to obtain the address/pointer to the allocated space then saves the result
+   * in register a0.
+   */
   private static void sbrk() {
     int numBytes = Globals.regfile.getRegister("a1");
     if (numBytes > 0) {
@@ -164,17 +230,29 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the EXIT syscall, first logs the status, then
+   * calls System.exit(0).
+   */
   private static void exit() {
     System.out.println();
     Message.log("exit(0)");
     System.exit(0);
   }
 
+  /**
+   * This method implements the PRINT_CHAR syscall, first obtains the char
+   * value from register a1, then prints it to stdout.
+   */
   private static void printChar() {
     char c = (char)Globals.regfile.getRegister("a1");
     System.out.print(c);
   }
 
+  /**
+   * This method implements the READ_CHAR syscall, first tries to read a
+   * char from stdin, then saves the char value in register a0.
+   */
   private static void readChar() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
@@ -185,6 +263,11 @@ public final class Syscall {
     }
   }
 
+  /**
+   * This method implements the EXIT2 syscall, first obtains the status code
+   * from register a1, prints the status, then calls System.exit with the
+   * obtained status.
+   */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
     System.out.println();

@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.utils;
 
 import vsim.Settings;
@@ -6,7 +23,12 @@ import java.io.StringReader;
 import java.io.BufferedReader;
 
 
+/**
+ * The class Cmd implements a basic command line interface.
+ */
 public final class Cmd {
+
+  private Cmd() { /* NOTHING */}
 
   // newline
   private static final String newline = System.getProperty("line.separator");
@@ -36,6 +58,12 @@ public final class Cmd {
                                       "  -color    colorize output (only on linux) (default)" + newline +
                                       "  -debug    start the debugger";
 
+  /**
+   * This method implements a simple argument parser.
+   *
+   * @param args arguments to parse
+   * @return RISC-V assembler files to simulate (if any)
+   */
   public static ArrayList<String> parse(String[] args) {
     int lastArg = 0;
     int firstFile = Math.max(0, args.length - 1);
@@ -82,6 +110,9 @@ public final class Cmd {
     return files;
   }
 
+  /**
+   * This method prints the title of the VSim simulator.
+   */
   public static void title() {
     if (Settings.COLORIZE) {
       try {
@@ -102,10 +133,16 @@ public final class Cmd {
     System.out.println(Cmd.SUBHEADER);
   }
 
+  /**
+   * This method prints the prompt of the VSim simulator.
+   */
   public static void prompt() {
     System.out.print(Colorize.red(">") + Colorize.green(">") + Colorize.blue("> "));
   }
 
+  /**
+   * This method prints the usage of the VSim simulator and then exits.
+   */
   public static void exit() {
     System.out.println(Cmd.USAGE);
     System.exit(0);
