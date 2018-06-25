@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler.statements;
 
 import vsim.Globals;
@@ -9,16 +26,33 @@ import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
+/**
+ * The class BType represents a b-type RISC-V statement.
+ */
 public final class BType extends Statement {
 
+  // min and max values of a b-type statement
   private static final int MIN_VAL = -2048;
   private static final int MAX_VAL = 2047;
 
+  /** register source 1 */
   private String rs1;
+  /** register source 2 */
   private String rs2;
+  /** label of the branch */
   private String label;
+  /** relocation expansion */
   private Relocation offset;
 
+  /**
+   * Unique constructor that initializes a newly BType object.
+   *
+   * @param mnemonic statement mnemonic
+   * @param debug statement debug information
+   * @param rs1 register source 1
+   * @param rs2 register source 2
+   * @param offset target offset (label)
+   */
   public BType(String mnemonic, DebugInfo debug,
                String rs1, String rs2, String offset) {
     super(mnemonic, debug);
@@ -29,12 +63,14 @@ public final class BType extends Statement {
   }
 
   @Override
-  public void resolve(String filename) {
+  public void resolve() {
+    String filename = this.getDebugInfo().getFilename();
     this.offset.resolve(0, filename);
   }
 
   @Override
-  public void build(int pc, String filename) {
+  public void build(int pc) {
+    String filename = this.getDebugInfo().getFilename();
     int imm = this.offset.resolve(pc, filename);
     if (!((imm > BType.MAX_VAL) || (imm < BType.MIN_VAL))) {
       Instruction inst = Globals.iset.get(this.mnemonic);

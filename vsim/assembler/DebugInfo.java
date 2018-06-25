@@ -27,16 +27,20 @@ public final class DebugInfo {
   private int lineno;
   /** the source line */
   private String source;
+  /** the filename */
+  private String filename;
 
   /**
    * Unique constructor that initializes a newly DebugInfo object.
    *
    * @param lineno the line number of this debug information
    * @param source the source line of this debug information
+   * @param filename the filename of this debug information
    */
-  public DebugInfo(int lineno, String source) {
+  public DebugInfo(int lineno, String source, String filename) {
     this.lineno = lineno;
     this.source = source;
+    this.filename = filename;
   }
 
   /**
@@ -55,6 +59,15 @@ public final class DebugInfo {
    */
   public String getSource() {
     return this.source;
+  }
+
+  /**
+   * This method returns the filename of the debug information.
+   *
+   * @return the filename
+   */
+  public String getFilename() {
+    return this.filename;
   }
 
 }

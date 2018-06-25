@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler.statements;
 
 import vsim.Globals;
@@ -9,15 +26,31 @@ import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
+/**
+ * The class SType represents a s-type RISC-V statement.
+ */
 public final class SType extends Statement {
 
+  // min and max values of a s-type statement
   private static final int MIN_VAL = -2048;
   private static final int MAX_VAL = 2047;
 
+  /** register source 1 */
   private String rs1;
+  /** register source 2 */
   private String rs2;
+  /** immediate value or relocation */
   private Object imm;
 
+  /**
+   * Unique constructor that initializes a newly SType object.
+   *
+   * @param mnemonic statement mnemonic
+   * @param debug statement debug information
+   * @param rs1 register source 1
+   * @param rs2 register source 2
+   * @param imm immediate value or relocation
+   */
   public SType(String mnemonic, DebugInfo debug,
                String rs1, String rs2, Object imm) {
     super(mnemonic, debug);
@@ -27,13 +60,15 @@ public final class SType extends Statement {
   }
 
   @Override
-  public void resolve(String filename) {
+  public void resolve() {
+    String filename = this.getDebugInfo().getFilename();
     if (this.imm instanceof Relocation)
       ((Relocation) this.imm).resolve(0, filename);
   }
 
   @Override
-  public void build(int pc, String filename) {
+  public void build(int pc) {
+    String filename = this.getDebugInfo().getFilename();
     int imm;
     if (this.imm instanceof Relocation)
       imm = ((Relocation) this.imm).resolve(pc, filename);
