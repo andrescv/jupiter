@@ -49,7 +49,7 @@ public final class Syscall {
 
   /**
    * This method is used to simulate the ecall instruction, it is
-   * called in {@link vsim.riscv.instructions.itype.ECall#compute} to handle
+   * called in {@link vsim.riscv.instructions.itype.Ecall#compute} to handle
    * the ecall request. First obtains the syscall code from register a0 and then
    * tries to match this code with the available syscalls. If the code does not
    * match an available syscall a warning is generated.
