@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.riscv;
 
 import vsim.utils.Data;
@@ -5,9 +22,12 @@ import vsim.utils.Colorize;
 import java.util.Hashtable;
 
 
+/**
+ * The class Memory is used to represent the RISC-V principal memory (RAM).
+ */
 public final class Memory {
 
-  // only 1 memory instance
+  /** the only available instance of the Memory class */
   public static final Memory ram = new Memory();
 
   private int heapAddress;

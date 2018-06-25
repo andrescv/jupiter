@@ -1,11 +1,32 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.riscv;
 
 import vsim.utils.Colorize;
 import java.util.Hashtable;
 
 
+/**
+ * The class RVFRegisterFile represents the F extension register file.
+ */
 public final class RVFRegisterFile {
 
+  /** register ABI names */
   private static final String[] MNEMONICS = {
     "ft0", "ft1", "ft2", "ft3",
     "ft4", "ft5", "ft6", "ft7",
@@ -17,11 +38,18 @@ public final class RVFRegisterFile {
     "ft8", "ft9", "ft10", "ft11"
   };
 
-  // only 1 instance
+  /** the only available instance of the RVFRegisterFile class */
   public static final RVFRegisterFile regfile = new RVFRegisterFile();
 
+  /** register file dictionary */
   private Hashtable<String, Register> rf;
 
+  /**
+   * Unique constructor that initializes a newly RVFRegisterFile object.
+   *
+   * @see vsim.riscv.Register
+   * @see vsim.riscv.RVIRegisterFile
+   */
   private RVFRegisterFile() {
     this.rf = new Hashtable<String, Register>();
     // add 32 general purpose registers
@@ -35,6 +63,12 @@ public final class RVFRegisterFile {
     }
   }
 
+  /**
+   * This method returns the register number of a register given a name.
+   *
+   * @param name register ABI name
+   * @return register number or -1 if the name is invalid
+   */
   public int getRegisterNumber(String name) {
     Register reg = this.rf.get(name);
     if (reg != null)
@@ -42,6 +76,12 @@ public final class RVFRegisterFile {
     return -1;
   }
 
+  /**
+   * This method returns the register float content of a register.
+   *
+   * @param number register number
+   * @return register value or 0 if the number is invalid
+   */
   public float getRegister(int number) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
@@ -49,6 +89,12 @@ public final class RVFRegisterFile {
     return 0.0f;
   }
 
+  /**
+   * This method returns the register float content of a register.
+   *
+   * @param name register ABI name
+   * @return register value or 0 if the name is invalid
+   */
   public float getRegister(String name) {
     Register reg = this.rf.get(name);
     if (reg != null)
@@ -56,6 +102,12 @@ public final class RVFRegisterFile {
     return 0.0f;
   }
 
+  /**
+   * This method returns the register integer content of a register.
+   *
+   * @param number register number
+   * @return register value or 0 if the name is invalid
+   */
   public int getRegisterInt(int number) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
@@ -63,6 +115,12 @@ public final class RVFRegisterFile {
     return 0;
   }
 
+  /**
+   * This method returns the register integer content of a register.
+   *
+   * @param name register ABI name
+   * @return register value or 0 if the name is invalid
+   */
   public int getRegisterInt(String name) {
     Register reg = this.rf.get(name);
     if (reg != null)
@@ -70,24 +128,45 @@ public final class RVFRegisterFile {
     return 0;
   }
 
+  /**
+   * This method tries to set the float value of a register.
+   *
+   * @param number register number
+   * @param value register new value
+   */
   public void setRegister(int number, float value) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
       reg.setValue(Float.floatToIntBits(value));
   }
 
+  /**
+   * This method tries to set the float value of a register.
+   *
+   * @param name register ABI name
+   * @param value register new value
+   */
   public void setRegister(String name, float value) {
     Register reg = this.rf.get(name);
     if (reg != null)
       reg.setValue(Float.floatToIntBits(value));
   }
 
+  /**
+   * This method tries to set the integer value of a register.
+   *
+   * @param number register number
+   * @param value register new value
+   */
   public void setRegisterInt(int number, int value) {
     Register reg = this.rf.get("f" + number);
     if (reg != null)
       reg.setValue(value);
   }
 
+  /**
+   * This method resets all the registers to their respective default values.
+   */
   public void reset() {
     // reset all 32 registers
     for (int i = 0; i < MNEMONICS.length; i++) {
@@ -95,28 +174,10 @@ public final class RVFRegisterFile {
     }
   }
 
+  /**
+   * This method pretty prints the register file.
+   */
   public void print() {
-    System.out.println(this);
-  }
-
-  public void printReg(String name) {
-    Register reg = this.rf.get(name);
-    if (reg != null) {
-      int i = reg.getNumber();
-      System.out.println(
-        String.format(
-          "%s [%s] (%s) {~= %.4f}",
-          Colorize.green("f" + i),
-          reg.toString(),
-          Colorize.purple(MNEMONICS[i]),
-          Float.intBitsToFloat(reg.getValue())
-        )
-      );
-    }
-  }
-
-  @Override
-  public String toString() {
     String out = "";
     String regfmt = "%s%s [%s] (%s)%s{~= %.4f}";
     String newline = System.getProperty("line.separator");
@@ -133,7 +194,28 @@ public final class RVFRegisterFile {
         Float.intBitsToFloat(reg.getValue())
       ) + newline;
     }
-    return out.replaceAll("\\s+$", "");
+    System.out.println(out.replaceAll("\\s+$", ""));
+  }
+
+  /**
+   * This method pretty prints a register.
+   *
+   * @param name register ABI name
+   */
+  public void printReg(String name) {
+    Register reg = this.rf.get(name);
+    if (reg != null) {
+      int i = reg.getNumber();
+      System.out.println(
+        String.format(
+          "%s [%s] (%s) {~= %.4f}",
+          Colorize.green("f" + i),
+          reg.toString(),
+          Colorize.purple(MNEMONICS[i]),
+          Float.intBitsToFloat(reg.getValue())
+        )
+      );
+    }
   }
 
 }
