@@ -63,6 +63,11 @@ public final class Data {
   /** floating point sign integer mask (0x80000000) */
   public static final int SIGN_MASK = 0x80000000;
 
+  /** program counter high integer mask (0xfffff000) */
+  public static final int PC_HI_MASK = 0xfffff000;
+  /** prorgam counter lo integer mask (0x00000fff) */
+  public static final int PC_LO_MASK = 0x00000fff;
+
   /**
    * This method sign-extends a value of N bits (N &lt; 32) to 32 bits.
    *
