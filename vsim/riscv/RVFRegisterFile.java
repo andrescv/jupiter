@@ -64,7 +64,7 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method returns the register number of a register given a name.
+   * This method returns the number of a register given a name.
    *
    * @param name register ABI name
    * @return register number or -1 if the name is invalid
@@ -77,7 +77,7 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method returns the register float content of a register.
+   * This method returns the float content of a register.
    *
    * @param number register number
    * @return register value or 0 if the number is invalid
@@ -90,7 +90,7 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method returns the register float content of a register.
+   * This method returns the float content of a register.
    *
    * @param name register ABI name
    * @return register value or 0 if the name is invalid
@@ -103,7 +103,7 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method returns the register integer content of a register.
+   * This method returns the integer content of a register.
    *
    * @param number register number
    * @return register value or 0 if the name is invalid
@@ -116,7 +116,7 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method returns the register integer content of a register.
+   * This method returns the integer content of a register.
    *
    * @param name register ABI name
    * @return register value or 0 if the name is invalid
