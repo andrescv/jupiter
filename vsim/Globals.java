@@ -48,7 +48,7 @@ public final class Globals {
   /** .globl symbol table (used for debugging) */
   public static final SymbolTable globl = new SymbolTable();
 
-  /** .local symbol table (used for debugging) */
+  /** local hashtable<filename, symbol table> (used for debugging) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
   /** VSim assembler and linker errors */
