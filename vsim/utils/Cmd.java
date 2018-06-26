@@ -53,7 +53,8 @@ public final class Cmd {
                                       "  -bare     bare machine (no pseudo-ops)" + newline +
                                       "  -quiet    do not print warnings" + newline +
                                       "  -nocolor  do not colorize output (only on linux)" + newline +
-                                      "  -debug    start the debugger";
+                                      "  -debug    start the debugger" + newline +
+                                      "  -version  display the current version of the simulator";
 
   /**
    * This method implements a simple argument parser.
@@ -80,7 +81,10 @@ public final class Cmd {
           Settings.COLORIZE = false;
         else if (option.equals("debug"))
           Settings.DEBUG = true;
-        else {
+        else if (option.equals("version")) {
+          System.out.println(Settings.VERSION);
+          System.exit(0);
+        } else {
           Cmd.title();
           Message.warning("unknown argument: " + args[i] + newline);
           Cmd.exit();
