@@ -1,7 +1,7 @@
 #!/bin/sh
 
 {
-  # verify if some cmd exists
+  # verifies if some cmd exists
   has() {
     type "$1" > /dev/null 2>&1
   }
@@ -49,9 +49,9 @@
       rm -rf lib vsim VSim.jar
       # download current version
       if has wget; then
-        wget -O vsim.zip https://www.dropbox.com/s/7gtqsej70u4zljl/vsim-v1.0.0-beta.zip?dl=1
+        wget -O vsim.zip https://github.com/andrescv/VSim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip
       else
-        curl https://www.dropbox.com/s/7gtqsej70u4zljl/vsim-v1.0.0-beta.zip?dl=1 --output vsim.zip
+        curl https://github.com/andrescv/VSim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip --output vsim.zip
       fi
       # unpack and create executable script
       unzip vsim.zip
@@ -70,9 +70,11 @@
         echo
       else
         if ! command grep -qc "$INSTALL_DIR" "$PROFILE"; then
+          echo
           echo "=> appending vsim source string to $PROFILE"
           command printf "${SOURCE_STR}" >> "$PROFILE"
         else
+          echo
           echo "=> vsim source string already in ${PROFILE}"
         fi
         source $PROFILE
