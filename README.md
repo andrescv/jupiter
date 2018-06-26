@@ -40,7 +40,16 @@ or **Wget**:
 wget -qO- https://raw.githubusercontent.com/andrescv/VSim/v1.0.0-beta/install.sh | bash
 ```
 
-You can also try it by downloading the following files: [VSim](https://github.com/andrescv/VSim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip), and inside the unzipped folder open a terminal/command prompt and enter the following command:
+To verify that **VSim** has been installed, do:
+
+```shell
+vsim -version
+```
+
+which should output 'vsim-v1.0.0-beta' if the installation was successful. If not then you can try source your profile with `source`.
+
+
+Alternatively you can also try it by downloading the following files: [VSim](https://github.com/andrescv/VSim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip), and inside the unzipped folder open a terminal/command prompt and enter the following command:
 
 ```shell
 java -jar VSim.jar [flags] <files>
