@@ -50,12 +50,9 @@ public final class Cmd {
   private static final String USAGE = "usage: vsim [flags] <files>" +
                                       newline + newline + "optional flags:" + newline +
                                       "  -h        show this help message and exit" + newline +
-                                      "  -asm      extended machine (pseudo-ops) (default)" + newline +
                                       "  -bare     bare machine (no pseudo-ops)" + newline +
                                       "  -quiet    do not print warnings" + newline +
-                                      "  -noquiet  print warnings (default)" + newline +
                                       "  -nocolor  do not colorize output (only on linux)" + newline +
-                                      "  -color    colorize output (only on linux) (default)" + newline +
                                       "  -debug    start the debugger";
 
   /**
@@ -75,18 +72,12 @@ public final class Cmd {
           Cmd.title();
           Cmd.exit();
         }
-        else if (option.equals("asm"))
-          Settings.BARE = false;
         else if (option.equals("bare"))
           Settings.BARE = true;
         else if (option.equals("quiet"))
           Settings.QUIET = true;
-        else if (option.equals("noquiet"))
-          Settings.QUIET = false;
         else if (option.equals("nocolor"))
           Settings.COLORIZE = false;
-        else if (option.equals("color"))
-          Settings.COLORIZE = true;
         else if (option.equals("debug"))
           Settings.DEBUG = true;
         else {
