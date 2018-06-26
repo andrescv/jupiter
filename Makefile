@@ -60,7 +60,7 @@ test: VSim.jar
 doc:
 	rm -rf doc
 	mkdir doc
-	find $(SRCDIR) -type f -name '*.java' | xargs $(JAVADOC) -d doc
+	find $(SRCDIR) -type f -name '*.java' | xargs $(JAVADOC) -cp .:$(JCUP) -d doc
 
 # clean all
 clean:
