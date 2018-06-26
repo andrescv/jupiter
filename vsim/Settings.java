@@ -25,6 +25,9 @@ public final class Settings {
 
   private Settings() { /*NOTHING */ }
 
+  /** current version */
+  public static final String VERSION = "vsim-v1.0.0-beta";
+
   /** global start label */
   public static final String START = "main";
 
