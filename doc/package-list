@@ -1,0 +1,15 @@
+vsim
+vsim.assembler
+vsim.assembler.statements
+vsim.linker
+vsim.riscv
+vsim.riscv.instructions
+vsim.riscv.instructions.btype
+vsim.riscv.instructions.itype
+vsim.riscv.instructions.jtype
+vsim.riscv.instructions.r4type
+vsim.riscv.instructions.rtype
+vsim.riscv.instructions.stype
+vsim.riscv.instructions.utype
+vsim.simulator
+vsim.utils
