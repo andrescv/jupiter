@@ -28,8 +28,8 @@ public final class Settings {
   /** current version */
   public static final String VERSION = "vsim-v1.0.0-beta";
 
-  /** global start label */
-  public static final String START = "main";
+  /** global start label, set with -start flag */
+  public static String START = "main";
 
   /** bare machine mode (no pseudos), set with -bare flag */
   public static boolean BARE = false;
@@ -40,7 +40,13 @@ public final class Settings {
   /** debugging mode, set with -debug flag or ebreak instruction */
   public static boolean DEBUG = false;
 
-  /** enable colorize, set with -nocolor flag */
+  /** show title and copyright notice, disable with -notitle */
+  public static boolean TITLE = true;
+
+  /** dump machine code to a file, set with -dump flag*/
+  public static String DUMP = null;
+
+  /** colorize output, disable with -nocolor flag */
   public static boolean COLORIZE = true;
 
 }
