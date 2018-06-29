@@ -20,9 +20,7 @@ package vsim.utils;
 import vsim.Globals;
 import vsim.Settings;
 import java.util.HashMap;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
 
 
 /**
@@ -55,36 +53,15 @@ public final class FS {
   public static final int O_CREAT  = 0b0100000;
   /** excl open flag */
   public static final int O_EXCL   = 0b1000000;
+  /** flags mask */
+  public static final int O_MASK   = 0b1111111;
 
   /** current open files */
   private static final HashMap<Integer, OpenFile> open = new HashMap<Integer, OpenFile>();
+  /** current open file names */
+  private static final HashSet<String> filenames = new HashSet<String>();
   /** max allowed open files */
   public static final int MAX_FILES = 40;
-
-  /**
-   * This method parse the given flags mask and maps every
-   * O_flag with their respective java nio StandardOpenOption.
-   *
-   * @param flags flags mask
-   * @return an array of standard open options
-   */
-  private static ArrayList<StandardOpenOption> parseFlags(int flags) {
-    ArrayList<StandardOpenOption> flgs = new ArrayList<StandardOpenOption>();
-    if (((flags & O_RDONLY) != 0) || ((flags & O_RDWR) != 0))
-      flgs.add(StandardOpenOption.READ);
-    if (((flags & O_WRONLY) != 0) || ((flags & O_RDWR) != 0))
-      flgs.add(StandardOpenOption.WRITE);
-    if ((flags & O_APPEND) != 0)
-      flgs.add(StandardOpenOption.APPEND);
-    if ((flags & O_TRUNC) != 0)
-      flgs.add(StandardOpenOption.TRUNCATE_EXISTING);
-    if ((flags & O_CREAT) != 0)
-      flgs.add(StandardOpenOption.CREATE);
-    if ((flags & O_EXCL) != 0)
-      flgs.add(StandardOpenOption.CREATE_NEW);
-    flgs.trimToSize();
-    return flgs;
-  }
 
   /**
    * This method simulates the open syscall from C.
@@ -94,29 +71,24 @@ public final class FS {
    * @return the file descriptor for the new file
    */
   public static int open(String pathname, int flags) {
-    if (FS.open.size() < FS.MAX_FILES) {
-      // parse and validate flags
-      ArrayList<StandardOpenOption> flgs = FS.parseFlags(flags);
-      if (flgs.size() == 0) {
-        if (!Settings.QUIET)
-          Message.warning("file system:  invalid open flags");
+    if (FS.open.size() < FS.MAX_FILES && !FS.filenames.contains(pathname)) {
+      FS.open.put(FS.FD, new OpenFile(pathname, flags));
+      FS.filenames.add(pathname);
+      if (FS.open.get(FS.FD).openErrors()) {
+        FS.open.remove(FS.FD);
+        FS.filenames.remove(pathname);
+        System.gc();
         return -1;
-      } else if (flgs.contains(StandardOpenOption.APPEND) && flgs.contains(StandardOpenOption.TRUNCATE_EXISTING)) {
-        if (!Settings.QUIET)
-          Message.warning("file system: O_APPEND + O_TRUNC not allowed");
-        return -1;
-      } else if (flgs.contains(StandardOpenOption.READ) &&
-                 !flgs.contains(StandardOpenOption.WRITE) && flgs.size() > 1) {
-        if (!Settings.QUIET)
-          Message.warning("file system: O_READ + other open flag different from O_WRITE or O_RDWR not allowed");
-        return -1;
-      } else {
-        FS.open.put(FS.FD, new OpenFile(pathname, flgs));
-        return FS.FD++;
       }
+      return FS.FD++;
     }
-    if (!Settings.QUIET)
-      Message.warning("file system: maximum number of open files exceeded");
+    if (!FS.filenames.contains(pathname)) {
+      if (!Settings.QUIET)
+        Message.warning("file system: file '" + pathname + "' is already open");
+    } else {
+      if (!Settings.QUIET)
+        Message.warning("file system: maximum number of open files exceeded");
+    }
     return -1;
   }
 
@@ -136,11 +108,13 @@ public final class FS {
         try {
           int c = IO.stdin.read();
           if (c == -1)
-            break;
+            c = 0;
           Globals.memory.storeByte(buffer++, c);
           rbytes++;
         } catch (Exception e) {
-          break;
+          if (rbytes > 0)
+            return rbytes;
+          return -1;
         }
       }
       return rbytes;
@@ -182,22 +156,16 @@ public final class FS {
     // stdout or stderr
     else if (fd == FS.STDOUT || fd == FS.STDERR) {
       StringBuffer s = new StringBuffer(0);
-      char c;
       int wbytes = 0;
-      while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
+      for (int i = 0; i < nbytes; i++) {
+        char c = (char)Globals.memory.loadByteUnsigned(buffer++);
         s.append(c);
-        buffer++;
         wbytes++;
-        if (wbytes == nbytes)
-          break;
       }
-      wbytes = Math.min(wbytes, nbytes);
-      if (wbytes > 0) {
-        if (fd == FS.STDOUT)
-          IO.stdout.print(s.toString());
-        else
-          IO.stderr.print(s.toString());
-      }
+      if (fd == FS.STDOUT)
+        IO.stdout.print(s.toString());
+      else
+        IO.stderr.print(s.toString());
       return wbytes;
     }
     // normal file
@@ -221,6 +189,7 @@ public final class FS {
     }
     // normal file
     else if (FS.open.containsKey(fd)) {
+      FS.filenames.remove(FS.open.get(fd).getPathname());
       FS.open.remove(fd);
       System.gc();
       return 0;

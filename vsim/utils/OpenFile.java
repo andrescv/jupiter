@@ -18,9 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.utils;
 
 import vsim.Globals;
+import java.io.File;
+import vsim.Settings;
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.BufferedReader;
 import java.nio.file.StandardOpenOption;
 
 
@@ -31,8 +34,16 @@ final class OpenFile {
 
   /** pathname attached to this open file */
   private String pathname;
+  /** indicates if the open file has read permissions */
+  private boolean read;
+  /** indicates if the open file has write permissions */
+  private boolean write;
+  /** indicates if the open file has read and write permissions */
+  private boolean rdwr;
+  /** indicates if there are errors when opening and creating the file */
+  private boolean error;
   /** open flags */
-  private ArrayList<StandardOpenOption> flags;
+  private StandardOpenOption[] flags;
 
   /**
    * Unique constructor that initializes a newly OpenFile object.
@@ -40,9 +51,84 @@ final class OpenFile {
    * @param pathname pathname attached to this open file
    * @param flags array of open flags
    */
-  protected OpenFile(String pathname, ArrayList<StandardOpenOption> flags) {
+  protected OpenFile(String pathname, int flags) {
     this.pathname = pathname;
-    this.flags = flags;
+    boolean create = false;
+    boolean create_new = false;
+    boolean truncate = false;
+    boolean append = false;
+    this.error = false;
+    // parse flags
+    if ((flags & FS.O_RDONLY) != 0)
+      this.read = true;
+    if ((flags & FS.O_WRONLY) != 0)
+      this.write = true;
+    if ((flags & FS.O_RDWR) != 0)
+      this.rdwr = true;
+    if ((flags & FS.O_APPEND) != 0)
+      append = true;
+    if ((flags & FS.O_TRUNC) != 0)
+      truncate = true;
+    if ((flags & FS.O_CREAT) != 0)
+      create = true;
+    if ((flags & FS.O_EXCL) != 0)
+      create_new = true;
+    if ((flags & FS.O_MASK) == 0) {
+      this.error = true;
+      if (!Settings.QUIET)
+        Message.warning("file system:  invalid open flags");
+    }
+    // set StandardOpenOption flags
+    if ((this.write || this.rdwr) && append)
+      this.flags = new StandardOpenOption[]{StandardOpenOption.WRITE, StandardOpenOption.APPEND};
+    else if (this.write || this.rdwr)
+      this.flags = new StandardOpenOption[]{StandardOpenOption.WRITE};
+    else
+      // just for flags not be null
+      this.flags = new StandardOpenOption[]{StandardOpenOption.APPEND};
+    // try to create file (if create flag)
+    if (create && create_new) {
+      try {
+        this.error = !((new File(this.pathname)).createNewFile());
+      } catch (Exception e) {
+        this.error = true;
+      }
+    } else if (create) {
+      try {
+        (new File(this.pathname)).createNewFile();
+      } catch (Exception e) { /* DO NOTHING */ }
+    }
+    // truncate the file (if truncate flag and if file exists)
+    if (truncate) {
+      File f = new File(this.pathname);
+      if (f.exists()) {
+        try {
+          f.delete();
+          f.createNewFile();
+        } catch (Exception e) {
+          this.error = true;
+        }
+      }
+    }
+  }
+
+  /**
+   * This method returns the pathname attached to the open file.
+   *
+   * @return the pathname
+   */
+  protected String getPathname() {
+    return this.pathname;
+  }
+
+  /**
+   * This method indicates if there are any errors when opening and creating
+   * the file.
+   *
+   * @return true if there are errors, false otherwise
+   */
+  protected boolean openErrors() {
+    return this.error;
   }
 
   /**
@@ -54,13 +140,21 @@ final class OpenFile {
    */
   protected int read(int buffer, int nbytes) {
     // read permissions ?
-    if (this.flags.contains(StandardOpenOption.READ)) {
+    if (this.read || this.rdwr) {
+      int rbytes = 0;
       try {
-        byte[] bytes = Files.readAllBytes(Paths.get(this.pathname));
-        for (int i = 0; i < Math.min(nbytes, bytes.length); i++)
-          Globals.memory.storeByte(buffer++, bytes[i]);
-        return Math.min(nbytes, bytes.length);
+        BufferedReader br = new BufferedReader(new FileReader(this.pathname));
+        for (int i = 0; i < nbytes; i++) {
+          int b = br.read();
+          if (b == -1)
+            b = 0;
+          Globals.memory.storeByte(buffer++, b);
+          rbytes++;
+        }
+        return rbytes;
       } catch (Exception e) {
+        if (rbytes > 0)
+          return rbytes;
         return -1;
       }
     }
@@ -75,35 +169,23 @@ final class OpenFile {
    * @return the number of bytes that were written, -1 if error
    */
   protected int write(int buffer, int nbytes) {
-    // set flags
-    int length = this.flags.size();
-    if (this.flags.contains(StandardOpenOption.READ))
-      length -= 1;
-    StandardOpenOption[] flags = new StandardOpenOption[length];
-    int i = 0;
-    for (StandardOpenOption option: this.flags) {
-      if (option != StandardOpenOption.READ) {
-        flags[i] = option;
-        i++;
+    // build string
+    if (this.write && !this.rdwr || this.rdwr && !this.write) {
+      StringBuffer s = new StringBuffer(0);
+      int wbytes = 0;
+      for (int i = 0; i < nbytes; i++) {
+        char c = (char)Globals.memory.loadByteUnsigned(buffer++);
+        s.append(c);
+        wbytes++;
+      }
+      // try write data to file
+      try {
+        Files.write(Paths.get(this.pathname), s.toString().getBytes(), this.flags);
+        return wbytes;
+      } catch (Exception e) {
+        return -1;
       }
     }
-    // build string
-    StringBuffer s = new StringBuffer(0);
-    char c;
-    int wbytes = 0;
-    while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
-      s.append(c);
-      buffer++;
-      wbytes++;
-      if (wbytes == nbytes)
-        break;
-    }
-    wbytes = Math.min(wbytes, nbytes);
-    // try write data to file
-    try {
-      Files.write(Paths.get(this.pathname), s.toString().getBytes(), flags);
-      return wbytes;
-    } catch (Exception e) { /* DO NOTHING */ }
     return -1;
   }
 
