@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" alt="VSim" width="500">
+  <img src="./assets/V-Sim.png" alt="V-Sim" width="500">
   <br><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
