@@ -20,8 +20,6 @@ package vsim.utils;
 import vsim.Globals;
 import vsim.Settings;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 
 /**
@@ -46,6 +44,7 @@ public final class Syscall {
   private static final int WRITE        = 15;
   private static final int CLOSE        = 16;
   private static final int EXIT2        = 17;
+  private static final int SLEEP        = 18;
 
   /**
    * This method is used to simulate the ecall instruction, it is
@@ -89,19 +88,22 @@ public final class Syscall {
         Syscall.readChar();
         break;
       case OPEN:
-        Message.warning("ecall: open file not implemented yet");
+        Syscall.open();
         break;
       case READ:
-        Message.warning("ecall: read file not implemented yet");
+        Syscall.read();
         break;
       case WRITE:
-        Message.warning("ecall: write to file not implemented yet");
+        Syscall.write();
         break;
       case CLOSE:
-        Message.warning("ecall: close file not implemented yet");
+        Syscall.close();
         break;
       case EXIT2:
         Syscall.exit2();
+        break;
+      case SLEEP:
+        Syscall.sleep();
         break;
       default:
         Message.warning("ecall: invalid syscall code: " + syscode);
@@ -114,7 +116,7 @@ public final class Syscall {
    */
   private static void printInt() {
     int num = Globals.regfile.getRegister("a1");
-    System.out.print(num);
+    IO.stdout.print(num);
   }
 
   /**
@@ -123,7 +125,7 @@ public final class Syscall {
    */
   private static void printFloat() {
     float num = Globals.fregfile.getRegister("f12");
-    System.out.print(num);
+    IO.stdout.print(num);
   }
 
   /**
@@ -133,14 +135,13 @@ public final class Syscall {
    */
   private static void printString() {
     int buffer = Globals.regfile.getRegister("a1");
-    StringBuffer s = new StringBuffer();
-    s.setLength(0);
+    StringBuffer s = new StringBuffer(0);
     char c;
     while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
       s.append(c);
       buffer++;
     }
-    System.out.print(s);
+    IO.stdout.print(s);
   }
 
   /**
@@ -148,9 +149,8 @@ public final class Syscall {
    * value from stdin and then saves it in register a0.
    */
   private static void readInt() {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      Globals.regfile.setRegister("a0", Integer.parseInt(br.readLine()));
+      Globals.regfile.setRegister("a0", Integer.parseInt(IO.stdin.readLine()));
     } catch (IOException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: integer number could not be read");
@@ -168,9 +168,8 @@ public final class Syscall {
    * value from stdin and then saves it in register f0.
    */
   private static void readFloat() {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      Globals.fregfile.setRegister("f0", Float.parseFloat(br.readLine()));
+      Globals.fregfile.setRegister("f0", Float.parseFloat(IO.stdin.readLine()));
     } catch (IOException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: float number could not be read");
@@ -189,9 +188,8 @@ public final class Syscall {
    * at address given in register a1 until length given in register a2 is reached.
    */
   private static void readString() {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      String s = br.readLine();
+      String s = IO.stdin.readLine();
       int buffer = Globals.regfile.getRegister("a1");
       int length = Globals.regfile.getRegister("a2");
       int minLength = Math.min(length, s.length());
@@ -232,12 +230,12 @@ public final class Syscall {
 
   /**
    * This method implements the EXIT syscall, first logs the status, then
-   * calls System.exit(0).
+   * calls IO.exit().
    */
   private static void exit() {
-    System.out.println();
+    IO.stdout.println();
     Message.log("exit(0)");
-    System.exit(0);
+    IO.exit();
   }
 
   /**
@@ -246,7 +244,7 @@ public final class Syscall {
    */
   private static void printChar() {
     char c = (char)Globals.regfile.getRegister("a1");
-    System.out.print(c);
+    IO.stdout.print(c);
   }
 
   /**
@@ -254,9 +252,8 @@ public final class Syscall {
    * char from stdin, then saves the char value in register a0.
    */
   private static void readChar() {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     try {
-      Globals.regfile.setRegister("a0", br.read());
+      Globals.regfile.setRegister("a0", IO.stdin.read());
     } catch (IOException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: char could not be read");
@@ -264,15 +261,106 @@ public final class Syscall {
   }
 
   /**
+   * This method implements the OPEN syscall.
+   *
+   * @see vsim.utils.FS#open
+   */
+  private static void open() {
+    int buffer = Globals.regfile.getRegister("a1");
+    StringBuffer s = new StringBuffer(0);
+    char c;
+    while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
+      s.append(c);
+      buffer++;
+    }
+    Globals.regfile.setRegister(
+      "a0",
+      FS.open(
+        s.toString(),
+        Globals.regfile.getRegister("a2")
+      )
+    );
+  }
+
+  /**
+   * This method implements the READ syscall.
+   *
+   * @see vsim.utils.FS#read
+   */
+  private static void read() {
+    if (Globals.regfile.getRegister("a3") > 0) {
+      Globals.regfile.setRegister(
+        "a0",
+        FS.read(
+          Globals.regfile.getRegister("a1"),
+          Globals.regfile.getRegister("a2"),
+          Globals.regfile.getRegister("a3")
+        )
+      );
+    } else {
+      if (!Settings.QUIET)
+        Message.warning("ecall: number of bytes should be > 0");
+    }
+  }
+
+  /**
+   * This method implements the WRITE syscall.
+   *
+   * @see vsim.utils.FS#write
+   */
+  private static void write() {
+    if (Globals.regfile.getRegister("a3") > 0) {
+      Globals.regfile.setRegister(
+        "a0",
+        FS.write(
+          Globals.regfile.getRegister("a1"),
+          Globals.regfile.getRegister("a2"),
+          Globals.regfile.getRegister("a3")
+        )
+      );
+    } else {
+      if (!Settings.QUIET)
+        Message.warning("ecall: number of bytes should be > 0");
+    }
+  }
+
+  /**
+   * This method implements the CLOSE syscall.
+   *
+   * @see vsim.utils.FS#close
+   */
+  private static void close() {
+    Globals.regfile.setRegister(
+      "a0",
+      FS.close(Globals.regfile.getRegister("a1"))
+    );
+  }
+
+  /**
    * This method implements the EXIT2 syscall, first obtains the status code
-   * from register a1, prints the status, then calls System.exit with the
+   * from register a1, prints the status, then calls IO.exit with the
    * obtained status.
    */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
-    System.out.println();
+    IO.stdout.println();
     Message.log("exit(" + status + ")");
-    System.exit(status);
+    IO.exit(status);
+  }
+
+  /**
+   * This method implements the SLEEP syscall.
+   */
+  private static void sleep() {
+    int millis = Globals.regfile.getRegister("a1");
+    if (millis > 0) {
+      try {
+        Thread.sleep(millis);
+      } catch (Exception e) { /* DO NOTHING*/ }
+    } else {
+      if (!Settings.QUIET)
+        Message.warning("ecall: milliseconds should be > 0");
+    }
   }
 
 }

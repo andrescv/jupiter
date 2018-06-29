@@ -36,7 +36,7 @@ public final class Message {
    * @param msg the log message
    */
   public static void log(String msg) {
-    System.out.println(Colorize.cyan("vsim: " + msg));
+    IO.stdout.println(Colorize.cyan("vsim: " + msg));
   }
 
   /**
@@ -46,7 +46,7 @@ public final class Message {
    * @param msg the warning message
    */
   public static void warning(String msg) {
-    System.out.println(Colorize.yellow("vsim: (warning) " + msg));
+    IO.stdout.println(Colorize.yellow("vsim: (warning) " + msg));
   }
 
   /**
@@ -56,7 +56,7 @@ public final class Message {
    * @param msg the error message
    */
   public static void error(String msg) {
-    System.err.println(Colorize.red("vsim: (error) " + msg));
+    IO.stderr.println(Colorize.red("vsim: (error) " + msg));
   }
 
   /**
@@ -66,7 +66,7 @@ public final class Message {
    * @param msg the error message
    */
   public static void panic(String msg) {
-    System.err.println(Colorize.red("vsim: (error) " + msg));
+    IO.stderr.println(Colorize.red("vsim: (error) " + msg));
     System.exit(1);
   }
 
@@ -78,10 +78,9 @@ public final class Message {
     if (Globals.errors.size() > 0) {
       for (String msg: Globals.errors)
         Message.error(msg);
-      System.err.flush();
-      System.out.println(Globals.errors.size() + " error(s)");
-      System.out.flush();
-      System.exit(1);
+      IO.stderr.println(Globals.errors.size() + " error(s)");
+      IO.stderr.flush();
+      IO.exit(1);
     }
   }
 
