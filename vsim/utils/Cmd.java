@@ -80,7 +80,7 @@ public final class Cmd {
     }
     // then -version
     if (parser.hasFlag("-version")) {
-      System.out.println(Settings.VERSION);
+      IO.stdout.println(Settings.VERSION);
       System.exit(0);
     }
     return parser.targets();
@@ -93,15 +93,15 @@ public final class Cmd {
     if (Settings.TITLE) {
       String newline = System.getProperty("line.separator");
       // cool title :]
-      System.out.println(Colorize.red(" _   __    _____"));
-      System.out.println(Colorize.green("| | / /___/ __(_)_ _"));
-      System.out.println(Colorize.blue("| |/ /___/\\ \\/ /  ' \\"));
-      System.out.println(Colorize.yellow("|___/   /___/_/_/_/_/" + newline));
-      System.out.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
-      System.out.println("GPL-3.0 License");
-      System.out.println("Copyright (c) 2018 Andres Castellanos");
-      System.out.println("All Rights Reserved.");
-      System.out.println("See the file LICENSE for a full copyright notice." + newline);
+      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.red("    _____"));
+      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.green("/ __(_)_ _"));
+      IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
+      IO.stdout.println(Colorize.yellow("|___/") + Colorize.purple("   /___/_/_/_/_/") + newline);
+      IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
+      IO.stdout.println("GPL-3.0 License");
+      IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
+      IO.stdout.println("All Rights Reserved");
+      IO.stdout.println("See the file LICENSE for a full copyright notice" + newline);
     }
   }
 
@@ -109,9 +109,9 @@ public final class Cmd {
    * This method prints the prompt of the VSim simulator.
    */
   public static void prompt() {
-    System.out.print(Colorize.red(">"));
-    System.out.print(Colorize.green(">"));
-    System.out.print(Colorize.blue(">") + " ");
+    IO.stdout.print(Colorize.yellow(">"));
+    IO.stdout.print(Colorize.blue(">"));
+    IO.stdout.print(Colorize.yellow(">") + " ");
   }
 
 }

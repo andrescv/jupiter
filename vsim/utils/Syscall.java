@@ -106,7 +106,8 @@ public final class Syscall {
         Syscall.sleep();
         break;
       default:
-        Message.warning("ecall: invalid syscall code: " + syscode);
+        if (!Settings.QUIET)
+          Message.warning("ecall: invalid syscall code: " + syscode);
     }
   }
 
@@ -230,12 +231,12 @@ public final class Syscall {
 
   /**
    * This method implements the EXIT syscall, first logs the status, then
-   * calls IO.exit().
+   * calls System.exit(0).
    */
   private static void exit() {
     IO.stdout.println();
     Message.log("exit(0)");
-    IO.exit();
+    System.exit(0);
   }
 
   /**
@@ -338,14 +339,14 @@ public final class Syscall {
 
   /**
    * This method implements the EXIT2 syscall, first obtains the status code
-   * from register a1, prints the status, then calls IO.exit with the
+   * from register a1, prints the status, then calls System.exit with the
    * obtained status.
    */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
     IO.stdout.println();
     Message.log("exit(" + status + ")");
-    IO.exit(status);
+    System.exit(status);
   }
 
   /**
