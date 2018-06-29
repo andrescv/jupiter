@@ -20,7 +20,6 @@ package vsim.utils;
 import vsim.Globals;
 import vsim.Settings;
 import java.util.HashMap;
-import java.util.HashSet;
 
 
 /**
@@ -36,8 +35,6 @@ public final class FS {
   public static final int STDOUT = 1;
   /** stderr file descriptor */
   public static final int STDERR = 2;
-  /** current file descriptor */
-  private static int FD = 3;
 
   /** read only open flag */
   public static final int O_RDONLY = 0b0000001;
@@ -58,10 +55,16 @@ public final class FS {
 
   /** current open files */
   private static final HashMap<Integer, OpenFile> open = new HashMap<Integer, OpenFile>();
-  /** current open file names */
-  private static final HashSet<String> filenames = new HashSet<String>();
   /** max allowed open files */
-  public static final int MAX_FILES = 40;
+  public static final int MAX_FILES = 32;
+
+  private static int getNextFD() {
+    for (int i = 3; i < MAX_FILES + 3; i++) {
+      if (!FS.open.containsKey(i))
+        return i;
+    }
+    return -1;
+  }
 
   /**
    * This method simulates the open syscall from C.
@@ -71,24 +74,18 @@ public final class FS {
    * @return the file descriptor for the new file
    */
   public static int open(String pathname, int flags) {
-    if (FS.open.size() < FS.MAX_FILES && !FS.filenames.contains(pathname)) {
-      FS.open.put(FS.FD, new OpenFile(pathname, flags));
-      FS.filenames.add(pathname);
-      if (FS.open.get(FS.FD).openErrors()) {
-        FS.open.remove(FS.FD);
-        FS.filenames.remove(pathname);
+    if (FS.open.size() < FS.MAX_FILES) {
+      int fd = FS.getNextFD();
+      FS.open.put(fd, new OpenFile(pathname, flags));
+      if (FS.open.get(fd).openErrors()) {
+        FS.open.remove(fd);
         System.gc();
         return -1;
       }
-      return FS.FD++;
+      return fd;
     }
-    if (!FS.filenames.contains(pathname)) {
-      if (!Settings.QUIET)
-        Message.warning("file system: file '" + pathname + "' is already open");
-    } else {
-      if (!Settings.QUIET)
-        Message.warning("file system: maximum number of open files exceeded");
-    }
+    if (!Settings.QUIET)
+      Message.warning("file system: maximum number of open files exceeded");
     return -1;
   }
 
@@ -189,7 +186,6 @@ public final class FS {
     }
     // normal file
     else if (FS.open.containsKey(fd)) {
-      FS.filenames.remove(FS.open.get(fd).getPathname());
       FS.open.remove(fd);
       System.gc();
       return 0;
