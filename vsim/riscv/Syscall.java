@@ -15,20 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.utils;
+package vsim.riscv;
 
 import vsim.Globals;
+import vsim.utils.IO;
+import vsim.utils.FS;
 import vsim.Settings;
+import vsim.utils.Data;
+import java.util.Random;
+import vsim.utils.Message;
 import java.io.IOException;
 
 
 /**
- * The class Syscall contains methods that implement syscalls such
- * as the SPIM simulator.
+ * The class Syscall contains methods that implement syscalls.
  */
 public final class Syscall {
 
-  // available syscall codes
+  // SPIM syscall codes
   private static final int PRINT_INT    = 1;
   private static final int PRINT_FLOAT  = 2;
   private static final int PRINT_STRING = 4;
@@ -44,7 +48,21 @@ public final class Syscall {
   private static final int WRITE        = 15;
   private static final int CLOSE        = 16;
   private static final int EXIT2        = 17;
+  // VSim syscall codes
   private static final int SLEEP        = 18;
+  private static final int CWD          = 19;
+  private static final int TIME         = 20;
+  private static final int PRINT_HEX    = 21;
+  private static final int PRINT_BIN    = 22;
+  private static final int PRINT_USGN   = 23;
+  private static final int SET_SEED     = 24;
+  private static final int RAND_INT     = 25;
+  private static final int RAND_INT_RNG = 26;
+  private static final int RAND_FLOAT   = 27;
+
+  /** random number generator */
+  private static final Random RNG = new Random();
+
 
   /**
    * This method is used to simulate the ecall instruction, it is
@@ -105,6 +123,33 @@ public final class Syscall {
       case SLEEP:
         Syscall.sleep();
         break;
+      case CWD:
+        Syscall.cwd();
+        break;
+      case TIME:
+        Syscall.time();
+        break;
+      case PRINT_HEX:
+        Syscall.printHex();
+        break;
+      case PRINT_BIN:
+        Syscall.printBin();
+        break;
+      case PRINT_USGN:
+        Syscall.printUsgn();
+        break;
+      case SET_SEED:
+        Syscall.setSeed();
+        break;
+      case RAND_INT:
+        Syscall.randInt();
+        break;
+      case RAND_INT_RNG:
+        Syscall.randIntRng();
+        break;
+      case RAND_FLOAT:
+        Syscall.randFloat();
+        break;
       default:
         if (!Settings.QUIET)
           Message.warning("ecall: invalid syscall code: " + syscode);
@@ -125,7 +170,7 @@ public final class Syscall {
    * value from f12 register and then prints it to stdout.
    */
   private static void printFloat() {
-    float num = Globals.fregfile.getRegister("f12");
+    float num = Globals.fregfile.getRegister("fa0");
     IO.stdout.print(num);
   }
 
@@ -166,11 +211,11 @@ public final class Syscall {
 
   /**
    * This method implements the READ_FLOAT syscall, first tries to get the float
-   * value from stdin and then saves it in register f0.
+   * value from stdin and then saves it in register fa0.
    */
   private static void readFloat() {
     try {
-      Globals.fregfile.setRegister("f0", Float.parseFloat(IO.stdin.readLine()));
+      Globals.fregfile.setRegister("fa0", Float.parseFloat(IO.stdin.readLine()));
     } catch (IOException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: float number could not be read");
@@ -354,14 +399,98 @@ public final class Syscall {
    */
   private static void sleep() {
     int millis = Globals.regfile.getRegister("a1");
-    if (millis > 0) {
+    if (millis >= 0) {
       try {
         Thread.sleep(millis);
       } catch (Exception e) { /* DO NOTHING*/ }
     } else {
       if (!Settings.QUIET)
-        Message.warning("ecall: milliseconds should be > 0");
+        Message.warning("ecall: milliseconds should be >= 0");
     }
+  }
+
+  /**
+   * This method implements the PWD syscall.
+   */
+  private static void cwd() {
+    String path = System.getProperty("user.dir");
+    int buffer = Globals.regfile.getRegister("a1");
+    for (int i = 0; i < path.length(); i++) {
+      Globals.memory.storeByte(buffer++, (int)path.charAt(i));
+    }
+    Globals.memory.storeByte(buffer, 0);
+  }
+
+  /**
+   * This method implements the TIME syscall.
+   */
+  private static void time() {
+    long time = System.currentTimeMillis();
+    Globals.regfile.setRegister("a1", (int)(time >>> Data.WORD_LENGTH_BITS));
+    Globals.regfile.setRegister("a0", (int)(time  & 0xffffffffL));
+  }
+
+  /**
+   * This method implements the PRINT_HEX syscall.
+   */
+  private static void printHex() {
+    int value = Globals.regfile.getRegister("a1");
+    IO.stdout.print(String.format("0x%08x", value));
+  }
+
+  /**
+   * This method implements the PRINT_BIN syscall.
+   */
+  private static void printBin() {
+    int value = Globals.regfile.getRegister("a1");
+    IO.stdout.print(String.format("0b%32s", Integer.toBinaryString(value)).replace(' ', '0'));
+  }
+
+  /**
+   * This method implements the PRINT_USGN syscall.
+   */
+  private static void printUsgn() {
+    int value = Globals.regfile.getRegister("a1");
+    IO.stdout.print(Integer.toUnsignedLong(value));
+  }
+
+  /**
+   * This method implements the SET_SEED syscall.
+   */
+  private static void setSeed() {
+    Syscall.RNG.setSeed(Globals.regfile.getRegister("a1"));
+  }
+
+  /**
+   * This method implements the RAND_INT syscall.
+   */
+  private static void randInt() {
+    Globals.regfile.setRegister(
+      "a0",
+      Syscall.RNG.nextInt()
+    );
+  }
+
+  /**
+   * This method implements the RAND_INT_RNG syscall.
+   */
+  private static void randIntRng() {
+    int min = Globals.regfile.getRegister("a1");
+    int max = Globals.regfile.getRegister("a2");
+    Globals.regfile.setRegister(
+      "a0",
+      Syscall.RNG.nextInt((max - min) + 1) + min
+    );
+  }
+
+  /**
+   * This method implements the RAND_FLOAT syscall.
+   */
+  private static void randFloat() {
+    Globals.fregfile.setRegister(
+      "fa0",
+      Syscall.RNG.nextFloat()
+    );
   }
 
 }
