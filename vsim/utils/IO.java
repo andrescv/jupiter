@@ -40,20 +40,4 @@ public final class IO {
   /** standard err */
   public static final PrintStream stderr = System.err;
 
-  /**
-   * This method exits with a status code given in code.
-   *
-   * @param code the status code
-   */
-  public static void exit(int code) {
-    System.exit(code);
-  }
-
-  /**
-   * This method exits with a status code of 0.
-   */
-  public static void exit() {
-    IO.exit(0);
-  }
-
 }

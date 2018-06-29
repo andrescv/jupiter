@@ -80,7 +80,7 @@ public final class Message {
         Message.error(msg);
       IO.stderr.println(Globals.errors.size() + " error(s)");
       IO.stderr.flush();
-      IO.exit(1);
+      System.exit(1);
     }
   }
 
