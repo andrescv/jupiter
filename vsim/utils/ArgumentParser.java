@@ -37,7 +37,7 @@ final class ArgumentParser {
   /** stores the valid options for this parser */
   private TreeMap<String, String> options;
   /** stores the valid options that requires a value */
-  private HashSet<String> optionsWithVal;
+  private HashSet<String> optsval;
   /** stores all the targers (aka files) */
   private ArrayList<String> targets;
   /** stores all the parser errors */
@@ -51,7 +51,7 @@ final class ArgumentParser {
     this.flags = new HashMap<String, Integer>();
     this.values = new HashMap<Integer, String>();
     this.options = new TreeMap<String, String>();
-    this.optionsWithVal = new HashSet<String>();
+    this.optsval = new HashSet<String>();
     this.targets = new ArrayList<String>();
     this.errors = new ArrayList<String>();
   }
@@ -69,7 +69,7 @@ final class ArgumentParser {
       this.options.put(option, help);
       // this option requires a value
       if (requiresValue) {
-        this.optionsWithVal.add(option);
+        this.optsval.add(option);
         this.maxLength = Math.max(this.maxLength, option.length() * 2 + 2);
       } else
         this.maxLength = Math.max(this.maxLength, option.length() + 2);
@@ -109,10 +109,9 @@ final class ArgumentParser {
         lastFlagPos = i;
         lastFlag = args[i];
         // valid flag ?
-        if (this.options.containsKey(args[i]))
-          this.flags.put(args[i], i);
-        else
+        if (!this.options.containsKey(args[i]))
           this.errors.add("unknown argument: " + args[i]);
+        this.flags.put(args[i], i);
       } else
         // store every value
         this.values.put(i, args[i]);
@@ -122,12 +121,12 @@ final class ArgumentParser {
       int position = this.flags.get(flag);
       // no value is present if needed?
       String value = this.values.get(position + 1);
-      if (value == null && this.optionsWithVal.contains(flag))
+      if (value == null && this.optsval.contains(flag))
         this.errors.add("argument '" + flag + "' requires a value");
       // examine for unexpected values
       if (position != lastFlagPos && value != null) {
         String invalid = "";
-        if (!this.optionsWithVal.contains(flag))
+        if (!this.optsval.contains(flag))
           invalid += value + " ";
         for (int i = position + 2; this.values.get(i) != null; i++)
           invalid += this.values.get(i) + " ";
@@ -138,7 +137,7 @@ final class ArgumentParser {
     // set targets
     if (lastFlag != null) {
       int offset = lastFlagPos;
-      if (this.optionsWithVal.contains(lastFlag))
+      if (this.optsval.contains(lastFlag))
         offset += 2;
       else
         offset += 1;
@@ -162,7 +161,7 @@ final class ArgumentParser {
     for (String option: this.options.keySet()) {
       out += "  " + option;
       int length = option.length();
-      if (this.optionsWithVal.contains(option)) {
+      if (this.optsval.contains(option)) {
         out += " " + option.substring(1).toUpperCase();
         length += option.length();
       }
@@ -170,7 +169,7 @@ final class ArgumentParser {
         out += " ";
       out += this.options.get(option) + newline;
     }
-    System.out.println(out.trim());
+    IO.stdout.println(out.trim());
   }
 
   /**
@@ -186,7 +185,7 @@ final class ArgumentParser {
    * This method returns the value attached to a flag (if any)
    */
   protected String value(String flag) {
-    if (this.options.containsKey(flag) && this.optionsWithVal.contains(flag))
+    if (this.options.containsKey(flag) && this.optsval.contains(flag))
       return this.values.get(this.flags.get(flag) + 1);
     return null;
   }
