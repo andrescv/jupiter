@@ -1,2 +1,0 @@
-Main-Class: vsim.VSim
-Class-Path: . ./lib/java-cup-11b.jar

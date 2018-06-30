@@ -1,6 +1,9 @@
 # Build directory
 build/
 
+# ant targets
+.ant-targets-build.xml
+
 # Lexer and Parser classes
 vsim/assembler/Lexer.java
 vsim/assembler/Parser.java
