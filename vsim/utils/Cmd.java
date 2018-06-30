@@ -35,7 +35,7 @@ public final class Cmd {
    * @return an array of RISC-V assembler filenames to simulate (if any)
    */
   public static ArrayList<String> parse(String[] args) {
-    ArgumentParser parser = new ArgumentParser();
+    ArgumentParser parser = new ArgumentParser("vsim [options] <files>");
     // simulator available options
     parser.add("-help",    "show this help message and exit");
     parser.add("-bare",    "bare machine (no pseudo-ops)");
