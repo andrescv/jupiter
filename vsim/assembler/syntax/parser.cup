@@ -48,12 +48,12 @@ parser code {:
   }
 
   @Override
-  public void syntax_error(Symbol cur_token) {
+  public void syntax_error(java_cup.runtime.Symbol cur_token) {
     /* DO NOTHING */
   }
 
   @Override
-  public void unrecovered_syntax_error(Symbol cur_token) {
+  public void unrecovered_syntax_error(java_cup.runtime.Symbol cur_token) {
     // show all escaped sequences
     if (cur_token.value instanceof String) {
       cur_token.value = ((String) cur_token.value).replaceAll("\n", "\\\\n");
@@ -206,7 +206,7 @@ Label       ::= LABEL:id
 
 RISCVInst    ::= Instruction:i
                 {:
-                  if (!Assembler.inTextSegment())
+                  if (!(Assembler.segment == Segment.TEXT))
                     Assembler.error("instructions can appear only in text segment");
                   else
                     RESULT = i;
@@ -233,7 +233,7 @@ Instruction ::= RType:i
 
 RISCVPSeudo ::= PSeudos
                 {:
-                  if (!Assembler.inTextSegment())
+                  if (!(Assembler.segment == Segment.TEXT))
                     Assembler.error("instructions can appear only in text segment");
                   else
                     if (Settings.BARE)
@@ -898,7 +898,7 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
 
 Data        ::= DataMode:mode DataList:l
                 {:
-                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
+                  if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
                     // set mask and length
                     int mask = Data.WORD_MASK;
                     int length = Data.WORD_LENGTH;
@@ -927,7 +927,7 @@ Data        ::= DataMode:mode DataList:l
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
-                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
+                  if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
                     // scan char by char
                     for (int i = 0; i < s.length(); i++)
                       Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
@@ -939,7 +939,7 @@ Data        ::= DataMode:mode DataList:l
              |  D_ZERO Expr:e
                 {:
                   if (e > 0) {
-                    if (!Assembler.inTextSegment())
+                    if (!(Assembler.segment == Segment.TEXT))
                       for (int i = 0; i < e; i++)
                         Assembler.program.addByte(Assembler.segment, (byte) 0);
                     else
@@ -949,7 +949,7 @@ Data        ::= DataMode:mode DataList:l
                 :}
              |  D_FLOAT FloatList:l
                 {:
-                  if (Assembler.inDataSegment() || Assembler.inRodataSegment()) {
+                  if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
                     // set mask and length
                     int mask = Data.WORD_MASK;
                     int length = Data.WORD_LENGTH;
@@ -1064,7 +1064,7 @@ SymbolDir   ::= D_GLOBL Id:id
 
 AlignDir    ::= D_ALIGN Number:e
                 {:
-                  if (!Assembler.inTextSegment()) {
+                  if (!(Assembler.segment == Segment.TEXT)) {
                     if (e >= 0 && e <= 2)
                       Assembler.program.align(e);
                     else
@@ -1074,7 +1074,7 @@ AlignDir    ::= D_ALIGN Number:e
                 :}
              |  D_BALIGN Number:e
                 {:
-                  if (!Assembler.inTextSegment()) {
+                  if (!(Assembler.segment == Segment.TEXT)) {
                     if (e > 0)
                       Assembler.program.balign(e);
                     else
