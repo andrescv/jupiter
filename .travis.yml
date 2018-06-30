@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 script:
-  - make test
+  - ant test

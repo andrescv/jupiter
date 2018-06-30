@@ -1,0 +1,71 @@
+<project name="V-Sim" default="vsim">
+  <!-- load properties -->
+  <property file="build.properties" />
+  <!-- some build info -->
+  <target name="info">
+    <echo>Building VSim version: ${buildversion}</echo>
+  </target>
+  <!-- create lexer and parser -->
+  <target name="syntax" description="generates the lexer and parser">
+    <java jar="${lib.dir}/jflex-1.6.1.jar" fork="true">
+      <arg file="${src.dir}/assembler/syntax/lexer.flex" />
+    </java>
+    <move
+      file="${src.dir}/assembler/syntax/Lexer.java"
+      todir="${src.dir}/assembler/"
+    />
+    <java jar="${lib.dir}/java-cup-11b.jar" fork="true">
+      <arg line="-parser Parser -symbols Token" />
+      <arg file="${src.dir}/assembler/syntax/parser.cup" />
+    </java>
+    <move
+      file="Token.java"
+      todir="${src.dir}/assembler"
+    />
+    <move
+      file="Parser.java"
+      todir="${src.dir}/assembler"
+    />
+  </target>
+  <!-- compile all source code -->
+  <target name="compile" description="build V-Sim project" depends="info,syntax">
+    <mkdir dir="${build.dir}" />
+    <javac destdir="${build.dir}"
+      classpath="${lib.dir}/java-cup-11b.jar:."
+      includeAntRuntime="false"
+      source="1.8"
+      target="1.8"
+      failonerror="true"
+      >
+      <src path="${src.dir}" />
+    </javac>
+  </target>
+  <!-- generate a JAR file -->
+  <target name="vsim" depends="compile">
+    <jar
+      basedir="${build.dir}"
+      compress="true"
+      destfile="VSim.jar"
+      update="true">
+      <manifest>
+        <attribute name="Main-Class" value="vsim.VSim" />
+        <attribute name="Class-Path" value=". ${lib.dir}/java-cup-11b.jar" />
+      </manifest>
+    </jar>
+    <delete dir="${build.dir}" />
+  </target>
+  <!-- test vsim -->
+  <target name="test" description="test simulator" depends="vsim">
+    <exec executable="python3" failonerror="true" timeout="60000">
+      <arg value="test.py" />
+    </exec>
+  </target>
+  <!-- clean build -->
+  <target name="clean" description="clean build directory">
+    <delete dir="${build.dir}" />
+    <delete file="VSim.jar" />
+    <delete file="${src.dir}/assembler/Parser.java" />
+    <delete file="${src.dir}/assembler/Lexer.java" />
+    <delete file="${src.dir}/assembler/Token.java" />
+  </target>
+</project>
