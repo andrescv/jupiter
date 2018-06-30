@@ -60,10 +60,33 @@
       <arg value="test.py" />
     </exec>
   </target>
+  <!-- vsim documentation -->
+  <target name="doc" description="generate documentation" depends="clean">
+    <javadoc
+      destdir="${doc.dir}"
+      private="true"
+      failonerror="true"
+      windowtitle="V-Sim Documentation"
+    >
+      <fileset dir="${src.dir}">
+        <include name="**/*.java"/>
+      </fileset>
+      <doctitle>V-Sim Source Documentation</doctitle>
+      <footer>Copyright (C) 2018 Andres Castellanos</footer>
+      <group title="Assembler" packages="vsim.assembler:vsim.assembler.*" />
+      <group title="Linker" packages="vsim.linker" />
+      <group title="Instructions" packages="vsim.riscv.instructions.*:vsim.riscv.instructions" />
+      <group title="Simulator" packages="vsim.simulator" />
+      <group title="RISC-V" packages="vsim.riscv" />
+      <group title="Utilities" packages="vsim.utils" />
+      <group title="V-Sim" packages="vsim" />
+    </javadoc>
+  </target>
   <!-- clean build -->
   <target name="clean" description="clean build directory">
     <delete dir="${build.dir}" />
     <delete file="VSim.jar" />
+    <delete dir="${doc.dir}" />
     <delete file="${src.dir}/assembler/Parser.java" />
     <delete file="${src.dir}/assembler/Lexer.java" />
     <delete file="${src.dir}/assembler/Token.java" />
