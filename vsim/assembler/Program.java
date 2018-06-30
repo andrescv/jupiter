@@ -20,50 +20,58 @@ package vsim.assembler;
 import vsim.Globals;
 import vsim.utils.Message;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import vsim.riscv.instructions.Instruction;
 import vsim.assembler.statements.Statement;
 
 
 /**
- * The class Program is used to represent an assembler program
- * before becoming a linked program.
+ * The class Program represents an unlinked program.
  */
 public final class Program {
 
-  // program filename
+  /** filename of this unlinked program */
   private String filename;
 
-  // program statements
+  /** current text segment index */
   private int textIndex;
+  /** start of text segment of this program*/
   private int textStart;
+  /** array of statements of this program */
   private ArrayList<Statement> stmts;
 
-  // align directives
+  /** controls if the next datum needs aligned */
   private boolean align;
+  /** alignment value */
   private int alignVal;
 
-  // symbols control
+  /** global symbols declared in this program */
   private ArrayList<String> globals;
+  /** local symbols declared in this program */
   private SymbolTable table;
 
-  // data segment control
+  /** current data segment index */
   private int dataIndex;
+  /** start of data segment of this program */
   private int dataStart;
+  /** array of bytes that belongs to the data segment */
   private ArrayList<Byte> data;
 
-  // rodata segment control
+  /** current rodata segment index */
   private int rodataIndex;
+  /** start of rodata segment of this program */
   private int rodataStart;
+  /** array of bytes that belongs to the rodata segment */
   private ArrayList<Byte> rodata;
 
-  // bss segment control
+  /** current bss segment index */
   private int bssIndex;
+  /** start of bss segment of this program */
   private int bssStart;
+  /** array of bytes that belongs to the bss segment */
   private ArrayList<Byte> bss;
 
   /**
-   * Unique constructor that initializes a newly and empty Program object.
+   * Unique constructor that initializes a new unlinked program.
    *
    * @param filename the filename of this program
    */
@@ -95,14 +103,13 @@ public final class Program {
   }
 
   /**
-   * This method is used to relocate all symbols of the program and is called
-   * inside the {@link vsim.linker.Linker} class.
+   * This method is used to relocate all local and global symbols
+   * of this program.
    */
   public void relocateSymbols() {
     // first locals
-    for (Enumeration<String> e = this.table.labels(); e.hasMoreElements();) {
-      String label = e.nextElement();
-      Sym sym = this.table.getSymbol(label);
+    for (String label: this.table.labels()) {
+      Symbol sym = this.table.getSymbol(label);
       int offset = sym.getAddress();
       switch (sym.getSegment()) {
         case DATA:
@@ -127,7 +134,7 @@ public final class Program {
   /**
    * This method sets the text segment start address of this program.
    *
-   * @param address the start address
+   * @param address the start address of the text segment
    */
   public void setTextStart(int address) {
     this.textStart = address;
@@ -136,7 +143,7 @@ public final class Program {
   /**
    * This method sets the data segment start address of this program.
    *
-   * @param address the start address
+   * @param address the start address of the data segment
    */
   public void setDataStart(int address) {
     this.dataStart = address;
@@ -145,7 +152,7 @@ public final class Program {
   /**
    * This method sets the rodata segment start address of this program.
    *
-   * @param address the start address
+   * @param address the start address of the rodata segment
    */
   public void setRodataStart(int address) {
     this.rodataStart = address;
@@ -154,7 +161,7 @@ public final class Program {
   /**
    * This method sets the bss segment start address of this program.
    *
-   * @param address the start address
+   * @param address the start address of the bss segment
    */
   public void setBssStart(int address) {
     this.bssStart = address;
@@ -166,40 +173,40 @@ public final class Program {
    * @param stmt the new statement
    * @see vsim.assembler.statements.Statement
    */
-  protected void add(Statement stmt) {
+  public void add(Statement stmt) {
     this.stmts.add(stmt);
     this.textIndex += Instruction.LENGTH;
   }
 
   /**
    * This method is used to indicate that the next datum needs to be
-   * aligned to a 2 ^ n byte boundary.
+   * aligned to a {@code Math.pow(2, alignVal)} byte boundary.
    *
    * @param alignVal the alignment value
    */
-  protected void align(int alignVal) {
+  public void align(int alignVal) {
     this.align = true;
     this.alignVal = (int)Math.pow(2, alignVal);
   }
 
   /**
    * This method is used to indicate that the next datum needs to be
-   * aligned to a n byte boundary.
+   * aligned to a {@code alignVal} byte boundary.
    *
    * @param alignVal the alignment value
    */
-  protected void balign(int alignVal) {
+  public void balign(int alignVal) {
     this.align = true;
     this.alignVal = alignVal;
   }
 
   /**
-   * This method tries to add a new global label attached to this program.
+   * This method tries to add a new global label to this program.
    *
-   * @param label the global label
+   * @param label the global label name to add
    * @return true if the label does not already exists, false otherwise
    */
-  protected boolean addGlobal(String label) {
+  public boolean addGlobal(String label) {
     if (!this.globals.contains(label)) {
       this.globals.add(label);
       return true;
@@ -208,15 +215,15 @@ public final class Program {
   }
 
   /**
-   * This method tries to add a new local label attached to this program.
+   * This method tries to add a new local label to this program.
    *
    * @param segment the segment of this label
-   * @param label the label
+   * @param label the label name
    * @see vsim.assembler.Segment
    * @see vsim.assembler.SymbolTable
    * @return true if the label does not already exists, false otherwise
    */
-  protected boolean addSymbol(Segment segment, String label) {
+  public boolean addSymbol(Segment segment, String label) {
     switch (segment) {
       case DATA:
         this.dataIndex = this.align(this.dataIndex, this.data);
@@ -243,8 +250,8 @@ public final class Program {
     int padding = 0;
     // calculate padding
     if (this.align) {
-      if ((index % this.alignVal) != 0)
-        padding = this.alignVal - index % this.alignVal;
+      if (Integer.remainderUnsigned(index, this.alignVal) != 0)
+        padding = this.alignVal - Integer.remainderUnsigned(index, this.alignVal);
       this.align = false;
     }
     // add padding if necessary
@@ -278,7 +285,7 @@ public final class Program {
    * @param segment the segment to add the byte
    * @param b the byte to add
    */
-  protected void addByte(Segment segment, byte b) {
+  public void addByte(Segment segment, byte b) {
     switch (segment) {
       case DATA:
         this.dataIndex = this.addTo(b, this.dataIndex, this.data);
@@ -321,27 +328,27 @@ public final class Program {
   }
 
   /**
-   * This method returns all the data segment content of the program.
+   * This method returns all the data segment bytes of the program.
    *
-   * @return the data segment content of the program
+   * @return the data segment bytes of the program
    */
   public ArrayList<Byte> getData() {
     return this.data;
   }
 
   /**
-   * This method returns all the rodata segment content of the program.
+   * This method returns all the rodata segment bytes of the program.
    *
-   * @return the rodata segment content of the program
+   * @return the rodata segment bytes of the program
    */
   public ArrayList<Byte> getRodata() {
     return this.rodata;
   }
 
   /**
-   * This method returns all the bss segment content of the program.
+   * This method returns all the bss segment bytes of the program.
    *
-   * @return the bss segment content of the program
+   * @return the bss segment bytes of the program
    */
   public ArrayList<Byte> getBss() {
     return this.bss;
@@ -363,6 +370,33 @@ public final class Program {
    */
   public int getTextSize() {
     return this.stmts.size() * Instruction.LENGTH;
+  }
+
+  /**
+   * This method returns the data segment size in bytes.
+   *
+   * @return the data segment size in bytes
+   */
+  public int getDataSize() {
+    return this.data.size();
+  }
+
+  /**
+   * This method returns the rodata segment size in bytes.
+   *
+   * @return the rodata segment size in bytes
+   */
+  public int getRodataSize() {
+    return this.rodata.size();
+  }
+
+  /**
+   * This method returns the bss segment size in bytes.
+   *
+   * @return the bss segment size in bytes
+   */
+  public int getBssSize() {
+    return this.bss.size();
   }
 
 }

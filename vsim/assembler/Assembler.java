@@ -33,62 +33,19 @@ import vsim.assembler.statements.Statement;
  */
 public final class Assembler {
 
-  private Assembler() { /* NOTHING */ }
-
   /** current assembler segment */
-  protected static Segment segment = Segment.TEXT;
+  public static Segment segment = Segment.TEXT;
   /** current assembler program */
   public static Program program = null;
   /** current assembler debug info */
   public static DebugInfo debug = null;
 
   /**
-   * This method checks if the current assembler segment is the text segment.
-   *
-   * @see vsim.assembler.Segment
-   * @return true if the text segment is the current segment, false otherwise
-   */
-  protected static boolean inTextSegment() {
-    return Assembler.segment == Segment.TEXT;
-  }
-
-  /**
-   * This method checks if the current assembler segment is the data segment.
-   *
-   * @see vsim.assembler.Segment
-   * @return true if the data segment is the current segment, false otherwise
-   */
-  protected static boolean inDataSegment() {
-    return Assembler.segment == Segment.DATA;
-  }
-
-  /**
-   * This method checks if the current assembler segment is the rodata segment.
-   *
-   * @see vsim.assembler.Segment
-   * @return true if the rodata segment is the current segment, false otherwise
-   */
-  protected static boolean inRodataSegment() {
-    return Assembler.segment == Segment.RODATA;
-  }
-
-  /**
-   * This method checks if the current assembler segment is the bss segment.
-   *
-   * @see vsim.assembler.Segment
-   * @return true if the bss segment is the current segment, false otherwise
-   */
-  protected static boolean inBssSegment() {
-    return Assembler.segment == Segment.BSS;
-  }
-
-  /**
    * This method is used to create a pretty formatted error and
-   * adds this error to the error list {@link Globals#errors}.
+   * adds this error to the error list {@link vsim.Globals#errors}.
    *
    * @param msg the error message
    * @param showSource true if you want to show the source line
-   * @see Globals#errors
    */
   public static void error(String msg, boolean showSource) {
     String filename = Assembler.program.getFilename();
@@ -109,10 +66,10 @@ public final class Assembler {
 
   /**
    * This method is an alias for {@link Assembler#error} that sets to
-   * true the parameter showSource.
+   * true the parameter {@code showSource}.
    *
    * @param msg the error message
-   * @see Assembler#error
+   * @see vsim.assembler.Assembler#error
    */
   public static void error(String msg) {
     Assembler.error(msg, true);
@@ -138,16 +95,16 @@ public final class Assembler {
   }
 
   /**
-   * This method handle all the global symbols of each program and
+   * This method handles all the global symbols of each program and
    * adds every symbol if possible to the global symbol table. This
    * method is part of the first pass of the assembler.
    *
    * @param programs all the assembled programs
-   * @see Globals#globl
+   * @see vsim.Globals#globl
    */
   private static void handleGlobals(ArrayList<Program> programs) {
     for (Program program: programs) {
-      // set current assembler program
+      // set current assembler program (useful for error report)
       Assembler.program = program;
       // add program ST to globals
       SymbolTable table = program.getST();
@@ -155,7 +112,7 @@ public final class Assembler {
       Globals.local.put(filename, table);
       // check globals of program
       for (String global: program.getGlobals()) {
-        Sym sym = table.getSymbol(global);
+        Symbol sym = table.getSymbol(global);
         if (sym != null) {
           if(!Globals.globl.add(global, sym))
             Assembler.error(

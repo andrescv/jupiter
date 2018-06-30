@@ -17,9 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
+import vsim.utils.IO;
+import java.util.Set;
+import java.util.HashMap;
 import vsim.utils.Colorize;
-import java.util.Hashtable;
-import java.util.Enumeration;
 
 
 /**
@@ -27,20 +28,18 @@ import java.util.Enumeration;
  */
 public final class SymbolTable {
 
-  /** the symbol table */
-  private Hashtable<String, Sym> table;
+  /** stores the current symbols */
+  private HashMap<String, Symbol> table;
 
   /**
-   * Unique constructor that initializes a newly and empty SymbolTable object.
-   *
-   * @see vsim.assembler.Sym
+   * Unique constructor that initializes a newly and empty symbol table.
    */
   public SymbolTable() {
-    this.table = new Hashtable<String, Sym>();
+    this.table = new HashMap<String, Symbol>();
   }
 
   /**
-   * This method clears all the content of the symbol table.
+   * This method clears all the symbols of the symbol table.
    */
   public void reset() {
     this.table.clear();
@@ -51,14 +50,17 @@ public final class SymbolTable {
    * This method pretty prints the complete symbol table.
    */
   public void print() {
-    System.out.println(this);
+    for (String label: this.table.keySet()) {
+      IO.stdout.print(Colorize.green(label) + " ");
+      this.table.get(label).print();
+    }
   }
 
   /**
-   * This method tries to return the address of a symbol attached
-   * to a label.
+   * This method tries to return the address of a symbol given
+   * a label name.
    *
-   * @param label the label of this symbol
+   * @param label the label name
    * @return the address of this symbol or null if the label does not exists
    */
   public Integer get(String label) {
@@ -68,19 +70,20 @@ public final class SymbolTable {
   }
 
   /**
-   * This method tries to return the Sym object attached to a label.
+   * This method tries to return the Sym object given a label name.
    *
-   * @param label the label of this symbol
-   * @return the Sym object attached to this label, null if the label does not exists
+   * @param label the label name
+   * @see vsim.assembler.Symbol
+   * @return the {@code Symbol} object attached to this label, null if the label does not exists
    */
-  public Sym getSymbol(String label) {
+  public Symbol getSymbol(String label) {
     return this.table.get(label);
   }
 
   /**
    * This method tries to set a new address of a preset label.
    *
-   * @param label the label
+   * @param label the label name
    * @param address the new address of this label
    * @return true if the label exists in the symbol table, false if not
    */
@@ -95,12 +98,12 @@ public final class SymbolTable {
   /**
    * This method tries to add a new Sym object to the symbol table.
    *
-   * @param label the label of this symbol
-   * @param sym the Sym object
-   * @see vsim.assembler.Sym
+   * @param label the label name of this symbol
+   * @param sym the Symbol object
+   * @see vsim.assembler.Symbol
    * @return true if the label does not exists int the symbol table, false otherwise
    */
-  public boolean add(String label, Sym sym) {
+  public boolean add(String label, Symbol sym) {
     if (!this.table.containsKey(label)) {
       this.table.put(label, sym);
       return true;
@@ -112,45 +115,28 @@ public final class SymbolTable {
    * This method tries to add a new label of a segment to the symbol table
    * creating a newly Sym object.
    *
-   * @param label the label of this symbol
-   * @param segment the segment this symbol belongs
+   * @param label the label name of this symbol
+   * @param segment the segment this label belongs
    * @param address the address of this symbol
    * @see vsim.assembler.Segment
-   * @see vsim.assembler.Sym
+   * @see vsim.assembler.Symbol
    * @return true if the label does not exists in the symbol table, false otherwise
    */
   public boolean add(String label, Segment segment, int address) {
     if (!this.table.containsKey(label)) {
-      this.add(label, new Sym(segment, address));
+      this.add(label, new Symbol(segment, address));
       return true;
     }
     return false;
   }
 
   /**
-   * This method returns all the labels within the symbol table.
+   * This method returns all the label names within the symbol table.
    *
-   * @return all the labels within the symbol table (if any)
+   * @return all the label names within the symbol table (if any)
    */
-  public Enumeration<String> labels() {
-    return this.table.keys();
-  }
-
-  /**
-   * This method returns a String representation of a SymbolTable object.
-   *
-   * @return the String representation
-   */
-  @Override
-  public String toString() {
-    String out = "";
-    String newline = System.getProperty("line.separator");
-    for (Enumeration<String> e = this.table.keys(); e.hasMoreElements();) {
-      String label = e.nextElement();
-      out += Colorize.green(label) + " " + this.table.get(label).toString();
-      out += newline;
-    }
-    return out.replaceAll("\\s+$", "");
+  public Set<String> labels() {
+    return this.table.keySet();
   }
 
 }

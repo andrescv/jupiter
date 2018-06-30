@@ -19,7 +19,7 @@ package vsim.assembler;
 
 
 /**
- * Enumeration that represents all the available segments.
+ * Represents all the available memory segments.
  */
 public enum Segment {
   /** the text segment */
