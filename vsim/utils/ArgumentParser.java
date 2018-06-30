@@ -26,8 +26,10 @@ import java.util.ArrayList;
 /**
  * The class ArgumentParser represents a useful command line argument parser.
  */
-final class ArgumentParser {
+public final class ArgumentParser {
 
+  /** stores the usage string */
+  private String usage;
   /** stores the max length of all options */
   private int maxLength;
   /** stores the flags that were set */
@@ -44,10 +46,14 @@ final class ArgumentParser {
   private ArrayList<String> errors;
 
   /**
-   * Unique constructor that initializes a newly ArgumentParser object.
+   * Constructor that initializes a newly ArgumentParser object with
+   * a usage message.
+   *
+   * @param usage the usage message
    */
-  protected ArgumentParser() {
+  public ArgumentParser(String usage) {
     this.maxLength = -1;
+    this.usage = usage;
     this.flags = new HashMap<String, Integer>();
     this.values = new HashMap<Integer, String>();
     this.options = new TreeMap<String, String>();
@@ -57,13 +63,21 @@ final class ArgumentParser {
   }
 
   /**
+   * Constructor that initializes a newly ArgumentParser object with
+   * a default usage message {@code "[options]"}.
+   */
+  public ArgumentParser() {
+    this("[options]");
+  }
+
+  /**
    * This method adds a new option to the valid option list.
    *
    * @param option the option that starts with -
    * @param help help information attached to this option
    * @param requiresValue if this option requires a value
    */
-  protected void add(String option, String help, boolean requiresValue) {
+  public void add(String option, String help, boolean requiresValue) {
     // only include options that starts with '-'
     if (option != null && option.startsWith("-")) {
       this.options.put(option, help);
@@ -83,7 +97,7 @@ final class ArgumentParser {
    * @param option the option that starts with -
    * @param help help information attached to this option
    */
-  protected void add(String option, String help) {
+  public void add(String option, String help) {
     this.add(option, help, false);
   }
 
@@ -93,7 +107,7 @@ final class ArgumentParser {
    *
    * @param args command line arguments
    */
-  protected void parse(String[] args) {
+  public void parse(String[] args) {
     // clear old contents
     this.flags.clear();
     this.values.clear();
@@ -154,9 +168,9 @@ final class ArgumentParser {
   /**
    * This method pretty prints the argument parser usage.
    */
-  protected void print() {
+  public void print() {
     String newline = System.getProperty("line.separator");
-    String out = "usage: vsim [options] <files>" + newline + newline;
+    String out = "usage: " + this.usage + newline + newline;
     out += "available options:" + newline;
     for (String option: this.options.keySet()) {
       out += "  " + option;
@@ -177,14 +191,14 @@ final class ArgumentParser {
    *
    * @return true if flag was set, false if not
    */
-  protected boolean hasFlag(String flag) {
+  public boolean hasFlag(String flag) {
     return this.flags.containsKey(flag);
   }
 
   /**
    * This method returns the value attached to a flag (if any)
    */
-  protected String value(String flag) {
+  public String value(String flag) {
     if (this.options.containsKey(flag) && this.optsval.contains(flag))
       return this.values.get(this.flags.get(flag) + 1);
     return null;
@@ -195,7 +209,7 @@ final class ArgumentParser {
    *
    * @return true if the parser has errors, false otherwise
    */
-  protected boolean hasErrors() {
+  public boolean hasErrors() {
     return this.errors.size() > 0;
   }
 
@@ -204,7 +218,7 @@ final class ArgumentParser {
    *
    * @return list of errors
    */
-  protected ArrayList<String> getErrors() {
+  public ArrayList<String> getErrors() {
     this.errors.trimToSize();
     return this.errors;
   }
@@ -214,7 +228,7 @@ final class ArgumentParser {
    *
    * @return array of targets
    */
-  protected ArrayList<String> targets() {
+  public ArrayList<String> targets() {
     return this.targets;
   }
 
