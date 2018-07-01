@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler.statements;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
@@ -79,7 +80,11 @@ public final class UType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.IMM_31_12, imm);
     } else
-      Assembler.error("immediate '" + imm + "' out of range should be between 0 and 1048575");
+      Errors.add(
+        this.getDebugInfo(),
+        "assembler",
+        "immediate '" + imm + "' out of range should be between 0 and 1048575"
+      );
   }
 
 }

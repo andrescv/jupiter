@@ -17,9 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.assembler.Assembler;
+import vsim.assembler.DebugInfo;
 import vsim.assembler.SymbolTable;
 
 
@@ -39,16 +41,20 @@ public final class Relocation {
   private int type;
   /** relocation target */
   private String target;
+  /** debug information */
+  private DebugInfo debug;
 
   /**
    * Unique constructor that takes a relocation type and relocation target.
    *
    * @param type the relocation type
    * @param target the relocation target
+   * @param debug debug information
    */
-  public Relocation(int type, String target) {
+  public Relocation(int type, String target, DebugInfo debug) {
     this.type = type;
     this.target = target;
+    this.debug = debug;
   }
 
   /**
@@ -70,7 +76,7 @@ public final class Relocation {
       address = Globals.globl.get(this.target);
     // relocation error
     else
-      Assembler.error("label: '" + this.target + "' used but not defined");
+      Errors.add(this.debug, "assembler", "label: '" + this.target + "' used but not defined");
     return address;
   }
 

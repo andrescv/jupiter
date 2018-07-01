@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler.statements;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
@@ -59,7 +60,7 @@ public final class BType extends Statement {
     this.rs1 = rs1;
     this.rs2 = rs2;
     this.label = offset;
-    this.offset = new Relocation(Relocation.DEFAULT, offset);
+    this.offset = new Relocation(Relocation.DEFAULT, offset, debug);
   }
 
   @Override
@@ -87,7 +88,11 @@ public final class BType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
-      Assembler.error("branch to '" + this.label + "' too far");
+      Errors.add(
+        this.getDebugInfo(),
+        "assembler",
+        "branch to '" + this.label + "' too far"
+      );
   }
 
 }

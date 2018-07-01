@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler.statements;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
@@ -80,7 +81,11 @@ public final class Shift extends Statement {
       this.code.set(InstructionField.FUNCT3, funct3);
       this.code.set(InstructionField.FUNCT7, funct7);
     } else
-      Assembler.error("shift amount '" + this.shamt + "' out of range should be between 0 and 31");
+      Errors.add(
+        this.getDebugInfo(),
+        "assembler",
+        "shift amount '" + this.shamt + "' out of range should be between 0 and 31"
+      );
   }
 
 }

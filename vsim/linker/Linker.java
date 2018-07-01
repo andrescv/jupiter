@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Data;
@@ -157,7 +158,7 @@ public final class Linker {
         }
       }
     } else
-      Globals.error("no global start label: '" + Settings.START + "' set" + System.getProperty("line.separator"));
+      Errors.add("no global start label: '" + Settings.START + "' set");
     return new LinkedProgram(all);
   }
 
@@ -180,7 +181,7 @@ public final class Linker {
     // build all statements
     LinkedProgram program = Linker.build(programs);
     // report errors
-    Message.errors();
+    Errors.report();
     // clean all
     programs = null;
     System.gc();

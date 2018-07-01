@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler.statements;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
@@ -87,7 +88,11 @@ public final class SType extends Statement {
       this.code.set(InstructionField.IMM_4_0, imm);
       this.code.set(InstructionField.IMM_11_5, imm >>> 5);
     } else
-      Assembler.error("immediate '" + imm + "' out of range should be between -2048 and 2047");
+      Errors.add(
+        this.getDebugInfo(),
+        "assembler",
+        "immediate '" + imm + "' out of range should be between -2048 and 2047"
+      );
   }
 
 }

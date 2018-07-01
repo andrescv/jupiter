@@ -51,20 +51,6 @@ public final class Globals {
   /** local hashtable{filename, symbol table} (used for debugging and local symbols) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
-  /** VSim assembler and linker errors */
-  public static final ArrayList<String> errors = new ArrayList<String>();
-
-  /**
-   * This method adds an error to the error list {@link Globals#errors}
-   *
-   * @param msg an error message
-   */
-  public static void error(String msg) {
-    // ignore duplicated errors
-    if (!Globals.errors.contains(msg))
-      Globals.errors.add(msg);
-  }
-
   /**
    * This method resets the simulator state
    */
@@ -91,7 +77,6 @@ public final class Globals {
   public static void reset() {
     Globals.resetST();
     Globals.resetState();
-    Globals.errors.clear();
     System.gc();
   }
 
