@@ -37,13 +37,18 @@ import vsim.assembler.statements.*;
 parser code {:
 
   private static Lexer lexer;
-  private static final Parser parser = new Parser();
+  private static Parser parser = new Parser();
 
   public static void parse(String line) {
     Parser.lexer = new Lexer(new StringReader(line));
     try {
       Parser.parser.parse();
     } catch (Exception e) { /* DO NOTHING */ }
+  }
+
+  public static void clear() {
+    Parser.lexer = null;
+    Parser.parser = null;
   }
 
   @Override
@@ -1026,7 +1031,7 @@ Section     ::= D_TEXT:s
 SymbolDir   ::= D_GLOBL SymList:l
                 {:
                   for (String id: l) {
-                    if(!Assembler.program.addGlobal(id))
+                    if(!Assembler.program.addGlobal(id, Assembler.debug))
                       Errors.add(Assembler.debug, "assembler", "label '" + id + "' is already defined as global");
                   }
                 :}
