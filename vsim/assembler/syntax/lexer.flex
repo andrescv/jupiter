@@ -110,6 +110,7 @@ CHARSTART = \'
 
 // directives
 D_ZERO = ".zero"
+D_SPACE = ".space"
 D_ASCIIZ = ".asciiz"
 D_STRING = ".string"
 D_BYTE = ".byte"
@@ -370,6 +371,10 @@ ERROR = .
 
   // directives
   {D_ZERO} {
+    return symbol(Token.D_ZERO);
+  }
+
+  {D_SPACE} {
     return symbol(Token.D_ZERO);
   }
 

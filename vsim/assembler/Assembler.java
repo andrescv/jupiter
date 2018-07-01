@@ -42,25 +42,6 @@ public final class Assembler {
   public static DebugInfo debug = null;
 
   /**
-   * This method is used to pretty print a warning.
-   *
-   * @param msg the warning message
-   */
-  public static void warning(String msg) {
-    if (!Settings.QUIET) {
-      String filename = Assembler.program.getFilename();
-      String newline = System.getProperty("line.separator");
-      String source = Assembler.debug.getSource();
-      int lineno = Assembler.debug.getLineNumber();
-      Message.warning(
-        filename + ":" + "assembler:" + lineno + ": " + msg +
-        newline + "    |" +
-        newline + "    └─> " + source + newline
-      );
-    }
-  }
-
-  /**
    * This method handles all the global symbols of each program and
    * adds every symbol if possible to the global symbol table. This
    * method is part of the first pass of the assembler.
