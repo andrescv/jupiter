@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.assembler;
 
 import vsim.Globals;
+import java.util.Set;
+import java.util.HashMap;
 import vsim.utils.Message;
 import java.util.ArrayList;
 import vsim.riscv.instructions.Instruction;
@@ -45,7 +47,7 @@ public final class Program {
   private int alignVal;
 
   /** global symbols declared in this program */
-  private ArrayList<String> globals;
+  private HashMap<String, DebugInfo> globals;
   /** local symbols declared in this program */
   private SymbolTable table;
 
@@ -87,7 +89,7 @@ public final class Program {
     this.alignVal = 0;
     // symbols
     this.table = new SymbolTable();
-    this.globals = new ArrayList<String>();
+    this.globals = new HashMap<String, DebugInfo>();
     // data segment control
     this.dataIndex = 0;
     this.dataStart = 0;
@@ -127,7 +129,7 @@ public final class Program {
       }
     }
     // then globals
-    for (String global: this.globals)
+    for (String global: this.globals.keySet())
       Globals.globl.set(global, this.table.get(global));
   }
 
@@ -204,11 +206,12 @@ public final class Program {
    * This method tries to add a new global label to this program.
    *
    * @param label the global label name to add
+   * @param debug debug information of this label
    * @return true if the label does not already exists, false otherwise
    */
-  public boolean addGlobal(String label) {
-    if (!this.globals.contains(label)) {
-      this.globals.add(label);
+  public boolean addGlobal(String label, DebugInfo debug) {
+    if (!this.globals.containsKey(label)) {
+      this.globals.put(label, debug);
       return true;
     }
     return false;
@@ -313,9 +316,18 @@ public final class Program {
    *
    * @return all the global labels
    */
-  public ArrayList<String> getGlobals() {
-    this.globals.trimToSize();
-    return this.globals;
+  public Set<String> getGlobals() {
+    return this.globals.keySet();
+  }
+
+  /**
+   * This method returns the debug information of a global label.
+   *
+   * @param label the label name
+   * @return debug information of the global label
+   */
+  public DebugInfo getGlobalDebug(String label) {
+    return this.globals.get(label);
   }
 
   /**
@@ -374,29 +386,12 @@ public final class Program {
 
   /**
    * This method returns the data segment size in bytes.
+   * This method includes the data, rodata and bss segments.
    *
    * @return the data segment size in bytes
    */
   public int getDataSize() {
-    return this.data.size();
-  }
-
-  /**
-   * This method returns the rodata segment size in bytes.
-   *
-   * @return the rodata segment size in bytes
-   */
-  public int getRodataSize() {
-    return this.rodata.size();
-  }
-
-  /**
-   * This method returns the bss segment size in bytes.
-   *
-   * @return the bss segment size in bytes
-   */
-  public int getBssSize() {
-    return this.bss.size();
+    return this.data.size() + this.rodata.size() + this.bss.size();
   }
 
 }

@@ -57,21 +57,8 @@ public final class Errors {
     Errors.add(
       filename + ":" + phase + ":" + lineno + ": " + msg +
       newline + "    |" +
-      newline + "    └─> " + source
+      newline + "    └─> (source line) " + source
     );
-  }
-
-  /**
-   * This method adds an error message with line number info to the
-   * error list {@link vsim.Errors#errors}.
-   *
-   * @param phase the phase where the error ocurred (e.g assembler, linker)
-   * @param lineno the line number
-   * @param filename the filename where this error ocurred
-   * @param msg an error message
-   */
-  public static void add(String phase, int lineno, String filename, String msg) {
-    Errors.add(filename + ":" + phase + ":" + lineno + ": " + msg);
   }
 
   /**

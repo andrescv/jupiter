@@ -30,65 +30,18 @@ import vsim.assembler.statements.Statement;
 
 
 /**
- * The Assembler class contains useful methods to assemble RISC-V source files.
+ * The Assembler class  assembles RISC-V source files.
  */
 public final class Assembler {
 
   /** current assembler segment */
   public static Segment segment = Segment.TEXT;
+
   /** current assembler program */
   public static Program program = null;
+
   /** current assembler debug info */
   public static DebugInfo debug = null;
-
-  /**
-   * This method handles all the global symbols of each program and
-   * adds every symbol if possible to the global symbol table. This
-   * method is part of the first pass of the assembler.
-   *
-   * @param programs all the assembled programs
-   * @see vsim.Globals#globl
-   */
-  private static void handleGlobals(ArrayList<Program> programs) {
-    for (Program program: programs) {
-      // set current assembler program (useful for error report)
-      Assembler.program = program;
-      // add program ST to globals
-      SymbolTable table = program.getST();
-      String filename = program.getFilename();
-      Globals.local.put(filename, table);
-      // check globals of program
-      for (String global: program.getGlobals()) {
-        Symbol sym = table.getSymbol(global);
-        if (sym != null) {
-          if(!Globals.globl.add(global, sym))
-            Errors.add("'" + global + "' already defined as global in a different file");
-        } else
-          Errors.add("'" + global + "' declared global label but not defined");
-      }
-    }
-  }
-
-  /**
-   * This method is used to make the first pass of the assembler.
-   *
-   * @param programs assembled programs
-   * @see Assembler#handleGlobals
-   */
-  private static void firstPass(ArrayList<Program> programs) {
-    // resolve globals
-    Assembler.handleGlobals(programs);
-    // try to resolve all statements and collect errors if any
-    for (Program program: programs) {
-      // set current assembler program
-      Assembler.program = program;
-      for (Statement stmt: program.getStatements()) {
-        // set current debug info
-        Assembler.debug = stmt.getDebugInfo();
-        stmt.resolve();
-      }
-    }
-  }
 
   /**
    * This method is used to assemble all the RISC-V files and it is
@@ -131,8 +84,15 @@ public final class Assembler {
             // increment line count
             lineno++;
           }
-          // add this processed program
-          programs.add(program);
+          // add this processed program only if it has statements
+          if (program.getTextSize() > 0 || ((files.size() > 0) && (program.getDataSize() > 0)))
+            programs.add(program);
+          else {
+            if (files.size() == 1)
+              Errors.add("assembler: file '" + file + "' does not have any instructions");
+            else
+              Message.warning("assembler: file '" + file + "' does not have any instructions or data (ignoring)");
+          }
         } catch (FileNotFoundException e) {
           Errors.add("assembler: file '" + file + "' not found");
         } catch (IOException e) {
@@ -141,12 +101,38 @@ public final class Assembler {
       }
     }
     // do first pass
-    Assembler.firstPass(programs);
+    for (Program program: programs) {
+      // add program ST to Globals.local
+      SymbolTable table = program.getST();
+      String filename = program.getFilename();
+      Globals.local.put(filename, table);
+      // check globals of program
+      for (String global: program.getGlobals()) {
+        Symbol sym = table.getSymbol(global);
+        DebugInfo debug = program.getGlobalDebug(global);
+        if (sym != null) {
+          if(!Globals.globl.add(global, sym))
+            Errors.add(debug, "assembler", "'" + global + "' already defined as global in a different file");
+        } else
+          Errors.add(debug, "assembler", "'" + global + "' declared global label but not defined");
+      }
+    }
+    // try to resolve all statements and collect errors if any
+    for (Program program: programs) {
+      for (Statement stmt: program.getStatements())
+        stmt.resolve();
+    }
+    // no unlinked programs ?
+    if (programs.size() == 0)
+      Errors.add("assembler: no valid RISC-V source file was passed");
     // report errors
     Errors.report();
     // clean all
     Assembler.program = null;
     Assembler.debug = null;
+    Assembler.segment = Segment.TEXT;
+    // no more parsing, we can clean the parser structure
+    Parser.clear();
     System.gc();
     programs.trimToSize();
     // return all processed programs, now linking ?
