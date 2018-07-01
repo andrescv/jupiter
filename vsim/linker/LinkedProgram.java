@@ -19,10 +19,9 @@ package vsim.linker;
 
 import vsim.Globals;
 import vsim.Settings;
+import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Collection;
-import java.util.Enumeration;
 import vsim.assembler.statements.Statement;
 
 
@@ -32,7 +31,7 @@ import vsim.assembler.statements.Statement;
 public final class LinkedProgram {
 
   /** a history of the program statements */
-  private Hashtable<Integer, Statement> program;
+  private HashMap<Integer, Statement> program;
 
   /**
    * Unique constructor that takes a history of statements.
@@ -41,7 +40,7 @@ public final class LinkedProgram {
    * @see vsim.assembler.statements.Statement
    * @see vsim.linker.Linker
    */
-  public LinkedProgram(Hashtable<Integer, Statement> program) {
+  public LinkedProgram(HashMap<Integer, Statement> program) {
     this.program = program;
   }
 
@@ -85,11 +84,11 @@ public final class LinkedProgram {
    */
   public ArrayList<Integer> getBreakpoints() {
     ArrayList<Integer> breakpoints = new ArrayList<Integer>();
-    for (Enumeration<Integer> e = this.program.keys(); e.hasMoreElements();) {
-      int address = e.nextElement();
+    for(Integer address: this.program.keySet()) {
       if (this.program.get(address).getMnemonic().equals("ebreak"))
         breakpoints.add(address);
     }
+    breakpoints.trimToSize();
     return breakpoints;
   }
 

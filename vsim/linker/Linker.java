@@ -21,11 +21,10 @@ import vsim.Errors;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Data;
-import vsim.utils.Message;
+import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import vsim.assembler.Program;
-import vsim.assembler.Assembler;
+import vsim.assembler.Segment;
 import vsim.riscv.MemorySegments;
 import vsim.assembler.statements.Statement;
 import vsim.riscv.instructions.Instruction;
@@ -37,29 +36,19 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class Linker {
 
-  private Linker() { /* NOTHING */ }
-
   /** where static data segment begins */
   private static int dataAddress = MemorySegments.DATA_SEGMENT;
   /** where text segment starts */
   private static int textAddress = MemorySegments.TEXT_SEGMENT;
 
   /**
-   * This method resets the Linker class static fields.
-   */
-  private static void reset() {
-    Linker.dataAddress = MemorySegments.DATA_SEGMENT;
-    Linker.textAddress = MemorySegments.TEXT_SEGMENT;
-  }
-
-  /**
    * This method takes an array of RISC-V programs and stores
-   * all the read-only segment data of these programs.
+   * all the read-only segment data of these programs in memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
-  private static void handleRodata(ArrayList<Program> programs) {
+  private static void linkRodata(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
     for (Program program: programs) {
       program.setRodataStart(Linker.dataAddress);
@@ -76,12 +65,12 @@ public final class Linker {
 
   /**
    * This method takes an array of RISC-V programs and stores
-   * all the bss segment data of these programs.
+   * all the bss segment data of these programs in memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
-  private static void handleBss(ArrayList<Program> programs) {
+  private static void linkBss(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
     for (Program program: programs) {
       program.setBssStart(Linker.dataAddress);
@@ -96,12 +85,12 @@ public final class Linker {
 
   /**
    * This method takes an array of RISC-V programs and stores
-   * all the data segment data of these programs.
+   * all the data segment data of these programs in memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
-  private static void handleData(ArrayList<Program> programs) {
+  private static void linkData(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
     for (Program program: programs) {
       program.setDataStart(Linker.dataAddress);
@@ -120,7 +109,7 @@ public final class Linker {
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
-  private static void handleSymbols(ArrayList<Program> programs) {
+  private static void linkSymbols(ArrayList<Program> programs) {
     for (Program program: programs) {
       program.setTextStart(Linker.textAddress);
       program.relocateSymbols();
@@ -129,23 +118,21 @@ public final class Linker {
   }
 
   /**
-   * This method tries to build all statements of all programs.
+   * This method tries to build all statements of all programs,
+   * i.e generates machine code.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    * @return a RISC-V linked program
    */
-  private static LinkedProgram build(ArrayList<Program> programs) {
-    // reset text address
-    Linker.reset();
-    Hashtable<Integer, Statement> all = new Hashtable<Integer, Statement>();
-    if (Globals.globl.get(Settings.START) != null) {
+  private static LinkedProgram linkPrograms(ArrayList<Program> programs) {
+    // set start of text segment
+    Linker.textAddress = MemorySegments.TEXT_SEGMENT;
+    HashMap<Integer, Statement> all = new HashMap<Integer, Statement>();
+    if (Globals.globl.get(Settings.START) != null &&
+        Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
       for (Program program: programs) {
-        // set current program
-        Assembler.program = program;
         for (Statement stmt: program.getStatements()) {
-          // set current debug info
-          Assembler.debug = stmt.getDebugInfo();
           // build machine code
           stmt.build(Linker.textAddress);
           // store result in text segment
@@ -158,13 +145,13 @@ public final class Linker {
         }
       }
     } else
-      Errors.add("no global start label: '" + Settings.START + "' set");
+      Errors.add("linker: no global start label: '" + Settings.START + "' set");
     return new LinkedProgram(all);
   }
 
   /**
-   * This method tries to link all programs, handling all data and relocating
-   * all symbols and reports errors if any.
+   * This method tries to link all programs, handling all data, relocating
+   * all symbols and reporting errors if any.
    *
    * @param programs an array of programs
    * @see vsim.linker.LinkedProgram
@@ -172,14 +159,16 @@ public final class Linker {
    * @return a RISC-V linked program
    */
   public static LinkedProgram link(ArrayList<Program> programs) {
-    Linker.reset();
+    // reset this
+    Linker.dataAddress = MemorySegments.DATA_SEGMENT;
+    Linker.textAddress = MemorySegments.TEXT_SEGMENT;
     // handle static data
-    Linker.handleRodata(programs);
-    Linker.handleBss(programs);
-    Linker.handleData(programs);
-    Linker.handleSymbols(programs);
-    // build all statements
-    LinkedProgram program = Linker.build(programs);
+    Linker.linkRodata(programs);
+    Linker.linkBss(programs);
+    Linker.linkData(programs);
+    Linker.linkSymbols(programs);
+    // link all statements and get linked program
+    LinkedProgram program = Linker.linkPrograms(programs);
     // report errors
     Errors.report();
     // clean all
