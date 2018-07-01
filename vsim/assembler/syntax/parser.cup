@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Data;
@@ -65,12 +66,18 @@ parser code {:
       cur_token.value = ((String) cur_token.value).replaceAll("\u000b", "\\\\v");
     }
     if (cur_token.sym != Token.ERROR)
-      Assembler.error(
+      Errors.add(
+        Assembler.debug,
+        "assembler",
         "(syntax) invalid statement: unexpected '" + cur_token.value +
         "' (column " + cur_token.right + ")"
       );
     else
-      Assembler.error((String)cur_token.value);
+      Errors.add(
+        Assembler.debug,
+        "assembler",
+        (String)cur_token.value
+      );
   }
 
 :};
@@ -200,14 +207,14 @@ Label       ::= LABEL:id
                   String rawLabel = (String) id;
                   String lbl = rawLabel.substring(0, rawLabel.length() - 1);
                   if (!Assembler.program.addSymbol(Assembler.segment, lbl))
-                    Assembler.error("label '" + id + "' is already defined");
+                    Errors.add(Assembler.debug, "assembler", "label '" + id + "' is already defined");
                 :}
              ;
 
 RISCVInst    ::= Instruction:i
                 {:
                   if (!(Assembler.segment == Segment.TEXT))
-                    Assembler.error("instructions can appear only in text segment");
+                    Errors.add(Assembler.debug, "assembler", "instructions can appear only in text segment");
                   else
                     RESULT = i;
                 :}
@@ -234,10 +241,10 @@ Instruction ::= RType:i
 RISCVPSeudo ::= PSeudos
                 {:
                   if (!(Assembler.segment == Segment.TEXT))
-                    Assembler.error("instructions can appear only in text segment");
+                    Errors.add(Assembler.debug, "assembler", "instructions can appear only in text segment");
                   else
                     if (Settings.BARE)
-                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -354,21 +361,21 @@ FRType      ::= F_FADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister
                   if (!Settings.BARE)
                     RESULT = new FRType("fsgnj.s", Assembler.debug, rd, rs, rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  F_FABSS FRegister:rd Delimiter FRegister:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new FRType("fsgnjx.s", Assembler.debug, rd, rs, rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  F_FNEGS FRegister:rd Delimiter FRegister:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new FRType("fsgnjn.s", Assembler.debug, rd, rs, rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -458,28 +465,28 @@ RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
                   if (!Settings.BARE)
                     RESULT = new RType("sub", Assembler.debug, rd, "x0", rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SNEZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("sltu", Assembler.debug, rd, "x0", rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SLTZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("slt", Assembler.debug, rd, rs, "x0");
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SGTZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new RType("slt", Assembler.debug, rd, "x0", rs);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -567,83 +574,83 @@ IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
                   if (!Settings.BARE)
                     RESULT = new IType("addi", Assembler.debug, "x0", "x0", 0);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_MV Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("addi", Assembler.debug, rd, rs, 0);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_NOT Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("xori", Assembler.debug, rd, rs, -1);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SEQZ Register:rd Delimiter Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("sltiu", Assembler.debug, rd, rs, 1);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_JR Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("jalr", Assembler.debug, "x0", rs, 0);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_JALR Register:rs
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("jalr", Assembler.debug, "x1", rs, 0);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_RET
                 {:
                   if (!Settings.BARE)
                     RESULT = new IType("jalr", Assembler.debug, "x0", "x1", 0);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
               |  I_LB Register:rd Delimiter Id:id
                  {:
                     if (!Settings.BARE) {
-                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
-                      Assembler.program.add(new IType("lb", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                      Assembler.program.add(new IType("lb", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                     } else
-                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                  :}
               |  I_LH Register:rd Delimiter Id:id
                  {:
                     if (!Settings.BARE) {
-                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
-                      Assembler.program.add(new IType("lh", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                      Assembler.program.add(new IType("lh", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                     } else
-                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                  :}
               |  I_LW Register:rd Delimiter Id:id
                  {:
                     if (!Settings.BARE) {
-                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
-                      Assembler.program.add(new IType("lw", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                      Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                      Assembler.program.add(new IType("lw", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                     } else
-                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                  :}
               |  F_FLW FRegister:rd Delimiter Id:id Delimiter Register:rt
                  {:
                     if (!Settings.BARE) {
                       // hack to re-use IType Statement
                       int num = Globals.fregfile.getRegisterNumber(rd);
-                      Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
-                      Assembler.program.add(new IType("flw", Assembler.debug, "x" + num, rt, new Relocation(Relocation.PCRELLO, id)));
+                      Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                      Assembler.program.add(new IType("flw", Assembler.debug, "x" + num, rt, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                     } else
-                      Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                  :}
              ;
 
@@ -673,36 +680,36 @@ SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RP
              |  I_SB Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
                   if (!Settings.BARE) {
-                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
-                    Assembler.program.add(new SType("sb", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id)));
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                    Assembler.program.add(new SType("sb", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                   } else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SH Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
                   if (!Settings.BARE) {
-                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
-                    Assembler.program.add(new SType("sh", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id)));
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                    Assembler.program.add(new SType("sh", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                   } else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_SW Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
                   if (!Settings.BARE) {
-                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
-                    Assembler.program.add(new SType("sw", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id)));
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                    Assembler.program.add(new SType("sw", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                   } else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  F_FSW FRegister:rd Delimiter Id:id Delimiter Register:rt
                 {:
                   if (!Settings.BARE) {
                     // hack to re-use SType Statement
                     int num = Globals.fregfile.getRegisterNumber(rd);
-                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id)));
-                    Assembler.program.add(new SType("fsw", Assembler.debug, rt, "x" + num, new Relocation(Relocation.PCRELLO, id)));
+                    Assembler.program.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                    Assembler.program.add(new SType("fsw", Assembler.debug, rt, "x" + num, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                   } else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -744,70 +751,70 @@ BType       ::= I_BEQ Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                   if (!Settings.BARE)
                     RESULT = new BType("beq", Assembler.debug, rs, "x0", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BNEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bne", Assembler.debug, rs, "x0", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BLEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bge", Assembler.debug, "x0", rs, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BGEZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bge", Assembler.debug, rs, "x0", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BLTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("blt", Assembler.debug, rs, "x0", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BGTZ Register:rs Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("blt", Assembler.debug, "x0", rs, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("blt", Assembler.debug, rs2, rs1, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bge", Assembler.debug, rs2, rs1, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bltu", Assembler.debug, rs2, rs1, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new BType("bgeu", Assembler.debug, rs2, rs1, id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -839,14 +846,14 @@ JType       ::= I_JAL Register:rd Delimiter Id:id
                   if (!Settings.BARE)
                     RESULT = new JType("jal", Assembler.debug, "x1", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              |  I_J Id:id
                 {:
                   if (!Settings.BARE)
                     RESULT = new JType("jal", Assembler.debug, "x0", id);
                   else
-                    Assembler.error("invalid instruction: use -asm flag to use pseudos");
+                    Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                 :}
              ;
 
@@ -861,8 +868,8 @@ JType       ::= I_JAL Register:rd Delimiter Id:id
 
 PSeudos     ::= I_LA Register:rd Delimiter Id:id
                 {:
-                  Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id)));
-                  Assembler.program.add(new IType("addi", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id)));
+                  Assembler.program.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                  Assembler.program.add(new IType("addi", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                 :}
              |  I_LI Register:rd Delimiter Const:imm
                 {:
@@ -877,13 +884,13 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
                 :}
              |  I_CALL Id:id
                 {:
-                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id)));
-                  Assembler.program.add(new IType("jalr", Assembler.debug, "x1", "x6", new Relocation(Relocation.PCRELLO, id)));
+                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                  Assembler.program.add(new IType("jalr", Assembler.debug, "x1", "x6", new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                 :}
              |  I_TAIL Id:id
                 {:
-                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id)));
-                  Assembler.program.add(new IType("jalr", Assembler.debug, "x0", "x6", new Relocation(Relocation.PCRELLO, id)));
+                  Assembler.program.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
+                  Assembler.program.add(new IType("jalr", Assembler.debug, "x0", "x6", new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
                 :}
              ;
 /*
@@ -923,7 +930,7 @@ Data        ::= DataMode:mode DataList:l
                       }
                     }
                   } else
-                    Assembler.error(mode + " directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment + " segment");
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
@@ -934,7 +941,7 @@ Data        ::= DataMode:mode DataList:l
                     // null terminate string
                     Assembler.program.addByte(Assembler.segment, (byte) 0);
                   } else
-                    Assembler.error(".asciiz directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(Assembler.debug, "assembler", ".asciiz directive can not appear in " + Assembler.segment + " segment");
                 :}
              |  D_ZERO Expr:e
                 {:
@@ -943,9 +950,9 @@ Data        ::= DataMode:mode DataList:l
                       for (int i = 0; i < e; i++)
                         Assembler.program.addByte(Assembler.segment, (byte) 0);
                     else
-                      Assembler.error(".zero directive can not appear in text segment");
+                      Errors.add(Assembler.debug, "assembler", ".zero directive can not appear in text segment");
                   } else
-                    Assembler.error("invalid .zero argument: '" + e + "', expected value > 0");
+                    Errors.add(Assembler.debug, "assembler", "invalid .zero argument: '" + e + "', expected value > 0");
                 :}
              |  D_FLOAT FloatList:l
                 {:
@@ -962,7 +969,7 @@ Data        ::= DataMode:mode DataList:l
                       }
                     }
                   } else
-                    Assembler.error(".float directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(Assembler.debug, "assembler", ".float directive can not appear in " + Assembler.segment + " segment");
                 :}
              ;
 
@@ -1019,7 +1026,7 @@ Directive   ::= SectionDir
              |  SymbolDir
              |  AlignDir
              |  DOT Id:id
-                {: Assembler.error("invalid directive: '." + id + "'"); :}
+                {: Errors.add(Assembler.debug, "assembler", "invalid directive: '." + id + "'"); :}
              ;
 
 /*
@@ -1053,7 +1060,7 @@ Section     ::= D_TEXT:s
 SymbolDir   ::= D_GLOBL Id:id
                 {:
                   if(!Assembler.program.addGlobal(id))
-                    Assembler.error("label '" + id + "' is already defined as global");
+                    Errors.add(Assembler.debug, "assembler", "label '" + id + "' is already defined as global");
                 :}
              ;
 
@@ -1068,9 +1075,9 @@ AlignDir    ::= D_ALIGN Number:e
                     if (e >= 0 && e <= 2)
                       Assembler.program.align(e);
                     else
-                      Assembler.error("invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)");
+                      Errors.add(Assembler.debug, "assembler", "invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)");
                   } else
-                    Assembler.error(".align directive can not appear in text segment");
+                    Errors.add(Assembler.debug, "assembler", ".align directive can not appear in text segment");
                 :}
              |  D_BALIGN Number:e
                 {:
@@ -1078,9 +1085,9 @@ AlignDir    ::= D_ALIGN Number:e
                     if (e > 0)
                       Assembler.program.balign(e);
                     else
-                      Assembler.error("invalid align value: '" + e + "', expected value > 0");
+                      Errors.add(Assembler.debug, "assembler", "invalid align value: '" + e + "', expected value > 0");
                   } else
-                    Assembler.error(".balign directive can not appear in text segment");
+                    Errors.add(Assembler.debug, "assembler", ".balign directive can not appear in text segment");
                 :}
              ;
 

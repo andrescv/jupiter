@@ -47,7 +47,7 @@ public final class JType extends Statement {
   public JType(String mnemonic, DebugInfo debug, String rd, String target) {
     super(mnemonic, debug);
     this.rd = rd;
-    this.target = new Relocation(Relocation.DEFAULT, target);
+    this.target = new Relocation(Relocation.DEFAULT, target, debug);
   }
 
   @Override

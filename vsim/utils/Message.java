@@ -70,18 +70,4 @@ public final class Message {
     System.exit(1);
   }
 
-  /**
-   * This method prints to stderr the errors in {@link Globals#errors} (if any),
-   * then prints the number of errors and exit with a status code of 1.
-   */
-  public static void errors() {
-    if (Globals.errors.size() > 0) {
-      for (String msg: Globals.errors)
-        Message.error(msg);
-      IO.stderr.println(Globals.errors.size() + " error(s)");
-      IO.stderr.flush();
-      System.exit(1);
-    }
-  }
-
 }

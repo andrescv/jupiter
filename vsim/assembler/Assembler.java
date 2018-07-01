@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
+import vsim.Errors;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Message;
@@ -39,41 +40,6 @@ public final class Assembler {
   public static Program program = null;
   /** current assembler debug info */
   public static DebugInfo debug = null;
-
-  /**
-   * This method is used to create a pretty formatted error and
-   * adds this error to the error list {@link vsim.Globals#errors}.
-   *
-   * @param msg the error message
-   * @param showSource true if you want to show the source line
-   */
-  public static void error(String msg, boolean showSource) {
-    String filename = Assembler.program.getFilename();
-    String newline = System.getProperty("line.separator");
-    String source = Assembler.debug.getSource();
-    int lineno = Assembler.debug.getLineNumber();
-    if (showSource)
-      Globals.error(
-        filename + ":" + "assembler:" + lineno + ": " + msg +
-        newline + "    |" +
-        newline + "    └─> " + source + newline
-      );
-    else
-      Globals.error(
-        filename + ":" + "assembler:" + lineno + ": " + msg + newline
-      );
-  }
-
-  /**
-   * This method is an alias for {@link Assembler#error} that sets to
-   * true the parameter {@code showSource}.
-   *
-   * @param msg the error message
-   * @see vsim.assembler.Assembler#error
-   */
-  public static void error(String msg) {
-    Assembler.error(msg, true);
-  }
 
   /**
    * This method is used to pretty print a warning.
@@ -115,15 +81,9 @@ public final class Assembler {
         Symbol sym = table.getSymbol(global);
         if (sym != null) {
           if(!Globals.globl.add(global, sym))
-            Assembler.error(
-              "'" + global + "' already defined as global in a different file",
-              false
-            );
+            Errors.add("'" + global + "' already defined as global in a different file");
         } else
-          Assembler.error(
-            "'" + global + "' declared global label but not defined",
-            false
-          );
+          Errors.add("'" + global + "' declared global label but not defined");
       }
     }
   }
@@ -193,16 +153,16 @@ public final class Assembler {
           // add this processed program
           programs.add(program);
         } catch (FileNotFoundException e) {
-          Globals.error("assembler: file '" + file + "' not found" + System.getProperty("line.separator"));
+          Errors.add("assembler: file '" + file + "' not found");
         } catch (IOException e) {
-          Globals.error("assembler: file '" + file + "' could not be read" + System.getProperty("line.separator"));
+          Errors.add("assembler: file '" + file + "' could not be read");
         }
       }
     }
     // do first pass
     Assembler.firstPass(programs);
     // report errors
-    Message.errors();
+    Errors.report();
     // clean all
     Assembler.program = null;
     Assembler.debug = null;
