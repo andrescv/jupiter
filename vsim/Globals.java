@@ -31,24 +31,22 @@ import vsim.assembler.SymbolTable;
  */
 public final class Globals {
 
-  private Globals() { /* NOTHING */ }
-
-  /** RISC-V principal memory (RAM) */
+  /** RISC-V (RV32) principal memory (RAM) */
   public static final Memory memory = Memory.ram;
 
-  /** RVI register file */
+  /** RV32I register file */
   public static final RVIRegisterFile regfile = RVIRegisterFile.regfile;
 
-  /** RVF register file */
+  /** RV32F register file */
   public static final RVFRegisterFile fregfile = RVFRegisterFile.regfile;
 
-  /** RISC-V instruction set */
+  /** RISC-V (RV32IMF) instruction set */
   public static final InstructionSet iset = InstructionSet.insts;
 
   /** .globl symbol table (used for debugging and global symbols) */
   public static final SymbolTable globl = new SymbolTable();
 
-  /** local hashtable{filename, symbol table} (used for debugging and local symbols) */
+  /** local symbol table per file (used for debugging and local symbols) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
   /**
