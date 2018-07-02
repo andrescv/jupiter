@@ -30,7 +30,7 @@ import java.nio.file.StandardOpenOption;
 /**
  * The class OpenFile represents an open file from file system.
  */
-final class OpenFile {
+public final class OpenFile {
 
   /** pathname attached to this open file */
   private String pathname;
@@ -51,7 +51,7 @@ final class OpenFile {
    * @param pathname pathname attached to this open file
    * @param flags array of open flags
    */
-  protected OpenFile(String pathname, int flags) {
+  public OpenFile(String pathname, int flags) {
     this.pathname = pathname;
     boolean create = false;
     boolean create_new = false;
@@ -96,7 +96,9 @@ final class OpenFile {
     } else if (create) {
       try {
         (new File(this.pathname)).createNewFile();
-      } catch (Exception e) { /* DO NOTHING */ }
+      } catch (Exception e) {
+        this.error = true;
+      }
     }
     // truncate the file (if truncate flag and if file exists)
     if (truncate) {
@@ -117,7 +119,7 @@ final class OpenFile {
    *
    * @return the pathname
    */
-  protected String getPathname() {
+  public String getPathname() {
     return this.pathname;
   }
 
@@ -127,7 +129,7 @@ final class OpenFile {
    *
    * @return true if there are errors, false otherwise
    */
-  protected boolean openErrors() {
+  public boolean openErrors() {
     return this.error;
   }
 
@@ -138,7 +140,7 @@ final class OpenFile {
    * @param nbytes number of bytes to read before truncating the data
    * @return the number of bytes that were read, -1 if error
    */
-  protected int read(int buffer, int nbytes) {
+  public int read(int buffer, int nbytes) {
     // read permissions ?
     if (this.read || this.rdwr) {
       int rbytes = 0;
@@ -168,7 +170,7 @@ final class OpenFile {
    * @param nbytes the number of bytes to write
    * @return the number of bytes that were written, -1 if error
    */
-  protected int write(int buffer, int nbytes) {
+  public int write(int buffer, int nbytes) {
     // build string
     if (this.write && !this.rdwr || this.rdwr && !this.write) {
       StringBuffer s = new StringBuffer(0);

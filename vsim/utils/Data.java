@@ -24,8 +24,6 @@ package vsim.utils;
  */
 public final class Data {
 
-  private Data() { /* NOTHING */ }
-
   /** byte int mask (0xff) */
   public static final int BYTE_MASK = 0xff;
   /** half int mask (0xffff) */
@@ -73,8 +71,8 @@ public final class Data {
    *
    * @param value the value to sign-extend
    * @param bits the number of bits that this number represents
-   * @see Data#signExtendByte
-   * @see Data#signExtendHalf
+   * @see vsim.utils.Data#signExtendByte
+   * @see vsim.utils.Data#signExtendHalf
    * @return the sign-extended value
    */
   public static int signExtend(int value, int bits) {
@@ -86,8 +84,8 @@ public final class Data {
    * This method sign-extends a byte to 32 bits.
    *
    * @param value the byte to sign-extend
-   * @see Data#signExtend
-   * @see Data#signExtendHalf
+   * @see vsim.utils.Data#signExtend
+   * @see vsim.utils.Data#signExtendHalf
    * @return the sign-extended byte
    */
   public static int signExtendByte(int value) {
@@ -98,8 +96,8 @@ public final class Data {
    * This method sign-extends a half to 32 bits.
    *
    * @param value the half to sign-extend
-   * @see Data#signExtend
-   * @see Data#signExtendByte
+   * @see vsim.utils.Data#signExtend
+   * @see vsim.utils.Data#signExtendByte
    * @return the sign-extended half
    */
   public static int signExtendHalf(int value) {
@@ -110,7 +108,7 @@ public final class Data {
    * This method verifies if an address is aligned to a word boundary.
    *
    * @param address the address to verify
-   * @see Data#alignToWordBoundary
+   * @see vsim.utils.Data#alignToWordBoundary
    * @return true if address is word aligned, false if not
    */
   public static boolean isWordAligned(int address) {
@@ -121,7 +119,7 @@ public final class Data {
    * This method aligns an address to a word boundary if necessary.
    *
    * @param address the address to word align
-   * @see Data#isWordAligned
+   * @see vsim.utils.Data#isWordAligned
    * @return the word aligned address
    */
   public static int alignToWordBoundary(int address) {
@@ -150,7 +148,7 @@ public final class Data {
    * i.e is in the range [{@link Data#HALF_MIN_VALUE}, {@link Data#HALF_MAX_VALUE}]
    *
    * @param value the value to verify
-   * @see Data#inRange
+   * @see vsim.utils.Data#inRange
    * @return true if the value is a valid half value, false if not
    */
   public static boolean validHalf(int value) {
@@ -164,7 +162,7 @@ public final class Data {
    * is in the range [{@link Data#BYTE_MIN_VALUE}, {@link Data#BYTE_MAX_VALUE}].
    *
    * @param value the value to verify
-   * @see Data#inRange
+   * @see vsim.utils.Data#inRange
    * @return true if the value is a valid byte value, false if not
    */
   public static boolean validByte(int value) {

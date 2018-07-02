@@ -27,8 +27,6 @@ import java.util.HashMap;
  */
 public final class FS {
 
-  private FS() { /* NOTHING */ }
-
   /** stdin file descriptor */
   public static final int STDIN = 0;
   /** stdout file descriptor */
