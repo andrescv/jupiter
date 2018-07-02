@@ -19,6 +19,7 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
+import vsim.utils.Data;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
@@ -67,7 +68,7 @@ public final class Shift extends Statement {
   @Override
   public void build(int pc) {
     // check range
-    if (!((this.shamt > Shift.MAX_VAL) || (this.shamt < Shift.MIN_VAL))) {
+    if (Data.inRange(this.shamt, Shift.MIN_VAL, Shift.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rd  = Globals.regfile.getRegisterNumber(this.rd);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);

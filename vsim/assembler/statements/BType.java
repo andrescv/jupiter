@@ -19,6 +19,7 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
+import vsim.utils.Data;
 import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
@@ -73,7 +74,7 @@ public final class BType extends Statement {
   public void build(int pc) {
     String filename = this.getDebugInfo().getFilename();
     int imm = this.offset.resolve(pc, filename);
-    if (!((imm > BType.MAX_VAL) || (imm < BType.MIN_VAL))) {
+    if (Data.inRange(imm, BType.MIN_VAL, BType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rs1  = Globals.regfile.getRegisterNumber(this.rs1);
       int rs2 = Globals.regfile.getRegisterNumber(this.rs2);

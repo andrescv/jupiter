@@ -19,6 +19,7 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
+import vsim.utils.Data;
 import vsim.linker.Relocation;
 import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
@@ -72,7 +73,7 @@ public final class UType extends Statement {
     else
       imm = (int) this.imm;
     // check range
-    if (!((imm > UType.MAX_VAL) || (imm < UType.MIN_VAL))) {
+    if (Data.inRange(imm, UType.MIN_VAL, UType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rd = Globals.regfile.getRegisterNumber(this.rd);
       int opcode = inst.getOpCode();
