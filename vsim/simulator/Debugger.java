@@ -18,11 +18,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.simulator;
 
 import vsim.Globals;
+import vsim.Settings;
+import vsim.utils.IO;
+import vsim.utils.Cmd;
 import vsim.utils.Data;
+import vsim.riscv.Memory;
+import java.util.HashMap;
 import vsim.utils.Message;
-import java.util.Hashtable;
 import vsim.utils.Colorize;
-import java.util.Enumeration;
+import java.io.IOException;
+import vsim.riscv.MemorySegments;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.instructions.MachineCode;
 import vsim.assembler.statements.Statement;
@@ -33,36 +38,10 @@ import vsim.assembler.statements.Statement;
  */
 public final class Debugger {
 
-  // help message
-  private static final String newline = System.getProperty("line.separator");
-  private static final String HELP_MSG = "Available commands: " + newline + newline +
-                                         // help
-                                         "help/?            - show this message" + newline +
-                                         // exit
-                                         "exit/quit         - exit the simulator" + newline +
-                                         // execute previous
-                                         "!                 - execute previous command" + newline +
-                                         // print state
-                                         "showx             - print all RVI registers" + newline +
-                                         "showf             - print all RVF registers" + newline +
-                                         "print reg         - print register reg" + newline +
-                                         "memory addr       - print 48 cells of memory at address" + newline +
-                                         "memory addr rows  - print rows x 4 cells of memory at address" + newline +
-                                         "symbols           - print global symbols" + newline +
-                                         // execution
-                                         "step/s            - step the program for 1 instruction" + newline +
-                                         "continue/c        - continue program execution without stepping" + newline +
-                                         "breakpoint/b addr - set a breakpoint at address" + newline +
-                                         "clear/cl          - clear all breakpoints" + newline +
-                                         "delete/del addr   - delete breakpoint at address" + newline +
-                                         "list/ls           - list all breakpoints" + newline +
-                                         // reset state and start again
-                                         "reset             - reset all state (regs, memory, start)";
-
   /** a linked program to debug */
   private LinkedProgram program;
   /** a history of breakpoints */
-  private Hashtable<Integer, Boolean> breakpoints;
+  private HashMap<Integer, Boolean> breakpoints;
   /** calculated space for pretty printed statements */
   private int space;
   /** previous command */
@@ -76,7 +55,7 @@ public final class Debugger {
    */
   public Debugger(LinkedProgram program) {
     this.program = program;
-    this.breakpoints = new Hashtable<Integer, Boolean>();
+    this.breakpoints = new HashMap<Integer, Boolean>();
     this.space = 1;
     this.args = null;
     for (Statement stmt: program.getStatements())
@@ -87,7 +66,37 @@ public final class Debugger {
   }
 
   /**
-   * This method prints the RVI register file.
+   * This method pretty prints the debugger help message.
+   */
+  private void help() {
+    IO.stdout.println("Available commands: " + System.getProperty("line.separator"));
+    // help
+    IO.stdout.println("help/?              - show this help message");
+    // exit
+    IO.stdout.println("exit/quit           - exit the simulator and debugger");
+    // execute previous
+    IO.stdout.println("!                   - execute previous command");
+    // print state
+    IO.stdout.println("showx               - print all RVI registers");
+    IO.stdout.println("showf               - print all RVF registers");
+    IO.stdout.println("print regname       - print register");
+    IO.stdout.println("memory address      - print 12 x 4 cells of memory starting at address");
+    IO.stdout.println("memory address rows - print rows x 4 cells of memory starting at address");
+    IO.stdout.println("globals             - print global symbols");
+    IO.stdout.println("locals filename     - print local symbols of a file");
+    // execution and breakpoints
+    IO.stdout.println("step/s               - step the program for 1 instruction");
+    IO.stdout.println("continue/c           - continue program execution without stepping");
+    IO.stdout.println("breakpoint/b address - set a breakpoint at address");
+    IO.stdout.println("clear                - clear all breakpoints");
+    IO.stdout.println("delete addr          - delete breakpoint at address");
+    IO.stdout.println("list                 - list all breakpoints");
+    // reset state and start again
+    IO.stdout.println("reset                - reset all state (regs, memory) and start again");
+  }
+
+  /**
+   * This method pretty prints the RVI register file.
    *
    * @see vsim.riscv.RVIRegisterFile
    */
@@ -96,7 +105,7 @@ public final class Debugger {
   }
 
   /**
-   * This method prints the RVF register file.
+   * This method pretty prints the RVF register file.
    *
    * @see vsim.riscv.RVFRegisterFile
    */
@@ -107,17 +116,17 @@ public final class Debugger {
   /**
    * This method tries to print a register of the RVI or RVF register file.
    *
-   * @param reg the register to print
+   * @param reg the register name to print
    * @see vsim.riscv.RVIRegisterFile
    * @see vsim.riscv.RVFRegisterFile
    */
   private void print(String reg) {
-    if (Globals.regfile.getRegisterNumber(reg) != -1 || reg.equals("pc"))
+    if ((Globals.regfile.getRegisterNumber(reg) != -1) || reg.equals("pc"))
       Globals.regfile.printReg(reg);
     else if (Globals.fregfile.getRegisterNumber(reg) != -1)
       Globals.fregfile.printReg(reg);
     else
-      Message.error("invalid register: " + reg);
+      Message.error("invalid register name: " + reg);
   }
 
   /**
@@ -128,11 +137,21 @@ public final class Debugger {
    * @see vsim.riscv.Memory
    */
   private void memory(String address, String rows) {
+    // default print 12 rows
     int n = 12;
-    int addr = Globals.regfile.getRegister("gp");
-    try {
-      n = Math.max(Integer.parseInt(rows), 1);
-    } catch (Exception e ) {/* DO NOTHING */}
+    if (rows != null) {
+      try {
+        n = Integer.parseInt(rows);
+        if (n < 0) {
+          Message.error("number of rows should be > 0");
+          return;
+        }
+      } catch (Exception e ) {
+        Message.error("invalid number of rows: " + rows);
+        return;
+      }
+    }
+    int addr;
     try {
       if (address.startsWith("0x"))
         addr = Integer.parseInt(address.substring(2), 16);
@@ -142,7 +161,12 @@ public final class Debugger {
       Message.error("invalid address: " + address);
       return;
     }
-    Globals.memory.print(addr, n);
+    if (Memory.checkLoad(addr))
+      Globals.memory.print(addr, n);
+    else {
+      if (Settings.QUIET)
+        Message.warning("trying to print values from reserved memory (ignoring)");
+    }
   }
 
   /**
@@ -150,13 +174,26 @@ public final class Debugger {
    *
    * @see vsim.Globals#globl
    */
-  private void symbols() {
+  private void globals() {
     Globals.globl.print();
   }
 
   /**
+   * This method prints the local symbol table of a file.
+   *
+   * @param filename file filename
+   * @see vsim.Globals#local
+   */
+  private void locals(String filename) {
+    if (Globals.local.containsKey(filename))
+      Globals.local.get(filename).print();
+    else
+      Message.warning("invalid filename '" + filename + "' (ignoring)");
+  }
+
+  /**
    * This method tries to step the program by one statement and pretty prints
-   * useful debug information.
+   * debug information.
    */
   private void step() {
     Statement stmt = program.next();
@@ -175,7 +212,13 @@ public final class Debugger {
     for (int j = 0; j < (this.space - source.length()); j++)
       space += " ";
     // format all debugging info
-    System.out.println(
+    IO.stdout.println(
+      String.format(
+        "FROM: %s",
+        Colorize.yellow(stmt.getDebugInfo().getFilename())
+      )
+    );
+    IO.stdout.println(
       String.format(
         "PC [%s] CODE:%s    %s %s» %s",
         Colorize.cyan(pc),
@@ -219,7 +262,7 @@ public final class Debugger {
   }
 
   /**
-   * This method tries to create a breakpoint at the given an address.
+   * This method tries to create a breakpoint at the given address.
    *
    * @param address the address of the breakpoint in hex or decimal
    */
@@ -231,8 +274,11 @@ public final class Debugger {
       else
         addr = Integer.parseInt(address);
       if (Data.isWordAligned(addr)) {
-        if (!this.breakpoints.containsKey(addr))
-          this.breakpoints.put(addr, true);
+        if (Data.inRange(addr, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END)) {
+          if (!this.breakpoints.containsKey(addr))
+            this.breakpoints.put(addr, true);
+        } else
+          Message.error("breakpoint address has to be inside the text segment");
       } else
         Message.error("address is not aligned to a word boundary");
     } catch (Exception e) {
@@ -241,7 +287,7 @@ public final class Debugger {
   }
 
   /**
-   * This method clears all the breakpoints that a user set.
+   * This method clears all the breakpoints that user set.
    */
   private void clear() {
     this.breakpoints.clear();
@@ -249,7 +295,7 @@ public final class Debugger {
   }
 
   /**
-   * This method tries to delete a breakpoint that a user set.
+   * This method tries to delete a breakpoint that user set.
    *
    * @param address a string representing the address in hex or decimal
    */
@@ -267,19 +313,19 @@ public final class Debugger {
     if (this.breakpoints.containsKey(addr))
       this.breakpoints.remove(addr);
     else
-      Message.error("no breakpoint at address: " + address);
+      Message.warning("no breakpoint at address: " + address + " (ignoring)");
   }
 
   /**
-   * This method lists the breakpoints that the user set.
+   * This method lists the breakpoints that user set.
    */
   private void list() {
     if (this.breakpoints.size() > 0) {
-      System.out.println("Breakpoints: " + newline);
-      for(Enumeration<Integer> e = this.breakpoints.keys(); e.hasMoreElements();)
-        System.out.println(Colorize.purple(String.format("    0x%08x", e.nextElement())));
+      IO.stdout.println("Breakpoints: " + System.getProperty("line.separator"));
+      for (Integer address: this.breakpoints.keySet())
+        IO.stdout.println(Colorize.purple(String.format("    0x%08x", address)));
     } else
-      System.out.println("no breakpoints yet");
+      Message.log("no breakpoints yet");
   }
 
   /**
@@ -296,77 +342,142 @@ public final class Debugger {
    *
    * @param args the command arguments
    */
-  public void interpret(String[] args) {
+  private void interpret(String[] args) {
     // save previous args
     if (!args[0].equals("!"))
       this.args = args;
     // exit/quit
-    if ((args[0].equals("exit") || args[0].equals("quit")))
+    if ((args[0].equals("exit") || args[0].equals("quit"))) {
+      if (args.length != 1)
+        Message.warning("exit command does not expect any argument (ignoring)");
       System.exit(0);
+    }
     // help/?
-    else if ((args[0].equals("help") || args[0].equals("?")))
-      System.out.println(HELP_MSG);
+    else if ((args[0].equals("help") || args[0].equals("?"))) {
+      if (args.length != 1)
+        Message.warning("help command does not expect any argument (ignoring)");
+      this.help();
+    }
     // !
     else if (args[0].equals("!")) {
+      if (args.length != 1)
+        Message.warning("! command does not expect any argument (ignoring)");
       if (args != null)
         this.interpret(this.args);
     }
     // showx
-    else if (args[0].equals("showx"))
+    else if (args[0].equals("showx")){
+      if (args.length != 1)
+        Message.warning("showx command does not expect any argument (ignoring)");
       this.showx();
+    }
     // showf
-    else if (args[0].equals("showf"))
+    else if (args[0].equals("showf")) {
+      if (args.length != 1)
+        Message.warning("showf command does not expect any argument (ignoring)");
       this.showf();
+    }
     // print
     else if (args[0].equals("print")) {
-      if (args.length > 1)
+      if (args.length == 2)
         this.print(args[1]);
       else
-        Message.error("invalid usage of print cmd, valid usage 'print reg'");
+        Message.error("invalid usage of print cmd, valid usage 'print regname'");
     }
     // memory
     else if (args[0].equals("memory")) {
       if (args.length == 2)
         this.memory(args[1], null);
-      else if (args.length > 2)
+      else if (args.length == 3)
         this.memory(args[1], args[2]);
       else
-        Message.error("invalid usage of memory cmd, valid usage 'memory addr [rows]'");
+        Message.error("invalid usage of memory cmd, valid usage 'memory address [rows]'");
     }
-    // symbols
-    else if (args[0].equals("symbols"))
-      this.symbols();
+    // globals
+    else if (args[0].equals("globals")) {
+      if (args.length != 1)
+        Message.warning("globals command does not expect any argument (ignoring)");
+      this.globals();
+    }
+    // locals
+    else if (args[0].equals("locals")) {
+      if (args.length == 2)
+        this.locals(args[1]);
+      else
+        Message.error("invalid usage of locals cmd, valid usage 'locals filename'");
+    }
     // step
-    else if (args[0].equals("step") || args[0].equals("s"))
+    else if (args[0].equals("step") || args[0].equals("s")){
+      if (args.length != 1)
+        Message.warning("step command does not expect any argument (ignoring)");
       this.step();
+    }
     // continue
-    else if (args[0].equals("continue")  || args[0].equals("c"))
+    else if (args[0].equals("continue")  || args[0].equals("c")) {
+      if (args.length != 1)
+        Message.warning("continue command does not expect any argument (ignoring)");
       this.forward();
+    }
     // breakpoint
     else if (args[0].equals("breakpoint") || args[0].equals("b")) {
-      if (args.length > 1)
+      if (args.length == 2)
         this.breakpoint(args[1]);
       else
-        Message.error("invalid usage of breakpoint cmd, valid usage 'breakpoint/b addr'");
+        Message.error("invalid usage of breakpoint cmd, valid usage 'breakpoint/b address'");
     }
     // clear
-    else if (args[0].equals("clear") || args[0].equals("cl"))
+    else if (args[0].equals("clear")) {
+      if (args.length != 1)
+        Message.warning("clear command does not expect any argument (ignoring)");
       this.clear();
+    }
     // delete addr
-    else if (args[0].equals("delete") || args[0].equals("del")) {
-      if (args.length > 1)
+    else if (args[0].equals("delete")) {
+      if (args.length == 2)
         this.delete(args[1]);
       else
-        Message.error("invalid usage of delete cmd, valid usage 'delete/del addr'");
+        Message.error("invalid usage of delete cmd, valid usage 'delete address'");
     }
     // list
-    else if (args[0].equals("list") || args[0].equals("ls"))
+    else if (args[0].equals("list")) {
+      if (args.length != 1)
+        Message.warning("list command does not expect any argument (ignoring)");
       this.list();
+    }
     // reset
-    else if (args[0].equals("reset"))
+    else if (args[0].equals("reset")) {
+      if (args.length != 1)
+        Message.warning("reset command does not expect any argument (ignoring)");
       this.reset();
+    }
     else
-      Message.error("unknown command '" + args[0] + "'");
+      Message.warning("unknown command '" + args[0] + "' (ignoring)");
+  }
+
+  /**
+   * This method creates a command line interface that the user
+   * can use to interact with the debugger.
+   */
+  public void run() {
+    long cycles = 0;
+    while (true) {
+      Cmd.prompt();
+      try {
+        // read a line from stdin
+        String line = IO.stdin.readLine();
+        if (line == null) { IO.stdout.println(); continue; }
+        if (line.equals("")) continue;
+        // interpret line
+        cycles++;
+        this.interpret(line.trim().toLowerCase().split(" "));
+        if (Long.remainderUnsigned(cycles, 1000) == 0)
+          System.gc();
+      } catch (IOException e) {
+        Message.panic("input could not be read");
+      } catch (Exception e) {
+        Message.panic("unexpected exception");
+      }
+    }
   }
 
 }
