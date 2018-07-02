@@ -17,8 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
+import vsim.utils.IO;
+import java.util.HashMap;
 import vsim.utils.Colorize;
-import java.util.Hashtable;
 import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
@@ -27,7 +28,7 @@ import static vsim.riscv.instructions.Instruction.LENGTH;
  */
 public final class RVIRegisterFile {
 
-  /** register ABI names */
+  /** RVI register ABI names */
   private static final String[] MNEMONICS = {
     "zero", "ra", "sp", "gp",
     "tp", "t0", "t1", "t2",
@@ -43,8 +44,8 @@ public final class RVIRegisterFile {
   public static final RVIRegisterFile regfile = new RVIRegisterFile();
 
   /** register file dictionary */
-  private Hashtable<String, Register> rf;
-  /** program counter */
+  private HashMap<String, Register> rf;
+  /** program counter register */
   private Register pc;
 
   /**
@@ -54,7 +55,7 @@ public final class RVIRegisterFile {
    * @see vsim.riscv.RVFRegisterFile
    */
   private RVIRegisterFile() {
-    this.rf = new Hashtable<String, Register>();
+    this.rf = new HashMap<String, Register>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // note: only "zero" register is not editable
@@ -67,10 +68,10 @@ public final class RVIRegisterFile {
       this.rf.put("x" + i, reg);
     }
     // program counter is a special register
-    this.pc = new Register(32, MemorySegments.TEXT_SEGMENT, true);
+    this.pc = new Register(32, MemorySegments.TEXT_SEGMENT_BEGIN, true);
     // set default value for stack and global pointer
-    this.rf.get("sp").setValue(MemorySegments.STACK_SEGMENT);
-    this.rf.get("gp").setValue(MemorySegments.DATA_SEGMENT);
+    this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
+    this.rf.get("gp").setValue(MemorySegments.STATIC_SEGMENT);
   }
 
   /**
@@ -157,8 +158,6 @@ public final class RVIRegisterFile {
   /**
    * This method increments the program counter by
    * {@link vsim.riscv.instructions.Instruction#LENGTH}.
-   *
-   * @see vsim.riscv.instructions.Instruction#LENGTH
    */
   public void incProgramCounter() {
     this.pc.setValue(this.pc.getValue() + LENGTH);
@@ -175,39 +174,40 @@ public final class RVIRegisterFile {
     // use pc default reset value
     this.pc.reset();
     // set default value for stack and global pointer
-    this.rf.get("sp").setValue(MemorySegments.STACK_SEGMENT);
-    this.rf.get("gp").setValue(MemorySegments.DATA_SEGMENT);
+    this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
+    this.rf.get("gp").setValue(MemorySegments.STATIC_SEGMENT);
   }
 
   /**
    * This method pretty prints the register file.
    */
   public void print() {
-    String out = "";
     String regfmt = "%s%s [%s] (%s)%s{= %d}";
-    String newline = System.getProperty("line.separator");
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
       Register reg = this.rf.get("x" + i);
-      out += String.format(
-        regfmt,
-        Colorize.green("x" + i),
-        (i >= 10) ? "" : " ",
-        reg.toString(),
-        Colorize.purple(MNEMONICS[i]),
-        (MNEMONICS[i].length() == 5) ?
-          " " : (MNEMONICS[i].length() == 2) ?
-          "    " : (MNEMONICS[i].length() == 3) ?
-          "   " : "  ",
-        reg.getValue()
-      ) + newline;
+      IO.stdout.println(
+        String.format(
+          regfmt,
+          Colorize.green("x" + i),
+          (i >= 10) ? "" : " ",
+          reg.toString(),
+          Colorize.purple(MNEMONICS[i]),
+          (MNEMONICS[i].length() == 5) ?
+            " " : (MNEMONICS[i].length() == 2) ?
+            "    " : (MNEMONICS[i].length() == 3) ?
+            "   " : "  ",
+          reg.getValue()
+        )
+      );
     }
     // and pc
-    out += newline + String.format(
-      "PC  [%s]",
-      this.pc.toString()
+    IO.stdout.println(
+      System.getProperty("line.separator") + String.format(
+        "PC  [%s]",
+        this.pc.toString()
+      )
     );
-    System.out.println(out);
   }
 
   /**
@@ -219,7 +219,7 @@ public final class RVIRegisterFile {
     Register reg = this.rf.get(name);
     if (reg != null) {
       int i = reg.getNumber();
-      System.out.println(
+      IO.stdout.println(
         String.format(
           "%s [%s] (%s) {= %d}",
           Colorize.green("x" + i),
@@ -229,7 +229,7 @@ public final class RVIRegisterFile {
         )
       );
     } else if (name.equals("pc"))
-      System.out.println(
+      IO.stdout.println(
         String.format(
           "PC  [%s]",
           this.pc.toString()
