@@ -26,12 +26,12 @@ import java.util.ArrayList;
  */
 public final class Cmd {
 
-  private Cmd() { /* NOTHING */ }
-
   /**
-   * This method implements a simple argument parser.
+   * This method parses the command line arguments and returns
+   * the source filenames passed.
    *
    * @param args arguments to parse
+   * @see vsim.utils.ArgumentParser
    * @return an array of RISC-V assembler filenames to simulate (if any)
    */
   public static ArrayList<String> parse(String[] args) {
@@ -87,7 +87,7 @@ public final class Cmd {
   }
 
   /**
-   * This method prints the title of the VSim simulator.
+   * This method prints the title of the V-Sim simulator.
    */
   public static void title() {
     if (Settings.TITLE) {
@@ -106,7 +106,7 @@ public final class Cmd {
   }
 
   /**
-   * This method prints the prompt of the VSim simulator.
+   * This method prints the prompt of the V-Sim simulator.
    */
   public static void prompt() {
     IO.stdout.print(Colorize.yellow(">"));

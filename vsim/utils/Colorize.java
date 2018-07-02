@@ -25,8 +25,6 @@ import vsim.Settings;
  */
 public final class Colorize {
 
-  private Colorize() { /* NOTHING */ }
-
   // enable this only on linux
   private static final String  OS = System.getProperty("os.name");
   private static final boolean ENABLED = Colorize.OS.startsWith("Linux");

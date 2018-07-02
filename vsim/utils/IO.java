@@ -29,8 +29,6 @@ import java.io.InputStreamReader;
  */
 public final class IO {
 
-  private IO() { /* NOTHING */ }
-
   /** standard input */
   public static final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 

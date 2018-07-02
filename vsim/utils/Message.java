@@ -27,11 +27,9 @@ import java.util.ArrayList;
  */
 public final class Message {
 
-  private Message() { /* NOTHING */ }
-
   /**
    * This method prints to stdout a log message with the format
-   * "vsim: <i>msg</i>".
+   * {@code "vsim: msg"}.
    *
    * @param msg the log message
    */
@@ -41,7 +39,7 @@ public final class Message {
 
   /**
    * This method prints to stdout a warning message with the format
-   * "vsim: (warning) <i>msg</i>".
+   * {@code "vsim: (warning) msg"}.
    *
    * @param msg the warning message
    */
@@ -51,7 +49,7 @@ public final class Message {
 
   /**
    * This method prints to stderr an error message with the format
-   * "vsim: (error) <i>msg</i>".
+   * {@code "vsim: (error) msg"}.
    *
    * @param msg the error message
    */
@@ -61,7 +59,7 @@ public final class Message {
 
   /**
    * This method prints to stderr an error message with the format
-   * "vsim: (error) <i>msg</i>" and then exits with a status code of 1.
+   * {@code "vsim: (error) msg"} and then exits with a status code of 1.
    *
    * @param msg the error message
    */
