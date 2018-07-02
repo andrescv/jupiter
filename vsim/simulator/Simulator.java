@@ -19,12 +19,9 @@ package vsim.simulator;
 
 import vsim.Globals;
 import vsim.Settings;
-import vsim.utils.IO;
-import vsim.utils.Cmd;
 import vsim.utils.Message;
 import vsim.linker.Linker;
 import java.util.ArrayList;
-import java.io.IOException;
 import vsim.assembler.Assembler;
 import vsim.linker.LinkedProgram;
 import vsim.assembler.statements.Statement;
@@ -76,37 +73,21 @@ public final class Simulator {
   }
 
   /**
-   * This method creates a Debugger for a given linked program and starts
-   * a command line interface that a user can use to debug that linked program.
+   * This method creates a Debugger for a given linked program.
    *
    * @param program the program to debug
    * @see vsim.simulator.Debugger
    * @see vsim.linker.LinkedProgram
    */
   public static void debug(LinkedProgram program) {
-    // create a debugger
-    Debugger debugger = new Debugger(program);
-    while (true) {
-      Cmd.prompt();
-      try {
-        // read a line from stdin
-        String line = IO.stdin.readLine();
-        if (line == null) { IO.stdout.println(); continue; }
-        if (line.equals("")) continue;
-        // interpret line
-        debugger.interpret(line.trim().toLowerCase().split(" "));
-      } catch (IOException e) {
-        Message.panic("input could not be read");
-      } catch (Exception e) {
-        Message.panic("unexpected exception");
-      }
-    }
+    // create a debugger and run it
+    (new Debugger(program)).run();
   }
 
   /**
    * This method takes an ArrayList of assembler filenames, then calls the assemble
    * and link methods with this to generate a RISC-V linked program and finally
-   * calls {@link vsim.simulator.Simulator#debug} to start debugging that linked program.
+   * calls {@link vsim.simulator.Simulator#debug} to create a Debugger.
    *
    * @param files an array of assembler filenames
    * @see vsim.simulator.Simulator#debug
