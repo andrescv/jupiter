@@ -24,14 +24,12 @@ import vsim.simulator.Simulator;
 
 
 /**
- * The VSim class contains the main method of VSim simulator.
+ * The VSim class contains the main method of V-Sim simulator.
  */
 public final class VSim {
 
-  private VSim() { /* NOTHING */ }
-
   /**
-   * This method is used to launch the VSim simulator.
+   * This method is used to launch the V-Sim simulator.
    *
    * @param args command line arguments
    */

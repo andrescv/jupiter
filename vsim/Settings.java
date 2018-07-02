@@ -19,11 +19,9 @@ package vsim;
 
 
 /**
- * The Settings class contains the VSim simulator settings.
+ * The Settings class contains the V-Sim simulator settings.
  */
 public final class Settings {
-
-  private Settings() { /*NOTHING */ }
 
   /** current version */
   public static final String VERSION = "vsim-v1.0.0-beta";

@@ -29,7 +29,7 @@ import vsim.assembler.DebugInfo;
 public final class Errors {
 
   /** V-Sim assembler, linker and runtime error list */
-  public static final ArrayList<String> errors = new ArrayList<String>();
+  private static final ArrayList<String> errors = new ArrayList<String>();
 
   /**
    * This method adds a raw error message to the error list
