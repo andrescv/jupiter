@@ -83,7 +83,6 @@ public final class Relocation {
    * This method tries to resolve the relocation.
    *
    * @param pc current program counter value
-   * @param filename the current program filename
    * @return the resolved relocation
    */
   public int resolve(int pc) {
