@@ -59,12 +59,12 @@ public final class Message {
 
   /**
    * This method prints to stderr an error message with the format
-   * {@code "vsim: (error) msg"} and then exits with a status code of 1.
+   * {@code "vsim: (fatal error) msg"} and then exits with a status code of 1.
    *
    * @param msg the error message
    */
   public static void panic(String msg) {
-    IO.stderr.println(Colorize.red("vsim: (error) " + msg));
+    IO.stderr.println(Colorize.red("vsim: (fatal error) " + msg));
     System.exit(1);
   }
 
