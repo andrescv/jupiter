@@ -189,6 +189,7 @@ public final class ArgumentParser {
   /**
    * This method verifies if a flag was set.
    *
+   * @param flag the flag to check
    * @return true if flag was set, false if not
    */
   public boolean hasFlag(String flag) {
@@ -197,6 +198,9 @@ public final class ArgumentParser {
 
   /**
    * This method returns the value attached to a flag (if any)
+   *
+   * @param flag the flag to check
+   * @return the value attached to this flag, or null if the flag is not preset
    */
   public String value(String flag) {
     if (this.options.containsKey(flag) && this.optsval.contains(flag))
