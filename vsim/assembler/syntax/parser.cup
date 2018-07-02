@@ -112,7 +112,7 @@ terminal F_FEQS, F_FLTS, F_FLES, F_FCLASSS;
 terminal I_ADDI, I_ANDI, I_ECALL, I_JALR, I_LB;
 terminal I_LBU, I_LH, I_LHU, I_LW, I_ORI, I_SLLI;
 terminal I_SLTI, I_SLTIU, I_SRAI, I_SRLI, I_XORI;
-terminal I_FENCE, I_FENCEI, I_BREAK;
+terminal I_BREAK;
 // single-precision floating point
 terminal F_FLW;
 
@@ -445,8 +445,6 @@ RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
   flw frd, offset(rs1)
   ecall
   ebreak
-  fence
-  fence.i
 */
 
 IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
@@ -483,10 +481,6 @@ IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
                 {: RESULT = new IType("ecall", Assembler.debug, "x0", "x0", 0); :}
              |  I_BREAK
                 {: RESULT = new IType("ebreak", Assembler.debug, "x0", "x0", 1); :}
-             |  I_FENCE
-                {: RESULT = new IType("fence", Assembler.debug, "x0", "x0", 0); :}
-             |  I_FENCEI
-                {: RESULT = new IType("fence.i", Assembler.debug, "x0", "x0", 0); :}
              |  F_FLW FRegister:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {:
                   // hack to re-use IType Statement

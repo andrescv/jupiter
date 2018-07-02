@@ -228,8 +228,6 @@ I_SLTIU = [sS][lL][tT][iI][uU]
 I_SRAI = [sS][rR][aA][iI]
 I_SRLI = [sS][rR][lL][iI]
 I_XORI = [xX][oO][rR][iI]
-I_FENCE = [fF][eE][nN][cC][eE]
-I_FENCEI = [fF][eE][nN][cC][eE]"."[iI]
 // I Pseudos
 I_NOP = [nN][oO][pP]
 I_MV = [mM][vV]
@@ -682,14 +680,6 @@ ERROR = .
 
   {I_BREAK} {
     return symbol(Token.I_BREAK);
-  }
-
-  {I_FENCE} {
-    return symbol(Token.I_FENCE);
-  }
-
-  {I_FENCEI} {
-    return symbol(Token.I_FENCEI);
   }
 
   {I_JALR} {
