@@ -19,14 +19,13 @@ package vsim.simulator;
 
 import vsim.Globals;
 import vsim.Settings;
+import vsim.utils.IO;
 import vsim.utils.Cmd;
 import vsim.utils.Message;
 import vsim.linker.Linker;
 import java.util.ArrayList;
 import java.io.IOException;
-import java.io.BufferedReader;
 import vsim.assembler.Assembler;
-import java.io.InputStreamReader;
 import vsim.linker.LinkedProgram;
 import vsim.assembler.statements.Statement;
 
@@ -35,8 +34,6 @@ import vsim.assembler.statements.Statement;
  * The Simulator class contains useful methods to simulate and debug a RISC-V programs.
  */
 public final class Simulator {
-
-  private Simulator() { /* NOTHING */ }
 
   /**
    * This method takes an ArrayList of assembler filenames, then calls the assemble
@@ -57,11 +54,16 @@ public final class Simulator {
     program.reset();
     // execute all program
     Statement stmt;
+    long cycles = 0;
     while ((stmt = program.next()) != null) {
+      cycles++;
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       // if debugging is activated
       if (Settings.DEBUG)
         break;
+      // force garbage collection every 1000 cycles, why not ?
+      if (Long.remainderUnsigned(cycles, 1000) == 0)
+        System.gc();
     }
     if (!Settings.DEBUG) {
       // panic if no exit/exit2 ecall
@@ -84,13 +86,12 @@ public final class Simulator {
   public static void debug(LinkedProgram program) {
     // create a debugger
     Debugger debugger = new Debugger(program);
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     while (true) {
       Cmd.prompt();
       try {
         // read a line from stdin
-        String line = br.readLine();
-        if (line == null) { System.out.println(); continue; }
+        String line = IO.stdin.readLine();
+        if (line == null) { IO.stdout.println(); continue; }
         if (line.equals("")) continue;
         // interpret line
         debugger.interpret(line.trim().toLowerCase().split(" "));
@@ -105,10 +106,10 @@ public final class Simulator {
   /**
    * This method takes an ArrayList of assembler filenames, then calls the assemble
    * and link methods with this to generate a RISC-V linked program and finally
-   * calls {@link Simulator#debug} to start debugging that linked program.
+   * calls {@link vsim.simulator.Simulator#debug} to start debugging that linked program.
    *
    * @param files an array of assembler filenames
-   * @see Simulator#debug
+   * @see vsim.simulator.Simulator#debug
    * @see vsim.simulator.Debugger
    * @see vsim.linker.LinkedProgram
    */
