@@ -17,9 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
+import vsim.utils.IO;
+import java.util.HashMap;
 import vsim.utils.Message;
-import java.util.Hashtable;
-import java.util.Enumeration;
 import java.lang.reflect.Modifier;
 import vsim.riscv.instructions.Instruction;
 
@@ -29,13 +29,19 @@ import vsim.riscv.instructions.Instruction;
  */
 public final class InstructionSet {
 
-  /** instruction packages */
+  /** r-type instructions package */
   private static final String RTYPE  = "vsim.riscv.instructions.rtype";
+  /** i-type instructions package */
   private static final String ITYPE  = "vsim.riscv.instructions.itype";
+  /** s-type instructions package */
   private static final String STYPE  = "vsim.riscv.instructions.stype";
+  /** b-type instructions package */
   private static final String BTYPE  = "vsim.riscv.instructions.btype";
+  /** u-type instructions package */
   private static final String UTYPE  = "vsim.riscv.instructions.utype";
+  /** j-type instructions package */
   private static final String JTYPE  = "vsim.riscv.instructions.jtype";
+  /** r4-type instructions package */
   private static final String R4TYPE = "vsim.riscv.instructions.r4type";
 
   /** current classes in rtype package */
@@ -98,7 +104,7 @@ public final class InstructionSet {
   public static final InstructionSet insts = new InstructionSet();
 
   /** instructions dictionary */
-  private Hashtable<String, Instruction> instructions;
+  private HashMap<String, Instruction> instructions;
 
   /**
    * Unique constructor that initializes a newly InstructionSet object.
@@ -106,7 +112,7 @@ public final class InstructionSet {
    * @see vsim.riscv.instructions.Instruction
    */
   private InstructionSet() {
-    this.instructions = new Hashtable<String, Instruction>();
+    this.instructions = new HashMap<String, Instruction>();
     this.populate();
   }
 
@@ -168,20 +174,11 @@ public final class InstructionSet {
   }
 
   /**
-   * This method returns a String representation of an InstructionSet object.
-   *
-   * @return the String representation
+   * This method pretty prints the instruction set.
    */
-  @Override
-  public String toString() {
-    String out = "";
-    String newline = System.getProperty("line.separator");
-    for (Enumeration<String> e = this.instructions.keys(); e.hasMoreElements();) {
-      String mnemonic = e.nextElement();
-      Instruction i = this.instructions.get(mnemonic);
-      out += i.toString() + newline;
-    }
-    return out.trim();
+  public void print() {
+    for (String mnemonic: this.instructions.keySet())
+      IO.stdout.println(this.instructions.get(mnemonic));
   }
 
 }

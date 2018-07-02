@@ -38,7 +38,8 @@ public final class Errors {
    * @param msg an error message
    */
   public static void add(String msg) {
-    Errors.errors.add(msg);
+    if (!Errors.errors.contains(msg))
+      Errors.errors.add(msg);
   }
 
   /**

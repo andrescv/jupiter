@@ -17,8 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
+import vsim.utils.IO;
+import java.util.HashMap;
 import vsim.utils.Colorize;
-import java.util.Hashtable;
 
 
 /**
@@ -26,7 +27,7 @@ import java.util.Hashtable;
  */
 public final class RVFRegisterFile {
 
-  /** register ABI names */
+  /** RVF register ABI names */
   private static final String[] MNEMONICS = {
     "ft0", "ft1", "ft2", "ft3",
     "ft4", "ft5", "ft6", "ft7",
@@ -42,7 +43,7 @@ public final class RVFRegisterFile {
   public static final RVFRegisterFile regfile = new RVFRegisterFile();
 
   /** register file dictionary */
-  private Hashtable<String, Register> rf;
+  private HashMap<String, Register> rf;
 
   /**
    * Unique constructor that initializes a newly RVFRegisterFile object.
@@ -51,7 +52,7 @@ public final class RVFRegisterFile {
    * @see vsim.riscv.RVIRegisterFile
    */
   private RVFRegisterFile() {
-    this.rf = new Hashtable<String, Register>();
+    this.rf = new HashMap<String, Register>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // all registers are editable
@@ -178,23 +179,22 @@ public final class RVFRegisterFile {
    * This method pretty prints the register file.
    */
   public void print() {
-    String out = "";
     String regfmt = "%s%s [%s] (%s)%s{~= %.4f}";
-    String newline = System.getProperty("line.separator");
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
       Register reg = this.rf.get("f" + i);
-      out += String.format(
-        regfmt,
-        Colorize.green("f" + i),
-        (i >= 10) ? "" : " ",
-        reg.toString(),
-        Colorize.purple(MNEMONICS[i]),
-        (MNEMONICS[i].length() < 4) ? "  " : " ",
-        Float.intBitsToFloat(reg.getValue())
-      ) + newline;
+      IO.stdout.println(
+        String.format(
+          regfmt,
+          Colorize.green("f" + i),
+          (i >= 10) ? "" : " ",
+          reg.toString(),
+          Colorize.purple(MNEMONICS[i]),
+          (MNEMONICS[i].length() < 4) ? "  " : " ",
+          Float.intBitsToFloat(reg.getValue())
+        )
+      );
     }
-    System.out.println(out.replaceAll("\\s+$", ""));
   }
 
   /**
@@ -206,7 +206,7 @@ public final class RVFRegisterFile {
     Register reg = this.rf.get(name);
     if (reg != null) {
       int i = reg.getNumber();
-      System.out.println(
+      IO.stdout.println(
         String.format(
           "%s [%s] (%s) {~= %.4f}",
           Colorize.green("f" + i),

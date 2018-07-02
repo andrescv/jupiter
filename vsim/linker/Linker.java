@@ -37,9 +37,9 @@ import vsim.riscv.instructions.InstructionField;
 public final class Linker {
 
   /** where static data segment begins */
-  private static int dataAddress = MemorySegments.DATA_SEGMENT;
+  private static int dataAddress = MemorySegments.STATIC_SEGMENT;
   /** where text segment starts */
-  private static int textAddress = MemorySegments.TEXT_SEGMENT;
+  private static int textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
 
   /**
    * This method takes an array of RISC-V programs and stores
@@ -50,6 +50,8 @@ public final class Linker {
    */
   private static void linkRodata(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
+    MemorySegments.RODATA_SEGMENT_BEGIN = Linker.dataAddress;
+    MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
     for (Program program: programs) {
       program.setRodataStart(Linker.dataAddress);
       // store every byte of rodata of the current program
@@ -59,8 +61,12 @@ public final class Linker {
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
         startAddress = Linker.dataAddress;
+        MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
       }
     }
+    // momve next address by 1 word to set a rodata address range properly
+    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END)
+      Linker.dataAddress += Data.WORD_LENGTH;
   }
 
   /**
@@ -101,6 +107,7 @@ public final class Linker {
         startAddress = Linker.dataAddress;
       }
     }
+    MemorySegments.HEAP_SEGMENT = Linker.dataAddress;
   }
 
   /**
@@ -127,7 +134,7 @@ public final class Linker {
    */
   private static LinkedProgram linkPrograms(ArrayList<Program> programs) {
     // set start of text segment
-    Linker.textAddress = MemorySegments.TEXT_SEGMENT;
+    Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
     HashMap<Integer, Statement> all = new HashMap<Integer, Statement>();
     if (Globals.globl.get(Settings.START) != null &&
         Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
@@ -137,11 +144,13 @@ public final class Linker {
           stmt.build(Linker.textAddress);
           // store result in text segment
           int code = stmt.result().get(InstructionField.ALL);
-          Globals.memory.storeWord(Linker.textAddress, code);
+          Globals.memory.storeText(Linker.textAddress, code);
           // add this statement
           all.put(Linker.textAddress, stmt);
           // next word align address
           Linker.textAddress += Instruction.LENGTH;
+          if (Linker.textAddress > MemorySegments.TEXT_SEGMENT_END)
+            Errors.add("linker: program to large > ~256MiB");
         }
       }
     } else
@@ -160,8 +169,8 @@ public final class Linker {
    */
   public static LinkedProgram link(ArrayList<Program> programs) {
     // reset this
-    Linker.dataAddress = MemorySegments.DATA_SEGMENT;
-    Linker.textAddress = MemorySegments.TEXT_SEGMENT;
+    Linker.dataAddress = MemorySegments.STATIC_SEGMENT;
+    Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
     // handle static data
     Linker.linkRodata(programs);
     Linker.linkBss(programs);

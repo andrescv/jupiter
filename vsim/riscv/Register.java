@@ -23,7 +23,7 @@ import vsim.utils.Colorize;
 /**
  * The Register class represents a "hardware" register.
  */
-final class Register {
+public final class Register {
 
   /** register number */
   private int number;
@@ -35,7 +35,7 @@ final class Register {
   private boolean editable;
 
   /**
-   * Unique constructor that initializes a newly Register object.
+   * Unique constructor that initializes a new register.
    *
    * @param number register number
    * @param value register initial value
@@ -43,7 +43,7 @@ final class Register {
    * @see vsim.riscv.RVIRegisterFile
    * @see vsim.riscv.RVFRegisterFile
    */
-  protected Register(int number, int value, boolean editable) {
+  public Register(int number, int value, boolean editable) {
     this.number = number;
     this.value = value;
     this.resetValue = value;
@@ -52,15 +52,19 @@ final class Register {
 
   /**
    * This method returns the number of the register.
+   *
+   * @return the number of the register
    */
-  protected int getNumber() {
+  public int getNumber() {
     return this.number;
   }
 
   /**
    * This method returns the value of the register.
+   *
+   * @return the value of the register
    */
-  protected int getValue() {
+  public int getValue() {
     return this.value;
   }
 
@@ -69,7 +73,7 @@ final class Register {
    *
    * @param value the new register value
    */
-  protected void setValue(int value) {
+  public void setValue(int value) {
     if (this.editable)
       this.value = value;
   }
@@ -77,14 +81,14 @@ final class Register {
   /**
    * This method resets the register to its default value.
    */
-  protected void reset() {
+  public void reset() {
     this.value = this.resetValue;
   }
 
   /**
    * This method returns a String representation of a Register object.
    *
-   * @return the String representation
+   * @return a pretty string representation
    */
   @Override
   public String toString() {
