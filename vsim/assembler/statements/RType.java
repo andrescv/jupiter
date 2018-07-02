@@ -37,7 +37,7 @@ public final class RType extends Statement {
   private String rs2;
 
   /**
-   * Unique constructor that initializes a newly RType object.
+   * Unique constructor that initializes a newly RType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information

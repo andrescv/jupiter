@@ -37,7 +37,7 @@ public final class FRType extends Statement {
   private String rs2;
 
   /**
-   * Unique constructor that initializes a newly FRType object.
+   * Unique constructor that initializes a newly FRType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information

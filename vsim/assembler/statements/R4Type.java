@@ -39,7 +39,7 @@ public final class R4Type extends Statement {
   private String rs3;
 
   /**
-   * Unique constructor that initializes a newly R4Type object.
+   * Unique constructor that initializes a newly R4Type statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information

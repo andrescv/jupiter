@@ -32,8 +32,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class Shift extends Statement {
 
-  // min and max shift amount values
+  /** i-type shift min immediate value {@value} */
   private static final int MIN_VAL = 0;
+  /** i-type shift max immediate value {@value} */
   private static final int MAX_VAL = 31;
 
   /** register destiny */
@@ -44,7 +45,7 @@ public final class Shift extends Statement {
   private int shamt;
 
   /**
-   * Unique constructor that initializes a newly Shift object.
+   * Unique constructor that initializes a newly Shift statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -83,7 +84,7 @@ public final class Shift extends Statement {
       this.code.set(InstructionField.FUNCT7, funct7);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "shift amount '" + this.shamt + "' out of range should be between 0 and 31"
       );

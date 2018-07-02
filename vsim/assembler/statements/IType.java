@@ -33,8 +33,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public class IType extends Statement {
 
-  // min and max values of an i-type statement
+  /** i-type min immediate value {@value} */
   private static final int MIN_VAL = -2048;
+  /** i-type max immediate value {@value} */
   private static final int MAX_VAL = 2047;
 
   /** register destiny */
@@ -45,7 +46,7 @@ public class IType extends Statement {
   private Object imm;
 
   /**
-   * Unique constructor that initializes a newly IType object.
+   * Unique constructor that initializes a newly IType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -63,18 +64,16 @@ public class IType extends Statement {
 
   @Override
   public void resolve() {
-    String filename = this.getDebugInfo().getFilename();
     if (this.imm instanceof Relocation)
-      ((Relocation) this.imm).resolve(0, filename);
+      ((Relocation) this.imm).resolve(0);
   }
 
   @Override
   public void build(int pc) {
-    String filename = this.getDebugInfo().getFilename();
     int imm;
     // get imm
     if (this.imm instanceof Relocation)
-      imm = ((Relocation) this.imm).resolve(pc, filename);
+      imm = ((Relocation) this.imm).resolve(pc);
     else
       imm = (int) this.imm;
     // check range
@@ -91,7 +90,7 @@ public class IType extends Statement {
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "immediate '" + imm + "' out of range should be between -2048 and 2047"
       );
