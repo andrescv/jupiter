@@ -19,20 +19,20 @@ package vsim.riscv.instructions.r4type;
 
 
 /**
- * The Fmsubs class represents a fmsub instruction.
+ * The Fmsubs class represents a {@code fmsub.s} instruction.
  */
 public final class Fmsubs extends FR4Type {
 
   /**
-   * Unique constructor that initializes a newly Fmsubs object.
+   * Unique constructor that initializes a newly Fmsubs instruction.
    *
    * @see vsim.riscv.instructions.r4type.FR4Type
    */
   public Fmsubs() {
     super(
       "fmsub.s",
-      "fmsub.s frd, frs1, frs2, frs3",
-      "set frd = frs1 * frs2 - frs3"
+      "fmsub.s rd, rs1, rs2, rs3",
+      "set f[rd] = f[rs1] * f[rs2] - f[rs3]"
     );
   }
 

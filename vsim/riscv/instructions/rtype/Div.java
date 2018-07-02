@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Div extends RType {
 
   /**
-   * Unique constructor that initializes a newly Div object.
+   * Unique constructor that initializes a newly Div instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Div extends RType {
     super(
       "div",
       "div rd, rs1, rs2",
-      "set rd = rs1 / rs2"
+      "set x[rd] = x[rs1] / x[rs2]"
     );
   }
 

@@ -20,6 +20,7 @@ package vsim.riscv.instructions.stype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -31,16 +32,16 @@ import vsim.riscv.instructions.InstructionField;
 public final class Fsw extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Fsw object.
+   * Unique constructor that initializes a newly Fsw instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Fsw() {
     super(
-      Instruction.Format.S,
+      Format.S,
       "fsw",
       "fsw rs2, offset(rs1)",
-      "set memory[rs1 + sext(offset)] = frd[31:0]"
+      "set memory[x[rs1] + sext(offset)] = f[rd][31:0]"
     );
   }
 
@@ -57,6 +58,7 @@ public final class Fsw extends Instruction {
   /**
    * This method gets the immediate value of an fsw instruction.
    *
+   * @param code machine code
    * @return the immediate value
    */
   private int getImm(MachineCode code) {

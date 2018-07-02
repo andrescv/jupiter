@@ -19,20 +19,20 @@ package vsim.riscv.instructions.rtype;
 
 
 /**
- * The Fdivs class represents a fdiv instruction.
+ * The Fdivs class represents a {@code fdiv.s} instruction.
  */
 public final class Fdivs extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fdivs object.
+   * Unique constructor that initializes a newly Fdivs instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fdivs() {
     super(
       "fdiv.s",
-      "fdiv.s frd, frs1, frs2",
-      "set frd = frs1 / frs2"
+      "fdiv.s rd, rs1, rs2",
+      "set f[rd] = f[rs1] / f[rs2]"
     );
   }
 
@@ -42,8 +42,8 @@ public final class Fdivs extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00011;
+  public int getFunct7() {
+    return 0b0001100;
   }
 
   @Override

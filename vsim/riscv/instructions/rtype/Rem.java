@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Rem extends RType {
 
   /**
-   * Unique constructor that initializes a newly Rem object.
+   * Unique constructor that initializes a newly Rem instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Rem extends RType {
     super(
       "rem",
       "rem rd, rs1, rs2",
-      "set rd = rs1 % rs2"
+      "set x[rd] = x[rs1] % x[rs2]"
     );
   }
 

@@ -24,7 +24,7 @@ package vsim.riscv.instructions.btype;
 public final class Bge extends BType {
 
   /**
-   * Unique constructor that initializes a newly Bge object.
+   * Unique constructor that initializes a newly Bge instruction.
    *
    * @see vsim.riscv.instructions.btype.BType
    */
@@ -32,7 +32,7 @@ public final class Bge extends BType {
     super(
       "bge",
       "bge rs1, rs2, offset",
-      "set pc = pc + sext(offset), if rs1 >= rs2, signed comparison"
+      "set pc = pc + sext(offset), if x[rs1] >= x[rs2], signed comparison"
     );
   }
 

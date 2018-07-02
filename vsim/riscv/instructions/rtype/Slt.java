@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Slt extends RType {
 
   /**
-   * Unique constructor that initializes a newly Slt object.
+   * Unique constructor that initializes a newly Slt instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Slt extends RType {
     super(
       "slt",
       "slt rd, rs1, rs2",
-      "set rd = 1 if rs1 < rs2 else 0, signed comparison"
+      "set x[rd] = 1 if x[rs1] < x[rs2] else 0, signed comparison"
     );
   }
 

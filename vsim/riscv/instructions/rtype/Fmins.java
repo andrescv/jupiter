@@ -21,26 +21,26 @@ import vsim.utils.Data;
 
 
 /**
- * The Fmins class represents a fmin instruction.
+ * The Fmins class represents a {@code fmin.s} instruction.
  */
 public final class Fmins extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fmins object.
+   * Unique constructor that initializes a newly Fmins instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fmins() {
     super(
       "fmin.s",
-      "fmin.s frd, frs1, frs2",
-      "set frd = min(frs1, frs2)"
+      "fmin.s rd, rs1, rs2",
+      "set f[rd] = min(f[rs1], f[rs2])"
     );
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00101;
+  public int getFunct7() {
+    return 0b0010100;
   }
 
   @Override

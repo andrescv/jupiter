@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Ori extends IType {
 
   /**
-   * Unique constructor that initializes a newly Ori object.
+   * Unique constructor that initializes a newly Ori instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Ori extends IType {
     super(
       "ori",
       "ori rd, rs1, imm",
-      "set rd = rs1 | sext(imm), bitwise or"
+      "set x[rd] = x[rs1] | sext(imm), bitwise or"
     );
   }
 

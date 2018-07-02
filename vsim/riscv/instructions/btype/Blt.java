@@ -24,7 +24,7 @@ package vsim.riscv.instructions.btype;
 public final class Blt extends BType {
 
   /**
-   * Unique constructor that initializes a newly Blt object.
+   * Unique constructor that initializes a newly Blt instruction.
    *
    * @see vsim.riscv.instructions.btype.BType
    */
@@ -32,7 +32,7 @@ public final class Blt extends BType {
     super(
       "blt",
       "blt rs1, rs2, offset",
-      "set pc = pc + sext(offset), if rs1 < rs2, signed comparison"
+      "set pc = pc + sext(offset), if x[rs1] < x[rs2], signed comparison"
     );
   }
 

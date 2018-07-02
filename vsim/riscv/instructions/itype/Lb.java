@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Lb extends IType {
 
   /**
-   * Unique constructor that initializes a newly Lb object.
+   * Unique constructor that initializes a newly Lb instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -34,7 +34,7 @@ public final class Lb extends IType {
     super(
       "lb",
       "lb rd, offset(rs1)",
-      "set rd = sext(memory[rs1 + sext(offset)][7:0])"
+      "set x[rd] = sext(memory[x[rs1] + sext(offset)][7:0])"
     );
   }
 

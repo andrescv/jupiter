@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Andi extends IType {
 
   /**
-   * Unique constructor that initializes a newly Andi object.
+   * Unique constructor that initializes a newly Andi instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Andi extends IType {
     super(
       "andi",
       "andi rd, rs1, imm",
-      "set rd = rs1 & sext(imm), bitwise and"
+      "set x[rd] = x[rs1] & sext(imm), bitwise and"
     );
   }
 

@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Or extends RType {
 
   /**
-   * Unique constructor that initializes a newly Or object.
+   * Unique constructor that initializes a newly Or instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Or extends RType {
     super(
       "or",
       "or rd, rs1, rs2",
-      "set rd = rs1 | rs2, bitwise or"
+      "set x[rd] = x[rs1] | x[rs2], bitwise or"
     );
   }
 

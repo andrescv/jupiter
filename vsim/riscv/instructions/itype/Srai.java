@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Srai extends IType {
 
   /**
-   * Unique constructor that initializes a newly Srai object.
+   * Unique constructor that initializes a newly Srai instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Srai extends IType {
     super(
       "srai",
       "srai rd, rs1, shamt",
-      "set rd = rs1 >> shamt, arithmetic shift right"
+      "set x[rd] = x[rs1] >> shamt, arithmetic shift right"
     );
   }
 

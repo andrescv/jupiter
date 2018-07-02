@@ -19,27 +19,28 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Fmvwx class represents a fmvwx/fmvsx instruction.
+ * The Fmvwx class represents a {@code fmv.w.x} instruction.
  */
 public final class Fmvwx extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Fmvwx object.
+   * Unique constructor that initializes a newly Fmvwx instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Fmvwx() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "fmv.w.x",
-      "fmv.w.x frd, rs1",
-      "set frd = rs1[31:0]"
+      "fmv.w.x rd, rs1",
+      "set f[rd] = x[rs1][31:0]"
     );
   }
 
@@ -49,8 +50,8 @@ public final class Fmvwx extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b11110;
+  public int getFunct7() {
+    return 0b1111000;
   }
 
   @Override

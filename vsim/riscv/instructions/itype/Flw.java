@@ -20,6 +20,7 @@ package vsim.riscv.instructions.itype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -31,16 +32,16 @@ import vsim.riscv.instructions.InstructionField;
 public final class Flw extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Flw object.
+   * Unique constructor that initializes a newly Flw instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Flw() {
     super(
-      Instruction.Format.I,
+      Format.I,
       "flw",
-      "flw frd, offset(rs1)",
-      "set frd = memory[rs1 + sext(offset)][31:0]"
+      "flw rd, offset(rs1)",
+      "set f[rd] = memory[x[rs1] + sext(offset)][31:0]"
     );
   }
 

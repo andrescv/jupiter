@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Jalr extends IType {
 
   /**
-   * Unique constructor that initializes a newly Jalr object.
+   * Unique constructor that initializes a newly Jalr instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -34,7 +34,7 @@ public final class Jalr extends IType {
     super(
       "jalr",
       "jalr rd, offset",
-      "set rd = pc + 4 and pc = pc + ((rs1 + sext(offset)) & ~1)"
+      "set x[rd] = pc + 4 and pc = pc + ((x[rs1] + sext(offset)) & ~1)"
     );
   }
 

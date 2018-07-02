@@ -19,20 +19,20 @@ package vsim.riscv.instructions.r4type;
 
 
 /**
- * The Fmadds class represents a fmadd instruction.
+ * The Fmadds class represents a {@code fmadd.s} instruction.
  */
 public final class Fmadds extends FR4Type {
 
   /**
-   * Unique constructor that initializes a newly Fmadds object.
+   * Unique constructor that initializes a newly Fmadds instruction.
    *
    * @see vsim.riscv.instructions.r4type.FR4Type
    */
   public Fmadds() {
     super(
       "fmadd.s",
-      "fmadd.s frd, frs1, frs2, frs3",
-      "set frd = frs1 * frs2 + frs3"
+      "fmadd.s rd, rs1, rs2, rs3",
+      "set f[rd] = f[rs1] * f[rs2] + f[rs3]"
     );
   }
 

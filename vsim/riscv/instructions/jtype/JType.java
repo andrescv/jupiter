@@ -20,6 +20,7 @@ package vsim.riscv.instructions.jtype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -31,14 +32,14 @@ import vsim.riscv.instructions.InstructionField;
 abstract class JType extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly UType object.
+   * Unique constructor that initializes a newly JType object.
    *
    * @param mnemonic the instruction mnemonic
    * @param usage the instruction usage
    * @param description the instruction description
    */
   protected JType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.J, mnemonic, usage, description);
+    super(Format.J, mnemonic, usage, description);
   }
 
   /**
@@ -52,6 +53,7 @@ abstract class JType extends Instruction {
   /**
    * This method gets the immediate value of the instruction.
    *
+   * @param code machine code
    * @return the immediate value
    */
   private int getImm(MachineCode code) {

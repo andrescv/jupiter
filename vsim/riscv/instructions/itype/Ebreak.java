@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Settings;
+import vsim.utils.Colorize;
+import vsim.riscv.instructions.MachineCode;
 
 
 /**
@@ -26,7 +28,7 @@ import vsim.Settings;
 public final class Ebreak extends IType {
 
   /**
-   * Unique constructor that initializes a newly Ebreak object.
+   * Unique constructor that initializes a newly Ebreak instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -50,6 +52,11 @@ public final class Ebreak extends IType {
     // but lets keep things simple
     Settings.DEBUG = true;
     return 0;
+  }
+
+  @Override
+  public String disassemble(MachineCode code) {
+    return Colorize.cyan("ebreak");
   }
 
 }

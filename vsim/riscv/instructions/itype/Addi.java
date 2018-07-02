@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Addi extends IType {
 
   /**
-   * Unique constructor that initializes a newly Addi object.
+   * Unique constructor that initializes a newly Addi instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Addi extends IType {
     super(
       "addi",
       "addi rd, rs1, imm",
-      "set rd = rs1 + sext(imm), overflow is ignored"
+      "set x[rd] = x[rs1] + sext(imm), overflow is ignored"
     );
   }
 

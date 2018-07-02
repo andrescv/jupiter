@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Remu extends RType {
 
   /**
-   * Unique constructor that initializes a newly Remu object.
+   * Unique constructor that initializes a newly Remu instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Remu extends RType {
     super(
       "remu",
       "remu rd, rs1, rs2",
-      "set rd = rs1 unsigned(%) rs2"
+      "set x[rd] = x[rs1] unsigned(%) x[rs2]"
     );
   }
 

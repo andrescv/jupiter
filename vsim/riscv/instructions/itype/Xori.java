@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Xori extends IType {
 
   /**
-   * Unique constructor that initializes a newly Xori object.
+   * Unique constructor that initializes a newly Xori instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Xori extends IType {
     super(
       "xori",
       "xori rd, rs1, imm",
-      "set rd = rs1 ^ sext(imm), bitwise xor"
+      "set x[rd] = x[rs1] ^ sext(imm), bitwise xor"
     );
   }
 

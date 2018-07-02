@@ -19,27 +19,28 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Flts class represents a flt instruction.
+ * The Flts class represents a {@code flt.s} instruction.
  */
 public final class Flts extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Flts object.
+   * Unique constructor that initializes a newly Flts instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Flts() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "flt.s",
-      "flt.s rd, frs1, frs2",
-      "set rd = 1 if frs1 < frs2 else 0"
+      "flt.s rd, rs1, rs2",
+      "set x[rd] = 1 if f[rs1] < f[rs2] else 0"
     );
   }
 
@@ -54,8 +55,8 @@ public final class Flts extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b10100;
+  public int getFunct7() {
+    return 0b1010000;
   }
 
   @Override

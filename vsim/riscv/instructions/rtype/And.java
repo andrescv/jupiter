@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class And extends RType {
 
   /**
-   * Unique constructor that initializes a newly And object.
+   * Unique constructor that initializes a newly And instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class And extends RType {
     super(
       "and",
       "and rd, rs1, rs2",
-      "set rd = rs1 & rs2, bitwise and"
+      "set x[rd] = x[rs1] & x[rs2], bitwise and"
     );
   }
 

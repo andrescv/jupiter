@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Auipc extends UType {
 
   /**
-   * Unique constructor that initializes a newly Auipc object.
+   * Unique constructor that initializes a newly Auipc instruction.
    *
    * @see vsim.riscv.instructions.utype.UType
    */
@@ -34,7 +34,7 @@ public final class Auipc extends UType {
     super(
       "auipc",
       "auipc rd, imm",
-      "set rd = imm << 12 + pc"
+      "set x[rd] = imm << 12 + pc"
     );
   }
 

@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Sh extends SType {
 
   /**
-   * Unique constructor that initializes a newly Sh object.
+   * Unique constructor that initializes a newly Sh instruction.
    *
    * @see vsim.riscv.instructions.stype.SType
    */
@@ -34,7 +34,7 @@ public final class Sh extends SType {
     super(
       "sh",
       "sh rs2, offset(rs1)",
-      "set memory[rs1 + sext(offset)] = rs2[15:0]"
+      "set memory[x[rs1] + sext(offset)] = x[rs2][15:0]"
     );
   }
 

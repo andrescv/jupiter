@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.riscv.Syscall;
+import vsim.utils.Colorize;
+import vsim.riscv.instructions.MachineCode;
 
 
 /**
@@ -26,7 +28,7 @@ import vsim.riscv.Syscall;
 public final class Ecall extends IType {
 
   /**
-   * Unique constructor that initializes a newly Ecall object.
+   * Unique constructor that initializes a newly Ecall instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -48,6 +50,11 @@ public final class Ecall extends IType {
     // call syscall handler
     Syscall.handler();
     return 0;
+  }
+
+  @Override
+  public String disassemble(MachineCode code) {
+    return Colorize.cyan("ecall");
   }
 
 }

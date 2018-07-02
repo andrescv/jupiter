@@ -68,8 +68,7 @@ public final class InstructionSet {
     "Addi", "Slti", "Sltiu",
     "Xori", "Ori", "Andi",
     "Slli", "Srli", "Srai",
-    "Ecall", "Fence", "FenceI",
-    "Flw", "Ebreak"
+    "Ecall", "Flw", "Ebreak"
   };
 
   /** current classes in stype package */

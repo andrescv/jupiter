@@ -21,20 +21,20 @@ import vsim.utils.Data;
 
 
 /**
- * The Fsgnjxs class represents a fsgnjx instruction.
+ * The Fsgnjxs class represents a {@code fsgnjx.s} instruction.
  */
 public final class Fsgnjxs extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fsgnjxs object.
+   * Unique constructor that initializes a newly Fsgnjxs instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsgnjxs() {
     super(
       "fsgnjx.s",
-      "fsgnjx.s frd, frs1, frs2",
-      "set frd = {frs1[31] ^ frs2[31], frs1[30:0]}"
+      "fsgnjx.s rd, rs1, rs2",
+      "set f[rd] = {f[rs1][31] ^ f[rs2][31], f[rs1][30:0]}"
     );
   }
 
@@ -44,8 +44,8 @@ public final class Fsgnjxs extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00100;
+  public int getFunct7() {
+    return 0b0010000;
   }
 
   @Override

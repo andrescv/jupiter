@@ -19,27 +19,28 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Fles class represents a fle instruction.
+ * The Fles class represents a {@code fle.s} instruction.
  */
 public final class Fles extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Fles object.
+   * Unique constructor that initializes a newly Fles instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Fles() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "fle.s",
-      "fle.s rd, frs1, frs2",
-      "set rd = 1 if frs1 <= frs2 else 0"
+      "fle.s rd, rs1, rs2",
+      "set x[rd] = 1 if f[rs1] <= f[rs2] else 0"
     );
   }
 
@@ -49,8 +50,8 @@ public final class Fles extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b10100;
+  public int getFunct7() {
+    return 0b1010000;
   }
 
   @Override

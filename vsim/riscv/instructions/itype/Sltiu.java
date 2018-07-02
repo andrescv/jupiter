@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Sltiu extends IType {
 
   /**
-   * Unique constructor that initializes a newly Sltiu object.
+   * Unique constructor that initializes a newly Sltiu instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Sltiu extends IType {
     super(
       "sltiu",
       "sltiu rd, rs1, imm",
-      "set rd = 1 if rs1 < sext(imm) else 0, unsigned comparison"
+      "set x[rd] = 1 if x[rs1] < sext(imm) else 0, unsigned comparison"
     );
   }
 
