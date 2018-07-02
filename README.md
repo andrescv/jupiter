@@ -11,6 +11,11 @@
     <img src="https://img.shields.io/github/release/andrescv/V-Sim/all.svg" alt="Version">
   </a>
   <img src="https://img.shields.io/github/downloads/andrescv/V-Sim/total.svg">
+  <a href="http://commitizen.github.io/cz-cli/">
+    <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"
+    alt="Commitizen friendly"
+    />
+  </a>
 </p>
 
 **VSim** is a RISC-V assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer ISA can be simulated as well as the **M** and **F** extensions with all their respective pseudo-instructions. For a complete list of supported instructions, please visit the [wiki](https://github.com/andrescv/V-Sim/wiki) page.
