@@ -154,7 +154,9 @@ public final class Data {
    * @return true if the value is a valid half value, false if not
    */
   public static boolean validHalf(int value) {
-    return Data.inRange(value, HALF_MIN_VALUE, HALF_MAX_VALUE);
+    if (((value & ~HALF_MASK) != 0) && !Data.inRange(value, HALF_MIN_VALUE, HALF_MAX_VALUE))
+      return false;
+    return true;
   }
 
   /**
@@ -166,7 +168,9 @@ public final class Data {
    * @return true if the value is a valid byte value, false if not
    */
   public static boolean validByte(int value) {
-    return Data.inRange(value, BYTE_MIN_VALUE, BYTE_MAX_VALUE);
+    if (((value & ~BYTE_MASK) != 0) && !Data.inRange(value, BYTE_MIN_VALUE, BYTE_MAX_VALUE))
+      return false;
+    return true;
   }
 
   /**
