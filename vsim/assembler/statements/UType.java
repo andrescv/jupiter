@@ -33,8 +33,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class UType extends Statement {
 
-  // min and max values of a u-type statement
+  /** u-type min immediate value {@value} */
   private static final int MIN_VAL = 0;
+  /** u-type max immediate value {@value} */
   private static final int MAX_VAL = 1048575;
 
   /** register destiny */
@@ -43,7 +44,7 @@ public final class UType extends Statement {
   private Object imm;
 
   /**
-   * Unique constructor that initializes a newly UType object.
+   * Unique constructor that initializes a newly UType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -58,18 +59,16 @@ public final class UType extends Statement {
 
   @Override
   public void resolve() {
-    String filename = this.getDebugInfo().getFilename();
     if (this.imm instanceof Relocation)
-      ((Relocation) this.imm).resolve(0, filename);
+      ((Relocation) this.imm).resolve(0);
   }
 
   @Override
   public void build(int pc) {
-    String filename = this.getDebugInfo().getFilename();
     int imm;
     // get imm
     if (this.imm instanceof Relocation)
-      imm = ((Relocation) this.imm).resolve(pc, filename);
+      imm = ((Relocation) this.imm).resolve(pc);
     else
       imm = (int) this.imm;
     // check range
@@ -82,7 +81,7 @@ public final class UType extends Statement {
       this.code.set(InstructionField.IMM_31_12, imm);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "immediate '" + imm + "' out of range should be between 0 and 1048575"
       );

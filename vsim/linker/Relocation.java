@@ -62,14 +62,13 @@ public final class Relocation {
    * target in the local symbol table of the program or the global
    * symbol table or creates an error if it is not found.
    *
-   * @param filename the current program filename
    * @return the address of the relocation target
    */
-  public int getTargetAddress(String filename) {
+  public int getTargetAddress() {
     int address = -1;
-    SymbolTable table = Globals.local.get(filename);
+    SymbolTable table = Globals.local.get(this.debug.getFilename());
     // local lookup
-    if (table.get(this.target) != null)
+    if (table != null && table.get(this.target) != null)
       address = table.get(this.target);
     // global lookup
     else if (Globals.globl.get(this.target) != null)
@@ -87,8 +86,8 @@ public final class Relocation {
    * @param filename the current program filename
    * @return the resolved relocation
    */
-  public int resolve(int pc, String filename) {
-    int target = this.getTargetAddress(filename);
+  public int resolve(int pc) {
+    int target = this.getTargetAddress();
     int delta = target - pc;
     // correct target given a relocation type
     switch (this.type) {

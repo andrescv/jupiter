@@ -33,8 +33,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class JType extends Statement {
 
-  // min and max values of a j-type statement
+  /** j-type min immediate value {@value} */
   private static final int MIN_VAL = -1048576;
+  /** j-type max immediate value {@value} */
   private static final int MAX_VAL = 1048575;
 
   /** register destiny */
@@ -45,7 +46,7 @@ public final class JType extends Statement {
   private Relocation target;
 
   /**
-   * Unique constructor that initializes a newly JType object.
+   * Unique constructor that initializes a newly JType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -61,14 +62,12 @@ public final class JType extends Statement {
 
   @Override
   public void resolve() {
-    String filename = this.getDebugInfo().getFilename();
-    this.target.resolve(0, filename);
+    this.target.resolve(0);
   }
 
   @Override
   public void build(int pc) {
-    String filename = this.getDebugInfo().getFilename();
-    int imm = this.target.resolve(pc, filename);
+    int imm = this.target.resolve(pc);
     if (Data.inRange(imm, JType.MIN_VAL, JType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int opcode = inst.getOpCode();
@@ -81,7 +80,7 @@ public final class JType extends Statement {
       this.code.set(InstructionField.RD, rd);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "jump to '" + this.label + "' too far"
       );

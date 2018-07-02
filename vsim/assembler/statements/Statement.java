@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.assembler.statements;
 
 import vsim.assembler.DebugInfo;
@@ -22,7 +39,7 @@ public abstract class Statement {
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
    */
-  public Statement(String mnemonic, DebugInfo debug) {
+  protected Statement(String mnemonic, DebugInfo debug) {
     this.debug = debug;
     this.mnemonic = mnemonic;
     this.code = new MachineCode();
@@ -36,18 +53,17 @@ public abstract class Statement {
   public abstract void resolve();
 
   /**
-   * This method tries to build the machine code that represents this statement.
+   * This method tries to build the machine code that represents the statement.
    *
    * @param pc current program counter value
-   * @see vsim.riscv.instructions.MachineCode
    */
   public abstract void build(int pc);
 
   /**
    * This method returns the machine code that represents the statement.
-   * This method should be called after build().
    *
-   * @return the machine code that represents the statement
+   * @see vsim.riscv.instructions.MachineCode
+   * @return the machine code
    */
   public MachineCode result() {
     return this.code;
@@ -56,7 +72,7 @@ public abstract class Statement {
   /**
    * This method returns the mnemonic of the statement.
    *
-   * @return the mnemonic of the statement
+   * @return the mnemonic
    */
   public String getMnemonic() {
     return this.mnemonic;
@@ -65,7 +81,7 @@ public abstract class Statement {
   /**
    * This method returns the debug information of the statement.
    *
-   * @return the debug information of the statement
+   * @return the debug information
    */
   public DebugInfo getDebugInfo() {
     return this.debug;

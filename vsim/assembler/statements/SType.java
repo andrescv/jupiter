@@ -33,8 +33,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class SType extends Statement {
 
-  // min and max values of a s-type statement
+  /** s-type min immediate value {@value} */
   private static final int MIN_VAL = -2048;
+  /** s-type max immediate value {@value} */
   private static final int MAX_VAL = 2047;
 
   /** register source 1 */
@@ -45,7 +46,7 @@ public final class SType extends Statement {
   private Object imm;
 
   /**
-   * Unique constructor that initializes a newly SType object.
+   * Unique constructor that initializes a newly SType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -63,17 +64,15 @@ public final class SType extends Statement {
 
   @Override
   public void resolve() {
-    String filename = this.getDebugInfo().getFilename();
     if (this.imm instanceof Relocation)
-      ((Relocation) this.imm).resolve(0, filename);
+      ((Relocation) this.imm).resolve(0);
   }
 
   @Override
   public void build(int pc) {
-    String filename = this.getDebugInfo().getFilename();
     int imm;
     if (this.imm instanceof Relocation)
-      imm = ((Relocation) this.imm).resolve(pc, filename);
+      imm = ((Relocation) this.imm).resolve(pc);
     else
       imm = (int) this.imm;
     if (Data.inRange(imm, SType.MIN_VAL, SType.MAX_VAL)) {
@@ -90,7 +89,7 @@ public final class SType extends Statement {
       this.code.set(InstructionField.IMM_11_5, imm >>> 5);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "immediate '" + imm + "' out of range should be between -2048 and 2047"
       );

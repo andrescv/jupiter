@@ -33,8 +33,9 @@ import vsim.riscv.instructions.InstructionField;
  */
 public final class BType extends Statement {
 
-  // min and max values of a b-type statement
+  /** b-type min immediate value {@value} */
   private static final int MIN_VAL = -2048;
+  /** b-type max immediate value {@value} */
   private static final int MAX_VAL = 2047;
 
   /** register source 1 */
@@ -47,7 +48,7 @@ public final class BType extends Statement {
   private Relocation offset;
 
   /**
-   * Unique constructor that initializes a newly BType object.
+   * Unique constructor that initializes a newly BType statement.
    *
    * @param mnemonic statement mnemonic
    * @param debug statement debug information
@@ -66,14 +67,12 @@ public final class BType extends Statement {
 
   @Override
   public void resolve() {
-    String filename = this.getDebugInfo().getFilename();
-    this.offset.resolve(0, filename);
+    this.offset.resolve(0);
   }
 
   @Override
   public void build(int pc) {
-    String filename = this.getDebugInfo().getFilename();
-    int imm = this.offset.resolve(pc, filename);
+    int imm = this.offset.resolve(pc);
     if (Data.inRange(imm, BType.MIN_VAL, BType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
       int rs1  = Globals.regfile.getRegisterNumber(this.rs1);
@@ -90,7 +89,7 @@ public final class BType extends Statement {
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
       Errors.add(
-        this.getDebugInfo(),
+        this.debug,
         "assembler",
         "branch to '" + this.label + "' too far"
       );
