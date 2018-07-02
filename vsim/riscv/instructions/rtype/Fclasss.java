@@ -20,27 +20,28 @@ package vsim.riscv.instructions.rtype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Fclass class represents a fclass instruction.
+ * The Fclass class represents a {@code fclass.s} instruction.
  */
 public final class Fclasss extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Fclasss object.
+   * Unique constructor that initializes a newly Fclasss instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Fclasss() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "fclass.s",
-      "fclass.s rd, frs1",
-      "set rd = 10-bit mask that indicates the class of the floating-point number"
+      "fclass.s rd, rs1",
+      "set x[rd] = 10-bit mask that indicates the class of the floating-point register f[rs1]"
     );
   }
 
@@ -55,8 +56,8 @@ public final class Fclasss extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b11100;
+  public int getFunct7() {
+    return 0b1110000;
   }
 
   @Override

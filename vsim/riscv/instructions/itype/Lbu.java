@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Lbu extends IType {
 
   /**
-   * Unique constructor that initializes a newly Lbu object.
+   * Unique constructor that initializes a newly Lbu instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -34,7 +34,7 @@ public final class Lbu extends IType {
     super(
       "lbu",
       "lbu rd, offset(rs1)",
-      "set rd = memory[rs1 + sext(offset)][7:0]"
+      "set x[rd] = memory[x[rs1] + sext(offset)][7:0]"
     );
   }
 

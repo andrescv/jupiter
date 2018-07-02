@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Jal extends JType {
 
   /**
-   * Unique constructor that initializes a newly Sb object.
+   * Unique constructor that initializes a newly Jal instruction.
    *
    * @see vsim.riscv.instructions.jtype.JType
    */
@@ -34,7 +34,7 @@ public final class Jal extends JType {
     super(
       "jal",
       "jal rd, offset",
-      "set rd = pc + 4 and pc = pc + sext(offset)"
+      "set x[rd] = pc + 4 and pc = pc + sext(offset)"
     );
   }
 

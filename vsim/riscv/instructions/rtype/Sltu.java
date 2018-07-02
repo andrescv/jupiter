@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Sltu extends RType {
 
   /**
-   * Unique constructor that initializes a newly Sltu object.
+   * Unique constructor that initializes a newly Sltu instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Sltu extends RType {
     super(
       "sltu",
       "sltu rd, rs1, rs2",
-      "set rd = 1 if rs1 < rs2 else 0, unsigned comparison"
+      "set x[rd] = 1 if x[rs1] < x[rs2] else 0, unsigned comparison"
     );
   }
 

@@ -21,20 +21,20 @@ import vsim.utils.Data;
 
 
 /**
- * The Fmaxs class represents a fmax instruction.
+ * The Fmaxs class represents a {@code fmax.s} instruction.
  */
 public final class Fmaxs extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fmaxs object.
+   * Unique constructor that initializes a newly Fmaxs instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fmaxs() {
     super(
       "fmax.s",
-      "fmax.s frd, frs1, frs2",
-      "set frd = max(frs1, frs2)"
+      "fmax.s rd, rs1, rs2",
+      "set f[rd] = max(f[rs1], f[rs2])"
     );
   }
 
@@ -44,8 +44,8 @@ public final class Fmaxs extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00101;
+  public int getFunct7() {
+    return 0b0010100;
   }
 
   @Override

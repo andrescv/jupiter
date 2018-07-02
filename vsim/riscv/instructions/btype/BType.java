@@ -20,6 +20,7 @@ package vsim.riscv.instructions.btype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -38,7 +39,7 @@ abstract class BType extends Instruction {
    * @param description the instruction description
    */
   protected BType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.B, mnemonic, usage, description);
+    super(Format.B, mnemonic, usage, description);
   }
 
   /**

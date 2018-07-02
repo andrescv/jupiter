@@ -24,7 +24,7 @@ package vsim.riscv.instructions.btype;
 public final class Bne extends BType {
 
   /**
-   * Unique constructor that initializes a newly Bne object.
+   * Unique constructor that initializes a newly Bne instruction.
    *
    * @see vsim.riscv.instructions.btype.BType
    */
@@ -32,7 +32,7 @@ public final class Bne extends BType {
     super(
       "bne",
       "bne rs1, rs2, offset",
-      "set pc = pc + sext(offset), if rs1 != rs2"
+      "set pc = pc + sext(offset), if x[rs1] != x[rs2]"
     );
   }
 

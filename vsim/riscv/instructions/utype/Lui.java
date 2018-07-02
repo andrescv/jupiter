@@ -24,7 +24,7 @@ package vsim.riscv.instructions.utype;
 public final class Lui extends UType {
 
   /**
-   * Unique constructor that initializes a newly Lui object.
+   * Unique constructor that initializes a newly Lui instruction.
    *
    * @see vsim.riscv.instructions.utype.UType
    */
@@ -32,7 +32,7 @@ public final class Lui extends UType {
     super(
       "lui",
       "lui rd, imm",
-      "set rd = imm << 12"
+      "set x[rd] = imm << 12"
     );
   }
 

@@ -19,22 +19,28 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Feqs class represents a feq instruction.
+ * The Feqs class represents a {@code feq.s} instruction.
  */
 public final class Feqs extends Instruction {
 
+  /**
+   * Unique constructor that initializes a newly Feqs instruction.
+   *
+   * @see vsim.riscv.instructions.Instruction
+   */
   public Feqs() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "feq.s",
-      "feq.s rd, frs1, frs2",
-      "set rd = 1 if frs1 == frs2 else 0"
+      "feq.s rd, rs1, rs2",
+      "set x[rd] = 1 if f[rs1] == f[rs2] else 0"
     );
   }
 
@@ -49,8 +55,8 @@ public final class Feqs extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b10100;
+  public int getFunct7() {
+    return 0b1010000;
   }
 
   @Override

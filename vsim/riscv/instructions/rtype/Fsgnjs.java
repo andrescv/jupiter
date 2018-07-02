@@ -21,26 +21,26 @@ import vsim.utils.Data;
 
 
 /**
- * The Fsgnjs class represents a fsgnj instruction.
+ * The Fsgnjs class represents a {@code fsgnj.s} instruction.
  */
 public final class Fsgnjs extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fsgnjs object.
+   * Unique constructor that initializes a newly Fsgnjs instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsgnjs() {
     super(
       "fsgnj.s",
-      "fsgnj.s frd, frs1, frs2",
-      "set frd = {frs2[31], frs1[30:0]}"
+      "fsgnj.s rd, rs1, rs2",
+      "set f[rd] = {f[rs2][31], f[rs1][30:0]}"
     );
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00100;
+  public int getFunct7() {
+    return 0b0010000;
   }
 
   @Override

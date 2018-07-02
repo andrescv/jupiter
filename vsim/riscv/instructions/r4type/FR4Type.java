@@ -19,6 +19,7 @@ package vsim.riscv.instructions.r4type;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -37,7 +38,7 @@ abstract class FR4Type extends Instruction {
    * @param description the instruction description
    */
   protected FR4Type(String mnemonic, String usage, String description) {
-    super(Instruction.Format.R4, mnemonic, usage, description);
+    super(Format.R4, mnemonic, usage, description);
   }
 
   /**

@@ -19,20 +19,20 @@ package vsim.riscv.instructions.rtype;
 
 
 /**
- * The Fadds class represents a fadd instruction.
+ * The Fadds class represents a {@code fadd.s} instruction.
  */
 public final class Fadds extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fadds object.
+   * Unique constructor that initializes a newly Fadds instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fadds() {
     super(
       "fadd.s",
-      "fadd.s frd, frs1, frs2",
-      "set frd = frs1 + frs2"
+      "fadd.s rd, rs1, rs2",
+      "set f[rd] = f[rs1] + f[rs2]"
     );
   }
 

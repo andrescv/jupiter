@@ -20,6 +20,7 @@ package vsim.riscv.instructions.itype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -31,14 +32,14 @@ import vsim.riscv.instructions.InstructionField;
 abstract class IType extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly UType object.
+   * Unique constructor that initializes a newly IType object.
    *
    * @param mnemonic the instruction mnemonic
    * @param usage the instruction usage
    * @param description the instruction description
    */
   protected IType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.I, mnemonic, usage, description);
+    super(Format.I, mnemonic, usage, description);
   }
 
   /**

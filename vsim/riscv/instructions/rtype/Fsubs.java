@@ -19,20 +19,20 @@ package vsim.riscv.instructions.rtype;
 
 
 /**
- * The Fsubs class represents a fsub instruction.
+ * The Fsubs class represents a {@code fsub.s} instruction.
  */
 public final class Fsubs extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fsubs object.
+   * Unique constructor that initializes a newly Fsubs instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsubs() {
     super(
       "fsub.s",
-      "fsub.s frd, frs1, frs2",
-      "set frd = frs1 - frs2"
+      "fsub.s rd, rs1, rs2",
+      "set f[rd] = f[rs1] - f[rs2]"
     );
   }
 
@@ -42,8 +42,8 @@ public final class Fsubs extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00001;
+  public int getFunct7() {
+    return 0b0000100;
   }
 
   @Override

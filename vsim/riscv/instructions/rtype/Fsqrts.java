@@ -19,20 +19,20 @@ package vsim.riscv.instructions.rtype;
 
 
 /**
- * The Fsqrts class represents a fsqrt instruction.
+ * The Fsqrts class represents a {@code fsqrt.s} instruction.
  */
 public final class Fsqrts extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fsqrts object.
+   * Unique constructor that initializes a newly Fsqrts instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsqrts() {
     super(
       "fsqrt.s",
-      "fsqrt.s frd, frs1",
-      "set frd = sqrt(frs1)"
+      "fsqrt.s rd, rs1",
+      "set f[rd] = sqrt(f[rs1])"
     );
   }
 
@@ -42,8 +42,8 @@ public final class Fsqrts extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b01011;
+  public int getFunct7() {
+    return 0b0101100;
   }
 
   @Override

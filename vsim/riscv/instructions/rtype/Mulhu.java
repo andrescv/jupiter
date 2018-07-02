@@ -26,7 +26,7 @@ import vsim.utils.Data;
 public final class Mulhu extends RType {
 
   /**
-   * Unique constructor that initializes a newly Mulhu object.
+   * Unique constructor that initializes a newly Mulhu instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -34,7 +34,7 @@ public final class Mulhu extends RType {
     super(
       "mulhu",
       "mulhu rd, rs1, rs2",
-      "set rd = (unsigned(rs1) * unsigned(rs2)) >>> XLEN"
+      "set x[rd] = (unsigned(x[rs1]) * unsigned(x[rs2])) >>> XLEN"
     );
   }
 

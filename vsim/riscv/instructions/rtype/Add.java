@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Add extends RType {
 
   /**
-   * Unique constructor that initializes a newly Add object.
+   * Unique constructor that initializes a newly Add instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Add extends RType {
     super(
       "add",
       "add rd, rs1, rs2",
-      "set rd = rs1 + rs2, overflow is ignored"
+      "set x[rd] = x[rs1] + x[rs2], overflow is ignored"
     );
   }
 

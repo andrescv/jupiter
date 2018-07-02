@@ -65,14 +65,13 @@ public final class FRType extends Statement {
     int rs1 = Globals.fregfile.getRegisterNumber(this.rs1);
     int rs2 = Globals.fregfile.getRegisterNumber(this.rs2);
     int opcode = inst.getOpCode();
-    int funct5 = inst.getFunct5();
+    int funct7 = inst.getFunct7();
     int funct3 = inst.getFunct3();
-    this.code.set(InstructionField.FUNCT5, funct5);
-    this.code.set(InstructionField.FMT, 0b00);
+    this.code.set(InstructionField.FUNCT7, funct7);
     this.code.set(InstructionField.RD,  rd);
     this.code.set(InstructionField.RS1, rs1);
     this.code.set(InstructionField.RS2, rs2);
-    this.code.set(InstructionField.RM, funct3);
+    this.code.set(InstructionField.FUNCT3, funct3);
     this.code.set(InstructionField.OPCODE, opcode);
   }
 

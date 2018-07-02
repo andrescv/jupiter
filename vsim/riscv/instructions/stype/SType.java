@@ -20,13 +20,14 @@ package vsim.riscv.instructions.stype;
 import vsim.Globals;
 import vsim.utils.Data;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The class UType represents the general form of a s-type instruction.
+ * The class SType represents the general form of a s-type instruction.
  */
 abstract class SType extends Instruction {
 
@@ -38,7 +39,7 @@ abstract class SType extends Instruction {
    * @param description the instruction description
    */
   protected SType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.S, mnemonic, usage, description);
+    super(Format.S, mnemonic, usage, description);
   }
 
   @Override

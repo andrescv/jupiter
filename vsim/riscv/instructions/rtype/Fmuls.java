@@ -19,20 +19,20 @@ package vsim.riscv.instructions.rtype;
 
 
 /**
- * The Fmuls class represents a fmul instruction.
+ * The Fmuls class represents a {@code fmul.s} instruction.
  */
 public final class Fmuls extends FRType {
 
   /**
-   * Unique constructor that initializes a newly Fmuls object.
+   * Unique constructor that initializes a newly Fmuls instruction.
    *
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fmuls() {
     super(
       "fmul.s",
-      "fmul.s frd, frs1, frs2",
-      "set frd = frs1 * frs2"
+      "fmul.s rd, rs1, rs2",
+      "set f[rd] = f[rs1] * f[rs2]"
     );
   }
 
@@ -42,8 +42,8 @@ public final class Fmuls extends FRType {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b00010;
+  public int getFunct7() {
+    return 0b0001000;
   }
 
   @Override

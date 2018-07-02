@@ -24,7 +24,7 @@ package vsim.riscv.instructions.rtype;
 public final class Srl extends RType {
 
   /**
-   * Unique constructor that initializes a newly Srl object.
+   * Unique constructor that initializes a newly Srl instruction.
    *
    * @see vsim.riscv.instructions.rtype.RType
    */
@@ -32,7 +32,7 @@ public final class Srl extends RType {
     super(
       "srl",
       "srl rd, rs1, rs2",
-      "set rd = rs1 >>> rs2[4:0], logical shift right"
+      "set x[rd] = x[rs1] >>> x[rs2][4:0], logical shift right"
     );
   }
 

@@ -19,6 +19,7 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -30,14 +31,14 @@ import vsim.riscv.instructions.InstructionField;
 abstract class RType extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly BType object.
+   * Unique constructor that initializes a newly RType object.
    *
    * @param mnemonic the instruction mnemonic
    * @param usage the instruction usage
    * @param description the instruction description
    */
   protected RType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.R, mnemonic, usage, description);
+    super(Format.R, mnemonic, usage, description);
   }
 
   /**

@@ -29,9 +29,6 @@ public abstract class Instruction {
   /** instruction length in bytes */
   public static final int LENGTH = Data.WORD_LENGTH;
 
-  /** instruction formats (R, I, S, B, U, J, R4)*/
-  public static enum Format {R, I, S, B, U, J, R4};
-
   /** instruction format */
   private Format format;
   /** instruction mnemonic */
@@ -64,10 +61,11 @@ public abstract class Instruction {
   public abstract void execute(MachineCode code);
 
   /**
-   * This method returns the disassembled instruction.
+   * This method returns the disassembled String representation
+   * of the code.
    *
    * @param code machine code to disassemble
-   * @return a String with the disassembled instruction
+   * @return a String with the disassembled representation
    */
   public abstract String disassemble(MachineCode code);
 
@@ -99,15 +97,6 @@ public abstract class Instruction {
   }
 
   /**
-   * This method returns the instruction funct5 field.
-   *
-   * @return the instruction funct5
-   */
-  public int getFunct5() {
-    return 0;
-  }
-
-  /**
    * This method returns the instruction funct7 field.
    *
    * @return the instruction funct7
@@ -119,7 +108,7 @@ public abstract class Instruction {
   /**
    * This method returns the instruction mnemonic.
    *
-   * @return instruction mnemonic
+   * @return the instruction mnemonic
    */
   public String getMnemonic() {
     return this.mnemonic;
@@ -128,7 +117,7 @@ public abstract class Instruction {
   /**
    * This method returns the instruction usage.
    *
-   * @return instruction usage
+   * @return the instruction usage
    */
   public String getUsage() {
     return this.usage;
@@ -137,14 +126,15 @@ public abstract class Instruction {
   /**
    * This method returns the instruction description.
    *
-   * @return instruction description
+   * @return the instruction description
    */
   public String getDescription() {
     return this.description;
   }
 
   /**
-   * This method returns a String representation of an Instruction object.
+   * This method returns a String representation of an Instruction object
+   * with a pretty format.
    *
    * @return the String representation
    */

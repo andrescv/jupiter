@@ -15,41 +15,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.instructions.itype;
+package vsim.riscv.instructions;
 
 
 /**
- * The FenceI class represents a fencei instruction.
+ * Represents the RISC-V instruction formats.
  */
-public final class FenceI extends IType {
-
-  /**
-   * Unique constructor that initializes a newly Fence object.
-   *
-   * @see vsim.riscv.instructions.itype.IType
-   */
-  public FenceI() {
-    super(
-      "fence.i",
-      "fence.i",
-      "renders stores to instruction memory observable to subsequent instruction fetches"
-    );
-  }
-
-  @Override
-  public int getOpCode() {
-    return 0b0001111;
-  }
-
-  @Override
-  public int getFunct3() {
-    return 0b001;
-  }
-
-  @Override
-  protected int compute(int rs1, int imm) {
-    /* DO NOTHING */
-    return 0;
-  }
-
+public enum Format {
+  /** R4 format **/
+  R4,
+  /** R format */
+  R,
+  /** I format */
+  I,
+  /** S format */
+  S,
+  /** B format */
+  B,
+  /** U format */
+  U,
+  /** J format */
+  J;
 }

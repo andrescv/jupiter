@@ -24,7 +24,7 @@ package vsim.riscv.instructions.itype;
 public final class Slli extends IType {
 
   /**
-   * Unique constructor that initializes a newly Slli object.
+   * Unique constructor that initializes a newly Slli instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -32,7 +32,7 @@ public final class Slli extends IType {
     super(
       "slli",
       "slli rd, rs1, shamt",
-      "set rd = rs1 << shamt, logical shift left"
+      "set x[rd] = x[rs1] << shamt, logical shift left"
     );
   }
 

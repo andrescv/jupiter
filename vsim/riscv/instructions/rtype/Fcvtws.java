@@ -19,27 +19,28 @@ package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 
 
 /**
- * The Fcvtws class represents a fcvtws instruction.
+ * The Fcvtws class represents a {@code fcvt.w.s} instruction.
  */
 public final class Fcvtws extends Instruction {
 
   /**
-   * Unique constructor that initializes a newly Fcvtws object.
+   * Unique constructor that initializes a newly Fcvtws instruction.
    *
    * @see vsim.riscv.instructions.Instruction
    */
   public Fcvtws() {
     super(
-      Instruction.Format.R,
+      Format.R,
       "fcvt.w.s",
-      "fcvt.w.s rd, frs1",
-      "set rd = (int)(frs1)"
+      "fcvt.w.s rd, rs1",
+      "set x[rd] = (int)(f[rs1])"
     );
   }
 
@@ -54,8 +55,8 @@ public final class Fcvtws extends Instruction {
   }
 
   @Override
-  public int getFunct5() {
-    return 0b11000;
+  public int getFunct7() {
+    return 0b1100000;
   }
 
   @Override

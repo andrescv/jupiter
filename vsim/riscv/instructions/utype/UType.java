@@ -19,6 +19,7 @@ package vsim.riscv.instructions.utype;
 
 import vsim.Globals;
 import vsim.utils.Colorize;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -37,7 +38,7 @@ abstract class UType extends Instruction {
    * @param description the instruction description
    */
   protected UType(String mnemonic, String usage, String description) {
-    super(Instruction.Format.U, mnemonic, usage, description);
+    super(Format.U, mnemonic, usage, description);
   }
 
   /**

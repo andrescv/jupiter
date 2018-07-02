@@ -26,7 +26,7 @@ import vsim.Globals;
 public final class Lhu extends IType {
 
   /**
-   * Unique constructor that initializes a newly Lhu object.
+   * Unique constructor that initializes a newly Lhu instruction.
    *
    * @see vsim.riscv.instructions.itype.IType
    */
@@ -34,7 +34,7 @@ public final class Lhu extends IType {
     super(
       "lhu",
       "lhu rd, offset(rs1)",
-      "set rd = memory[rs1 + sext(offset)][15:0]"
+      "set x[rd] = memory[x[rs1] + sext(offset)][15:0]"
     );
   }
 
