@@ -18,11 +18,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.linker;
 
 import vsim.Errors;
+import java.io.File;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Data;
 import java.util.HashMap;
+import vsim.utils.Message;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
 import vsim.assembler.Program;
 import vsim.assembler.Segment;
 import vsim.riscv.MemorySegments;
@@ -180,6 +184,33 @@ public final class Linker {
     LinkedProgram program = Linker.linkPrograms(programs);
     // report errors
     Errors.report();
+    // dump statements ?
+    if (Settings.DUMP != null) {
+      File f = new File(Settings.DUMP);
+      try {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+        for (Program p: programs) {
+          boolean filename = true;
+          for (Statement stmt: p.getStatements()) {
+            // write filename
+            if (filename && (programs.size() > 1)) {
+              bw.write(stmt.getDebugInfo().getFilename() + ":");
+              bw.newLine();
+              filename = false;
+            }
+            // write result in file
+            int code = stmt.result().get(InstructionField.ALL);
+            String out = String.format("%08x", code);
+            bw.write(out);
+            bw.newLine();
+          }
+        }
+        bw.close();
+      } catch (Exception e) {
+        if (!Settings.QUIET)
+          Message.warning("the file '" + Settings.DUMP + "' could not be written");
+      }
+    }
     // clean all
     programs = null;
     System.gc();
