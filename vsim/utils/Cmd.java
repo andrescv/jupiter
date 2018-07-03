@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import vsim.Globals;
 import vsim.Settings;
 import java.util.ArrayList;
 
@@ -46,6 +47,7 @@ public final class Cmd {
     parser.add("-start",   "start program at global label (default: main)", true);
     parser.add("-debug",   "start the debugger");
     parser.add("-version", "show the simulator version and exit");
+    parser.add("-iset",    "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
     // override default Settings
@@ -78,9 +80,14 @@ public final class Cmd {
       parser.print();
       System.exit(0);
     }
-    // then -version
+    // second -version
     if (parser.hasFlag("-version")) {
       IO.stdout.println(Settings.VERSION);
+      System.exit(0);
+    }
+    // third -iset
+    if (parser.hasFlag("-iset")) {
+      Globals.iset.print();
       System.exit(0);
     }
     return parser.targets();
