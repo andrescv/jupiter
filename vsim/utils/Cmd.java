@@ -42,6 +42,7 @@ public final class Cmd {
     parser.add("-bare",    "bare machine (no pseudo-ops)");
     parser.add("-quiet",   "do not print warnings");
     parser.add("-nocolor", "do not colorize output");
+    parser.add("-usage",   "print usage and description of an instruction", true);
     parser.add("-notitle", "do not print title and copyright notice");
     parser.add("-dump",    "dump machine code to a file", true);
     parser.add("-start",   "start program at global label (default: main)", true);
@@ -70,7 +71,7 @@ public final class Cmd {
       Cmd.title();
       for (String error: parser.getErrors())
         Message.warning(error);
-      System.out.println();
+      IO.stdout.println();
       parser.print();
       System.exit(1);
     }
@@ -87,7 +88,14 @@ public final class Cmd {
     }
     // third -iset
     if (parser.hasFlag("-iset")) {
+      Cmd.title();
       Globals.iset.print();
+      System.exit(0);
+    }
+    // fourth -usage
+    if (parser.hasFlag("-usage")) {
+      Cmd.title();
+      Globals.iset.print(parser.value("-usage"));
       System.exit(0);
     }
     return parser.targets();

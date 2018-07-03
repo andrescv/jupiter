@@ -175,6 +175,31 @@ public final class InstructionSet {
   }
 
   /**
+   * This method pretty prints the usage and description of an instruction.
+   */
+  public void print(String mnemonic) {
+    mnemonic = mnemonic.toLowerCase();
+    Instruction inst = this.instructions.get(mnemonic);
+    if (inst != null) {
+      IO.stdout.println("Instruction:");
+      IO.stdout.println();
+      IO.stdout.println(
+        String.format(
+          "[%s] (%s) example: %s",
+          Colorize.red(inst.getFormat().toString()),
+          Colorize.green(mnemonic),
+          Colorize.cyan(inst.getUsage())
+        )
+      );
+      IO.stdout.println();
+      IO.stdout.println("Description:");
+      IO.stdout.println();
+      IO.stdout.println(inst.getDescription());
+    } else
+      Message.warning("Invalid instruction mnemonic: '" + mnemonic + "'");
+  }
+
+  /**
    * This method pretty prints the instruction set.
    */
   public void print() {
@@ -200,7 +225,6 @@ public final class InstructionSet {
         Instruction inst = this.instructions.get(mnemonic);
         Format format = inst.getFormat();
         String usage = inst.getUsage();
-        String description = inst.getDescription();
         String space = "";
         for (int j = 0; j < (maxLength - mnemonic.length()); j++)
           space += " ";
