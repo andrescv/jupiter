@@ -90,13 +90,14 @@ public final class Cmd {
    * This method prints the title of the V-Sim simulator.
    */
   public static void title() {
+    // print the title and license note if the -notitle flag is not set
     if (Settings.TITLE) {
       String newline = System.getProperty("line.separator");
       // cool title :]
-      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.red("    _____"));
-      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.green("/ __(_)_ _"));
+      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
+      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
       IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
-      IO.stdout.println(Colorize.yellow("|___/") + Colorize.purple("   /___/_/_/_/_/") + newline);
+      IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
       IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
       IO.stdout.println("GPL-3.0 License");
       IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
