@@ -42,7 +42,7 @@ public final class Cmd {
     parser.add("-bare",    "bare machine (no pseudo-ops)");
     parser.add("-quiet",   "do not print warnings");
     parser.add("-nocolor", "do not colorize output");
-    parser.add("-usage",   "print usage and description of an instruction", true);
+    parser.add("-usage",   "print usage of an instruction and exit", true);
     parser.add("-notitle", "do not print title and copyright notice");
     parser.add("-dump",    "dump machine code to a file", true);
     parser.add("-start",   "start program at global label (default: main)", true);
