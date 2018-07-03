@@ -132,20 +132,4 @@ public abstract class Instruction {
     return this.description;
   }
 
-  /**
-   * This method returns a String representation of an Instruction object
-   * with a pretty format.
-   *
-   * @return the String representation
-   */
-  @Override
-  public String toString() {
-    return String.format(
-      "[%s] (%s) example: %s",
-      Colorize.red(this.format.toString()),
-      Colorize.green(this.mnemonic),
-      Colorize.cyan(this.usage)
-    );
-  }
-
 }

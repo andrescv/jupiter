@@ -20,7 +20,9 @@ package vsim.riscv;
 import vsim.utils.IO;
 import java.util.HashMap;
 import vsim.utils.Message;
+import vsim.utils.Colorize;
 import java.lang.reflect.Modifier;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 
 
@@ -176,8 +178,46 @@ public final class InstructionSet {
    * This method pretty prints the instruction set.
    */
   public void print() {
+    // number of instructions
+    IO.stdout.println(
+      String.format(
+        "Number of Instructions: %s",
+        Colorize.green(String.format("%03d", this.instructions.size()))
+      )
+    );
+    IO.stdout.println();
+    IO.stdout.println(Colorize.purple("FORMAT   MNEMONIC                USAGE"));
+    IO.stdout.println();
+    int maxLength = -1;
+    // get mnemonic max instruction length for pretty printer
     for (String mnemonic: this.instructions.keySet())
-      IO.stdout.println(this.instructions.get(mnemonic));
+      maxLength = Math.max(maxLength, mnemonic.length());
+    // get all formats
+    Format[] formats = Format.values();
+    // overhead here but necessary to print instructions in order
+    for (int i = 0; i < formats.length; i++) {
+      for (String mnemonic: this.instructions.keySet()) {
+        Instruction inst = this.instructions.get(mnemonic);
+        Format format = inst.getFormat();
+        String usage = inst.getUsage();
+        String description = inst.getDescription();
+        String space = "";
+        for (int j = 0; j < (maxLength - mnemonic.length()); j++)
+          space += " ";
+        if (format == formats[i]) {
+          IO.stdout.println(
+            String.format(
+              " [%s]%s  (%s)%s example: %s",
+              Colorize.red(format.toString()),
+              (format.toString().length() == 2) ? " " : "  ",
+              Colorize.green(mnemonic),
+              space,
+              Colorize.cyan(usage)
+            )
+          );
+        }
+      }
+    }
   }
 
 }
