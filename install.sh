@@ -97,12 +97,14 @@
 
   # prints V-Sim version
   vsim_version() {
-    echo 'version: vsim-v1.0.0-beta'
+    echo 'v1.0.0'
   }
 
   # current V-Sim release link
   vsim_url() {
-    echo 'https://github.com/andrescv/V-Sim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip'
+    local VERSION
+    VERSION=$(vsim_version)
+    echo "https://github.com/andrescv/V-Sim/releases/download/$VERSION/$VERSION.zip"
   }
 
   # V-Sim install directory
