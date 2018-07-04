@@ -22,49 +22,36 @@
 
 ### Dependencies
 
-**VSim** requires Java SE 8 (or later) JRE installed on your computer.
+**V-Sim** requires Java SE 8 (or later) JRE installed on your computer.
 
 <p align="center">
   <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
-  <img src="https://raw.githubusercontent.com/andrescv/VSim/master/assets/download.png" alt="download">
+  <img src="./assets/download.png" alt="download" width="150">
   </a>
 </p>
 
 ### Installation
 
-To install or update **VSim**, you can use the install script (only on linux) with
+To install or update **V-Sim**, you can use the install script with
 
 **cURL**:
 
 ```shell
-curl -o- https://raw.githubusercontent.com/andrescv/VSim/v1.0.0-beta/install.sh | bash
+curl https://git.io/fbpu0 -L -o vsim && chmod +x vsim && . ./vsim && rm vsim
 ```
 or **Wget**:
 
 ```shell
-wget -qO- https://raw.githubusercontent.com/andrescv/VSim/v1.0.0-beta/install.sh | bash
+wget -O vsim https://git.io/fbpu0 && chmod +x vsim && . ./vsim && rm vsim
 ```
 
-To verify that **VSim** has been installed, do:
+To verify that **V-Sim** has been installed, do:
 
 ```shell
 vsim -version
 ```
 
-which should output 'vsim-v1.0.0-beta' if the installation was successful. If not then you can try source your profile with `source`.
-
-
-Alternatively you can also try it by downloading the following files: [VSim](https://github.com/andrescv/VSim/releases/download/v1.0.0-beta/vsim-v1.0.0-beta.zip), and inside the unzipped folder open a terminal/command prompt and enter the following command:
-
-```shell
-java -jar VSim.jar [flags] <files>
-```
-
-### Related projects
-
-* [Venus RV32IM Web Simulator](http://www.kvakil.me/venus/), by Keyhan Vakil.
-
-* [MARS simulator](http://courses.missouristate.edu/KenVollmar/mars/), by Pete Sanderson and Kenneth Vollmar.
+which should output 'vsim-v1.0.0' if the installation was successful.
 
 ### Contributing
 
@@ -72,4 +59,4 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 ### Acknowledgments
 
-A big thank you to all the people working on the RISC-V project, for all the quality material that you develop.
+A big thank you to all the people working on the RISC-V project
