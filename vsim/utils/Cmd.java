@@ -19,6 +19,8 @@ package vsim.utils;
 
 import vsim.Globals;
 import vsim.Settings;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -98,7 +100,37 @@ public final class Cmd {
       Globals.iset.print(parser.value("-usage"));
       System.exit(0);
     }
-    return parser.targets();
+    // get files
+    ArrayList<String> files = parser.targets();
+    // check project mode
+    if (files.size() == 1 && files.get(0).equals(".")) {
+      // remove this
+      files.remove(0);
+      try {
+        // recursively find all files in user cwd
+        Files.find(
+          Paths.get(System.getProperty("user.dir")),
+          Integer.MAX_VALUE,
+          // keep files that ends with .s or .asm extension
+          (filePath, fileAttr) -> {
+            if (fileAttr.isRegularFile()) {
+              String path = filePath.toString();
+              if (path.endsWith(".s") || path.endsWith(".asm"))
+                return true;
+            }
+            return false;
+          }
+        ).forEach(
+          path ->
+            files.add(path.toString())
+        );
+      } catch (Exception e) {
+        if (!Settings.QUIET)
+          Message.warning("An error occurred while recursively searching the files in the directory (aborting...)");
+      }
+    }
+    files.trimToSize();
+    return files;
   }
 
   /**
