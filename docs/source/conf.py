@@ -3,8 +3,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'V-Sim'
-copyright = '2018, Andrés Castellanos'
-author = 'Andrés Castellanos'
+copyright = '2018, Andres Castellanos'
+author = 'Andres Castellanos'
 
 # The short X.Y version
 version = 'vsim-v1.0.0'

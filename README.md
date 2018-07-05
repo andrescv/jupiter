@@ -16,6 +16,9 @@
     alt="Commitizen friendly"
     />
   </a>
+  <a href='https://v-sim.readthedocs.io/en/latest/?badge=latest'>
+    <img src="https://readthedocs.org/projects/v-sim/badge/?version=latest" alt='Documentation Status' />
+  </a>
 </p>
 
 **VSim** is a RISC-V assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer ISA can be simulated as well as the **M** and **F** extensions with all their respective pseudo-instructions. For a complete list of supported instructions, please visit the [docs](https://github.com/andrescv/V-Sim/wiki) page.
