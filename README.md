@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/V-Sim.png" alt="V-Sim" width="500">
+  <img src="./docs/source/_static/img/vsim-logo.png" alt="V-Sim" width="500">
   <br><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
@@ -18,17 +18,11 @@
   </a>
 </p>
 
-**VSim** is a RISC-V assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer ISA can be simulated as well as the **M** and **F** extensions with all their respective pseudo-instructions. For a complete list of supported instructions, please visit the [wiki](https://github.com/andrescv/V-Sim/wiki) page.
+**VSim** is a RISC-V assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer ISA can be simulated as well as the **M** and **F** extensions with all their respective pseudo-instructions. For a complete list of supported instructions, please visit the [docs](https://github.com/andrescv/V-Sim/wiki) page.
 
 ### Dependencies
 
-**V-Sim** requires Java SE 8 (or later) JRE installed on your computer.
-
-<p align="center">
-  <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
-  <img src="./assets/download.png" alt="download" width="150">
-  </a>
-</p>
+**V-Sim** requires **Java** SE 8 (or later) JRE installed on your computer.
 
 ### Installation
 
