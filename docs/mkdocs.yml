@@ -12,3 +12,6 @@ repo_url: https://github.com/andrescv/V-Sim
 
 pages:
   - Home: index.md
+  - Usage: usage.md
+  - Instructions: instructions.md
+  - License: license.md
