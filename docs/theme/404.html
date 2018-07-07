@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{# custom title #}
+{% block htmltitle %}
+  <title>{{ config.site_name }}</title>
+{% endblock %}
+
+{# custom style #}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ base_url }}/css/vsim_theme.css">
+{% endblock %}
+
+{# sidenav logo #}
+{% block site_name %}
+  <a href="{{ config.site_url }}" class="logo">
+    <img src="{{ base_url }}/img/vsim-logo.png" alt="V-Sim">
+  </a>
+  <a href="https://github.com/andrescv/V-Sim/releases" class="version">
+    <img src="https://img.shields.io/github/release/andrescv/V-Sim/all.svg" alt="Version">
+  </a>
+{% endblock %}
+
+{% block content %}
+  <h1 id="404-page-not-found">404</h1>
+  <p><strong>Page not found</strong></p>
+{% endblock %}
