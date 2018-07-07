@@ -1,5 +1,3 @@
-source: index.md
-
 # V-Sim
 
 <p align="center">
