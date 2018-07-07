@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/source/_static/img/vsim-logo.png" alt="V-Sim" width="500">
+  <img src="./docs/theme/img/vsim-logo.png" alt="V-Sim" width="500">
   <br><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
@@ -11,14 +11,6 @@
     <img src="https://img.shields.io/github/release/andrescv/V-Sim/all.svg" alt="Version">
   </a>
   <img src="https://img.shields.io/github/downloads/andrescv/V-Sim/total.svg">
-  <a href="http://commitizen.github.io/cz-cli/">
-    <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"
-    alt="Commitizen friendly"
-    />
-  </a>
-  <a href='https://v-sim.readthedocs.io/en/latest/?badge=latest'>
-    <img src="https://readthedocs.org/projects/v-sim/badge/?version=latest" alt='Documentation Status' />
-  </a>
 </p>
 
 **VSim** is a RISC-V assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer ISA can be simulated as well as the **M** and **F** extensions with all their respective pseudo-instructions. For a complete list of supported instructions, please visit the [docs](https://github.com/andrescv/V-Sim/wiki) page.
