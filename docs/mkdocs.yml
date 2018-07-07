@@ -9,3 +9,6 @@ theme:
 
 site_url: https://github.com/andrescv/V-Sim
 repo_url: https://github.com/andrescv/V-Sim
+
+pages:
+  - Home: index.md
