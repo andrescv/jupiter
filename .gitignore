@@ -4,7 +4,8 @@ build/
 # Doc directory
 doc/
 
-#docs/site
+# ignore docs build site
+docs/site
 
 # ant targets
 .ant-targets-build.xml
