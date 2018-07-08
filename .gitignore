@@ -1,6 +1,10 @@
 # Build directory
 build/
 
+# V-Sim Jar file
+
+VSim.jar
+
 # Doc directory
 doc/
 
