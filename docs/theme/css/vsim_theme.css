@@ -7,6 +7,14 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.capti
   font-family: "Lato", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
 }
 
+p {
+  text-align: justify;
+}
+
+.text-center {
+  text-align: center;
+}
+
 /* logo */
 .logo > img {
   border-radius: 0;
