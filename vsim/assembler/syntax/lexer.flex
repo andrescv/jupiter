@@ -112,14 +112,21 @@ CHARSTART = \'
 D_ZERO = ".zero"
 D_SPACE = ".space"
 D_ASCIIZ = ".asciiz"
+D_ASCIZ = ".asciz"
 D_STRING = ".string"
 D_BYTE = ".byte"
 D_HALF = ".half"
+D_SHORT = ".short"
+D_2BYTE = ".2byte"
 D_WORD = ".word"
+D_LONG = ".long"
+D_4BYTE = ".4byte"
 D_FLOAT = ".float"
 D_ALIGN = ".align"
+D_P2ALIGN = ".p2align"
 D_BALIGN = ".balign"
 D_GLOBL = ".globl"
+D_GLOBAL = ".global"
 D_SECTION = ".section"
 D_DATA = ".data"
 D_TEXT = ".text"
@@ -380,6 +387,10 @@ ERROR = .
     return symbol(Token.D_ASCIIZ);
   }
 
+  {D_ASCIZ} {
+    return symbol(Token.D_ASCIIZ);
+  }
+
   {D_STRING} {
     return symbol(Token.D_ASCIIZ);
   }
@@ -392,11 +403,31 @@ ERROR = .
     return symbol(Token.D_HALF);
   }
 
+  {D_SHORT} {
+    return symbol(Token.D_HALF);
+  }
+
+  {D_2BYTE} {
+    return symbol(Token.D_HALF);
+  }
+
   {D_WORD} {
     return symbol(Token.D_WORD);
   }
 
+  {D_LONG} {
+    return symbol(Token.D_WORD);
+  }
+
+  {D_4BYTE} {
+    return symbol(Token.D_WORD);
+  }
+
   {D_ALIGN} {
+    return symbol(Token.D_ALIGN);
+  }
+
+  {D_P2ALIGN} {
     return symbol(Token.D_ALIGN);
   }
 
@@ -405,6 +436,10 @@ ERROR = .
   }
 
   {D_GLOBL} {
+    return symbol(Token.D_GLOBL);
+  }
+
+  {D_GLOBAL} {
     return symbol(Token.D_GLOBL);
   }
 
