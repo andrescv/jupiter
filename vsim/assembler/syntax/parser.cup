@@ -987,7 +987,7 @@ DataList    ::= Expr:e
                   l.add(e);
                   RESULT = l;
                 :}
-             |  DataList:l Delimiter Expr:e
+             |  DataList:l COMMA Expr:e
                 {:
                   l.add(e);
                   RESULT = l;
@@ -1000,7 +1000,7 @@ FloatList   ::= FExpr:f
                   l.add(f);
                   RESULT = l;
                 :}
-             |  FloatList:l Delimiter FExpr:f
+             |  FloatList:l COMMA FExpr:f
                 {:
                   l.add(f);
                   RESULT = l;
@@ -1058,7 +1058,7 @@ SymList     ::= Id:id
                   ids.add(id);
                   RESULT = ids;
                 :}
-             |  SymList:l Delimiter Id:id
+             |  SymList:l COMMA Id:id
                 {:
                   l.add(id);
                   RESULT = l;
@@ -1101,9 +1101,17 @@ Expr        ::= Expr:e1 PLUS Expr:e2
              |  Expr:e1 TIMES Expr:e2
                 {: RESULT = e1 * e2; :}
              |  Expr:e1 DIVIDE Expr:e2
-                {: RESULT = e1 / e2; :}
+                {:
+                  if (e2 == 0)
+                    Errors.add(Assembler.debug, "assembler", "division by zero");
+                  RESULT = e1 / e2;
+                :}
              |  Expr:e1 MOD Expr:e2
-                {: RESULT = e1 % e2; :}
+                {:
+                  if (e2 == 0)
+                    Errors.add(Assembler.debug, "assembler", "division by zero");
+                  RESULT = e1 % e2;
+                :}
              |  Expr:e1 SLL Expr:e2
                 {: RESULT = e1 << e2; :}
              |  Expr:e1 SRL Expr:e2
