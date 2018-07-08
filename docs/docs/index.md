@@ -1,6 +1,6 @@
 # V-Sim
 
-<p align="center">
+<p class="text-center">
   <img src="./img/vsim-logo.png" alt="V-Sim" width="500"><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/github/downloads/andrescv/V-Sim/total.svg">
 </p>
 
-V-Sim is a **RISC-V** assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer instruction set can be simulated, as well as the **M** and **F** extensions.
+V-Sim is a simple assembler and runtime simulator inspired by _SPIM_ for programming in **RISC-V** assembly language and intended for educational purposes. One of the main goals was to make it functional and easy to use. Almost all the 32-bit base integer instruction set (**RV32I**) can be simulated, as well as the `M` and `F` extensions plus all the their respective pseudo-instructions.
 
 ***
 
@@ -25,18 +25,18 @@ To install or update V-Sim, you can use the installation script.
 with **cURL**:
 
 ```shell
-curl https://git.io/fbpu0 -L -o vsim && chmod +x vsim && . ./vsim && rm vsim
+$ curl https://git.io/fbpu0 -L -o vsim && chmod +x vsim && . ./vsim && rm vsim
 ```
 or **Wget**:
 
 ```shell
-wget -O vsim https://git.io/fbpu0 && chmod +x vsim && . ./vsim && rm vsim
+$ wget -O vsim https://git.io/fbpu0 && chmod +x vsim && . ./vsim && rm vsim
 ```
 
 To verify that V-Sim has been installed, do:
 
 ```shell
-vsim -version
+$ vsim -version
 ```
 
 which should output `vsim-v1.0.0` if the installation was successful.
