@@ -813,7 +813,7 @@ function(hljs) {
     //local labels: %?[FB]?[AT]?\d{1,2}\w+
   return {
     case_insensitive: true,
-    aliases: ['riscv'],
+    aliases: ['riscv', 'asm'],
     lexemes: '\\.?' + hljs.IDENT_RE,
     keywords: {
       meta:
