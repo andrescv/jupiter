@@ -818,7 +818,8 @@ function(hljs) {
     keywords: {
       meta:
         //GNU preprocs
-        '.zero .space .asciiz .string .byte .half .word .float .align .balign ' +
+        '.zero .space .asciiz .asciz .string .byte .half .short .2byte .word .long .4byte ' +
+        '.float .p2align .align .balign .global' +
         '.globl .section .data .text .rodata .bss',
       built_in:
         // Integer registers
