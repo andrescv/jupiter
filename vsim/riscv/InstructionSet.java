@@ -176,6 +176,8 @@ public final class InstructionSet {
 
   /**
    * This method pretty prints the usage and description of an instruction.
+   *
+   * @param mnemonic instruction mnemonic to print
    */
   public void print(String mnemonic) {
     mnemonic = mnemonic.toLowerCase();
