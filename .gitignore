@@ -2,13 +2,12 @@
 build/
 
 # V-Sim Jar file
-
 VSim.jar
 
 # Doc directory
-doc/
+javadoc/
 
-# ignore docs build site
+# Docs build site
 docs/site
 
 # ant targets
