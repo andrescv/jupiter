@@ -953,7 +953,7 @@ Data        ::= DataMode:mode DataList:l
                       for (int i = 0; i < e; i++)
                         Assembler.program.addByte(Assembler.segment, (byte) 0);
                     else
-                      Errors.add(Assembler.debug, "assembler", ".zero directives can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                      Errors.add(Assembler.debug, "assembler", ".zero directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                   } else
                     Errors.add(Assembler.debug, "assembler", "invalid .zero argument: '" + e + "', expected value > 0");
                 :}
