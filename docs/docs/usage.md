@@ -68,7 +68,7 @@ See the file LICENSE for a full copyright notice
 Please enter a number:
 ```
 
-Because this program is using the `READ_INT` environmental call, the program asks you to enter a number, you can enter for example the number 9 and the result will be:
+Because this program is using the [Read Int](ecalls.md#read-int) environmental call, the program asks you to enter a number, you can enter for example the number 9 and the result will be:
 
 
 ```shell
