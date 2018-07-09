@@ -7,14 +7,6 @@ h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend, p.capti
   font-family: "Lato", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
 }
 
-p {
-  text-align: justify;
-}
-
-.text-center {
-  text-align: center;
-}
-
 /* logo */
 .logo > img {
   border-radius: 0;
@@ -23,6 +15,13 @@ p {
   padding: 0;
   margin: 0;
   background: #fff;
+}
+
+/* dont display badges in mobile devices */
+@media screen and (max-width: 768px) {
+  .index >a img {
+    display: none;
+  }
 }
 
 /* sidenav header background color */
