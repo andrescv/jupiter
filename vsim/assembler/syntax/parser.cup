@@ -933,7 +933,7 @@ Data        ::= DataMode:mode DataList:l
                       }
                     }
                   } else
-                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
@@ -944,18 +944,18 @@ Data        ::= DataMode:mode DataList:l
                     // null terminate string
                     Assembler.program.addByte(Assembler.segment, (byte) 0);
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".asciiz directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(Assembler.debug, "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
              |  D_ZERO Expr:e
                 {:
                   if (e > 0) {
-                    if (!(Assembler.segment == Segment.TEXT))
+                    if (!(Assembler.segment == Segment.TEXT || Assembler.segment == Segment.RODATA))
                       for (int i = 0; i < e; i++)
                         Assembler.program.addByte(Assembler.segment, (byte) 0);
                     else
-                      Errors.add(Assembler.debug, "assembler", ".zero/.space directives can not appear in text segment");
+                      Errors.add(Assembler.debug, "assembler", ".zero directives can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                   } else
-                    Errors.add(Assembler.debug, "assembler", "invalid .zero/.space argument: '" + e + "', expected value > 0");
+                    Errors.add(Assembler.debug, "assembler", "invalid .zero argument: '" + e + "', expected value > 0");
                 :}
              |  D_FLOAT FloatList:l
                 {:
