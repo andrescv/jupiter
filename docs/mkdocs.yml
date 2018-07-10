@@ -6,9 +6,6 @@ copyright: '© Copyright 2018, Andrés Castellanos'
 theme:
   name: readthedocs
   custom_dir: theme
-  highlightjs: True
-  hljs_language:
-    - mipsasm
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML
@@ -19,8 +16,7 @@ repo_url: https://github.com/andrescv/V-Sim
 pages:
   - Home: index.md
   - User Guide:
-      - Using V-Sim: usage.md
-      - Directives: directives.md
-      - Environmental Calls: ecalls.md
-  - Instructions: instructions.md
+    - Using V-Sim: usage.md
+    - Directives: directives.md
+    - Environmental Calls: ecalls.md
   - License: license.md
