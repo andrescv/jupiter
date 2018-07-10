@@ -820,10 +820,10 @@ function(hljs) {
         //GNU preprocs
         '.zero .space .asciiz .asciz .string .byte .half .short .2byte .word .long .4byte ' +
         '.float .p2align .align .balign .global' +
-        '.globl .section .data .text .rodata .bss',
+        '.globl .section .data .text .rodata .bss imm offset',
       built_in:
         // Integer registers
-        'x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 '+ // Common names
+        'x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 rd rs1 rs2 rs3 '+ // Common names
         'x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 x30 x31 '+
         'pc zero ra sp gp tp fp '+ // typical with other names
         's0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 '+ // save registers
