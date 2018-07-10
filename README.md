@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/github/downloads/andrescv/V-Sim/total.svg">
 </p>
 
-V-Sim is a **RISC-V** assembler and runtime simulator for educational purposes made in Java. Almost all the 32-bit base integer instruction set can be simulated, as well as the **M** and **F** extensions with all their respective pseudo-instructions. For the installation guide and a complete list of supported instructions, please visit the [docs](https://andrescv.github.io/V-Sim/) page.
+V-Sim is a simple assembler and runtime simulator inspired by _SPIM_ for programming in **RISC-V** assembly language and intended for educational purposes. One of the main goals was to make it functional and easy to use. Almost all the 32-bit base integer instruction set (`RV32I`) can be simulated, as well as the `M` and `F` extensions plus all the their respective pseudo-instructions. For the installation guide and a complete list of supported instructions, please visit the [docs](https://andrescv.github.io/V-Sim/) page.
 
 ### Contributing
 
