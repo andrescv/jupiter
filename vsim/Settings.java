@@ -24,7 +24,7 @@ package vsim;
 public final class Settings {
 
   /** current version */
-  public static final String VERSION = "vsim-v1.0.0";
+  public static final String VERSION = "v1.0.0";
 
   /** global start label, set with -start flag */
   public static String START = "main";
