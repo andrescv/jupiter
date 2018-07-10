@@ -87,7 +87,8 @@ public final class Memory {
    * @param value the byte value
    */
   public void storeByte(int address, int value) {
-    if (Memory.checkStore(address))
+    // only store the byte if != 0 to save memory
+    if (Memory.checkStore(address) && (value != 0))
       this.memory.put(address, (byte)(value & Data.BYTE_MASK));
   }
 
@@ -117,6 +118,13 @@ public final class Memory {
     }
   }
 
+  /**
+   * This method stores a word in text segment at address given. This method
+   * should only be used in the linking process.
+   *
+   * @param address address where to store the word value
+   * @param code the code/word to store
+   */
   public void storeText(int address, int code) {
     for (int i = 0; i < Data.WORD_LENGTH; i++)
       this.memory.put(address++, (byte)((code >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
