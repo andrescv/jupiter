@@ -87,8 +87,7 @@ public final class Memory {
    * @param value the byte value
    */
   public void storeByte(int address, int value) {
-    // only store the byte if != 0 to save memory
-    if (Memory.checkStore(address) && (value != 0))
+    if (Memory.checkStore(address))
       this.memory.put(address, (byte)(value & Data.BYTE_MASK));
   }
 
