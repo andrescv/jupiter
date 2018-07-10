@@ -41,4 +41,4 @@ To verify that V-Sim has been installed, do:
 $ vsim -version
 ```
 
-which should output `vsim-v1.0.0` if the installation was successful.
+which should output `v1.0.0` if the installation was successful.
