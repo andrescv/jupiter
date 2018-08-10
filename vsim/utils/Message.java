@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
-import vsim.Globals;
 import java.util.ArrayList;
 
 
