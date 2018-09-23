@@ -19,9 +19,11 @@ package vsim.assembler;
 
 import vsim.Globals;
 import java.util.Set;
+import vsim.utils.Data;
 import java.util.HashMap;
 import vsim.utils.Message;
 import java.util.ArrayList;
+import vsim.linker.Relocation;
 import vsim.riscv.instructions.Instruction;
 import vsim.assembler.statements.Statement;
 
@@ -57,6 +59,8 @@ public final class Program {
   private int dataStart;
   /** array of bytes that belongs to the data segment */
   private ArrayList<Byte> data;
+  /** data segment symbols (e.g. .word LABEL) */
+  private HashMap<Integer, Relocation> dataAddr;
 
   /** current rodata segment index */
   private int rodataIndex;
@@ -64,6 +68,8 @@ public final class Program {
   private int rodataStart;
   /** array of bytes that belongs to the rodata segment */
   private ArrayList<Byte> rodata;
+  /** rodata segment symbols (e.g. .word LABEL) */
+  private HashMap<Integer, Relocation> rodataAddr;
 
   /** current bss segment index */
   private int bssIndex;
@@ -94,10 +100,12 @@ public final class Program {
     this.dataIndex = 0;
     this.dataStart = 0;
     this.data = new ArrayList<Byte>();
+    this.dataAddr = new HashMap<Integer, Relocation>();
     // rodata segment control
     this.rodataIndex = 0;
     this.rodataStart = 0;
     this.rodata = new ArrayList<Byte>();
+    this.rodataAddr = new HashMap<Integer, Relocation>();
     // bss segment control
     this.bssIndex = 0;
     this.bssStart = 0;
@@ -131,6 +139,23 @@ public final class Program {
     // then globals
     for (String global: this.globals.keySet())
       Globals.globl.set(global, this.table.get(global));
+  }
+
+
+  /**
+   * This method stores the references in the specific segments.
+   */
+  public void storeRefs() {
+    // data segment
+    for (Integer index: this.dataAddr.keySet()) {
+      Relocation ref = this.dataAddr.get(index);
+      Globals.memory.privStoreWord(index + this.dataStart, ref.getTargetAddress());
+    }
+    // rodata segment
+    for (Integer index: this.rodataAddr.keySet()) {
+      Relocation ref = this.rodataAddr.get(index);
+      Globals.memory.privStoreWord(index + this.rodataStart, ref.getTargetAddress());
+    }
   }
 
   /**
@@ -298,6 +323,35 @@ public final class Program {
         break;
       case BSS:
         this.bssIndex = this.addTo(b, this.bssIndex, this.bss);
+        break;
+    }
+  }
+
+  /**
+   * This method adds a reference (.word label) to the given segment.
+   *
+   * @param segment the segment to add the reference
+   * @param ref relocation to resolve later
+   */
+  public void addRef(Segment segment, Relocation ref) {
+    switch (segment) {
+      case DATA:
+        this.dataIndex = this.align(this.dataIndex, this.data);
+        this.dataAddr.put(this.dataIndex, ref);
+        this.dataIndex += Data.WORD_LENGTH;
+        this.data.add((byte)0);
+        this.data.add((byte)0);
+        this.data.add((byte)0);
+        this.data.add((byte)0);
+        break;
+      case RODATA:
+        this.rodataIndex = this.align(this.rodataIndex, this.rodata);
+        this.rodataAddr.put(this.rodataIndex, ref);
+        this.rodataIndex += Data.WORD_LENGTH;
+        this.rodata.add((byte)0);
+        this.rodata.add((byte)0);
+        this.rodata.add((byte)0);
+        this.rodata.add((byte)0);
         break;
     }
   }

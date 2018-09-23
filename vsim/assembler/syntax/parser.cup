@@ -181,6 +181,7 @@ non terminal ArrayList<Statement> PSeudos;
 non terminal ArrayList<Integer> DataList;
 non terminal ArrayList<Float> FloatList;
 non terminal ArrayList<String> SymList;
+non terminal ArrayList<String> IdList;
 non terminal Directive, SectionDir, SymbolDir, AlignDir;
 non terminal String Id, Str, Register, FRegister, DataMode;
 non terminal Integer Number, Hexnum, Binary, Character, Expr, Const;
@@ -935,6 +936,14 @@ Data        ::= DataMode:mode DataList:l
                   } else
                     Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
+             |  D_WORD:mode IdList:l
+                {:
+                  if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
+                    for (String id: l)
+                      Assembler.program.addRef(Assembler.segment, new Relocation(Relocation.DEFAULT, id, Assembler.debug));
+                  } else
+                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                :}
              |  D_ASCIIZ:mode Str:s
                 {:
                   if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
@@ -990,6 +999,19 @@ DataList    ::= Expr:e
              |  DataList:l COMMA Expr:e
                 {:
                   l.add(e);
+                  RESULT = l;
+                :}
+             ;
+
+IdList      ::= Id:id
+                {:
+                  ArrayList<String> l = new ArrayList<String>();
+                  l.add(id);
+                  RESULT = l;
+                :}
+             |  IdList:l COMMA Id:id
+                {:
+                  l.add(id);
                   RESULT = l;
                 :}
              ;

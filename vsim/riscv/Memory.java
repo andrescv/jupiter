@@ -118,15 +118,15 @@ public final class Memory {
   }
 
   /**
-   * This method stores a word in text segment at address given. This method
+   * This method stores a word at the given address. This method
    * should only be used in the linking process.
    *
    * @param address address where to store the word value
-   * @param code the code/word to store
+   * @param value the word to store
    */
-  public void storeText(int address, int code) {
+  public void privStoreWord(int address, int value) {
     for (int i = 0; i < Data.WORD_LENGTH; i++)
-      this.memory.put(address++, (byte)((code >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
+      this.memory.put(address++, (byte)((value >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
   }
 
   /**

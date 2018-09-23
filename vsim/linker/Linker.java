@@ -121,10 +121,15 @@ public final class Linker {
    * @see vsim.assembler.Program
    */
   private static void linkSymbols(ArrayList<Program> programs) {
+    // first relocate symbols
     for (Program program: programs) {
       program.setTextStart(Linker.textAddress);
       program.relocateSymbols();
       Linker.textAddress += program.getTextSize();
+    }
+    // then store references to this symbols
+    for (Program program: programs) {
+      program.storeRefs();
     }
   }
 
@@ -148,7 +153,7 @@ public final class Linker {
           stmt.build(Linker.textAddress);
           // store result in text segment
           int code = stmt.result().get(InstructionField.ALL);
-          Globals.memory.storeText(Linker.textAddress, code);
+          Globals.memory.privStoreWord(Linker.textAddress, code);
           // add this statement
           all.put(Linker.textAddress, stmt);
           // next word align address
