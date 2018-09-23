@@ -265,12 +265,12 @@ public final class Syscall {
    */
   private static void sbrk() {
     int numBytes = Globals.regfile.getRegister("a1");
-    if (numBytes > 0) {
+    if (numBytes >= 0) {
       int address = Globals.memory.allocateBytesFromHeap(numBytes);
       Globals.regfile.setRegister("a0", address);
     } else {
       if (!Settings.QUIET)
-        Message.warning("ecall: number of bytes should be > 0");
+        Message.warning("ecall: number of bytes should be >= 0");
     }
   }
 
