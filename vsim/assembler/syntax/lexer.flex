@@ -87,6 +87,7 @@ DOT = "."
 COMMA = ","
 LPAREN = "("
 RPAREN = ")"
+EQUAL = "="
 
 // operators
 TIMES = "*"
@@ -269,7 +270,7 @@ F_NAME = ("ft"([0-9]|1[01])|"fa"[0-8]|"fs"([0-9]|1[01]))
 FREGISTER = ({F_NUMBER}|{F_NAME})
 
 // ids
-IDENTIFIER = [a-zA-Z_][a-zA-Z0-9_]*
+IDENTIFIER = [a-zA-Z_]([a-zA-Z0-9_]*("."[a-zA-Z0-9_]+)?)
 
 // labels
 LABEL = {IDENTIFIER}:
@@ -306,6 +307,10 @@ ERROR = .
 
   {RPAREN} {
     return symbol(Token.RPAREN);
+  }
+
+  {EQUAL} {
+    return symbol(Token.EQUAL);
   }
 
   // operators
