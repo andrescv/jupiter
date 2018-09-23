@@ -112,6 +112,7 @@ public final class Linker {
       }
     }
     MemorySegments.HEAP_SEGMENT = Linker.dataAddress;
+    Globals.regfile.setRegister("gp", MemorySegments.HEAP_SEGMENT);
   }
 
   /**
