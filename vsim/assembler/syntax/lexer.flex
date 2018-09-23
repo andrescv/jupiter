@@ -87,7 +87,6 @@ DOT = "."
 COMMA = ","
 LPAREN = "("
 RPAREN = ")"
-EQUAL = "="
 
 // operators
 TIMES = "*"
@@ -307,10 +306,6 @@ ERROR = .
 
   {RPAREN} {
     return symbol(Token.RPAREN);
-  }
-
-  {EQUAL} {
-    return symbol(Token.EQUAL);
   }
 
   // operators
