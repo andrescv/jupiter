@@ -166,7 +166,7 @@ terminal NUMBER, HEXNUM, BINARY, FLOAT, STRING, CHARACTER;
 terminal REGISTER, FREGISTER, IDENTIFIER;
 
 // Directives
-terminal D_ASCIIZ, D_ZERO, D_BYTE, D_HALF, D_WORD;
+terminal D_ASCIIZ, D_ASCII, D_ZERO, D_BYTE, D_HALF, D_WORD;
 terminal D_SECTION, D_TEXT, D_DATA, D_RODATA, D_BSS;
 terminal D_ALIGN, D_BALIGN, D_GLOBL, D_FLOAT;
 
@@ -952,6 +952,15 @@ Data        ::= DataMode:mode DataList:l
                       Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
                     // null terminate string
                     Assembler.program.addByte(Assembler.segment, (byte) 0);
+                  } else
+                    Errors.add(Assembler.debug, "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                :}
+             |  D_ASCII:mode Str:s
+                {:
+                  if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
+                    // scan char by char
+                    for (int i = 0; i < s.length(); i++)
+                      Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
                   } else
                     Errors.add(Assembler.debug, "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
