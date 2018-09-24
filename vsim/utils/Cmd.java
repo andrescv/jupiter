@@ -146,8 +146,8 @@ public final class Cmd {
    */
   public static void title() {
     // print the title and license note if the -notitle flag is not set
+    String newline = System.getProperty("line.separator");
     if (Settings.TITLE) {
-      String newline = System.getProperty("line.separator");
       // cool title :]
       IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
       IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
