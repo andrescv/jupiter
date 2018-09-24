@@ -69,11 +69,6 @@ public final class Assembler {
           // reset line count
           int lineno = 1;
           while ((line = br.readLine()) != null) {
-            // remove comments
-            if (line.indexOf(';') != -1)
-              line = line.substring(0, line.indexOf(';'));
-            if (line.indexOf('#') != -1)
-              line = line.substring(0, line.indexOf('#'));
             // parse line only if != nothing
             if (!line.trim().equals("")) {
               // set current debug
