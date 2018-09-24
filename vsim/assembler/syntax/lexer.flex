@@ -87,7 +87,6 @@ DOT = "."
 COMMA = ","
 LPAREN = "("
 RPAREN = ")"
-COMMENT = (";"|"#")
 
 // operators
 TIMES = "*"
@@ -288,7 +287,7 @@ FLOAT = [+-]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
 WHITESPACE = (" "|\t)
 
 // everything else error
-EVERYTHING = .
+ERROR = .
 %%
 
 <YYINITIAL>{
@@ -308,10 +307,6 @@ EVERYTHING = .
 
   {RPAREN} {
     return symbol(Token.RPAREN);
-  }
-
-  {COMMENT} {
-    return symbol(Token.COMMENT);
   }
 
   // operators
@@ -954,7 +949,7 @@ EVERYTHING = .
   {WHITESPACE} { /* do nothing */ }
 
   // report error
-  {EVERYTHING}  {
+  {ERROR}  {
     return symbol(Token.ERROR, "(syntax) unexpected character: '" + yytext() + "'");
   }
 
