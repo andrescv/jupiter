@@ -114,6 +114,7 @@ D_SPACE = ".space"
 D_ASCIIZ = ".asciiz"
 D_ASCIZ = ".asciz"
 D_STRING = ".string"
+D_ASCII = ".ascii"
 D_BYTE = ".byte"
 D_HALF = ".half"
 D_SHORT = ".short"
@@ -389,6 +390,10 @@ ERROR = .
 
   {D_ASCIZ} {
     return symbol(Token.D_ASCIIZ);
+  }
+
+  {D_ASCII} {
+    return symbol(Token.D_ASCII);
   }
 
   {D_STRING} {
