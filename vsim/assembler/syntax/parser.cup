@@ -53,50 +53,52 @@ parser code {:
 
   @Override
   public void syntax_error(java_cup.runtime.Symbol cur_token) {
-    // show all escaped sequences
-    if (cur_token.value instanceof String) {
-      cur_token.value = ((String) cur_token.value).replaceAll("\n", "\\\\n");
-      cur_token.value = ((String) cur_token.value).replaceAll("\r", "\\\\r");
-      cur_token.value = ((String) cur_token.value).replaceAll("\b", "\\\\b");
-      cur_token.value = ((String) cur_token.value).replaceAll("\f", "\\\\f");
-      cur_token.value = ((String) cur_token.value).replaceAll("\0", "\\\\0");
-      cur_token.value = ((String) cur_token.value).replaceAll("\t", "\\\\t");
-      cur_token.value = ((String) cur_token.value).replaceAll("\u000b", "\\\\v");
-    }
-    if (cur_token.sym != Token.ERROR) {
-      if ((cur_token.value instanceof String) && ((String)cur_token.value).equals("")) {
-        String expected = "";
-        for (int id: expected_token_ids()) {
-          expected += Token.terminalNames[id].toLowerCase() + " ";
-        }
-        expected = String.join("|", expected.trim().split(" "));
-        if (expected.equals(""))
+    if (cur_token.sym != Token.COMMENT) {
+      // show all escaped sequences
+      if (cur_token.value instanceof String) {
+        cur_token.value = ((String) cur_token.value).replaceAll("\n", "\\\\n");
+        cur_token.value = ((String) cur_token.value).replaceAll("\r", "\\\\r");
+        cur_token.value = ((String) cur_token.value).replaceAll("\b", "\\\\b");
+        cur_token.value = ((String) cur_token.value).replaceAll("\f", "\\\\f");
+        cur_token.value = ((String) cur_token.value).replaceAll("\0", "\\\\0");
+        cur_token.value = ((String) cur_token.value).replaceAll("\t", "\\\\t");
+        cur_token.value = ((String) cur_token.value).replaceAll("\u000b", "\\\\v");
+      }
+      if (cur_token.sym != Token.ERROR) {
+        if ((cur_token.value instanceof String) && ((String)cur_token.value).equals("")) {
+          String expected = "";
+          for (int id: expected_token_ids()) {
+            expected += Token.terminalNames[id].toLowerCase() + " ";
+          }
+          expected = String.join("|", expected.trim().split(" "));
+          if (expected.equals(""))
+            Errors.add(
+              Assembler.debug,
+              "assembler",
+              "(syntax) invalid statement"
+            );
+          else
+            Errors.add(
+              Assembler.debug,
+              "assembler",
+              "(syntax) invalid statement: expected " + expected +
+              " (column " + cur_token.right + ")"
+            );
+        } else
           Errors.add(
             Assembler.debug,
             "assembler",
-            "(syntax) invalid statement"
+            "(syntax) invalid statement: unexpected '" + cur_token.value +
+            "' (column " + cur_token.right + ")"
           );
-        else
-          Errors.add(
-            Assembler.debug,
-            "assembler",
-            "(syntax) invalid statement: expected " + expected +
-            " (column " + cur_token.right + ")"
-          );
-      } else
+      }
+      else
         Errors.add(
           Assembler.debug,
           "assembler",
-          "(syntax) invalid statement: unexpected '" + cur_token.value +
-          "' (column " + cur_token.right + ")"
+          (String)cur_token.value
         );
     }
-    else
-      Errors.add(
-        Assembler.debug,
-        "assembler",
-        (String)cur_token.value
-      );
   }
 
   @Override
@@ -111,7 +113,7 @@ scan with {: return Parser.lexer.next_token(); :};
 /*  TERMINALS */
 
 // Syntax
-terminal DOT, COMMA, LPAREN, RPAREN, LABEL;
+terminal DOT, COMMA, LPAREN, RPAREN, LABEL, COMMENT;
 
 // Operators
 terminal TIMES, DIVIDE, MOD, PLUS, MINUS, SLL, SRL, SRA, AND, OR, XOR, NEG;
