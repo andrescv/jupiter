@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import java.io.File;
 import vsim.Globals;
 import vsim.Settings;
 import java.nio.file.Files;
@@ -102,6 +103,13 @@ public final class Cmd {
     }
     // get files
     ArrayList<String> files = parser.targets();
+    // find trap handler
+    if (Settings.ROOT != null) {
+      File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
+      if (trapfile.exists()) {
+        Settings.TRAP = trapfile.getAbsolutePath();
+      }
+    }
     // check project mode
     if (files.size() == 1 && files.get(0).equals(".")) {
       // remove this
@@ -150,6 +158,9 @@ public final class Cmd {
       IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
       IO.stdout.println("All Rights Reserved");
       IO.stdout.println("See the file LICENSE for a full copyright notice" + newline);
+    }
+    if (Settings.TRAP != null) {
+      IO.stdout.println("loaded: " + Settings.TRAP + newline);
     }
   }
 
