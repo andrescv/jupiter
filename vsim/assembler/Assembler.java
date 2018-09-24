@@ -75,7 +75,7 @@ public final class Assembler {
             for (int i = 0; i < line.length(); i++) {
               char c = line.charAt(i);
               // toggle state
-              if (c == '"')
+              if (c == '"' && (i == 0 || line.charAt(i - 1) != '\\'))
                 inString = !inString;
               // find start of line comment
               if ((c == ';' || c == '#') && !inString) {
