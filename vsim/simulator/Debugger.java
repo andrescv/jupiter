@@ -459,7 +459,6 @@ public final class Debugger {
    * can use to interact with the debugger.
    */
   public void run() {
-    long cycles = 0;
     while (true) {
       Cmd.prompt();
       try {
@@ -468,10 +467,7 @@ public final class Debugger {
         if (line == null) { IO.stdout.println(); continue; }
         if (line.equals("")) continue;
         // interpret line
-        cycles++;
         this.interpret(line.trim().toLowerCase().split(" "));
-        if (Long.remainderUnsigned(cycles, 1000) == 0)
-          System.gc();
       } catch (IOException e) {
         Message.panic("input could not be read");
       } catch (Exception e) {
