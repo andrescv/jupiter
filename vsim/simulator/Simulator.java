@@ -51,16 +51,11 @@ public final class Simulator {
     program.reset();
     // execute all program
     Statement stmt;
-    long cycles = 0;
     while ((stmt = program.next()) != null) {
-      cycles++;
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       // if debugging is activated
       if (Settings.DEBUG)
         break;
-      // force garbage collection every 1000 cycles, why not ?
-      if (Long.remainderUnsigned(cycles, 1000) == 0)
-        System.gc();
     }
     if (!Settings.DEBUG) {
       // panic if no exit/exit2 ecall
