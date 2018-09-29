@@ -123,7 +123,7 @@ public final class Data {
    * @return the word aligned address
    */
   public static int alignToWordBoundary(int address) {
-    if (Integer.divideUnsigned(address, WORD_LENGTH) != 0) {
+    if (!Data.isWordAligned(address)) {
       int offset = WORD_LENGTH - Integer.remainderUnsigned(address, WORD_LENGTH);
       return address + offset;
     }
