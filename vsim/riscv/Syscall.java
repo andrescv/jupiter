@@ -238,7 +238,7 @@ public final class Syscall {
       String s = IO.stdin.readLine();
       int buffer = Globals.regfile.getRegister("a1");
       int length = Globals.regfile.getRegister("a2");
-      int minLength = Math.min(length, s.length());
+      int minLength = Math.min(length, s.length() + 1);
       for (int i = 0; i < minLength; i++) {
         // null terminated string
         if (i == (minLength - 1))
