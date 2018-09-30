@@ -160,7 +160,7 @@ public final class Cmd {
       IO.stdout.println("See the file LICENSE for a full copyright notice" + newline);
     }
     if (Settings.TRAP != null) {
-      IO.stdout.println("loaded: " + Settings.TRAP + newline);
+      IO.stdout.println("loaded: " + Colorize.green("traphandler.s") + newline);
     }
   }
 
