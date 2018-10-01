@@ -68,9 +68,13 @@ public final class Linker {
         MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
       }
     }
-    // momve next address by 1 word to set a rodata address range properly
+    // move next address by 1 word to set a rodata address range properly
     if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END)
       Linker.dataAddress += Data.WORD_LENGTH;
+    else {
+      MemorySegments.RODATA_SEGMENT_BEGIN = -1;
+      MemorySegments.RODATA_SEGMENT_END = -1;
+    }
   }
 
   /**
