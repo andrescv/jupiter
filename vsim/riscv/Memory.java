@@ -138,14 +138,16 @@ public final class Memory {
    */
   public int allocateBytesFromHeap(int bytes) {
     int address = MemorySegments.HEAP_SEGMENT;
-    MemorySegments.HEAP_SEGMENT += bytes;
-    // align to a word boundary (if necessary)
-    MemorySegments.HEAP_SEGMENT = Data.alignToWordBoundary(MemorySegments.HEAP_SEGMENT);
-    if (MemorySegments.HEAP_SEGMENT > MemorySegments.STACK_SEGMENT) {
+    // allocate bytes only if possible
+    if ((MemorySegments.HEAP_SEGMENT + bytes) > MemorySegments.STACK_SEGMENT) {
       if (!Settings.QUIET)
         Message.warning("runtime: no more heap space");
       return -1;
     }
+    // allocate bytes
+    MemorySegments.HEAP_SEGMENT += bytes;
+    // align to a word boundary (if necessary)
+    MemorySegments.HEAP_SEGMENT = Data.alignToWordBoundary(MemorySegments.HEAP_SEGMENT);
     return address;
   }
 
