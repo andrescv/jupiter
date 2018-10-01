@@ -31,7 +31,6 @@ public final class Colorize {
 
   // available ANSI colors
   private static final String RESET  = "\u001B[0m";
-  private static final String BLACK  = "\u001B[30m";
   private static final String RED    = "\u001B[31m";
   private static final String GREEN  = "\u001B[32m";
   private static final String YELLOW = "\u001B[33m";
