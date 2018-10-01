@@ -241,7 +241,7 @@ public final class Memory {
       return false;
     }
     // read only segment ?
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END &&
+    if (MemorySegments.RODATA_SEGMENT_BEGIN != -1 &&
         Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END)) {
       if (!Settings.QUIET)
         Message.warning("runtime: trying to store a value in read only segment (ignoring)");
