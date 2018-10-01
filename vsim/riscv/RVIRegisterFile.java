@@ -175,7 +175,7 @@ public final class RVIRegisterFile {
     this.pc.reset();
     // set default value for stack and global pointer
     this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
-    this.rf.get("gp").setValue(MemorySegments.STATIC_SEGMENT);
+    this.rf.get("gp").setValue(MemorySegments.HEAP_SEGMENT);
   }
 
   /**
