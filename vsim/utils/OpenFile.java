@@ -153,6 +153,7 @@ public final class OpenFile {
           Globals.memory.storeByte(buffer++, b);
           rbytes++;
         }
+        br.close();
         return rbytes;
       } catch (Exception e) {
         if (rbytes > 0)
