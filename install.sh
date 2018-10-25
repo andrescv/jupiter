@@ -97,7 +97,7 @@
 
   # prints V-Sim version
   vsim_version() {
-    echo 'v1.0.0'
+    echo 'v1.0.1'
   }
 
   # current V-Sim release link
