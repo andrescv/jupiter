@@ -24,7 +24,7 @@ package vsim;
 public final class Settings {
 
   /** current version */
-  public static final String VERSION = "v1.0.0";
+  public static final String VERSION = "v1.0.1";
 
   /** installation path */
   public static String ROOT = null;
