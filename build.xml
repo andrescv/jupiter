@@ -1,73 +1,74 @@
-<project name="V-Sim" default="vsim">
-  <!-- load properties -->
+<project name="V-Sim" default="build">
+  <!-- loads build properties -->
   <property file="build.properties" />
-  <!-- some build info -->
+
+  <!-- displays some build info -->
   <target name="info">
-    <echo>Building VSim version: ${buildversion}</echo>
+    <echo>Building V-Sim version: ${version}</echo>
   </target>
-  <!-- create lexer and parser -->
-  <target name="syntax" description="generates the lexer and parser">
+
+  <!-- creates lexer -->
+  <target name="lexer" description="generates RISC-V syntax lexer">
     <java jar="${lib.dir}/jflex-1.6.1.jar" fork="true">
-      <arg file="${src.dir}/assembler/syntax/lexer.flex" />
+      <arg file="${src.dir}/assembler/syntax/lexer.flex"/>
     </java>
-    <move
-      file="${src.dir}/assembler/syntax/Lexer.java"
-      todir="${src.dir}/assembler/"
-    />
-    <java jar="${lib.dir}/java-cup-11b.jar" fork="true">
-      <arg line="-parser Parser -symbols Token" />
-      <arg file="${src.dir}/assembler/syntax/parser.cup" />
-    </java>
-    <move
-      file="Token.java"
-      todir="${src.dir}/assembler"
-    />
-    <move
-      file="Parser.java"
-      todir="${src.dir}/assembler"
-    />
+    <move file="${src.dir}/assembler/syntax/Lexer.java" todir="${src.dir}/assembler/"/>
   </target>
-  <!-- compile all source code -->
-  <target name="compile" description="build V-Sim project" depends="info,syntax">
-    <mkdir dir="${build.dir}" />
-    <javac destdir="${build.dir}"
-      classpath="${lib.dir}/java-cup-11b.jar:."
-      includeAntRuntime="false"
-      source="1.8"
-      target="1.8"
-      failonerror="true"
-      >
-      <src path="${src.dir}" />
+
+  <!-- creates parser -->
+  <target name="parser" description="generates RISC-V syntax parser">
+    <java jar="${lib.dir}/java-cup-11b.jar" fork="true">
+      <arg line="-parser Parser -symbols Token"/>
+      <arg file="${src.dir}/assembler/syntax/parser.cup"/>
+    </java>
+    <move file="Token.java" todir="${src.dir}/assembler"/>
+    <move file="Parser.java" todir="${src.dir}/assembler"/>
+  </target>
+
+  <!-- compiles all source code -->
+  <target name="compile" description="build V-Sim project" depends="info,lexer,parser">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}" includeAntRuntime="false" source="1.8" target="1.8" failonerror="true">
+      <src path="${src.dir}"/>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+          <exclude name="jflex-1.6.1.jar"/>
+        </fileset>
+      </classpath>
     </javac>
   </target>
-  <!-- generate a JAR file -->
-  <target name="vsim" depends="compile">
-    <jar
-      basedir="${build.dir}"
-      compress="true"
-      destfile="VSim.jar"
-      update="true">
-      <manifest>
-        <attribute name="Main-Class" value="vsim.VSim" />
-        <attribute name="Class-Path" value=". ${lib.dir}/java-cup-11b.jar" />
-      </manifest>
+
+  <!-- generates a V-Sim fat jar file -->
+  <target name="build" depends="compile">
+    <!-- pack all dependencies -->
+    <mkdir dir="${dist.dir}/tmp"/>
+    <jar jarfile="${dist.dir}/tmp/dependencies-all.jar">
+      <zipgroupfileset dir="${lib.dir}">
+        <include name="*.jar"/>
+        <exclude name="jflex-1.6.1.jar"/>
+      </zipgroupfileset>
     </jar>
-    <delete dir="${build.dir}" />
+    <jar basedir="${build.dir}" compress="true" destfile="${dist.dir}/V-Sim-${version}.jar" update="true">
+      <manifest>
+        <attribute name="Main-Class" value="vsim.VSim"/>
+      </manifest>
+      <!-- include all dependencies (fat jar) -->
+      <zipfileset src="${dist.dir}/tmp/dependencies-all.jar" excludes="META-INF/*.SF"/>
+    </jar>
+    <delete dir="${dist.dir}/tmp"/>
   </target>
+
   <!-- test vsim -->
-  <target name="test" description="test simulator" depends="vsim">
+  <target name="test" description="test simulator" depends="build">
     <exec executable="python3" failonerror="true" timeout="60000">
       <arg value="test.py" />
     </exec>
   </target>
+
   <!-- vsim documentation -->
   <target name="doc" description="generate documentation" depends="clean">
-    <javadoc
-      destdir="${doc.dir}"
-      private="true"
-      failonerror="true"
-      windowtitle="V-Sim Documentation"
-    >
+    <javadoc destdir="${doc.dir}" private="true" failonerror="true" windowtitle="V-Sim Documentation">
       <fileset dir="${src.dir}">
         <include name="**/*.java"/>
       </fileset>
@@ -82,13 +83,14 @@
       <group title="V-Sim" packages="vsim" />
     </javadoc>
   </target>
+
   <!-- clean build -->
-  <target name="clean" description="clean build directory">
-    <delete dir="${build.dir}" />
-    <delete file="VSim.jar" />
-    <delete dir="${doc.dir}" />
-    <delete file="${src.dir}/assembler/Parser.java" />
-    <delete file="${src.dir}/assembler/Lexer.java" />
-    <delete file="${src.dir}/assembler/Token.java" />
+  <target name="clean" description="clean build">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${doc.dir}"/>
+    <delete file="${src.dir}/assembler/Parser.java"/>
+    <delete file="${src.dir}/assembler/Lexer.java"/>
+    <delete file="${src.dir}/assembler/Token.java"/>
   </target>
 </project>

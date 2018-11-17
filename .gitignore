@@ -1,8 +1,8 @@
 # Build directory
 build/
 
-# V-Sim Jar file
-VSim.jar
+# Distribution directory
+dist/
 
 # Doc directory
 javadoc/

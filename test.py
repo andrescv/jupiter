@@ -21,7 +21,8 @@ import subprocess
 from glob import glob
 
 newline = os.linesep
-CMD = 'java -jar VSim.jar -nocolor %s'
+JAR = os.listdir('dist/')[0]
+CMD = 'java -jar dist/' + JAR + ' -nocolor %s'
 
 
 def main():
