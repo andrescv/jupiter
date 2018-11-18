@@ -156,7 +156,7 @@
     # clean old files
     rm -f *.jar vsim
     # download current release
-    # vsim_download
+    vsim_download
     # create V-Sim launcher
     printf '#!/bin/sh\n' >> vsim
     printf "java -jar %s/$(vsim_jar) %s" "$(vsim_dir)" '$@' >> vsim
