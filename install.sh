@@ -154,7 +154,7 @@
     fi
     cd "$(vsim_dir)"
     # clean old files
-    rm -f *.jar *.s
+    rm -f *.jar *.s vsim
     # download current release
     vsim_download
     # create V-Sim launcher
