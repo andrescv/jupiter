@@ -97,7 +97,7 @@
 
   # prints V-Sim version
   vsim_version() {
-    echo 'v1.0.2'
+    echo 'v1.0.3'
   }
 
   # prints V-Sim jar file

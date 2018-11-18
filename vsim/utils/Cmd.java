@@ -42,18 +42,29 @@ public final class Cmd {
     ArgumentParser parser = new ArgumentParser("vsim [options] <files>");
     // simulator available options
     parser.add("-help",    "show this help message and exit");
+    parser.add("-all",     "assemble all files in directory");
     parser.add("-bare",    "bare machine (no pseudo-ops)");
     parser.add("-quiet",   "do not print warnings");
     parser.add("-nocolor", "do not colorize output");
-    parser.add("-usage",   "print usage of an instruction and exit", true);
-    parser.add("-notitle", "do not print title and copyright notice");
-    parser.add("-dump",    "dump machine code to a file", true);
-    parser.add("-start",   "start program at global label (default: main)", true);
+    parser.add("-usage",   "print usage of an instruction and exit", "<mnemonic>");
+    parser.add("-notitle", "do not print V-Sim title");
+    parser.add("-dump",    "dump machine code to a file", "<file>");
+    parser.add("-start",   "start program at global label (default: main)", "<label>");
     parser.add("-debug",   "start the debugger");
     parser.add("-version", "show the simulator version and exit");
+    parser.add("-license", "show license and copyright notice and exit");
     parser.add("-iset",    "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
+    // display usage if errors
+    if (parser.hasErrors()) {
+      Cmd.title();
+      for (String error: parser.getErrors())
+        Message.warning(error);
+      IO.stdout.println();
+      parser.print();
+      System.exit(1);
+    }
     // override default Settings
     if (parser.hasFlag("-bare"))
       Settings.BARE = true;
@@ -69,33 +80,30 @@ public final class Cmd {
       Settings.START = parser.value("-start");
     if (parser.hasFlag("-debug"))
       Settings.DEBUG = true;
-    // display usage if errors
-    if (parser.hasErrors()) {
-      Cmd.title();
-      for (String error: parser.getErrors())
-        Message.warning(error);
-      IO.stdout.println();
-      parser.print();
-      System.exit(1);
-    }
-    // first -help
+    // check -help flag
     if (parser.hasFlag("-help")) {
       Cmd.title();
       parser.print();
       System.exit(0);
     }
-    // second -version
-    if (parser.hasFlag("-version")) {
-      IO.stdout.println(Settings.VERSION);
+    // check -license flag
+    if (parser.hasFlag("-license")) {
+      Cmd.titleAndLicense();
       System.exit(0);
     }
-    // third -iset
+    // check -version flag
+    if (parser.hasFlag("-version")) {
+      Cmd.title();
+      IO.stdout.println("Version: " + Settings.VERSION);
+      System.exit(0);
+    }
+    // check -iset flag
     if (parser.hasFlag("-iset")) {
       Cmd.title();
       Globals.iset.print();
       System.exit(0);
     }
-    // fourth -usage
+    // check -usage flag
     if (parser.hasFlag("-usage")) {
       Cmd.title();
       Globals.iset.print(parser.value("-usage"));
@@ -111,9 +119,7 @@ public final class Cmd {
       }
     }
     // check project mode
-    if (files.size() == 1 && files.get(0).equals(".")) {
-      // remove this
-      files.remove(0);
+    if (parser.hasFlag("-all")) {
       try {
         // recursively find all files in user cwd
         Files.find(
@@ -134,7 +140,7 @@ public final class Cmd {
         );
       } catch (Exception e) {
         if (!Settings.QUIET)
-          Message.warning("An error occurred while recursively searching the files in the directory (aborting...)");
+          Message.warning("An error occurred while recursively searching the files in directory (aborting...)");
       }
     }
     files.trimToSize();
@@ -154,13 +160,29 @@ public final class Cmd {
       IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
       IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
       IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
-      IO.stdout.println("GPL-3.0 License");
-      IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
-      IO.stdout.println("All Rights Reserved");
-      IO.stdout.println("See the file LICENSE for a full copyright notice" + newline);
     }
     if (Settings.TRAP != null) {
       IO.stdout.println("loaded: " + Colorize.green("traphandler.s") + newline);
+    }
+  }
+
+  /**
+   * This method prints the title and license of the V-Sim simulator.
+   */
+  public static void titleAndLicense() {
+    // print the title and license note if the -notitle flag is not set
+    String newline = System.getProperty("line.separator");
+    if (Settings.TITLE) {
+      // cool title :]
+      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
+      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
+      IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
+      IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
+      IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
+      IO.stdout.println("GPL-3.0 License");
+      IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
+      IO.stdout.println("All Rights Reserved");
+      IO.stdout.println("See " + Colorize.green("https://git.io/fpcYS") + " for a full copyright notice");
     }
   }
 
