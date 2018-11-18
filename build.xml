@@ -2,6 +2,10 @@
   <!-- loads build properties -->
   <property file="build.properties" />
 
+  <!-- loads tasks -->
+  <taskdef name="jflex" classname="jflex.anttask.JFlexTask" classpath="${lib.dir}/jflex-1.7.0.jar"/>
+  <taskdef name="jcup" classname="java_cup.anttask.CUPTask" classpath="${lib.dir}/java-cup-11b.jar"/>
+
   <!-- displays some build info -->
   <target name="info">
     <echo>Building V-Sim version: ${version}</echo>
@@ -9,20 +13,12 @@
 
   <!-- creates lexer -->
   <target name="lexer" description="generates RISC-V syntax lexer">
-    <java jar="${lib.dir}/jflex-1.6.1.jar" fork="true">
-      <arg file="${src.dir}/assembler/syntax/lexer.flex"/>
-    </java>
-    <move file="${src.dir}/assembler/syntax/Lexer.java" todir="${src.dir}/assembler/"/>
+    <jflex file="${src.dir}/assembler/syntax/lexer.flex" destdir="."/>
   </target>
 
   <!-- creates parser -->
   <target name="parser" description="generates RISC-V syntax parser">
-    <java jar="${lib.dir}/java-cup-11b.jar" fork="true">
-      <arg line="-parser Parser -symbols Token"/>
-      <arg file="${src.dir}/assembler/syntax/parser.cup"/>
-    </java>
-    <move file="Token.java" todir="${src.dir}/assembler"/>
-    <move file="Parser.java" todir="${src.dir}/assembler"/>
+    <jcup srcfile="${src.dir}/assembler/syntax/parser.cup" destdir="." parser="Parser" symbols="Token" interface="true" locations="false"/>
   </target>
 
   <!-- compiles all source code -->
@@ -33,7 +29,7 @@
       <classpath>
         <fileset dir="${lib.dir}">
           <include name="*.jar"/>
-          <exclude name="jflex-1.6.1.jar"/>
+          <exclude name="jflex-*.jar"/>
         </fileset>
       </classpath>
     </javac>
@@ -46,7 +42,7 @@
     <jar jarfile="${dist.dir}/tmp/dependencies-all.jar">
       <zipgroupfileset dir="${lib.dir}">
         <include name="*.jar"/>
-        <exclude name="jflex-1.6.1.jar"/>
+        <exclude name="jflex-*.jar"/>
       </zipgroupfileset>
     </jar>
     <jar basedir="${build.dir}" compress="true" destfile="${dist.dir}/V-Sim-${version}.jar" update="true">
