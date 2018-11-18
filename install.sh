@@ -159,7 +159,7 @@
     vsim_download
     # create V-Sim launcher
     printf '#!/bin/sh\n' >> vsim
-    printf "java -jar $(vsim_jar) %s" "$(vsim_dir)" '$@' >> vsim
+    printf "java -jar %s/$(vsim_jar) %s" "$(vsim_dir)" '$@' >> vsim
     chmod 755 vsim
     # append source to profile
     local PROFILE
