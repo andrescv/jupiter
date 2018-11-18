@@ -36,6 +36,8 @@ public final class ArgumentParser {
   private HashMap<String, Integer> flags;
   /** stores the values that were set */
   private HashMap<Integer, String> values;
+  /** stores aliases of values that were set */
+  private HashMap<String, String> aliases;
   /** stores the valid options for this parser */
   private TreeMap<String, String> options;
   /** stores the valid options that requires a value */
@@ -56,6 +58,7 @@ public final class ArgumentParser {
     this.usage = usage;
     this.flags = new HashMap<String, Integer>();
     this.values = new HashMap<Integer, String>();
+    this.aliases = new HashMap<String, String>();
     this.options = new TreeMap<String, String>();
     this.optsval = new HashSet<String>();
     this.targets = new ArrayList<String>();
@@ -63,30 +66,23 @@ public final class ArgumentParser {
   }
 
   /**
-   * Constructor that initializes a newly ArgumentParser object with
-   * a default usage message {@code "[options]"}.
-   */
-  public ArgumentParser() {
-    this("[options]");
-  }
-
-  /**
    * This method adds a new option to the valid option list.
    *
    * @param option the option that starts with -
    * @param help help information attached to this option
-   * @param requiresValue if this option requires a value
+   * @param alias alias for value if this option requires a value, otherwise null
    */
-  public void add(String option, String help, boolean requiresValue) {
+  public void add(String option, String help, String alias) {
     // only include options that starts with '-'
     if (option != null && option.startsWith("-")) {
       this.options.put(option, help);
       // this option requires a value
-      if (requiresValue) {
+      if (alias != null) {
         this.optsval.add(option);
-        this.maxLength = Math.max(this.maxLength, option.length() * 2 + 2);
+        this.aliases.put(option, alias);
+        this.maxLength = Math.max(this.maxLength, option.length() + alias.length() + 2);
       } else
-        this.maxLength = Math.max(this.maxLength, option.length() + 2);
+        this.maxLength = Math.max(this.maxLength, option.length() + 1);
     }
   }
 
@@ -98,7 +94,7 @@ public final class ArgumentParser {
    * @param help help information attached to this option
    */
   public void add(String option, String help) {
-    this.add(option, help, false);
+    this.add(option, help, null);
   }
 
   /**
@@ -124,7 +120,7 @@ public final class ArgumentParser {
         lastFlag = args[i];
         // valid flag ?
         if (!this.options.containsKey(args[i]))
-          this.errors.add("unknown argument: " + args[i]);
+          this.errors.add("unknown option: " + args[i]);
         this.flags.put(args[i], i);
       } else
         // store every value
@@ -174,12 +170,13 @@ public final class ArgumentParser {
     out += "available options:" + newline;
     for (String option: this.options.keySet()) {
       out += "  " + option;
-      int length = option.length();
-      if (this.optsval.contains(option)) {
-        out += " " + option.substring(1).toUpperCase();
-        length += option.length();
+      int length = option.length() + 1;
+      if (this.aliases.get(option) != null) {
+        String alias = this.aliases.get(option);
+        out += " " + alias;
+        length += alias.length() + 1;
       }
-      for (int i = 0; i < (this.maxLength - length); i++)
+      for (int i = 0; i < (this.maxLength - length + 1); i++)
         out += " ";
       out += this.options.get(option) + newline;
     }
