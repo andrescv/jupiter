@@ -97,14 +97,17 @@
 
   # prints V-Sim version
   vsim_version() {
-    echo 'v1.0.1'
+    echo 'v1.0.2'
+  }
+
+  # prints V-Sim jar file
+  vsim_jar() {
+    echo V-Sim-$(echo $(vsim_version) | cut -b 2-6).jar
   }
 
   # current V-Sim release link
   vsim_url() {
-    local VERSION
-    VERSION=$(vsim_version)
-    echo "https://github.com/andrescv/V-Sim/releases/download/$VERSION/$VERSION.zip"
+    echo "https://github.com/andrescv/V-Sim/releases/download/$(vsim_version)/$(vsim_jar)"
   }
 
   # V-Sim install directory
@@ -117,12 +120,12 @@
     tput sc
     message 'downloading release...' 3
     # no more programs
-    download "$(vsim_url)" "vsim.zip" || {
+    download "$(vsim_url)" "$(vsim_jar)" || {
       error "an error ocurred while downloading release $(vsim_version).zip"
       exit 1
     }
     tput rc
-    message "release: $(vsim_version).zip downloaded" 2
+    message "release: $(vsim_jar) downloaded" 2
   }
 
   # installs or updates V-Sim current release
@@ -139,10 +142,6 @@
       error 'you need curl or wget to install V-Sim'
       exit 1
     fi
-    # and also unzip
-    if ! has 'unzip'; then
-      error 'you need unzip to install V-Sim'
-    fi
     # create install directory
     if [ -d "$(vsim_dir)" ]; then
       message 'V-Sim installation directory already exists (updating)' 2
@@ -155,19 +154,12 @@
     fi
     cd "$(vsim_dir)"
     # clean old files
-    rm -rf lib LICENSE VSim.jar vsim
+    rm -f *.jar *.s
     # download current release
     vsim_download
-    # unzip
-    unzip vsim.zip > /dev/null 2>&1 || {
-      error "can not unzip vsim.zip"
-      rm -f vsim.zip
-      exit 1
-    }
-    rm -f vsim.zip
     # create V-Sim launcher
     printf '#!/bin/sh\n' >> vsim
-    printf "java -jar %s/VSim.jar %s" "$(vsim_dir)" '$@' >> vsim
+    printf "java -jar $(vsim_jar) %s" "$(vsim_dir)" '$@' >> vsim
     chmod 755 vsim
     # append source to profile
     local PROFILE
