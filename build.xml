@@ -51,6 +51,8 @@
       </manifest>
       <!-- include all dependencies (fat jar) -->
       <zipfileset src="${dist.dir}/tmp/dependencies-all.jar" excludes="META-INF/*.SF"/>
+      <!-- include resources -->
+      <fileset dir="." includes="resources/**"/>
     </jar>
     <delete dir="${dist.dir}/tmp"/>
   </target>
