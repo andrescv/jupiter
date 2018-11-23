@@ -1,0 +1,250 @@
+/*
+  Colors
+*/
+
+* {
+  -fx-primary: #212121;
+  -fx-primary-dark: #000;
+  -fx-primary-light: #484848;
+  -fx-secondary: #fe315c;
+}
+
+/*
+  JFXDecorator styles
+*/
+.jfx-decorator {
+  -fx-decorator-color: -fx-primary-dark;
+}
+
+.jfx-decorator-text {
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+}
+
+/*
+  MenuBar Styles
+*/
+
+.menu-bar {
+  -fx-background-color: #ffffff;
+}
+
+.menu:showing {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu:focused {
+  -fx-background-color: -fx-primary-light;
+}
+
+.menu .label {
+  -fx-text-fill: -fx-primary;
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+}
+
+.menu:showing .label {
+  -fx-text-fill: -fx-primary;
+}
+
+.menu-item:focused {
+   -fx-background-color: #ccc;
+}
+
+/*
+  SplitPane Styles
+*/
+.split-pane {
+  -fx-padding: 0;
+}
+
+.split-pane {
+  -fx-box-border: transparent;
+}
+
+.split-pane:vertical > .split-pane-divider {
+   -fx-background-color: -fx-primary;
+   -fx-padding: 0 2px 0 2px;
+   -fx-border-color: -fx-primary;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+  -fx-background-color: -fx-primary;
+  -fx-padding: 0 2px 0 2px;
+  -fx-border-color: -fx-primary;
+}
+
+/*
+  ScrollPane Styles
+*/
+
+.scroll-pane > .viewport {
+  -fx-background-color: -fx-primary-dark;
+}
+
+.scroll-pane {
+  -fx-background-color: -fx-primary-dark;
+}
+
+.corner {
+  -fx-background-color: -fx-primary !important;
+}
+
+.scroll-bar:vertical {
+  -fx-pref-width: 7px;
+}
+
+.scroll-bar:horizontal {
+  -fx-pref-height: 7px;
+}
+
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
+  -fx-background-color: -fx-primary;
+  -fx-border-color: -fx-primary;
+  -fx-background-radius: 0;
+}
+
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+  -fx-background-color: -fx-primary-light;
+  -fx-background-radius: 5em;
+}
+
+.scroll-bar > .increment-button, .scroll-bar > .decrement-button {
+  -fx-background-color: -fx-primary;
+  -fx-border-color: -fx-primary;
+  -fx-background-insets: 0, 0, 0, 0;
+  -fx-padding: 0;
+}
+
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+  -fx-padding: 0;
+}
+
+/*
+  Tree Styles
+*/
+
+.tree-cell {
+  -fx-background-color: -fx-primary;
+  -fx-font-family: 'Roboto';
+  -fx-font-size: 14px;
+  -fx-text-fill: rgba(200, 200, 200, 0.9);
+}
+
+.tree-cell:selected {
+  -fx-background-color: -fx-primary-light;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow  {
+  -fx-background-color: -fx-primary-light;
+}
+
+.tree-cell:selected > .tree-disclosure-node > .arrow  {
+  -fx-background-color: -fx-secondary;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: #66D9EF;
+}
+
+/*
+  JFXTabPane Styles
+*/
+
+.jfx-tab-pane .tab-header-area .jfx-rippler{
+  -jfx-rippler-fill: -fx-secondary;
+}
+
+.jfx-tab-pane .headers-region {
+  -fx-background-color: -fx-primary-light;
+  -fx-border-color: -fx-primary-light;
+  -fx-box-border: -fx-primary-dark;
+}
+
+.jfx-tab-pane .tab-header-background {
+  -fx-background-color: -fx-primary-light;
+}
+
+.jfx-tab-pane .tab-selected-line {
+  -fx-background-color: -fx-secondary;
+}
+
+/*
+  CodeArea Styles
+*/
+
+.code-area {
+  -fx-background-color: -fx-code-area-bg;
+  -fx-font-weight: bold;
+  -fx-font-family: 'Envy Code R';
+  -fx-font-size: 16px;
+  -fx-font-smoothing-type: gray;
+}
+
+.code-area .selection {
+  -fx-fill: -fx-selection !important;
+}
+
+.code-area .lineno {
+  -fx-text-fill: -fx-lineno-text;
+  -fx-background-color: -fx-lineno-bg;
+}
+
+.code-area .caret {
+  -fx-stroke: -fx-caret;
+}
+
+.code-area .paragraph-box:has-caret {
+  -fx-background-color: -fx-caret-bg;
+}
+
+.code-area .syntax {
+  -fx-fill: -fx-syntax;
+}
+
+.code-area .operator {
+  -fx-fill: -fx-operator;
+}
+
+.code-area .directive {
+  -fx-fill: -fx-directive;
+}
+
+.code-area .keyword {
+  -fx-fill: -fx-keyword;
+}
+
+.code-area .label {
+  -fx-fill: -fx-identifier;
+  -fx-font-style: italic;
+}
+
+.code-area .register {
+  -fx-fill: -fx-register;
+}
+
+.code-area .identifier {
+  -fx-fill: -fx-identifier;
+}
+
+.code-area .number {
+  -fx-fill: -fx-number;
+}
+
+.code-area .comment {
+  -fx-fill: -fx-comment;
+}
+
+.code-area .string {
+  -fx-fill: -fx-string;
+}
+
+.code-area .error {
+  -fx-fill: -fx-error;
+  -rtfx-underline-color: -fx-error;
+  -rtfx-underline-width: 1px;
+  -rtfx-underline-dash-array: 4px;
+  -fx-font-style: italic;
+}
