@@ -75,6 +75,18 @@ public final class RVIRegisterFile {
   }
 
   /**
+   * This method returns the mnemonic of a register
+   *
+   * @param number register number
+   * @return register mnemonic or null if number is invalid
+   */
+  public String getRegisterMnemonic(int number) {
+    if (number >= 0 && number < MNEMONICS.length)
+      return MNEMONICS[number];
+    return null;
+  }
+
+  /**
    * This method returns the number of a register given a name.
    *
    * @param name register ABI name
