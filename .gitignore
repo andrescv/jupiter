@@ -17,6 +17,7 @@ docs/site
 vsim/assembler/Lexer.java
 vsim/assembler/Parser.java
 vsim/assembler/Token.java
+vsim/gui/syntax/Lexer.java
 
 # Java compiled files
 *.class
