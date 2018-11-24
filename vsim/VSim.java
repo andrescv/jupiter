@@ -18,10 +18,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim;
 
 import java.io.File;
+import vsim.gui.Gui;
 import vsim.utils.Cmd;
+import vsim.gui.Preloader;
 import vsim.utils.Message;
 import java.util.ArrayList;
 import vsim.simulator.Simulator;
+import com.sun.javafx.application.LauncherImpl;
 
 
 /**
@@ -71,7 +74,8 @@ public final class VSim {
           Simulator.debug(files);
       } else
         Message.panic("no input files");
-    }
+    } else
+      LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
   }
 
 }
