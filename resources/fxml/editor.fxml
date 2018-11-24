@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.fxmisc.richtext.StyleClassedTextArea?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MainController">
+  <children>
+    <MenuBar>
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem fx:id="newFile" mnemonicParsing="false" text="New File">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/new_file.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="openFile" mnemonicParsing="false" text="Open File">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/open_file.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="openFolder" mnemonicParsing="false" text="Open Folder">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/open_folder.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="save" mnemonicParsing="false" text="Save">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/save_file.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="saveAs" mnemonicParsing="false" text="Save As...">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/save_as.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="saveAll" mnemonicParsing="false" text="Save All">
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/save_all.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="closeTab" mnemonicParsing="false" text="Close Tab">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/close.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="closeAll" mnemonicParsing="false" text="Close All Tabs">
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/close_all.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="quit" mnemonicParsing="false" text="Quit">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/exit.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Run">
+          <items>
+            <MenuItem fx:id="assemble" mnemonicParsing="false" text="Assemble">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F3" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/build.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="go" mnemonicParsing="false" text="Go">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/go.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="step" mnemonicParsing="false" text="Step">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F7" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/step.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="backstep" mnemonicParsing="false" text="Backstep">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F8" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/backstep.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="reset" mnemonicParsing="false" text="Reset">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F12" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/reset.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="clearBreakpoints" mnemonicParsing="false" text="Clear all breakpoints">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/clear.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem fx:id="undo" mnemonicParsing="false" text="Undo">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/undo.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="redo" mnemonicParsing="false" text="Redo">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/redo.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="cut" mnemonicParsing="false" text="Cut">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/cut.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="copy" mnemonicParsing="false" text="Copy">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/copy.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="paste" mnemonicParsing="false" text="Paste">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/paste.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="selectAll" mnemonicParsing="false" text="Select All">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/select.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="preferences" mnemonicParsing="false" text="Preferences">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="COMMA" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/preferences.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Find">
+          <items>
+            <MenuItem fx:id="findInBuffer" mnemonicParsing="false" text="Find in Buffer">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/find.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="replaceInBuffer" mnemonicParsing="false" text="Replace in Buffer">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="H" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/replace.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem fx:id="help" mnemonicParsing="false" text="Help">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/help.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+            </MenuItem>
+            <MenuItem fx:id="about" mnemonicParsing="false" text="About">
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../img/icons/about.png" />
+                  </image>
+                </ImageView>
+              </graphic></MenuItem>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+    <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="200.0" VBox.vgrow="ALWAYS">
+      <items>
+        <JFXTabPane fx:id="main">
+          <tabs>
+            <Tab fx:id="editorTab" text="Editor">
+              <content>
+                <SplitPane dividerPositions="0.23">
+                  <items>
+                    <TreeView fx:id="tree" maxWidth="280.0" minWidth="150.0" prefWidth="120.0" SplitPane.resizableWithParent="false" />
+                    <JFXTabPane id="editorTabs" fx:id="editor" />
+                  </items>
+                </SplitPane>
+              </content>
+            </Tab>
+            <Tab fx:id="simTab" text="Simulator">
+              <content>
+                <SplitPane dividerPositions="0.628140703517588" prefHeight="160.0" prefWidth="200.0">
+                  <items>
+                    <VBox alignment="CENTER" minWidth="450.0" prefHeight="200.0" prefWidth="100.0">
+                      <children>
+                        <HBox id="runBtns" alignment="CENTER">
+                          <children>
+                            <JFXButton id="goBtn" fx:id="goBtn" text="Go">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/goBtn.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic></JFXButton>
+                            <JFXButton id="stepBtn" fx:id="stepBtn" text="Step">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/stepBtn.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic></JFXButton>
+                            <JFXButton id="backstepBtn" fx:id="backstepBtn" text="Backstep">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/backstepBtn.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic></JFXButton>
+                            <JFXButton id="resetBtn" fx:id="resetBtn" text="Reset">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/resetBtn.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic></JFXButton>
+                                          <JFXButton id="dumpBtn" fx:id="dumpBtn" text="Dump">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/dumpBtn.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                          </children>
+                        </HBox>
+                                    <TableView id="textTable" fx:id="textTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                      <columns>
+                                          <TableColumn fx:id="txtAddrCol" editable="false" prefWidth="75.0" sortable="false" text="Address" />
+                                        <TableColumn fx:id="txtMachineCode" editable="false" prefWidth="75.0" sortable="false" text="Machine Code" />
+                                        <TableColumn fx:id="txtSourceCode" editable="false" prefWidth="75.0" sortable="false" text="Source Code" />
+                                          <TableColumn fx:id="txtBasicCode" editable="false" prefWidth="75.0" sortable="false" text="Basic Code" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                      </children>
+                    </VBox>
+                    <JFXTabPane fx:id="hardware" maxWidth="500.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
+                      <tabs>
+                        <Tab fx:id="rviTab" text="RVI">
+                                       <content>
+                                          <TableView fx:id="rviTable" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                            <columns>
+                                              <TableColumn fx:id="rviMnemonic" editable="false" prefWidth="75.0" sortable="false" text="Mnemonic" />
+                                              <TableColumn fx:id="rviNumber" editable="false" prefWidth="75.0" sortable="false" text="Number" />
+                                                <TableColumn fx:id="rviValue" editable="true" prefWidth="75.0" sortable="false" text="Value" />
+                                            </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </content>
+                        </Tab>
+                        <Tab fx:id="rvfTab" text="RVF">
+                                       <content>
+                                          <TableView fx:id="rvfTable" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                             <columns>
+                                                <TableColumn fx:id="rvfMnemonic" editable="false" prefWidth="75.0" sortable="false" text="Mnemonic" />
+                                                <TableColumn fx:id="rvfNumber" editable="false" prefWidth="75.0" sortable="false" text="Number" />
+                                                <TableColumn fx:id="rvfValue" prefWidth="75.0" sortable="false" text="Value" />
+                                             </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </content>
+                        </Tab>
+                        <Tab fx:id="memTab" text="Memory">
+                          <content>
+                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <children>
+                                                <TableView fx:id="memTable" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                                   <columns>
+                                                      <TableColumn fx:id="memAddress" editable="false" prefWidth="75.0" sortable="false" text="Address" />
+                                                      <TableColumn fx:id="memOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
+                                                      <TableColumn fx:id="memOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
+                                                      <TableColumn fx:id="memOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
+                                                      <TableColumn fx:id="memOffset3" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+3" />
+                                                   </columns>
+                                                   <columnResizePolicy>
+                                                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                   </columnResizePolicy>
+                                                </TableView>
+                                <HBox id="memBtns" alignment="CENTER">
+                                  <children>
+                                    <JFXComboBox id="memCombo" fx:id="memCombo" focusColor="#fe315c" promptText="--Segment--" unFocusColor="#fe315c" visibleRowCount="5">
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor></JFXComboBox>
+                                    <JFXButton id="upBtn" fx:id="upBtn" text="Up">
+                                                         <graphic>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../img/icons/upBtn.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic></JFXButton>
+                                    <JFXButton id="downBtn" fx:id="downBtn" text="Down">
+                                                         <graphic>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../img/icons/downBtn.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic></JFXButton>
+                                  </children>
+                                </HBox>
+                              </children>
+                            </VBox>
+                          </content>
+                        </Tab>
+                      </tabs>
+                    </JFXTabPane>
+                  </items>
+                </SplitPane>
+              </content>
+            </Tab>
+          </tabs>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+        </JFXTabPane>
+        <JFXTabPane fx:id="console" prefHeight="300.0" SplitPane.resizableWithParent="false">
+          <tabs>
+            <Tab fx:id="logTab" text="V-Sim Messages">
+              <content>
+                <StyleClassedTextArea fx:id="vsimLog" />
+              </content>
+            </Tab>
+            <Tab fx:id="ioTab" text="I/O">
+              <content>
+                <StyleClassedTextArea fx:id="vsimIO" />
+              </content>
+            </Tab>
+          </tabs>
+        </JFXTabPane>
+      </items>
+    </SplitPane>
+  </children>
+</VBox>
