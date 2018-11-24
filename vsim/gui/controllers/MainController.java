@@ -100,11 +100,15 @@ public class MainController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
+    this.quit.setOnAction(e -> this.quit());
   }
 
   public void setStage(Stage stage) {
     this.stage = stage;
+  }
+
+  public void quit() {
+    this.stage.close();
   }
 
 }
