@@ -16,13 +16,19 @@
     <jflex file="${src.dir}/assembler/syntax/lexer.flex" destdir="."/>
   </target>
 
+  <!-- creates gui lexer -->
+  <target name="guilexer" description="generates GUI syntax lexer">
+    <delete file="${src.dir}/gui/syntax/Lexer.java"/>
+    <jflex file="${src.dir}/gui/syntax/lexer.flex" destdir="."/>
+  </target>
+
   <!-- creates parser -->
   <target name="parser" description="generates RISC-V syntax parser">
     <jcup srcfile="${src.dir}/assembler/syntax/parser.cup" destdir="." parser="Parser" symbols="Token" interface="true" locations="false"/>
   </target>
 
   <!-- compiles all source code -->
-  <target name="compile" description="build V-Sim project" depends="info,lexer,parser">
+  <target name="compile" description="build V-Sim project" depends="info,lexer,guilexer,parser">
     <mkdir dir="${build.dir}"/>
     <javac destdir="${build.dir}" includeAntRuntime="false" source="1.8" target="1.8" failonerror="true">
       <src path="${src.dir}"/>
@@ -89,6 +95,7 @@
     <delete dir="${doc.dir}"/>
     <delete file="${src.dir}/assembler/Parser.java"/>
     <delete file="${src.dir}/assembler/Lexer.java"/>
+    <delete file="${src.dir}/gui/syntax/Lexer.java"/>
     <delete file="${src.dir}/assembler/Token.java"/>
   </target>
 </project>
