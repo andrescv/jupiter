@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import java.util.ResourceBundle;
 import javafx.scene.control.Tab;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextArea;
+import vsim.gui.components.Console;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TableView;
@@ -95,8 +95,8 @@ public class MainController implements Initializable {
 
   @FXML private JFXComboBox<?> memCombo;
 
-  @FXML private TextArea vsimLog;
-  @FXML private TextArea vsimIO;
+  @FXML private Console vsimLog;
+  @FXML private Console vsimIO;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {

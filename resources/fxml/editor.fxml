@@ -12,7 +12,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
+<?import vsim.gui.components.Console?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -522,12 +522,12 @@
           <tabs>
             <Tab fx:id="logTab" text="V-Sim Messages">
                <content>
-                  <TextArea fx:id="vsimLog" prefHeight="200.0" prefWidth="200.0" />
+                  <Console fx:id="vsimLog" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </Tab>
             <Tab fx:id="ioTab" text="I/O">
                <content>
-                  <TextArea fx:id="vsimIO" prefHeight="200.0" prefWidth="200.0" />
+                  <Console fx:id="vsimIO" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </Tab>
           </tabs>
