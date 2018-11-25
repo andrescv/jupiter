@@ -322,6 +322,33 @@
 }
 
 /*
+  TextArea Styles
+*/
+
+.text-area {
+  -fx-background-insets: 0;
+  -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area .content {
+  -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area:focused .content {
+  -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area:focused {
+  -fx-highlight-fill: #7ecfff;
+}
+
+.text-area .content {
+  -fx-padding: 10px;
+  -fx-text-fill: gray;
+  -fx-highlight-fill: #7ecfff;
+}
+
+/*
   Tab Styles
 */
 
