@@ -12,13 +12,13 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import org.fxmisc.richtext.StyleClassedTextArea?>
 
 <VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MainController">
   <children>
@@ -521,14 +521,14 @@
         <JFXTabPane fx:id="console" prefHeight="300.0" SplitPane.resizableWithParent="false">
           <tabs>
             <Tab fx:id="logTab" text="V-Sim Messages">
-              <content>
-                <StyleClassedTextArea fx:id="vsimLog" />
-              </content>
+               <content>
+                  <TextArea fx:id="vsimLog" prefHeight="200.0" prefWidth="200.0" />
+               </content>
             </Tab>
             <Tab fx:id="ioTab" text="I/O">
-              <content>
-                <StyleClassedTextArea fx:id="vsimIO" />
-              </content>
+               <content>
+                  <TextArea fx:id="vsimIO" prefHeight="200.0" prefWidth="200.0" />
+               </content>
             </Tab>
           </tabs>
         </JFXTabPane>

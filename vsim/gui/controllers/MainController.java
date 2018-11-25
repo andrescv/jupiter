@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import java.util.ResourceBundle;
 import javafx.scene.control.Tab;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TableView;
@@ -13,7 +14,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.scene.control.TableColumn;
-import org.fxmisc.richtext.StyleClassedTextArea;
 
 
 public class MainController implements Initializable {
@@ -95,8 +95,8 @@ public class MainController implements Initializable {
 
   @FXML private JFXComboBox<?> memCombo;
 
-  @FXML private StyleClassedTextArea vsimLog;
-  @FXML private StyleClassedTextArea vsimIO;
+  @FXML private TextArea vsimLog;
+  @FXML private TextArea vsimIO;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
