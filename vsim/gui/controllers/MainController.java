@@ -100,11 +100,46 @@ public class MainController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    this.newFile.setOnAction(e -> this.newFile());
+    this.openFile.setOnAction(e -> this.openFile());
+    this.openFolder.setOnAction(e -> this.openFolder());
+    this.save.setOnAction(e -> this.save());
+    this.saveAll.setOnAction(e -> this.saveAll());
+    this.closeTab.setOnAction(e -> this.closeTab());
+    this.closeAll.setOnAction(e -> this.closeAll());
     this.quit.setOnAction(e -> this.quit());
   }
 
   public void setStage(Stage stage) {
     this.stage = stage;
+  }
+
+  public void newFile() {
+
+  }
+
+  public void openFile() {
+
+  }
+
+  public void openFolder() {
+
+  }
+
+  public void save() {
+
+  }
+
+  public void saveAll() {
+
+  }
+
+  public void closeTab() {
+
+  }
+
+  public void closeAll() {
+
   }
 
   public void quit() {
