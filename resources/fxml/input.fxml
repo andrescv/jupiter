@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="112.0" prefWidth="300.0" style="-fx-background-color: #fafafa;" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXTextField id="inputDialogText" fx:id="text" layoutX="41.0" layoutY="19.0" prefHeight="26.0" prefWidth="218.0" style="-jfx-focus-color: #388e3c; -jfx-unfocus-color: #212121;" />
+      <JFXButton id="inputDialogBtn" fx:id="enter" layoutX="114.0" layoutY="60.0" prefHeight="38.0" prefWidth="73.0" style="-fx-background-color: #388e3c;" text="Enter" textFill="WHITE" />
+   </children>
+</AnchorPane>
