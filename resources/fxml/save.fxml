@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="128.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXButton fx:id="save" layoutX="128.0" layoutY="77.0" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #388e3c;" text="Save" textFill="WHITE" />
+      <JFXButton fx:id="cancel" layoutX="218.0" layoutY="77.0" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #0277bd;" text="Cancel" textFill="WHITE" />
+      <JFXButton fx:id="dontSave" layoutX="308.0" layoutY="77.0" prefHeight="37.0" prefWidth="93.0" style="-fx-background-color: #d32f2f;" text="Don't Save" textFill="WHITE" />
+      <Label layoutX="14.0" layoutY="29.0" text="Your changes will be lost if you close this item without saving">
+         <font>
+            <Font name="Roboto Bold" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
