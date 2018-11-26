@@ -65,7 +65,6 @@ public final class InputDialog {
    */
   public String showAndWait() {
     this.stage.showAndWait();
-    System.out.println(text.getText());
     return text.getText();
   }
 
