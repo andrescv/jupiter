@@ -31,7 +31,7 @@ public final class Gui extends Application {
   public void start(Stage stage) throws IOException {
     stage.setTitle("V-Sim");
     stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/editor.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/Main.fxml"));
     Parent root = loader.load();
     MainController controller = (MainController)loader.getController();
     controller.setStage(stage);

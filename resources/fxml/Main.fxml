@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MainController">
+   <children>
+      <fx:include fx:id="menuBar" source="MenuBar.fxml" />
+      <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="200.0" VBox.vgrow="ALWAYS">
+         <items>
+            <JFXTabPane fx:id="main">
+               <tabs>
+                  <Tab fx:id="editorTab" text="Editor">
+                     <content>
+                        <fx:include fx:id="editor" source="Editor.fxml" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="simTab" text="Simulator">
+                     <content>
+                        <fx:include fx:id="simulator" source="Simulator.fxml" />
+                     </content>
+                  </Tab>
+               </tabs>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </JFXTabPane>
+            <JFXTabPane fx:id="console" prefHeight="300.0" SplitPane.resizableWithParent="false">
+               <tabs>
+                  <Tab fx:id="consoleTab" text="V-Sim Console">
+                     <content>
+                        <TextArea fx:id="vsimConsole" prefHeight="200.0" prefWidth="200.0" style="-fx-border-image-insets: 0; -fx-background-insets: 0; -fx-border-insets: 0;" />
+                     </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </items>
+      </SplitPane>
+   </children>
+</VBox>

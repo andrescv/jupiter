@@ -138,7 +138,7 @@
 }
 
 .tree-cell > .tree-disclosure-node > .arrow  {
-  -fx-background-color: -fx-primary-light;
+  -fx-background-color: #606060;
 }
 
 .tree-cell:selected > .tree-disclosure-node > .arrow  {
