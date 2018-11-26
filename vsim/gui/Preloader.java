@@ -30,7 +30,7 @@ public final class Preloader extends javafx.application.Preloader {
     // remove main frame and buttons (close, minimize, maximize...)
     stage.initStyle(StageStyle.UNDECORATED);
     stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
-    Parent root = FXMLLoader.load(getClass().getResource("/resources/fxml/preloader.fxml"));
+    Parent root = FXMLLoader.load(getClass().getResource("/resources/fxml/Preloader.fxml"));
     // save primary stage
     this.stage = stage;
     Scene scene = new Scene(root, WIDTH, HEIGHT);

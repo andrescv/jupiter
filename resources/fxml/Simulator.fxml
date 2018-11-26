@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+
+<SplitPane dividerPositions="0.6888888888888889" prefHeight="431.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
+   <items>
+      <fx:include source="Text.fxml" />
+      <fx:include source="Hardware.fxml" />
+   </items>
+</SplitPane>
