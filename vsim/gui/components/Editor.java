@@ -23,6 +23,9 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
  */
 public final class Editor extends CodeArea {
 
+  /** Last editor text */
+  private String lastText;
+
   /** Highlighting subscription */
   private Subscription subscription;
 
@@ -31,6 +34,7 @@ public final class Editor extends CodeArea {
    */
   public Editor() {
     super();
+    this.lastText = "";
     this.setParagraphGraphicFactory(LineNumberFactory.get(this));
     // recompute the syntax highlighting 500 ms after user stops editing area
     this.subscription = this
@@ -48,6 +52,33 @@ public final class Editor extends CodeArea {
         e -> this.replaceSelection("  ")
     );
     Nodes.addInputMap(this, im);
+  }
+
+  /**
+   * Sets editor text and sets last text variable.
+   *
+   * @param text the new editor text
+   */
+  public void setEditorText(String text) {
+    this.replaceText(0, this.getText().length(), text);
+    this.setStyleSpans(0, this.computeHighlighting());
+    this.lastText = text;
+  }
+
+  /**
+   * Updates last text with current editor text.
+   */
+  public void update() {
+    this.lastText = this.getText();
+  }
+
+  /**
+   * Verifies if editor has changed.
+   *
+   * @return true if editor has changed, false otherwise
+   */
+  public boolean change() {
+    return this.getLength() != this.lastText.length();
   }
 
   /**
