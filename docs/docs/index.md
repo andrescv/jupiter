@@ -74,4 +74,4 @@ To verify that V-Sim has been installed, open a terminal/command line and enter 
 $ vsim -version
 ```
 
-which should output `v1.0.0` if the installation was successful. Then you can follow the [usage](usage.md) guide.
+which should output `v1.0.3` if the installation was successful. Then you can follow the [usage](usage.md) guide.
