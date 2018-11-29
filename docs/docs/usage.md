@@ -75,11 +75,6 @@ $ vsim fibonacci.s
 
 RISC-V Assembler & Runtime Simulator
 
-GPL-3.0 License
-Copyright (c) 2018 Andres Castellanos
-All Rights Reserved
-See the file LICENSE for a full copyright notice
-
 Please enter a number: 9
 
 The 9 fibonnaci number is: 34
@@ -118,11 +113,6 @@ $ vsim -start start example.s
 |___/   /___/_/_/_/_/
 
 RISC-V Assembler & Runtime Simulator
-
-GPL-3.0 License
-Copyright (c) 2018 Andres Castellanos
-All Rights Reserved
-See the file LICENSE for a full copyright notice
 
 hello world
 vsim: exit(0)
