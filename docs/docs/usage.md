@@ -11,11 +11,6 @@ $ vsim -help
 
 RISC-V Assembler & Runtime Simulator
 
-GPL-3.0 License
-Copyright (c) 2018 Andres Castellanos
-All Rights Reserved
-See the file LICENSE for a full copyright notice
-
 usage: vsim [options] <files>
 
 available options:
