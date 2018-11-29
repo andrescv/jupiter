@@ -1,6 +1,6 @@
 site_name: V-Sim Documentation
 site_description: 'V-Sim: RISC-V Assembler and Runtime Simulator'
-site_author: 'Andrés Castellanos'
+site_author: 'Inés Ramirez & Andrés Castellanos'
 copyright: '© Copyright 2018, Andrés Castellanos'
 
 theme:
