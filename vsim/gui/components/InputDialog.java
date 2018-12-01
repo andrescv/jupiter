@@ -41,7 +41,7 @@ public final class InputDialog {
       this.stage.setTitle("Enter your input...");
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/input.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/InputDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
@@ -65,7 +65,9 @@ public final class InputDialog {
    */
   public String showAndWait() {
     this.stage.showAndWait();
-    return text.getText();
+    String data = this.text.getText();
+    this.text.setText("");
+    return data;
   }
 
 }

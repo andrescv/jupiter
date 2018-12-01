@@ -40,7 +40,7 @@ public final class SaveDialog {
       this.stage.setTitle(String.format("'%s' has changes, do you want to save them?", filename));
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/save.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/SaveDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
