@@ -29,11 +29,11 @@
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </JFXTabPane>
-            <JFXTabPane fx:id="console" prefHeight="300.0" SplitPane.resizableWithParent="false">
+            <JFXTabPane fx:id="consoles" prefHeight="300.0" SplitPane.resizableWithParent="false">
                <tabs>
                   <Tab fx:id="consoleTab" text="V-Sim Console">
                      <content>
-                        <TextArea fx:id="vsimConsole" prefHeight="200.0" prefWidth="200.0" style="-fx-border-image-insets: 0; -fx-background-insets: 0; -fx-border-insets: 0;" />
+                        <TextArea fx:id="console" prefHeight="200.0" prefWidth="200.0" style="-fx-border-image-insets: 0; -fx-background-insets: 0; -fx-border-insets: 0;" />
                      </content>
                   </Tab>
                </tabs>
