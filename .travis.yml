@@ -3,5 +3,10 @@ language: java
 jdk:
   - oraclejdk8
 
+before_script:
+  - export _JAVA_OPTIONS="-Dtestfx.robot=awt"
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
 script:
   - ant test
