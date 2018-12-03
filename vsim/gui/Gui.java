@@ -34,7 +34,7 @@ public final class Gui extends Application {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/Main.fxml"));
     Parent root = loader.load();
     MainController controller = (MainController)loader.getController();
-    controller.setStage(stage);
+    controller.initialize(stage);
     JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
     decorator.setCustomMaximize(true);
     // create scene
