@@ -110,6 +110,7 @@
       <fileset dir="${src.dir}">
         <include name="**/*.java"/>
       </fileset>
+      <classpath refid="vsim-classpath"/>
       <doctitle>V-Sim Source Documentation</doctitle>
       <footer>Copyright (C) 2018 Andres Castellanos</footer>
       <group title="Assembler" packages="vsim.assembler:vsim.assembler.*" />

@@ -1,33 +1,34 @@
 package vsim.gui.controllers;
 
-import java.net.URL;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 
 
-public class MainController implements Initializable {
+/**
+ * Main controller class.
+ */
+public class MainController {
 
-  private Stage stage;
+  /** Primary stage */
+  protected Stage stage;
 
-  @FXML private EditorController editorController;
-  @FXML private MenuBarController menuBarController;
-  @FXML private SimulatorController simulatorController;
+  /** Reference to editor controller */
+  @FXML protected EditorController editorController;
+  /** Reference to menubar controller */
+  @FXML protected MenuBarController menuBarController;
+  /** Reference to simulator controller */
+  @FXML protected SimulatorController simulatorController;
 
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
+  /**
+   * Initialize main controller class and other controllers.
+   *
+   * @param stage primary stage
+   */
+  public void initialize(Stage stage) {
+    this.stage = stage;
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
-  }
-
-  public void setStage(Stage stage) {
-    this.stage = stage;
-  }
-
-  public Stage getStage() {
-    return this.stage;
   }
 
 }
