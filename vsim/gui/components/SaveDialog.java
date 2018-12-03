@@ -30,8 +30,10 @@ public final class SaveDialog {
   /** Save dialog result */
   private int result;
 
-  /**as
+  /**
    * Creates a save dialog.
+   *
+   * @param filename save dialog title filename
    */
   public SaveDialog(String filename) {
     try {
