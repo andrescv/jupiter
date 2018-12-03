@@ -1,6 +1,7 @@
 package vsim.gui.controllers;
 
 import javafx.fxml.FXML;
+import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
 
 
@@ -76,6 +77,42 @@ public class MenuBarController {
    */
   protected void initialize(MainController controller) {
     this.mainController = controller;
+  }
+
+  @FXML protected void newFile(ActionEvent event) {
+
+  }
+
+  @FXML protected void openFile(ActionEvent event) {
+
+  }
+
+  @FXML protected void openFolder(ActionEvent event) {
+
+  }
+
+  @FXML protected void closeTab(ActionEvent event) {
+
+  }
+
+  @FXML protected void closeAllTabs(ActionEvent event) {
+
+  }
+
+  @FXML protected void save(ActionEvent event) {
+
+  }
+
+  @FXML protected void saveAs(ActionEvent event) {
+
+  }
+
+  @FXML protected void saveAll(ActionEvent event) {
+
+  }
+
+  @FXML protected void quit(ActionEvent event) {
+
   }
 
 }
