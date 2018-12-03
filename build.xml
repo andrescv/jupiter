@@ -76,7 +76,7 @@
 
   <!-- compile V-Sim tests -->
   <target name="compileTest" depends="build">
-    <mkdir dir="${build.dir}/test" />
+    <mkdir dir="${build.dir}/test"/>
     <javac destdir="${build.dir}/test" includeAntRuntime="false" source="1.8" target="1.8" failonerror="true">
       <src path="${test.dir}"/>
       <classpath>
@@ -87,7 +87,7 @@
   </target>
 
   <!-- test vsim -->
-  <target name="test" description="V-Sim tests" depends="compileTest">
+  <target name="test" description="V-Sim complete tests" depends="compileTest">
     <junit printsummary="on" haltonfailure="yes" fork="true">
       <classpath>
         <path refid="vsim-classpath"/>
@@ -113,13 +113,14 @@
       <classpath refid="vsim-classpath"/>
       <doctitle>V-Sim Source Documentation</doctitle>
       <footer>Copyright (C) 2018 Andres Castellanos</footer>
-      <group title="Assembler" packages="vsim.assembler:vsim.assembler.*" />
-      <group title="Linker" packages="vsim.linker" />
-      <group title="Instructions" packages="vsim.riscv.instructions.*:vsim.riscv.instructions" />
-      <group title="Simulator" packages="vsim.simulator" />
-      <group title="RISC-V" packages="vsim.riscv" />
-      <group title="Utilities" packages="vsim.utils" />
-      <group title="V-Sim" packages="vsim" />
+      <group title="Assembler" packages="vsim.assembler:vsim.assembler.*"/>
+      <group title="Linker" packages="vsim.linker"/>
+      <group title="Instructions" packages="vsim.riscv.instructions.*:vsim.riscv.instructions"/>
+      <group title="Simulator" packages="vsim.simulator"/>
+      <group title="RISC-V" packages="vsim.riscv"/>
+      <group title="Utilities" packages="vsim.utils"/>
+      <group title="GUI" packages="vsim.gui"/>
+      <group title="V-Sim" packages="vsim"/>
     </javadoc>
   </target>
 
