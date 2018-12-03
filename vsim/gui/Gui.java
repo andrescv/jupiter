@@ -15,9 +15,13 @@ import vsim.gui.controllers.MainController;
 public final class Gui extends Application {
 
   /** Monokai syntax theme */
-  private static final String MONOKAI = Gui.class.getResource("/resources/css/themes/monokai.css").toExternalForm();
+  public static final String MONOKAI = Gui.class.getResource("/resources/css/themes/monokai.css").toExternalForm();
   /** One Light syntax theme */
-  private static final String ONELIGHT = Gui.class.getResource("/resources/css/themes/onelight.css").toExternalForm();
+  public static final String ONELIGHT = Gui.class.getResource("/resources/css/themes/onelight.css").toExternalForm();
+  /** Eclipse syntax theme */
+  public static final String ECLIPSE = Gui.class.getResource("/resources/css/themes/eclipse.css").toExternalForm();
+  /** Material syntax theme */
+  public static final String MATERIAL = Gui.class.getResource("/resources/css/themes/material.css").toExternalForm();
 
   @Override
   public void init() {
@@ -44,7 +48,7 @@ public final class Gui extends Application {
     Font.loadFont(getClass().getResource("/resources/fonts/envycoder.ttf").toExternalForm(), 24);
     // add styles
     scene.getStylesheets().add(getClass().getResource("/resources/css/style.css").toExternalForm());
-    scene.getStylesheets().add(Gui.MONOKAI);
+    scene.getStylesheets().add(Gui.MATERIAL);
     stage.setScene(scene);
     stage.show();
   }
