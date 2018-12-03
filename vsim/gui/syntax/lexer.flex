@@ -25,8 +25,7 @@ package vsim.gui.syntax;
 %%
 
 %{
-
-  private int textSize;
+  /** previous jflex state */
   private int prevState;
 
   /**
@@ -55,14 +54,6 @@ package vsim.gui.syntax;
 %init}
 
 %eofval{
-  int state = yystate();
-  if (state == STRING || state == SBACKSLASH && this.prevState == STRING) {
-    yybegin(YYINITIAL);
-    return symbol("error", this.textSize);
-  } else if (state == CHARACTER || state == SBACKSLASH && this.prevState == CHARACTER) {
-    yybegin(YYINITIAL);
-    return symbol("error", this.textSize);
-  }
   return symbol("eof");
 %eofval}
 
@@ -284,7 +275,7 @@ FLOAT = [+-]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
 WHITESPACE = (" "|\t|\r|\n)
 
 // newline
-NEWLINE = \n
+NEWLINE = \n|\r\n
 
 // comments
 STARTOFSCOMMENT = ";"|"#"
@@ -363,14 +354,20 @@ ERROR = .
 
   // strings
   {STRSTART} {
-    this.textSize = 1;
     yybegin(STRING);
+    return symbol("string");
   }
 
   // chars
   {CHARSTART} {
-    this.textSize = 1;
     yybegin(CHARACTER);
+    return symbol("string");
+  }
+
+  // comments
+  {STARTOFSCOMMENT} {
+    yybegin(COMMENT);
+    return symbol("comment");
   }
 
   // labels
@@ -914,48 +911,22 @@ ERROR = .
 
   // number
   {NUMBER} {
-    try {
-      Integer.parseInt(yytext());
-      return symbol("number");
-    } catch (Exception e) {
-      return symbol("error");
-    }
+    return symbol("number");
   }
 
   // floats
   {FLOAT} {
-    try {
-      Float.parseFloat(yytext());
-      return symbol("number");
-    } catch (Exception e) {
-      return symbol("error");
-    }
+    return symbol("number");
   }
 
   // hex number
   {HEXADECIMAL} {
-    try {
-      Integer.parseUnsignedInt(yytext().substring(2), 16);
-      return symbol("number");
-    } catch (Exception e) {
-      return symbol("error");
-    }
+    return symbol("number");
   }
 
   // binary number
   {BINARY} {
-    try {
-      Integer.parseUnsignedInt(yytext().substring(2), 2);
-      return symbol("number");
-    } catch (Exception e) {
-      return symbol("error");
-    }
-  }
-
-  // comments
-  {STARTOFSCOMMENT} {
-    yybegin(COMMENT);
-    return symbol("comment");
+    return symbol("number");
   }
 
   // ignore whitespace
@@ -974,22 +945,21 @@ ERROR = .
 
   {BACKSLASH} {
     this.prevState = STRING;
-    this.textSize++;
     yybegin(SBACKSLASH);
+    return symbol("stringb");
   }
 
   {NEWLINE} {
-    yybegin(YYINITIAL);
-    return symbol("error", this.textSize + 1);
+    return symbol("string");
   }
 
   {STRSTART} {
     yybegin(YYINITIAL);
-    return symbol("string", this.textSize + 1);
+    return symbol("string");
   }
 
   {CHAR} {
-    this.textSize++;
+    return symbol("string");
   }
 
 }
@@ -998,25 +968,21 @@ ERROR = .
 
   {BACKSLASH} {
     this.prevState = CHARACTER;
-    this.textSize++;
     yybegin(SBACKSLASH);
+    return symbol("stringb");
   }
 
   {NEWLINE} {
-    yybegin(YYINITIAL);
-    return symbol("error", this.textSize + 1);
+    return symbol("string");
   }
 
   {CHARSTART} {
     yybegin(YYINITIAL);
-    if (this.textSize == 2 || this.textSize == 3)
-      return symbol("string", this.textSize + 1);
-    else
-      return symbol("error", this.textSize + 1);
+    return symbol("string");
   }
 
   {CHAR} {
-    this.textSize++;
+    return symbol("string");
   }
 
 }
@@ -1024,63 +990,63 @@ ERROR = .
 <SBACKSLASH> {
 
   "0" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "n" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "t" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "f" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "b" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "v" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "r" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "\"" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "\'" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "\n" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   "\\" {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
   {CHAR} {
-    this.textSize++;
     yybegin(this.prevState);
+    return symbol("stringb");
   }
 
 }

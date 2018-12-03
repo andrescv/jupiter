@@ -64,15 +64,15 @@
 }
 
 .split-pane:vertical > .split-pane-divider {
-   -fx-background-color: -fx-primary;
-   -fx-padding: 0 2px 0 2px;
-   -fx-border-color: -fx-primary;
+   -fx-background-color: #1e1e1e;
+   -fx-padding: 0 1px 0 1px;
+   -fx-border-color: #1e1e1e;
 }
 
 .split-pane:horizontal > .split-pane-divider {
-  -fx-background-color: -fx-primary;
-  -fx-padding: 0 2px 0 2px;
-  -fx-border-color: -fx-primary;
+  -fx-background-color: #1e1e1e;
+  -fx-padding: 0 1px 0 1px;
+  -fx-border-color: #1e1e1e;
 }
 
 /*
@@ -289,8 +289,7 @@
 }
 
 .code-area .label {
-  -fx-fill: -fx-identifier;
-  -fx-font-style: italic;
+  -fx-fill: -fx-label;
 }
 
 .code-area .register {
@@ -313,6 +312,10 @@
   -fx-fill: -fx-string;
 }
 
+.code-area .stringb {
+  -fx-fill: -fx-stringb;
+}
+
 .code-area .error {
   -fx-fill: -fx-error;
   -rtfx-underline-color: -fx-error;
@@ -327,7 +330,10 @@
 
 .text-area {
   -fx-background-insets: 0;
+  -fx-background-radius: 0, 0, 0, 0;
+  -fx-border-width: 0;
   -fx-background-color: transparent, white, transparent, white;
+  -fx-text-box-border: white;
 }
 
 .text-area .content {

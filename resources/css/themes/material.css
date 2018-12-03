@@ -1,0 +1,24 @@
+/*
+  Material Theme Syntax Colors
+*/
+
+* {
+  -fx-syntax: #B2CCD6;
+  -fx-operator: #89DDF3;
+  -fx-directive: #82AAFF;
+  -fx-keyword: #C792EA;
+  -fx-label: #F78C6A;
+  -fx-identifier: #FFCB6B;
+  -fx-register: #DDDDDD;
+  -fx-number: #F07178;
+  -fx-comment: #545454;
+  -fx-string: #C3E88D;
+  -fx-stringb: #89DDF3;
+  -fx-error: #EF4D13;
+  -fx-code-area-bg: #212121;
+  -fx-selection: #3b3b3b;
+  -fx-lineno-text: #B2CCD6;
+  -fx-lineno-bg: #212121;
+  -fx-caret: #009688;
+  -fx-caret-bg: #1b1b1b;
+}
