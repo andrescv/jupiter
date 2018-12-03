@@ -119,7 +119,7 @@
       <group title="Simulator" packages="vsim.simulator"/>
       <group title="RISC-V" packages="vsim.riscv"/>
       <group title="Utilities" packages="vsim.utils"/>
-      <group title="GUI" packages="vsim.gui"/>
+      <group title="GUI" packages="vsim.gui.*:vsim.gui"/>
       <group title="V-Sim" packages="vsim"/>
     </javadoc>
   </target>
