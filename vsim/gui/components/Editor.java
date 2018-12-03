@@ -30,28 +30,43 @@ public final class Editor extends CodeArea {
   private Subscription subscription;
 
   /**
-   * Creates a code editor.
+   * Creates a code editor with a default text.
+   *
+   * @param text default text
    */
-  public Editor() {
+  public Editor(String text) {
     super();
-    this.lastText = "";
+    // save last text
+    this.lastText = text;
+    this.replaceText(0, 0, text);
+    this.setStyleSpans(0, this.computeHighlighting());
+    // add line numbering
     this.setParagraphGraphicFactory(LineNumberFactory.get(this));
     // recompute the syntax highlighting 500 ms after user stops editing area
     this.subscription = this
       // plain changes = ignore style changes that are emitted when syntax highlighting is reapplied
       // multi plain changes = save computation by not rerunning the code multiple times
-      //   when making multiple changes (e.g. renaming a method at multiple parts in file)
+      // when making multiple changes (e.g. renaming a method at multiple parts in file)
       .multiPlainChanges()
-      // do not emit an event until 500 ms have passed since the last emission of previous stream
+      // do not emit an event until 50 ms have passed since the last emission of previous stream
       .successionEnds(Duration.ofMillis(50))
       // run the following code block when previous stream emits an event
       .subscribe(ignore -> this.setStyleSpans(0, computeHighlighting()));
-    // tab style
+    // replace tab with 2 spaces
     InputMap<KeyEvent> im = InputMap.consume(
-        EventPattern.keyPressed(KeyCode.TAB),
-        e -> this.replaceSelection("  ")
+      EventPattern.keyPressed(KeyCode.TAB),
+      e -> this.replaceSelection("  ")
     );
     Nodes.addInputMap(this, im);
+    // forget undo history
+    this.getUndoManager().forgetHistory();
+  }
+
+  /**
+   * Creates an empty code editor.
+   */
+  public Editor() {
+    this("");
   }
 
   /**
@@ -63,12 +78,13 @@ public final class Editor extends CodeArea {
     this.replaceText(0, this.getText().length(), text);
     this.setStyleSpans(0, this.computeHighlighting());
     this.lastText = text;
+    this.getUndoManager().forgetHistory();
   }
 
   /**
    * Updates last text with current editor text.
    */
-  public void update() {
+  public void updateLastText() {
     this.lastText = this.getText();
   }
 
@@ -77,12 +93,14 @@ public final class Editor extends CodeArea {
    *
    * @return true if editor has changed, false otherwise
    */
-  public boolean change() {
-    return this.getLength() != this.lastText.length();
+  public boolean hasChanged() {
+    return !this.getText().equals(this.lastText);
   }
 
   /**
    * Computes syntax highlighting.
+   *
+   * @return Style spans of syntax theme classes
    */
   private StyleSpans<Collection<String>> computeHighlighting() {
     Token token;
