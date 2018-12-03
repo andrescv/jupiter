@@ -12,7 +12,7 @@
    <menus>
       <Menu mnemonicParsing="false" text="File">
          <items>
-            <MenuItem fx:id="newFile" mnemonicParsing="false" text="New File">
+            <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#newFile" text="New File">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -24,7 +24,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="openFile" mnemonicParsing="false" text="Open File">
+            <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#openFile" text="Open File">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -36,7 +36,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="openFolder" mnemonicParsing="false" text="Open Folder">
+            <MenuItem fx:id="openFolder" mnemonicParsing="false" onAction="#openFolder" text="Open Folder">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                </accelerator>
@@ -49,7 +49,7 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="save" mnemonicParsing="false" text="Save">
+            <MenuItem fx:id="save" mnemonicParsing="false" onAction="#save" text="Save">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -61,7 +61,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="saveAs" mnemonicParsing="false" text="Save As...">
+            <MenuItem fx:id="saveAs" mnemonicParsing="false" onAction="#saveAs" text="Save As...">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                </accelerator>
@@ -73,7 +73,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="saveAll" mnemonicParsing="false" text="Save All">
+            <MenuItem fx:id="saveAll" mnemonicParsing="false" onAction="#saveAll" text="Save All">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -83,7 +83,7 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="closeTab" mnemonicParsing="false" text="Close Tab">
+            <MenuItem fx:id="closeTab" mnemonicParsing="false" onAction="#closeTab" text="Close Tab">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -95,7 +95,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="closeAll" mnemonicParsing="false" text="Close All Tabs">
+            <MenuItem fx:id="closeAll" mnemonicParsing="false" onAction="#closeAllTabs" text="Close All Tabs">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -105,7 +105,7 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="quit" mnemonicParsing="false" text="Quit">
+            <MenuItem fx:id="quit" mnemonicParsing="false" onAction="#quit" text="Quit">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>

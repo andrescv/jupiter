@@ -22,7 +22,7 @@ public class EditorController {
    *
    * @param controller main controller
    */
-  public void initialize(MainController controller) {
+  protected void initialize(MainController controller) {
     this.mainController = controller;
   }
 
