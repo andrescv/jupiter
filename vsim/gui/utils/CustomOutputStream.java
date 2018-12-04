@@ -28,8 +28,7 @@ public final class CustomOutputStream extends OutputStream {
    */
   @Override
   public synchronized void write(byte[] cbuf, int off, int len) throws IOException {
-    String text = new String(cbuf, off, len);
-    Platform.runLater(() -> control.appendText(text));
+    this.control.appendText(new String(cbuf, off, len));
   }
 
   /**

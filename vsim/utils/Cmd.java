@@ -66,20 +66,13 @@ public final class Cmd {
       System.exit(1);
     }
     // override default Settings
-    if (parser.hasFlag("-bare"))
-      Settings.BARE = true;
-    if (parser.hasFlag("-quiet"))
-      Settings.QUIET = true;
-    if (parser.hasFlag("-nocolor"))
-      Settings.COLORIZE = false;
-    if (parser.hasFlag("-notitle"))
-      Settings.TITLE = false;
-    if (parser.hasFlag("-dump"))
-      Settings.DUMP = parser.value("-dump");
-    if (parser.hasFlag("-start"))
-      Settings.START = parser.value("-start");
-    if (parser.hasFlag("-debug"))
-      Settings.DEBUG = true;
+    Settings.BARE = parser.hasFlag("-bare");
+    Settings.QUIET = parser.hasFlag("-quiet");
+    Settings.COLORIZE = !parser.hasFlag("-nocolor");
+    Settings.TITLE = !parser.hasFlag("-notitle");
+    Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;
+    Settings.START = parser.hasFlag("-start") ? parser.value("-start") : "main";
+    Settings.DEBUG = parser.hasFlag("-debug");
     // check -help flag
     if (parser.hasFlag("-help")) {
       Cmd.title();

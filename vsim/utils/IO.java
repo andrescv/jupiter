@@ -30,7 +30,7 @@ import java.io.InputStreamReader;
 public final class IO {
 
   /** standard input */
-  public static final BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+  public static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
   /** standard output */
   public static final PrintStream stdout = System.out;
