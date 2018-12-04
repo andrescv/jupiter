@@ -1,7 +1,9 @@
 package vsim.gui.controllers;
 
 import javafx.fxml.FXML;
+import javafx.event.Event;
 import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 
 
@@ -54,13 +56,12 @@ public class MenuBarController {
   @FXML protected MenuItem paste;
   /** Edit menu select all option */
   @FXML protected MenuItem selectAll;
+  /** Edit menu find in buffer option */
+  @FXML protected MenuItem findInBuffer;
+  /** Edit menu replace in buffer option */
+  @FXML protected MenuItem replaceInBuffer;
   /** Edit menu preferences option */
   @FXML protected MenuItem preferences;
-
-  /** Find menu find in buffer option */
-  @FXML protected MenuItem findInBuffer;
-  /** Find menu replace in buffer option */
-  @FXML protected MenuItem replaceInBuffer;
 
   /** Help menu help option */
   @FXML protected MenuItem help;
@@ -77,42 +78,54 @@ public class MenuBarController {
    */
   protected void initialize(MainController controller) {
     this.mainController = controller;
+    // change implicit exit
+    Platform.setImplicitExit(false);
+    // handle close request
+    this.mainController.stage.setOnCloseRequest(this::quit);
   }
 
   @FXML protected void newFile(ActionEvent event) {
-
+    this.mainController.editorController.addNewUntitledTab();
   }
 
   @FXML protected void openFile(ActionEvent event) {
-
+    this.mainController.editorController.addTitledTab();
   }
 
   @FXML protected void openFolder(ActionEvent event) {
 
   }
 
-  @FXML protected void closeTab(ActionEvent event) {
-
-  }
-
-  @FXML protected void closeAllTabs(ActionEvent event) {
-
-  }
-
   @FXML protected void save(ActionEvent event) {
-
+    this.mainController.editorController.saveTab();
   }
 
   @FXML protected void saveAs(ActionEvent event) {
-
+    this.mainController.editorController.saveTabAs();
   }
 
   @FXML protected void saveAll(ActionEvent event) {
-
+    this.mainController.editorController.saveAllTabs();
   }
 
-  @FXML protected void quit(ActionEvent event) {
+  @FXML protected void closeTab(ActionEvent event) {
+    this.mainController.editorController.closeTab();
+  }
 
+  @FXML protected void closeAllTabs(ActionEvent event) {
+    this.mainController.editorController.closeAllTabs();
+  }
+
+  @FXML protected void quit(Event event) {
+    this.mainController.editorController.quit();
+    // only
+    if (!this.mainController.editorController.editor.getTabs().isEmpty())
+      event.consume();
+    else {
+      if (event instanceof ActionEvent)
+        this.mainController.stage.close();
+      Platform.exit();
+    }
   }
 
 }
