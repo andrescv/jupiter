@@ -10,7 +10,7 @@
 <VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MainController">
    <children>
       <fx:include fx:id="menuBar" source="MenuBar.fxml" />
-      <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="200.0" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" VBox.vgrow="ALWAYS">
          <items>
             <JFXTabPane fx:id="main">
                <tabs>
