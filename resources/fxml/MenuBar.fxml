@@ -10,7 +10,7 @@
 
 <MenuBar prefHeight="29.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MenuBarController">
    <menus>
-      <Menu mnemonicParsing="false" text="File">
+      <Menu mnemonicParsing="false" text="_File">
          <items>
             <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#newFile" text="New File">
                <accelerator>
@@ -119,7 +119,7 @@
             </MenuItem>
          </items>
       </Menu>
-      <Menu mnemonicParsing="false" text="Run">
+      <Menu mnemonicParsing="false" text="_Run">
          <items>
             <MenuItem fx:id="assemble" mnemonicParsing="false" text="Assemble">
                <accelerator>
@@ -197,7 +197,7 @@
             </MenuItem>
          </items>
       </Menu>
-      <Menu mnemonicParsing="false" text="Edit">
+      <Menu mnemonicParsing="false" text="_Edit">
          <items>
             <MenuItem fx:id="undo" mnemonicParsing="false" text="Undo">
                <accelerator>
@@ -273,22 +273,6 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="preferences" mnemonicParsing="false" text="Preferences">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="COMMA" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/preferences.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-         </items>
-      </Menu>
-      <Menu mnemonicParsing="false" text="Find">
-         <items>
             <MenuItem fx:id="findInBuffer" mnemonicParsing="false" text="Find in Buffer">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -313,9 +297,22 @@
                   </ImageView>
                </graphic>
             </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="preferences" mnemonicParsing="false" text="Preferences">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="COMMA" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/preferences.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
          </items>
       </Menu>
-      <Menu mnemonicParsing="false" text="Help">
+      <Menu mnemonicParsing="false" text="_Help">
          <items>
             <MenuItem fx:id="help" mnemonicParsing="false" text="Help">
                <accelerator>
