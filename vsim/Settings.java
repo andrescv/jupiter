@@ -51,6 +51,6 @@ public final class Settings {
   public static String DUMP = null;
 
   /** colorize output, disable with -nocolor flag */
-  public static boolean COLORIZE = true;
+  public static boolean COLORIZE = false;
 
 }
