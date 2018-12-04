@@ -23,6 +23,14 @@
 }
 
 /*
+  ContextMenu Styles
+*/
+
+.context-menu {
+  -fx-cursor: DEFAULT;
+}
+
+/*
   MenuBar Styles
 */
 
@@ -38,14 +46,30 @@
   -fx-background-color: -fx-primary-light;
 }
 
+.menu {
+  -fx-cursor: HAND;
+}
+
 .menu .label {
   -fx-text-fill: -fx-primary;
   -fx-font-family: 'Roboto';
   -fx-font-weight: bold;
 }
 
+.menu:hover {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu:hover > .label {
+  -fx-text-fill: #fff;
+}
+
 .menu:showing .label {
   -fx-text-fill: -fx-primary;
+}
+
+.menu:showing > .label {
+  -fx-text-fill: #fff;
 }
 
 .menu-item:focused {
@@ -125,6 +149,10 @@
 /*
   Tree Styles
 */
+
+.tree-view:focused {
+  -fx-background-color: -fx-primary;
+}
 
 .tree-cell {
   -fx-background-color: -fx-primary;
