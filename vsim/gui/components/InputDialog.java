@@ -33,12 +33,14 @@ public final class InputDialog {
   @FXML private JFXTextField text;
 
   /**
-   * Creates an input dialog.
+   * Creates an input dialog with a default title.
+   *
+   * @param title dialog title
    */
-  public InputDialog() {
+  public InputDialog(String title) {
     try {
       this.stage = new Stage();
-      this.stage.setTitle("Enter your input...");
+      this.stage.setTitle(title);
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/InputDialog.fxml"));
@@ -59,11 +61,19 @@ public final class InputDialog {
   }
 
   /**
+   * Creates an input dialog without a default "Enter your input..." title.
+   */
+  public InputDialog() {
+    this("Enter your input...");
+  }
+
+  /**
    * Shows input dialog and returns user input text.
    *
    * @return user input text
    */
   public String showAndWait() {
+    this.text.requestFocus();
     this.stage.showAndWait();
     String data = this.text.getText();
     this.text.setText("");
