@@ -87,6 +87,15 @@ public final class EditorTab extends Tab {
   }
 
   /**
+   * Returns tab name.
+   *
+   * @return tab name
+   */
+  public String getName() {
+    return this.name;
+  }
+
+  /**
    * Returns tab file path.
    *
    * @return file path
@@ -126,7 +135,10 @@ public final class EditorTab extends Tab {
     this.untitled = -1;
     this.path = path;
     this.name = path.getName();
-    this.setText(name + " *");
+    if (this.hasChanged)
+      this.setText(this.name + " *");
+    else
+      this.setText(this.name);
   }
 
   /**
