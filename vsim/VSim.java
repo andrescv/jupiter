@@ -74,8 +74,10 @@ public final class VSim {
           Simulator.debug(files);
       } else
         Message.panic("no input files");
-    } else
+    } else {
+      System.setProperty("prism.lcdtext", "false");
       LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
+    }
   }
 
 }
