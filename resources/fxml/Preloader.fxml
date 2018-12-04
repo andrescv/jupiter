@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="274.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+
+<Pane maxHeight="274.0" maxWidth="500.0" minHeight="274.0" minWidth="500.0" prefHeight="274.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="274.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/preloader.png" />
          </image>
       </ImageView>
+      <Label fx:id="version" layoutX="442.0" layoutY="3.0" textFill="WHITE">
+         <font>
+            <Font name="Roboto Regular" size="16.0" />
+         </font>
+      </Label>
    </children>
-</StackPane>
+</Pane>
