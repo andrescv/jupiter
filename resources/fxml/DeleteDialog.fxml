@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="128.0" prefWidth="433.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXButton fx:id="cancel" layoutX="338.0" layoutY="77.0" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #388e3c;" text="Cancel" textFill="WHITE" />
+      <JFXButton fx:id="delete" layoutX="235.0" layoutY="77.0" prefHeight="37.0" prefWidth="93.0" style="-fx-background-color: #d32f2f;" text="Delete" textFill="WHITE" />
+      <Label layoutX="14.0" layoutY="29.0" text="Are you sure you want to delete the selected item permanently ?">
+         <font>
+            <Font name="Roboto Bold" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

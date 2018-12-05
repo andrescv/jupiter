@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
+import java.io.File;
+
 
 /**
  * The Settings class contains the V-Sim simulator settings.
@@ -25,6 +27,9 @@ public final class Settings {
 
   /** current version */
   public static final String VERSION = "v1.1.0";
+
+  /** user directory */
+  public static File DIR = new File(System.getProperty("user.dir"));
 
   /** installation path */
   public static String ROOT = null;
