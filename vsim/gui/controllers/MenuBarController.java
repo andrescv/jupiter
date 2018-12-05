@@ -93,7 +93,7 @@ public class MenuBarController {
   }
 
   @FXML protected void openFolder(ActionEvent event) {
-
+    this.mainController.editorController.openFolder();
   }
 
   @FXML protected void save(ActionEvent event) {

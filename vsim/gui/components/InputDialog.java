@@ -25,6 +25,8 @@ public final class InputDialog {
   /** Enter key combination */
   private static final KeyCodeCombination ENTER = new KeyCodeCombination(KeyCode.ENTER);
 
+  /** If user hits enter key */
+  private boolean enterPressed;
   /** Dialog stage */
   private Stage stage;
   /** Dialog enter button */
@@ -47,11 +49,16 @@ public final class InputDialog {
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+      this.enterPressed = false;
       this.stage.setResizable(false);
       this.stage.setScene(new Scene(decorator, 300, 140));
-      this.enter.setOnAction(e -> this.stage.close());
+      this.enter.setOnAction(e -> {
+        this.enterPressed = true;
+        this.stage.close();
+      });
       this.text.setOnKeyPressed(e -> {
         if (InputDialog.ENTER.match(e)) {
+          this.enterPressed = true;
           this.stage.close();
         }
       });
@@ -75,8 +82,11 @@ public final class InputDialog {
   public String showAndWait() {
     this.text.requestFocus();
     this.stage.showAndWait();
-    String data = this.text.getText();
+    String data = "";
+    if (this.enterPressed)
+      data = this.text.getText();
     this.text.setText("");
+    this.enterPressed = false;
     return data;
   }
 
