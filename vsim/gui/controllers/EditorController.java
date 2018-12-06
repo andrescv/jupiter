@@ -171,7 +171,7 @@ public class EditorController {
         // revert file path if something goes wrong...
         if (old != null)
           tab.setPath(old);
-        Message.error("Could not save file: " + file);
+        Message.warning("Could not save file: " + file);
       }
     }
   }
@@ -260,7 +260,11 @@ public class EditorController {
   }
 
   /**
-   * Returns a directory tree
+   * Returns a directory tree.
+   *
+   * @param directory directory to walk through
+   * @param isRoot if the directory is the root directory
+   * @return TreePath corresponding to the root node
    */
   private TreePath getTree(File directory, boolean isRoot) {
     TreePath root = new TreePath(directory);
@@ -358,7 +362,7 @@ public class EditorController {
         }
         this.editor.getSelectionModel().select(tab);
       } catch (IOException e) {
-        Message.error("Could not open file: " + file);
+        Message.warning("Could not open file: " + file);
       }
     }
   }
@@ -391,7 +395,7 @@ public class EditorController {
       if (close)
         this.closeTab(tab);
     } catch (IOException e) {
-      Message.error("Could not save file: " + tab.getPath());
+      Message.warning("Could not save file: " + tab.getPath());
     }
   }
 
@@ -459,20 +463,25 @@ public class EditorController {
    * Recursively deletes a directory and remove opened tabs if necessary.
    *
    * @param dir directory to delete
+   * @return true if directory was deleted, false if not
    */
-  private void deleteDir(File dir) {
+  private boolean deleteDir(File dir) {
     // if its a directory first delete all sub-directories and files
     if (dir.isDirectory()) {
+      boolean deleted = true;
       for (File f : dir.listFiles())
-        deleteDir(f);
+        deleted &= this.deleteDir(f);
       // only if all sub-directories and files were deleted
       // we can delete the parent directory
-      if (dir.listFiles().length == 0)
-        dir.delete();
+      if (deleted && dir.delete()) {
+        this.expanded.remove(dir);
+        return true;
+      }
+      return false;
     }
     // if its a file just delete the file and close the opened
     // tab if there is a opened tab with the same path
-    else if (dir.isFile()) {
+    else {
       EditorTab tab = null;
       for (Tab openTab: this.editor.getTabs()) {
         EditorTab t = (EditorTab)openTab;
@@ -481,21 +490,30 @@ public class EditorController {
           break;
         }
       }
-      dir.delete();
+      boolean deleted = dir.delete();
       // close the opened tab only if we actually delete the file
-      if (tab != null && !dir.exists())
+      if (tab != null && deleted)
         this.closeTab(tab);
+      return deleted;
     }
   }
 
+  /**
+   * Renames old opened tabs that have an absolute path with a prefix
+   * equal to the old path passed as argument, and prepends the new
+   * path prefix.
+   *
+   * @param oldPath old path prefix
+   * @param newPath new path prefix
+   */
   private void renameOpenedTabsWith(File oldPath, File newPath) {
     for (Tab openTab: this.editor.getTabs()) {
       EditorTab tab = (EditorTab)openTab;
       if (tab.getPath() != null) {
         String absPath = tab.getPath().getAbsolutePath();
         if (absPath.startsWith(oldPath.getAbsolutePath())) {
-          String base = absPath.split(oldPath.getAbsolutePath())[1];
-          tab.setPath(new File(newPath + File.separator + base));
+          String basename = absPath.split(oldPath.getAbsolutePath())[1];
+          tab.setPath(new File(newPath + File.separator + basename));
         }
       }
     }
@@ -523,11 +541,13 @@ public class EditorController {
             // create all necessary folders
             (new File(path.getParent())).mkdirs();
             // create file
-            path.createNewFile();
-            // add titled tab with the new file
-            this.addTitledTab(path);
+            if (path.createNewFile())
+              // add titled tab with the new file
+              this.addTitledTab(path);
+            else
+              Message.warning("could not create file: " + path);
           } catch (IOException e) {
-            Message.error("Could not create file: " + path);
+            Message.warning("Could not create file: " + path);
           }
         }
       } else
@@ -553,8 +573,10 @@ public class EditorController {
         Message.warning(String.format("directory %s already exists", dirname));
       else {
         // create all necessary folders
-        path.mkdirs();
-        this.expanded.put(path, true);
+        if (path.mkdirs())
+          this.expanded.put(path, true);
+        else
+          Message.warning("could not create folder: " + path);
       }
     }
   }
@@ -571,13 +593,15 @@ public class EditorController {
       File oldPath = item.getPath();
       // rename file and find a opened tab
       if (!oldPath.equals(newPath) && !newPath.exists()) {
-        if (this.expanded.get(oldPath) != null) {
-          this.expanded.put(newPath, this.expanded.get(oldPath));
-          this.expanded.remove(oldPath);
-        }
         newPath.mkdirs();
-        this.renameOpenedTabsWith(oldPath, newPath);
-        item.getPath().renameTo(newPath);
+        if (item.getPath().renameTo(newPath)) {
+          this.renameOpenedTabsWith(oldPath, newPath);
+          if (this.expanded.get(oldPath) != null) {
+            this.expanded.put(newPath, this.expanded.get(oldPath));
+            this.expanded.remove(oldPath);
+          }
+        } else
+          Message.warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
       }
       // dont do anything if the user uses the same path
       else if (oldPath.equals(newPath))
@@ -596,8 +620,8 @@ public class EditorController {
     boolean delete = dialog.showAndWait();
     if (delete) {
       TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
-      this.expanded.remove(item.getPath());
-      this.deleteDir(item.getPath());
+      if (!this.deleteDir(item.getPath()))
+        Message.warning("could not delete directory " + item.getPath());
     }
   }
 
@@ -619,14 +643,19 @@ public class EditorController {
       File oldPath = item.getPath();
       // rename file and find a opened tab
       if (!oldPath.equals(newPath) && !newPath.exists()) {
+        EditorTab tab = null;
         for (Tab openTab: this.editor.getTabs()) {
           EditorTab t = (EditorTab)openTab;
           if (t.getPath() != null && t.getPath().equals(oldPath)) {
-            t.setPath(newPath);
+            tab = t;
             break;
           }
         }
-        item.getPath().renameTo(newPath);
+        // try to rename path
+        if (item.getPath().renameTo(newPath))
+          tab.setPath(newPath);
+        else
+          Message.warning(String.format("could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
       }
       // dont do anything if the user uses the same path
       else if (oldPath.equals(newPath))
@@ -657,9 +686,11 @@ public class EditorController {
         }
       }
       // delete file
-      item.getPath().delete();
+      boolean deleted = item.getPath().delete();
+      if (!deleted)
+        Message.warning("could not delete file: " + item.getPath());
       // only if file really was deleted
-      if (tab != null && !item.getPath().exists())
+      if (tab != null && deleted)
         this.closeTab(tab);
     }
   }
