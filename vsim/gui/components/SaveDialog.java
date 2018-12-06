@@ -8,15 +8,24 @@ import java.io.IOException;
 import javafx.stage.Modality;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
-import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyCodeCombination;
 
 
 /**
  * This class represents a text input dialog.
  */
 public final class SaveDialog {
+
+  /** Escape key combination */
+  private static final KeyCodeCombination ESCAPE = new KeyCodeCombination(KeyCode.ESCAPE);
+
+  /** Enter key combination */
+  private static final KeyCodeCombination ENTER = new KeyCodeCombination(KeyCode.ENTER);
 
   /** Dialog stage */
   private Stage stage;
@@ -48,21 +57,58 @@ public final class SaveDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       this.stage.setResizable(false);
       this.stage.setScene(new Scene(decorator, 425, 160));
-      this.save.setOnAction(e -> {
-        this.result = 1;
-        this.stage.close();
+      // save actions
+      this.save.setOnAction(e -> this.save());
+      this.save.setOnKeyPressed(e -> {
+        if (SaveDialog.ENTER.match(e))
+          this.save();
       });
-      this.cancel.setOnAction(e -> {
-        this.result = -1;
-        this.stage.close();
+      // cancel actions
+      this.cancel.setOnAction(e -> this.cancel());
+      this.cancel.setOnKeyPressed(e -> {
+        if (SaveDialog.ENTER.match(e))
+          this.cancel();
       });
-      this.dontSave.setOnAction(e -> {
-        this.result = 0;
-        this.stage.close();
+      // dont save actions
+      this.dontSave.setOnAction(e -> this.dontSave());
+      this.dontSave.setOnKeyPressed(e -> {
+        if (SaveDialog.ENTER.match(e))
+          this.dontSave();
       });
+      // stage actions
+      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+        if (SaveDialog.ESCAPE.match(e))
+          this.cancel();
+      });
+      // set focus on save button
+      this.save.requestFocus();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Save action.
+   */
+  private void save() {
+    this.result = 1;
+    this.stage.close();
+  }
+
+  /**
+   * Dont save action.
+   */
+  private void dontSave() {
+    this.result = 0;
+    this.stage.close();
+  }
+
+  /**
+   * Cancel action.
+   */
+  private void cancel() {
+    this.result = -1;
+    this.stage.close();
   }
 
   /**
