@@ -22,6 +22,9 @@ import javafx.scene.input.KeyCodeCombination;
  */
 public final class InputDialog {
 
+  /** Escape key combination */
+  private static final KeyCodeCombination ESCAPE = new KeyCodeCombination(KeyCode.ESCAPE);
+
   /** Enter key combination */
   private static final KeyCodeCombination ENTER = new KeyCodeCombination(KeyCode.ENTER);
 
@@ -52,16 +55,23 @@ public final class InputDialog {
       this.enterPressed = false;
       this.stage.setResizable(false);
       this.stage.setScene(new Scene(decorator, 300, 140));
-      this.enter.setOnAction(e -> {
-        this.enterPressed = true;
-        this.stage.close();
+      // enter actions
+      this.enter.setOnAction(e -> this.enter());
+      this.enter.setOnKeyPressed(e -> {
+        if (InputDialog.ENTER.match(e))
+          this.enter();
       });
       this.text.setOnKeyPressed(e -> {
-        if (InputDialog.ENTER.match(e)) {
-          this.enterPressed = true;
-          this.stage.close();
-        }
+        if (InputDialog.ENTER.match(e))
+          this.enter();
       });
+      // stage actions
+      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+        if (InputDialog.ESCAPE.match(e))
+          this.cancel();
+      });
+      // request input focus
+      this.text.requestFocus();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -75,12 +85,27 @@ public final class InputDialog {
   }
 
   /**
+   * Cancel action.
+   */
+  private void cancel() {
+    this.enterPressed = false;
+    this.stage.close();
+  }
+
+  /**
+   * Enter action.
+   */
+  private void enter() {
+    this.enterPressed = true;
+    this.stage.close();
+  }
+
+  /**
    * Shows input dialog and returns user input text.
    *
    * @return user input text
    */
   public String showAndWait() {
-    this.text.requestFocus();
     this.stage.showAndWait();
     String data = "";
     if (this.enterPressed)
