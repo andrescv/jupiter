@@ -48,7 +48,7 @@ public final class DirWatcher {
   }
 
   /**
-   * Re-starts the thread watcher using {@link Settings.DIR} as root.
+   * Re-starts the thread watcher using {@code vsim.Settings.DIR} as root.
    */
   public void start() {
     // stop previous thread
