@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.application.Application;
 import com.jfoenix.controls.JFXDecorator;
@@ -43,9 +42,6 @@ public final class Gui extends Application {
     decorator.setCustomMaximize(true);
     // create scene
     Scene scene = new Scene(decorator, 800, 600);
-    // load fonts
-    Font.loadFont(getClass().getResource("/resources/fonts/anonymouspro.ttf").toExternalForm(), 24);
-    Font.loadFont(getClass().getResource("/resources/fonts/envycoder.ttf").toExternalForm(), 24);
     // add styles
     scene.getStylesheets().add(getClass().getResource("/resources/css/style.css").toExternalForm());
     scene.getStylesheets().add(Gui.MATERIAL);
