@@ -58,7 +58,7 @@ public final class RVFRegisterFile {
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // all registers are editable
-      Register reg = new Register(i, MNEMONICS[i], 0, true);
+      Register reg = new RVFRegister(i, MNEMONICS[i], 0, true);
       // abi name
       this.rf.put(MNEMONICS[i], reg);
       // default name f0-f31

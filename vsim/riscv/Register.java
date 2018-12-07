@@ -25,17 +25,17 @@ import javafx.beans.property.SimpleIntegerProperty;
 /**
  * The Register class represents a "hardware" register.
  */
-public final class Register {
+public abstract class Register {
 
   /** register number */
   private final SimpleIntegerProperty number;
   /** register mnemonic */
   private final SimpleStringProperty mnemonic;
   /** register current string value */
-  private final SimpleStringProperty strValue;
+  protected final SimpleStringProperty strValue;
 
   /** register current value */
-  private int value;
+  protected int value;
   /** register default value */
   private final int resetValue;
   /** if the register is editable or not */
@@ -54,10 +54,11 @@ public final class Register {
   public Register(int number, String mnemonic, int value, boolean editable) {
     this.number = new SimpleIntegerProperty(number);
     this.mnemonic = new SimpleStringProperty(mnemonic);
-    this.strValue = new SimpleStringProperty(String.format("0x%08x", value));
+    this.strValue = new SimpleStringProperty("");
     this.value = value;
     this.resetValue = value;
     this.editable = editable;
+    this.update();
   }
 
   /**
@@ -155,14 +156,7 @@ public final class Register {
   /**
    * This method updates the string value property.
    */
-  public void update() {
-    // display in hex format
-    if (Settings.DISP_REG_HEX.get())
-      this.strValue.set(String.format("0x%08x", this.value));
-    // display in decimal format
-    else
-      this.strValue.set(String.format("%d", this.value));
-  }
+  public abstract void update();
 
   /**
    * This method returns a String representation of a Register object.
