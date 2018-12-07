@@ -20,6 +20,8 @@ package vsim.riscv;
 import vsim.utils.IO;
 import java.util.HashMap;
 import vsim.utils.Colorize;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 /**
@@ -56,7 +58,7 @@ public final class RVFRegisterFile {
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // all registers are editable
-      Register reg = new Register(i, 0, true);
+      Register reg = new Register(i, MNEMONICS[i], 0, true);
       // abi name
       this.rf.put(MNEMONICS[i], reg);
       // default name f0-f31
@@ -71,8 +73,9 @@ public final class RVFRegisterFile {
    * @return register mnemonic or null if number is invalid
    */
   public String getRegisterMnemonic(int number) {
-    if (number >= 0 && number < MNEMONICS.length)
-      return MNEMONICS[number];
+    Register reg = this.rf.get("f" + number);
+    if (reg != null)
+      return reg.getMnemonic();
     return null;
   }
 
@@ -228,6 +231,18 @@ public final class RVFRegisterFile {
         )
       );
     }
+  }
+
+  /**
+   * This method returns an observable list of registers.
+   *
+   * @return observable list of registers
+   */
+  public ObservableList<Register> getRVF() {
+    ObservableList<Register> rvf = FXCollections.observableArrayList();
+    for (int i = 0; i < MNEMONICS.length; i++)
+      rvf.add(this.rf.get("f" + i));
+    return rvf;
   }
 
 }
