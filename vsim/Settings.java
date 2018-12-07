@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim;
 
 import java.io.File;
-import javafx.beans.property.SimpleBooleanProperty;
 
 
 /**
@@ -30,7 +29,10 @@ public final class Settings {
   public static final String VERSION = "v1.1.0";
 
   /** display RVI register in hex property */
-  public static SimpleBooleanProperty DISP_REG_HEX = new SimpleBooleanProperty(true);
+  public static boolean DISP_RVI_REG_HEX = true;
+
+  /** display RVF register in hex property */
+  public static boolean DISP_RVF_REG_HEX = false;
 
   /** user directory */
   public static File DIR = new File(System.getProperty("user.dir"));
