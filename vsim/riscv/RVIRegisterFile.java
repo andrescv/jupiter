@@ -61,7 +61,7 @@ public final class RVIRegisterFile {
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // note: only "zero" register is not editable
-      Register reg = new Register(i, MNEMONICS[i], 0, i != 0);
+      Register reg = new RVIRegister(i, MNEMONICS[i], 0, i != 0);
       // point all names to this new register in Hashtable
       String[] names = MNEMONICS[i].split("/");
       for (int j = 0; j < names.length; j++)
@@ -70,7 +70,7 @@ public final class RVIRegisterFile {
       this.rf.put("x" + i, reg);
     }
     // program counter is a special register
-    this.pc = new Register(32, "pc", MemorySegments.TEXT_SEGMENT_BEGIN, true);
+    this.pc = new RVIRegister(32, "pc", MemorySegments.TEXT_SEGMENT_BEGIN, true);
     // set default value for stack and global pointer
     this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
     this.rf.get("gp").setValue(MemorySegments.STATIC_SEGMENT);
