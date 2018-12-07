@@ -17,8 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
+import vsim.Settings;
 import vsim.utils.Colorize;
-
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * The Register class represents a "hardware" register.
@@ -26,28 +28,63 @@ import vsim.utils.Colorize;
 public final class Register {
 
   /** register number */
-  private int number;
+  private final SimpleIntegerProperty number;
+  /** register mnemonic */
+  private final SimpleStringProperty mnemonic;
+  /** register current string value */
+  private final SimpleStringProperty strValue;
+
   /** register current value */
   private int value;
   /** register default value */
-  private int resetValue;
+  private final int resetValue;
   /** if the register is editable or not */
-  private boolean editable;
+  private final boolean editable;
 
   /**
    * Unique constructor that initializes a new register.
    *
    * @param number register number
+   * @param mnemonic register mnemonic
    * @param value register initial value
    * @param editable if the register is editable or not
    * @see vsim.riscv.RVIRegisterFile
    * @see vsim.riscv.RVFRegisterFile
    */
-  public Register(int number, int value, boolean editable) {
-    this.number = number;
+  public Register(int number, String mnemonic, int value, boolean editable) {
+    this.number = new SimpleIntegerProperty(number);
+    this.mnemonic = new SimpleStringProperty(mnemonic);
+    this.strValue = new SimpleStringProperty(String.format("0x%08x", value));
     this.value = value;
     this.resetValue = value;
     this.editable = editable;
+  }
+
+  /**
+   * This method returns de number property.
+   *
+   * @return number property
+   */
+  public SimpleIntegerProperty numberProperty() {
+    return this.number;
+  }
+
+  /**
+   * This method returns the mnemonic property.
+   *
+   * @return mnemonic property
+   */
+  public SimpleStringProperty mnemonicProperty() {
+    return this.mnemonic;
+  }
+
+  /**
+   * This method returns the string value property.
+   *
+   * @return string value property
+   */
+  public SimpleStringProperty strValueProperty() {
+    return this.strValue;
   }
 
   /**
@@ -56,7 +93,25 @@ public final class Register {
    * @return the number of the register
    */
   public int getNumber() {
-    return this.number;
+    return this.number.get();
+  }
+
+  /**
+   * This method returns the mnemonic of the register.
+   *
+   * @return register mnemonic
+   */
+  public String getMnemonic() {
+    return this.mnemonic.get();
+  }
+
+  /**
+   * This method returns the string value of the register.
+   *
+   * @return the string value of the register
+   */
+  public String getStrValue() {
+    return this.strValue.get();
   }
 
   /**
@@ -69,13 +124,24 @@ public final class Register {
   }
 
   /**
+   * This method returns the editable property of the register.
+   *
+   * @return true if the register is editable, false otherwise.
+   */
+  public boolean isEditable() {
+    return this.editable;
+  }
+
+  /**
    * This method sets the value of the register if the register is editable.
    *
    * @param value the new register value
    */
   public void setValue(int value) {
-    if (this.editable)
+    if (this.editable) {
       this.value = value;
+      this.update();
+    }
   }
 
   /**
@@ -83,6 +149,19 @@ public final class Register {
    */
   public void reset() {
     this.value = this.resetValue;
+    this.update();
+  }
+
+  /**
+   * This method updates the string value property.
+   */
+  public void update() {
+    // display in hex format
+    if (Settings.DISP_REG_HEX.get())
+      this.strValue.set(String.format("0x%08x", this.value));
+    // display in decimal format
+    else
+      this.strValue.set(String.format("%d", this.value));
   }
 
   /**

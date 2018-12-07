@@ -20,6 +20,8 @@ package vsim.riscv;
 import vsim.utils.IO;
 import java.util.HashMap;
 import vsim.utils.Colorize;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
@@ -59,7 +61,7 @@ public final class RVIRegisterFile {
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // note: only "zero" register is not editable
-      Register reg = new Register(i, 0, i != 0);
+      Register reg = new Register(i, MNEMONICS[i], 0, i != 0);
       // point all names to this new register in Hashtable
       String[] names = MNEMONICS[i].split("/");
       for (int j = 0; j < names.length; j++)
@@ -68,7 +70,7 @@ public final class RVIRegisterFile {
       this.rf.put("x" + i, reg);
     }
     // program counter is a special register
-    this.pc = new Register(32, MemorySegments.TEXT_SEGMENT_BEGIN, true);
+    this.pc = new Register(32, "pc", MemorySegments.TEXT_SEGMENT_BEGIN, true);
     // set default value for stack and global pointer
     this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
     this.rf.get("gp").setValue(MemorySegments.STATIC_SEGMENT);
@@ -81,8 +83,9 @@ public final class RVIRegisterFile {
    * @return register mnemonic or null if number is invalid
    */
   public String getRegisterMnemonic(int number) {
-    if (number >= 0 && number < MNEMONICS.length)
-      return MNEMONICS[number];
+    Register reg = this.rf.get("x" + number);
+    if (reg != null)
+      return reg.getMnemonic();
     return null;
   }
 
@@ -247,6 +250,18 @@ public final class RVIRegisterFile {
           this.pc.toString()
         )
       );
+  }
+
+  /**
+   * This method returns an observable list of registers.
+   *
+   * @return observable list of registers
+   */
+  public ObservableList<Register> getRVI() {
+    ObservableList<Register> rvi = FXCollections.observableArrayList();
+    for (int i = 0; i < MNEMONICS.length; i++)
+      rvi.add(this.rf.get("x" + i));
+    return rvi;
   }
 
 }
