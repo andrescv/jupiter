@@ -269,26 +269,11 @@
 }
 
 #upBtn {
-  -fx-background-color: #1e88e5;
+  -fx-background-color: #00897b ;
 }
 
 #downBtn {
-  -fx-background-color: #1e88e5;
-}
-
-#memCombo {
-  -fx-prompt-text-fill: #ffffff;
-  -fx-font-family: 'Roboto';
-  -fx-font-weight: bold;
-  -fx-alignment: CENTER;
-}
-
-#memCombo .list-cell:filled:selected .text {
-    -fx-fill: #ffffff;
-}
-
-#memCombo .arrow {
-  -fx-background-color: #ffffff;
+  -fx-background-color: #f9a825;
 }
 
 /*
@@ -420,7 +405,7 @@
 }
 
 .table-view:focused {
-  -fx-background-color: -fx-table-color, -fx-box-border, -fx-control-inner-background;
+  -fx-background-color: transparent, -fx-box-border, -fx-control-inner-background;
   -fx-background-insets: -1.4, 0, 1;
   -fx-background-radius: 1.4, 0, 0;
   -fx-padding: 1;
@@ -471,6 +456,10 @@
   -fx-alignment: top-center;
   -fx-font-weight: bold;
   -fx-font-family: 'Roboto';
+}
+
+.table-view .table-cell.editable-cell {
+  -fx-font-family: 'Anonymous Pro';
 }
 
 .table-view .column-overlay {
