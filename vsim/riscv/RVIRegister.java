@@ -43,8 +43,11 @@ public final class RVIRegister extends Register {
   @Override
   public void update() {
     // display in hex format
-    if (Settings.DISP_RVI_REG_HEX)
+    if (Settings.DISP_RVI_REG == 0)
       this.strValue.set(String.format("0x%08x", this.value));
+    // display in unsigned format
+    else if (Settings.DISP_RVI_REG == 1)
+      this.strValue.set(String.format("%d", Integer.toUnsignedLong(this.value)));
     // display in decimal format
     else
       this.strValue.set(String.format("%d", this.value));
