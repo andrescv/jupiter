@@ -23,6 +23,8 @@ import vsim.utils.Data;
 import java.util.HashMap;
 import vsim.utils.Message;
 import vsim.utils.Colorize;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 /**
@@ -30,11 +32,20 @@ import vsim.utils.Colorize;
  */
 public final class Memory {
 
+  /** number of memory cells to show in the GUI application */
+  private static final int ROWS = 32;
+
+  /** start address to generate memory cells */
+  private static int START = MemorySegments.STATIC_SEGMENT + (ROWS - 1) * Data.WORD_LENGTH;
+
   /** the only available instance of the Memory class */
   public static final Memory ram = new Memory();
 
   /** all allocated bytes */
   private HashMap<Integer, Byte> memory;
+
+  /** memory cell list */
+  private ObservableList<MemoryCell> cells;
 
   /**
    * Unique constructor that initializes a newly and empty Memory object.
@@ -44,6 +55,10 @@ public final class Memory {
    */
   private Memory() {
     this.memory = new HashMap<Integer, Byte>();
+    // create initial memory cells
+    this.cells = FXCollections.observableArrayList();
+    for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
+      this.cells.add(new MemoryCell(i));
   }
 
   /**
@@ -89,6 +104,11 @@ public final class Memory {
   public void storeByte(int address, int value) {
     if (Memory.checkStore(address))
       this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+    // refresh memory cells
+    if (Settings.GUI) {
+      for (MemoryCell cell: this.cells)
+        cell.update();
+    }
   }
 
   /**
@@ -127,6 +147,11 @@ public final class Memory {
   public void privStoreWord(int address, int value) {
     for (int i = 0; i < Data.WORD_LENGTH; i++)
       this.memory.put(address++, (byte)((value >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
+    // refresh memory cells
+    if (Settings.GUI) {
+      for (MemoryCell cell: this.cells)
+        cell.update();
+    }
   }
 
   /**
@@ -152,7 +177,7 @@ public final class Memory {
   }
 
   /**
-   * This method loads a unsigned byte value from memory at address given.
+   * This method loads a unsigned byte value from memory at address given with verifications.
    *
    * @param address address where to load the unsigned byte value
    * @return the unsigned byte value
@@ -164,6 +189,18 @@ public final class Memory {
       return ((int)this.memory.get(address)) & Data.BYTE_MASK;
     }
     return 0x0;
+  }
+
+  /**
+   * This method loads a unsigned byte value from memory at address given without verifications.
+   *
+   * @param address address where to load the unsigned byte value
+   * @return the unsigned byte value
+   */
+  public int privLoadByteUnsigned(int address) {
+    if (!this.memory.containsKey(address))
+      return 0x0;
+    return ((int)this.memory.get(address)) & Data.BYTE_MASK;
   }
 
   /**
@@ -221,7 +258,95 @@ public final class Memory {
   }
 
   /**
+   * Gets the observable list of memory cells.
+   *
+   * @return observable list of memory cells
+   */
+  public ObservableList<MemoryCell> getCells() {
+    return this.cells;
+  }
+
+  /**
+   * Use this method to see 4 memory cells above.
+   */
+  public void up() {
+    Memory.START += 16;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * Use this method to see 4 memory cells below.
+   */
+  public void down() {
+    Memory.START -= 16;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#TEXT_SEGMENT_BEGIN}.
+   */
+  public void text() {
+    Memory.START = MemorySegments.TEXT_SEGMENT_BEGIN + (Memory.ROWS - 1) * Data.WORD_LENGTH;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#STATIC_SEGMENT}.
+   */
+  public void data() {
+    Memory.START = MemorySegments.STATIC_SEGMENT + (Memory.ROWS - 1) * Data.WORD_LENGTH;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
+   */
+  public void stack() {
+    Memory.START = MemorySegments.STACK_SEGMENT;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
+   */
+  public void heap() {
+    Memory.START = MemorySegments.HEAP_SEGMENT + (Memory.ROWS - 1) * Data.WORD_LENGTH;
+    this.updateMemoryCells();
+  }
+
+  /**
+   * This method updates all memory cells according to {@link vsim.riscv.Memory#START}.
+   */
+  private void updateMemoryCells() {
+    for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
+      this.cells.get(j).setIntAddress(i);
+  }
+
+  /**
    * This method checks if the address given is a valid store address.
+   *
+   * @param address the address to check
+   * @return true if the address is valid, false otherwise.
+   */
+  public static boolean checkAddress(int address) {
+    // reserved memory ?
+    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END) ||
+        Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END))
+      return false;
+    // text segment ?
+    if (Data.inRange(address, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END))
+      return false;
+    // read only segment ?
+    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END &&
+        Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END))
+      return false;
+    // otherwise
+    return true;
+  }
+
+  /**
+   * This method checks if the address given is a valid store address and displays a warning
+   * message if the address is invalid.
    *
    * @param address the address to check
    * @return true if the address is valid, false otherwise.
@@ -262,7 +387,7 @@ public final class Memory {
     if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END) ||
         Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
       if (!Settings.QUIET)
-        Message.warning("runtime: trying to load a value from reserved memory (ignoring)");
+        Message.warning("runtime: trying to load a value from reserved memory");
       return false;
     }
     // otherwise

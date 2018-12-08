@@ -28,11 +28,17 @@ public final class Settings {
   /** current version */
   public static final String VERSION = "v1.1.0";
 
-  /** display RVI register in hex property */
-  public static boolean DISP_RVI_REG_HEX = true;
+  /** if running in GUI mode */
+  public static boolean GUI = false;
 
-  /** display RVF register in hex property */
-  public static boolean DISP_RVF_REG_HEX = false;
+  /** display mode of RVI register */
+  public static int DISP_RVI_REG = 0;
+
+  /** display mode of RVF register */
+  public static int DISP_RVF_REG= 0;
+
+  /** display mode of memory cell */
+  public static int DISP_MEM_CELL = 0;
 
   /** user directory */
   public static File DIR = new File(System.getProperty("user.dir"));

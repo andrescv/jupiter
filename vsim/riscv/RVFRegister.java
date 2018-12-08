@@ -43,7 +43,7 @@ public final class RVFRegister extends Register {
   @Override
   public void update() {
     // display in hex format
-    if (Settings.DISP_RVF_REG_HEX)
+    if (Settings.DISP_RVF_REG == 0)
       this.strValue.set(String.format("0x%08x", this.value));
     // display in float format
     else
