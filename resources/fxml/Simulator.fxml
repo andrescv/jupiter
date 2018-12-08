@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTabPane?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
@@ -13,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.65" prefHeight="431.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
+<SplitPane dividerPositions="0.62" prefHeight="431.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
    <items>
       <VBox alignment="CENTER" minWidth="450.0" prefHeight="263.0" prefWidth="578.0">
          <children>
@@ -79,15 +77,15 @@
             </TableView>
          </children>
       </VBox>
-      <JFXTabPane fx:id="hardware" maxWidth="500.0" minWidth="280.0" prefHeight="493.0" prefWidth="280.0" SplitPane.resizableWithParent="false">
+      <JFXTabPane fx:id="hardware" maxWidth="304.0" minWidth="304.0" prefHeight="493.0" prefWidth="304.0" SplitPane.resizableWithParent="false">
          <tabs>
             <Tab fx:id="rviTab" text="RVI">
                <content>
                   <TableView fx:id="rviTable" editable="true" prefHeight="200.0" prefWidth="448.0">
                      <columns>
-                        <TableColumn fx:id="rviMnemonic" editable="false" prefWidth="75.0" sortable="false" text="Mnemonic" />
-                        <TableColumn fx:id="rviNumber" editable="false" prefWidth="75.0" sortable="false" text="Number" />
-                        <TableColumn fx:id="rviValue" editable="true" prefWidth="75.0" sortable="false" text="Value" />
+                        <TableColumn fx:id="rviMnemonic" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
+                        <TableColumn fx:id="rviNumber" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
+                        <TableColumn fx:id="rviValue" editable="true" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -99,9 +97,9 @@
                <content>
                   <TableView fx:id="rvfTable" editable="true" prefHeight="200.0" prefWidth="200.0">
                      <columns>
-                        <TableColumn fx:id="rvfMnemonic" editable="false" prefWidth="75.0" sortable="false" text="Mnemonic" />
-                        <TableColumn fx:id="rvfNumber" editable="false" prefWidth="75.0" sortable="false" text="Number" />
-                        <TableColumn fx:id="rvfValue" prefWidth="75.0" sortable="false" text="Value" />
+                        <TableColumn fx:id="rvfMnemonic" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
+                        <TableColumn fx:id="rvfNumber" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
+                        <TableColumn fx:id="rvfValue" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -115,11 +113,11 @@
                      <children>
                         <TableView fx:id="memTable" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="memAddress" editable="false" prefWidth="75.0" sortable="false" text="Address" />
-                              <TableColumn fx:id="memOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
-                              <TableColumn fx:id="memOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
-                              <TableColumn fx:id="memOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
-                              <TableColumn fx:id="memOffset3" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+3" />
+                              <TableColumn fx:id="memAddress" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Address" />
+                              <TableColumn fx:id="memOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+0" />
+                              <TableColumn fx:id="memOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+1" />
+                              <TableColumn fx:id="memOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+2" />
+                              <TableColumn fx:id="memOffset3" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+3" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -127,11 +125,6 @@
                         </TableView>
                         <HBox id="memBtns" alignment="CENTER">
                            <children>
-                              <JFXComboBox id="memCombo" fx:id="memCombo" focusColor="#fe315c" promptText="--Segment--" unFocusColor="#fe315c" visibleRowCount="5">
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </JFXComboBox>
                               <JFXButton id="upBtn" fx:id="upBtn" text="Up">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
