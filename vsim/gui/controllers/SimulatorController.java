@@ -114,6 +114,66 @@ public class SimulatorController {
   }
 
   /**
+   * Assembles all files in directory.
+   */
+  protected void assemble() {
+    // TODO
+  }
+
+  /**
+   * Go step control, runs all the program.
+   */
+  protected void go() {
+    // TODO
+  }
+
+  /**
+   * Step flow control, advances the simulator by 1 step.
+   */
+  protected void step() {
+    // TODO
+  }
+
+  /**
+   * Backstep flow control, goes back to the previous step.
+   */
+  protected void backstep() {
+    // TODO
+  }
+
+  /**
+   * Resets all the simulator state and starts again.
+   */
+  protected void reset() {
+    // TODO
+  }
+
+  /**
+   * Clear all breakpoints that were set.
+   */
+  protected void clearAllBreakpoints() {
+    // TODO
+  }
+
+  /**
+   * Dumps generated machine code to a file.
+   */
+  protected void dump() {
+    // TODO
+  }
+
+  /**
+   * This method initializes simulator control buttons.
+   */
+  private void initButtons() {
+    this.goBtn.setOnAction(e -> this.go());
+    this.stepBtn.setOnAction(e -> this.step());
+    this.backstepBtn.setOnAction(e -> this.backstep());
+    this.resetBtn.setOnAction(e -> this.reset());
+    this.dumpBtn.setOnAction(e -> this.dump());
+  }
+
+  /**
    * This method initializes the memory table.
    */
   @SuppressWarnings("unchecked")

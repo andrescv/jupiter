@@ -25,6 +25,8 @@ public class MainController {
   @FXML protected JFXTabPane main;
   /** Main tab pane editor tab */
   @FXML protected Tab editorTab;
+  /** Main tab pane simulator tab */
+  @FXML protected Tab simTab;
 
   /** Console text area */
   @FXML protected TextArea console;
@@ -46,7 +48,7 @@ public class MainController {
    */
   public void initialize(Stage stage) {
     this.stage = stage;
-    this.initializeConsole();
+    this.initConsole();
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
@@ -60,9 +62,16 @@ public class MainController {
   }
 
   /**
+   * Selects simulator tab.
+   */
+  protected void selectSimulatorTab() {
+    this.main.getSelectionModel().select(this.simTab);
+  }
+
+  /**
    * Initialize V-Sim console text area.
    */
-  private void initializeConsole() {
+  private void initConsole() {
     // redirects standard output and error streams
     PrintStream ps = new PrintStream(new CustomOutputStream(this.console));
     System.setOut(ps);

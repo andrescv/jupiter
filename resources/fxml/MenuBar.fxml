@@ -121,7 +121,7 @@
       </Menu>
       <Menu mnemonicParsing="false" text="_Run">
          <items>
-            <MenuItem fx:id="assemble" mnemonicParsing="false" text="Assemble">
+            <MenuItem fx:id="assemble" mnemonicParsing="false" onAction="#assemble" text="Assemble">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F3" control="UP" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -134,7 +134,7 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="go" mnemonicParsing="false" text="Go">
+            <MenuItem fx:id="go" mnemonicParsing="false" onAction="#go" text="Go">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -146,7 +146,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="step" mnemonicParsing="false" text="Step">
+            <MenuItem fx:id="step" mnemonicParsing="false" onAction="#step" text="Step">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F7" control="UP" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -158,7 +158,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="backstep" mnemonicParsing="false" text="Backstep">
+            <MenuItem fx:id="backstep" mnemonicParsing="false" onAction="#backstep" text="Backstep">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F8" control="UP" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -170,7 +170,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="reset" mnemonicParsing="false" text="Reset">
+            <MenuItem fx:id="reset" mnemonicParsing="false" onAction="#reset" text="Reset">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="F12" control="UP" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
@@ -183,7 +183,7 @@
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="clearBreakpoints" mnemonicParsing="false" text="Clear all breakpoints">
+            <MenuItem fx:id="clearBreakpoints" mnemonicParsing="false" onAction="#clearAllBreakpoints" text="Clear all breakpoints">
                <accelerator>
                   <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
