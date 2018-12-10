@@ -5,6 +5,9 @@ import javafx.event.Event;
 import javafx.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 
 
 /**
@@ -82,7 +85,34 @@ public class MenuBarController {
     Platform.setImplicitExit(false);
     // handle close request
     this.mainController.stage.setOnCloseRequest(this::quit);
+    // disable some file menu items if there are no tabs open
+    BooleanBinding isEmpty = Bindings.isEmpty(this.mainController.editorController.editor.getTabs());
+    BooleanBinding fileCond = Bindings.or(isEmpty, this.mainController.simTab.selectedProperty());
+    this.save.disableProperty().bind(fileCond);
+    this.saveAs.disableProperty().bind(fileCond);
+    this.saveAll.disableProperty().bind(fileCond);
+    this.closeTab.disableProperty().bind(fileCond);
+    this.closeAll.disableProperty().bind(fileCond);
+    this.undo.disableProperty().bind(fileCond);
+    this.redo.disableProperty().bind(fileCond);
+    this.cut.disableProperty().bind(fileCond);
+    this.copy.disableProperty().bind(fileCond);
+    this.paste.disableProperty().bind(fileCond);
+    this.selectAll.disableProperty().bind(fileCond);
+    this.findInBuffer.disableProperty().bind(fileCond);
+    this.replaceInBuffer.disableProperty().bind(fileCond);
+    // disable sim flow control if the editor tab is selected
+    ReadOnlyBooleanProperty editorSelected = this.mainController.editorTab.selectedProperty();
+    this.go.disableProperty().bind(editorSelected);
+    this.step.disableProperty().bind(editorSelected);
+    this.backstep.disableProperty().bind(editorSelected);
+    this.reset.disableProperty().bind(editorSelected);
+    this.clearBreakpoints.disableProperty().bind(editorSelected);
   }
+
+  /*-------------------------------------------------------*
+   |                     File Menu                         |
+   *-------------------------------------------------------*/
 
   @FXML protected void newFile(ActionEvent event) {
     this.mainController.editorController.addNewUntitledTab();
@@ -126,6 +156,34 @@ public class MenuBarController {
         this.mainController.stage.close();
       Platform.exit();
     }
+  }
+
+  /*-------------------------------------------------------*
+   |                      Run Menu                         |
+   *-------------------------------------------------------*/
+
+  @FXML protected void assemble(ActionEvent e) {
+    this.mainController.simulatorController.assemble();
+  }
+
+  @FXML protected void go(ActionEvent e) {
+    this.mainController.simulatorController.go();
+  }
+
+  @FXML protected void step(ActionEvent e) {
+    this.mainController.simulatorController.step();
+  }
+
+  @FXML protected void backstep(ActionEvent e) {
+    this.mainController.simulatorController.backstep();
+  }
+
+  @FXML protected void reset(ActionEvent e) {
+    this.mainController.simulatorController.reset();
+  }
+
+  @FXML protected void clearAllBreakpoints(ActionEvent e) {
+    this.mainController.simulatorController.clearAllBreakpoints();
   }
 
 }
