@@ -22,6 +22,7 @@ import java.util.HashMap;
 import vsim.utils.Colorize;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleIntegerProperty;
 import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
@@ -135,6 +136,15 @@ public final class RVIRegisterFile {
    */
   public int getProgramCounter() {
     return this.pc.getValue();
+  }
+
+  /**
+   * This method returns the integer value property of the program counter.
+   *
+   * @return integer value property of PC
+   */
+  public SimpleIntegerProperty programCounterProperty() {
+    return this.pc.valueProperty();
   }
 
   /**
