@@ -58,15 +58,30 @@ public final class Errors {
     Errors.add(
       filename + ":" + phase + ":" + lineno + ": " + msg +
       newline + "    |" +
-      newline + "    └─> (source line) " + source
+      newline + "    └─ (source line) " + source
     );
+  }
+
+  /**
+   * This method adds an error message with some useful debug information to
+   * the error list {@link vsim.Errors#errors}.
+   *
+   * @param line source line number
+   * @param filename source filename
+   * @param phase the phase where the error ocurred (e.g assembler, linker)
+   * @param msg an error message
+   */
+  public static void add(int lineno, String filename, String phase, String msg) {
+    Errors.add(filename + ":" + phase + ":" + lineno + ":" + msg);
   }
 
   /**
    * This method reports all the current errors and exits if there are
    * any errors in the error list {@link vsim.Errors#errors}.
+   *
+   * @return true if there are errors, false otherwise.
    */
-  public static void report() {
+  public static boolean report() {
     if (Errors.errors.size() > 0) {
       // print every error message
       for (String msg: Errors.errors)
@@ -74,8 +89,14 @@ public final class Errors {
       // report how many errors ocurred
       IO.stderr.println(Errors.errors.size() + " errors(s)");
       IO.stderr.flush();
-      System.exit(1);
+      // clear messages
+      Errors.errors.clear();
+      // exit only in CLI mode
+      if (!Settings.GUI)
+        System.exit(1);
+      return true;
     }
+    return false;
   }
 
   /**

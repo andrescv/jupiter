@@ -19,13 +19,8 @@ package vsim.assembler;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.Settings;
 import vsim.utils.Message;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import vsim.assembler.statements.Statement;
 
 
@@ -40,8 +35,8 @@ public final class Assembler {
   /** current assembler program */
   public static Program program = null;
 
-  /** current assembler debug info */
-  public static DebugInfo debug = null;
+  /** current assembler filename */
+  public static String filename = null;
 
   /**
    * This method is used to assemble all the RISC-V files and it is
@@ -56,56 +51,24 @@ public final class Assembler {
     // assemble all files
     if (files.size() > 0) {
       for (String file: files) {
-        try {
-          // start in text segment
-          Assembler.segment = Segment.TEXT;
-          // create a new RISC-V Program
-          Program program = new Program(file);
-          // set current program
-          Assembler.program = program;
-          // parse line by line all file
-          BufferedReader br = new BufferedReader(new FileReader(file));
-          String line;
-          // reset line count
-          int lineno = 1;
-          while ((line = br.readLine()) != null) {
-            // remove comments
-            // need to find a better way to do this :(
-            boolean inString = false;
-            for (int i = 0; i < line.length(); i++) {
-              char c = line.charAt(i);
-              // toggle state
-              if (c == '"' && (i == 0 || line.charAt(i - 1) != '\\'))
-                inString = !inString;
-              // find start of line comment
-              if ((c == ';' || c == '#') && !inString) {
-                line = line.substring(0, i);
-                break;
-              }
-            }
-            // parse line only if != nothing
-            if (!line.trim().equals("")) {
-              // set current debug
-              Assembler.debug = new DebugInfo(lineno, line.trim(), file);
-              // parse line
-              Parser.parse(line);
-            }
-            // increment line count
-            lineno++;
-          }
-          // add this processed program only if it has statements
-          if (program.getTextSize() > 0 || ((files.size() > 0) && (program.getDataSize() > 0)))
-            programs.add(program);
-          else {
-            if (files.size() == 1)
-              Errors.add("assembler: file '" + file + "' does not have any instructions");
-            else
-              Message.warning("assembler: file '" + file + "' does not have any instructions or data (ignoring)");
-          }
-        } catch (FileNotFoundException e) {
-          Errors.add("assembler: file '" + file + "' not found");
-        } catch (IOException e) {
-          Errors.add("assembler: file '" + file + "' could not be read");
+        // current filename
+        Assembler.filename = file;
+        // start in text segment
+        Assembler.segment = Segment.TEXT;
+        // create a new RISC-V Program
+        Program program = new Program(file);
+        // set current program
+        Assembler.program = program;
+        // parse line by line all file
+        Parser.parse(file);
+        // add this processed program only if it has statements
+        if (program.getTextSize() > 0 || ((files.size() > 1) && (program.getDataSize() > 0)))
+          programs.add(program);
+        else {
+          if (files.size() == 1)
+            Errors.add("assembler: file '" + file + "' does not have any valid instruction");
+          else
+            Message.warning("assembler: file '" + file + "' does not have any valid instruction or data (ignoring)");
         }
       }
     }
@@ -135,17 +98,18 @@ public final class Assembler {
     if (programs.size() == 0)
       Errors.add("assembler: no valid RISC-V source file was passed");
     // report errors
-    Errors.report();
-    // clean all
-    Assembler.program = null;
-    Assembler.debug = null;
-    Assembler.segment = Segment.TEXT;
-    // no more parsing, we can clean the parser structure
-    Parser.clear();
-    System.gc();
-    programs.trimToSize();
-    // return all processed programs, now linking ?
-    return programs;
+    if (!Errors.report()) {
+      // clean all
+      Assembler.program = null;
+      Assembler.filename = null;
+      Assembler.segment = Segment.TEXT;
+      // no more parsing, we can clean the parser structure
+      System.gc();
+      programs.trimToSize();
+      // return all processed programs, now linking ?
+      return programs;
+    }
+    return null;
   }
 
 }
