@@ -73,6 +73,7 @@ public final class Globals {
    * This method reset the simulator state and global and local symbol tables
    */
   public static void reset() {
+    Errors.clear();
     Globals.resetST();
     Globals.resetState();
     System.gc();
