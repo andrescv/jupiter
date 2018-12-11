@@ -24,31 +24,37 @@ package vsim.assembler;
 
 import vsim.Errors;
 import vsim.Globals;
+import java.io.File;
 import vsim.Settings;
 import vsim.utils.Data;
+import java.io.FileReader;
 import vsim.utils.Message;
 import java_cup.runtime.*;
 import java.util.ArrayList;
-import java.io.StringReader;
+import java.io.IOException;
 import vsim.linker.Relocation;
 import vsim.assembler.statements.*;
+import java.io.FileNotFoundException;
 
 
 parser code {:
 
-  private static Lexer lexer;
-  private static Parser parser = new Parser();
-
-  public static void parse(String line) {
-    Parser.lexer = new Lexer(new StringReader(line));
+  public static void parse(String filename) {
+    File file = new File(filename);
     try {
-      Parser.parser.parse();
-    } catch (Exception e) { /* DO NOTHING */ }
+      Parser parser = new Parser(new Lexer(new FileReader(file)));
+      parser.parse();
+    } catch (FileNotFoundException e) {
+      Errors.add("assembler: file '" + file + "' not found");
+    } catch (IOException e) {
+      Errors.add("assembler: file '" + file + "' could not be read");
+    } catch (Exception e) {
+      /* DO NOTHING */
+    }
   }
 
-  public static void clear() {
-    Parser.lexer = null;
-    Parser.parser = null;
+  public DebugInfo info(int lineno, String source, String filename) {
+    return new DebugInfo(lineno, source, filename);
   }
 
   @Override
@@ -63,37 +69,20 @@ parser code {:
       cur_token.value = ((String) cur_token.value).replaceAll("\t", "\\\\t");
       cur_token.value = ((String) cur_token.value).replaceAll("\u000b", "\\\\v");
     }
-    if (cur_token.sym != Token.ERROR) {
-      if ((cur_token.value instanceof String) && ((String)cur_token.value).equals("")) {
-        String expected = "";
-        for (int id: expected_token_ids()) {
-          expected += Token.terminalNames[id].toLowerCase() + " ";
-        }
-        expected = String.join("|", expected.trim().split(" "));
-        if (expected.equals(""))
-          Errors.add(
-            Assembler.debug,
-            "assembler",
-            "(syntax) invalid statement"
-          );
-        else
-          Errors.add(
-            Assembler.debug,
-            "assembler",
-            "(syntax) invalid statement: expected " + expected +
-            " (column " + cur_token.right + ")"
-          );
-      } else
-        Errors.add(
-          Assembler.debug,
-          "assembler",
-          "(syntax) invalid statement: unexpected '" + cur_token.value +
-          "' (column " + cur_token.right + ")"
-        );
-    }
+    // parser error
+    if (cur_token.sym != Token.ERROR)
+      Errors.add(
+        cur_token.left,
+        Assembler.filename,
+        "assembler",
+        "(syntax) invalid statement: unexpected '" + cur_token.value +
+        "' (column " + cur_token.right + ")"
+      );
+    // lexer error
     else
       Errors.add(
-        Assembler.debug,
+        cur_token.left,
+        Assembler.filename,
         "assembler",
         (String)cur_token.value
       );
@@ -106,12 +95,10 @@ parser code {:
 
 :};
 
-scan with {: return Parser.lexer.next_token(); :};
-
 /*  TERMINALS */
 
 // Syntax
-terminal DOT, COMMA, LPAREN, RPAREN, LABEL;
+terminal DOT, COMMA, LPAREN, RPAREN, LABEL, NEWLINE;
 
 // Operators
 terminal TIMES, DIVIDE, MOD, PLUS, MINUS, SLL, SRL, SRA, AND, OR, XOR, NEG;
@@ -174,6 +161,7 @@ terminal D_ALIGN, D_BALIGN, D_GLOBL, D_FLOAT;
 terminal ERROR;
 
 /* NON TERMINALS */
+non terminal Init, NLStatement;
 non terminal Statement Instruction, RISCVInst;
 non terminal Statement RType, IType, SType, BType, UType, JType, R4Type;
 non terminal Statement, Label, Data, Section, RISCVPSeudo;
@@ -199,6 +187,16 @@ precedence left TIMES, MOD, DIVIDE;
 precedence right UPLUS, UMINUS, NEG;
 
 /* BNF GRAMMAR */
+
+Init        ::= NLStatement
+             |  NLStatement Init
+             |  Statement
+             ;
+
+NLStatement ::= Statement NEWLINE
+             |  NEWLINE
+             ;
+
 Statement   ::= Label RISCVInst:i
                 {:
                   if (i != null)
@@ -222,14 +220,14 @@ Label       ::= LABEL:id
                   String rawLabel = (String) id;
                   String lbl = rawLabel.substring(0, rawLabel.length() - 1);
                   if (!Assembler.program.addSymbol(Assembler.segment, lbl))
-                    Errors.add(Assembler.debug, "assembler", "label '" + lbl + "' is already defined");
+                    Errors.add(info(idleft, rawLabel, Assembler.filename), "assembler", "label '" + lbl + "' is already defined");
                 :}
              ;
 
 RISCVInst    ::= Instruction:i
                 {:
                   if (!(Assembler.segment == Segment.TEXT))
-                    Errors.add(Assembler.debug, "assembler", "instructions can appear only in text segment");
+                    Errors.add(i.getDebugInfo(), "assembler", "instructions can appear only in text segment");
                   else
                     RESULT = i;
                 :}
@@ -254,10 +252,10 @@ Instruction ::= RType:i
 RISCVPSeudo ::= PSeudos:l
                 {:
                   if (!(Assembler.segment == Segment.TEXT))
-                    Errors.add(Assembler.debug, "assembler", "instructions can appear only in text segment");
+                    Errors.add(l.get(0).getDebugInfo(), "assembler", "instructions can appear only in text segment");
                   else {
                     if (Settings.BARE)
-                      Errors.add(Assembler.debug, "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
+                      Errors.add(l.get(0).getDebugInfo(), "assembler", "invalid instruction: do not use -bare flag in order to use pseudos");
                     else {
                       for (Statement stmt: l)
                         Assembler.program.add(stmt);
@@ -275,14 +273,14 @@ RISCVPSeudo ::= PSeudos:l
   fnmsub.s rd, rs1, rs2, rs3
 */
 
-R4Type      ::= F_FMADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
-                {: RESULT = new R4Type("fmadd.s", Assembler.debug, rd, rs1, rs2, rs3); :}
-             |  F_FMSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
-                {: RESULT = new R4Type("fmsub.s", Assembler.debug, rd, rs1, rs2, rs3); :}
-             |  F_FNMADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
-                {: RESULT = new R4Type("fnmadd.s", Assembler.debug, rd, rs1, rs2, rs3); :}
-             |  F_FNMSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
-                {: RESULT = new R4Type("fnmsub.s", Assembler.debug, rd, rs1, rs2, rs3); :}
+R4Type      ::= F_FMADDS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fmadd.s", info(ileft, String.format("fmadd.s %s, %s, %s, %s", rd, rs1, rs2, rs3), Assembler.filename), rd, rs1, rs2, rs3); :}
+             |  F_FMSUBS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fmsub.s", info(ileft, String.format("fmsub.s %s, %s, %s, %s", rd, rs1, rs2, rs3), Assembler.filename), rd, rs1, rs2, rs3); :}
+             |  F_FNMADDS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fnmadd.s", info(ileft, String.format("fnmadd.s %s, %s, %s, %s", rd, rs1, rs2, rs3), Assembler.filename), rd, rs1, rs2, rs3); :}
+             |  F_FNMSUBS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2 Delimiter FRegister:rs3
+                {: RESULT = new R4Type("fnmsub.s", info(ileft, String.format("fnmsub.s %s, %s, %s, %s", rd, rs1, rs2, rs3), Assembler.filename), rd, rs1, rs2, rs3); :}
              ;
 
 /*
@@ -328,121 +326,121 @@ R4Type      ::= F_FMADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegiste
   fclass.s rd, frs1
 */
 
-RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("sll", Assembler.debug, rd, rs1, rs2); :}
-             |  I_SRL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("srl", Assembler.debug, rd, rs1, rs2); :}
-             |  I_SRA Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("sra", Assembler.debug, rd, rs1, rs2); :}
-             |  I_ADD Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("add", Assembler.debug, rd, rs1, rs2); :}
-             |  I_SUB Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("sub", Assembler.debug, rd, rs1, rs2); :}
-             |  I_XOR Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("xor", Assembler.debug, rd, rs1, rs2); :}
-             |  I_OR Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("or", Assembler.debug, rd, rs1, rs2); :}
-             |  I_AND Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("and", Assembler.debug, rd, rs1, rs2); :}
-             |  I_SLT Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("slt", Assembler.debug, rd, rs1, rs2); :}
-             |  I_SLTU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("sltu", Assembler.debug, rd, rs1, rs2); :}
-             |  I_MUL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("mul", Assembler.debug, rd, rs1, rs2); :}
-             |  I_MULH Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("mulh", Assembler.debug, rd, rs1, rs2); :}
-             |  I_MULHSU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("mulhsu", Assembler.debug, rd, rs1, rs2); :}
-             |  I_MULHU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("mulhu", Assembler.debug, rd, rs1, rs2); :}
-             |  I_DIV Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("div", Assembler.debug, rd, rs1, rs2); :}
-             |  I_DIVU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("divu", Assembler.debug, rd, rs1, rs2); :}
-             |  I_REM Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("rem", Assembler.debug, rd, rs1, rs2); :}
-             |  I_REMU Register:rd Delimiter Register:rs1 Delimiter Register:rs2
-                {: RESULT = new RType("remu", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FADDS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fadd.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FSUBS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fsub.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FMULS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fmul.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FDIVS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fdiv.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FSQRTS FRegister:rd Delimiter FRegister:rs1
-                {: RESULT = new FRType("fsqrt.s", Assembler.debug, rd, rs1, "f0"); :}
-             |  F_FSGNJS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fsgnj.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FSGNJNS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fsgnjn.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FSGNJXS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fsgnjx.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FMINS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fmin.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FMAXS FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
-                {: RESULT = new FRType("fmax.s", Assembler.debug, rd, rs1, rs2); :}
-             |  F_FMVXW Register:rd Delimiter FRegister:rs1
+RType       ::= I_SLL:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sll", info(ileft, String.format("sll %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_SRL:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("srl", info(ileft, String.format("srl %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_SRA:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sra", info(ileft, String.format("sra %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_ADD:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("add", info(ileft, String.format("add %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_SUB:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sub", info(ileft, String.format("sub %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_XOR:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("xor", info(ileft, String.format("xor %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_OR:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("or", info(ileft, String.format("or %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_AND:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("and", info(ileft, String.format("and %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_SLT:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("slt", info(ileft, String.format("slt %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_SLTU:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("sltu", info(ileft, String.format("sltu %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_MUL:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mul", info(ileft, String.format("mul %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_MULH:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulh", info(ileft, String.format("mulh %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_MULHSU:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulhsu", info(ileft, String.format("mulhsu %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_MULHU:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("mulhu", info(ileft, String.format("mulhu %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_DIV:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("div", info(ileft, String.format("div %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_DIVU:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("divu", info(ileft, String.format("divu %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_REM:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("rem", info(ileft, String.format("rem %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  I_REMU:i Register:rd Delimiter Register:rs1 Delimiter Register:rs2
+                {: RESULT = new RType("remu", info(ileft, String.format("remu %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FADDS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fadd.s", info(ileft, String.format("fadd.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FSUBS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsub.s", info(ileft, String.format("fsub.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FMULS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmul.s", info(ileft, String.format("fmul.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FDIVS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fdiv.s", info(ileft, String.format("fdiv.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FSQRTS:i FRegister:rd Delimiter FRegister:rs1
+                {: RESULT = new FRType("fsqrt.s", info(ileft, String.format("fsqrt.s %s, %s", rd, rs1), Assembler.filename), rd, rs1, "f0"); :}
+             |  F_FSGNJS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnj.s", info(ileft, String.format("fsgnj.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FSGNJNS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnjn.s", info(ileft, String.format("fsgnjn.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FSGNJXS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fsgnjx.s", info(ileft, String.format("fsgnjx.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FMINS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmin.s", info(ileft, String.format("fmin.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FMAXS:i FRegister:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+                {: RESULT = new FRType("fmax.s", info(ileft, String.format("fmax.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), rd, rs1, rs2); :}
+             |  F_FMVXW:i Register:rd Delimiter FRegister:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fmv.x.w", Assembler.debug, "f" + num, rs1, "f0");
+                  RESULT = new FRType("fmv.x.w", info(ileft, String.format("fmv.x.w %s, %s", rd, rs1), Assembler.filename), "f" + num, rs1, "f0");
                 :}
-             |  F_FMVWX FRegister:rd Delimiter Register:rs1
+             |  F_FMVWX:i FRegister:rd Delimiter Register:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rs1);
-                  RESULT = new FRType("fmv.w.x", Assembler.debug, rd, "f" + num, "f0");
+                  RESULT = new FRType("fmv.w.x", info(ileft, String.format("fmv.w.x %s, %s", rd, rs1), Assembler.filename), rd, "f" + num, "f0");
                 :}
-             |  F_FCVTSW FRegister:rd Delimiter Register:rs1
+             |  F_FCVTSW:i FRegister:rd Delimiter Register:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rs1);
-                  RESULT = new FRType("fcvt.s.w", Assembler.debug, rd, "f" + num, "f0");
+                  RESULT = new FRType("fcvt.s.w", info(ileft, String.format("fcvt.s.w %s, %s", rd, rs1), Assembler.filename), rd, "f" + num, "f0");
                 :}
-             |  F_FCVTSWU FRegister:rd Delimiter Register:rs1
+             |  F_FCVTSWU:i FRegister:rd Delimiter Register:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rs1);
-                  RESULT = new FRType("fcvt.s.wu", Assembler.debug, rd, "f" + num, "f1");
+                  RESULT = new FRType("fcvt.s.wu", info(ileft, String.format("fcvt.s.wu %s, %s", rd, rs1), Assembler.filename), rd, "f" + num, "f1");
                 :}
-             |  F_FCVTWS Register:rd Delimiter FRegister:rs1
+             |  F_FCVTWS:i Register:rd Delimiter FRegister:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.w.s", Assembler.debug, "f" + num, rs1, "f0");
+                  RESULT = new FRType("fcvt.w.s", info(ileft, String.format("fcvt.w.s %s, %s", rd, rs1), Assembler.filename), "f" + num, rs1, "f0");
                 :}
-             |  F_FCVTWUS Register:rd Delimiter FRegister:rs1
+             |  F_FCVTWUS:i Register:rd Delimiter FRegister:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fcvt.wu.s", Assembler.debug, "f" + num, rs1, "f1");
+                  RESULT = new FRType("fcvt.wu.s", info(ileft, String.format("fcvt.wu.s %s, %s", rd, rs1), Assembler.filename), "f" + num, rs1, "f1");
                 :}
-             |  F_FEQS Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+             |  F_FEQS:i Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("feq.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("feq.s", info(ileft, String.format("feq.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), "f" + num, rs1, rs2);
                 :}
-             |  F_FLTS Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+             |  F_FLTS:i Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("flt.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("flt.s", info(ileft, String.format("flt.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), "f" + num, rs1, rs2);
                 :}
-             |  F_FLES Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
+             |  F_FLES:i Register:rd Delimiter FRegister:rs1 Delimiter FRegister:rs2
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fle.s", Assembler.debug, "f" + num, rs1, rs2);
+                  RESULT = new FRType("fle.s", info(ileft, String.format("fle.s %s, %s, %s", rd, rs1, rs2), Assembler.filename), "f" + num, rs1, rs2);
                 :}
-             |  F_FCLASSS Register:rd Delimiter FRegister:rs1
+             |  F_FCLASSS:i Register:rd Delimiter FRegister:rs1
                 {:
                   // hack to re-use FRType Statement
                   int num = Globals.regfile.getRegisterNumber(rd);
-                  RESULT = new FRType("fclass.s", Assembler.debug, "f" + num, rs1, "f1");
+                  RESULT = new FRType("fclass.s", info(ileft, String.format("fclass.s %s, %s", rd, rs1), Assembler.filename), "f" + num, rs1, "f1");
                 :}
              ;
 
@@ -469,45 +467,45 @@ RType       ::= I_SLL Register:rd Delimiter Register:rs1 Delimiter Register:rs2
   ebreak
 */
 
-IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("addi", Assembler.debug, rd, rs1, imm); :}
-             |  I_XORI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("xori", Assembler.debug, rd, rs1, imm); :}
-             |  I_ORI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("ori", Assembler.debug, rd, rs1, imm); :}
-             |  I_ANDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("andi", Assembler.debug, rd, rs1, imm); :}
-             |  I_SLTI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("slti", Assembler.debug, rd, rs1, imm); :}
-             |  I_SLTIU Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("sltiu", Assembler.debug, rd, rs1, imm); :}
-             |  I_SLLI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new Shift("slli", Assembler.debug, rd, rs1, imm); :}
-             |  I_SRLI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new Shift("srli", Assembler.debug, rd, rs1, imm); :}
-             |  I_SRAI Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new Shift("srai", Assembler.debug, rd, rs1, imm); :}
-             |  I_JALR Register:rd Delimiter Register:rs1 Delimiter Const:imm
-                {: RESULT = new IType("jalr", Assembler.debug, rd, rs1, imm); :}
-             |  I_LB Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType("lb", Assembler.debug, rd, rs1, offset); :}
-             |  I_LBU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType("lbu", Assembler.debug, rd, rs1, offset); :}
-             |  I_LH Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType("lh", Assembler.debug, rd, rs1, offset); :}
-             |  I_LHU Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType("lhu", Assembler.debug, rd, rs1, offset); :}
-             |  I_LW Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new IType("lw", Assembler.debug, rd, rs1, offset); :}
-             |  I_ECALL
-                {: RESULT = new IType("ecall", Assembler.debug, "x0", "x0", 0); :}
-             |  I_BREAK
-                {: RESULT = new IType("ebreak", Assembler.debug, "x0", "x0", 1); :}
-             |  F_FLW FRegister:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+IType       ::= I_ADDI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("addi", info(ileft, String.format("addi %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_XORI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("xori", info(ileft, String.format("xori %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_ORI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("ori", info(ileft, String.format("ori %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_ANDI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("andi", info(ileft, String.format("andi %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_SLTI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("slti", info(ileft, String.format("slti %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_SLTIU:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("sltiu", info(ileft, String.format("sltiu %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_SLLI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new Shift("slli", info(ileft, String.format("slli %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_SRLI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new Shift("srli", info(ileft, String.format("srli %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_SRAI:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new Shift("srai", info(ileft, String.format("srai %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_JALR:i Register:rd Delimiter Register:rs1 Delimiter Const:imm
+                {: RESULT = new IType("jalr", info(ileft, String.format("jalr %s, %s, %d", rd, rs1, imm), Assembler.filename), rd, rs1, imm); :}
+             |  I_LB:i Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lb", info(ileft, String.format("lb %s, %d(%s)", rd, offset, rs1), Assembler.filename), rd, rs1, offset); :}
+             |  I_LBU:i Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lbu", info(ileft, String.format("lbu %s, %d(%s)", rd, offset, rs1), Assembler.filename), rd, rs1, offset); :}
+             |  I_LH:i Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lh", info(ileft, String.format("lh %s, %d(%s)", rd, offset, rs1), Assembler.filename), rd, rs1, offset); :}
+             |  I_LHU:i Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lhu", info(ileft, String.format("lhu %s, %d(%s)", rd, offset, rs1), Assembler.filename), rd, rs1, offset); :}
+             |  I_LW:i Register:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new IType("lw", info(ileft, String.format("lw %s, %d(%s)", rd, offset, rs1), Assembler.filename), rd, rs1, offset); :}
+             |  I_ECALL:i
+                {: RESULT = new IType("ecall", info(ileft, "ecall", Assembler.filename), "x0", "x0", 0); :}
+             |  I_BREAK:i
+                {: RESULT = new IType("ebreak", info(ileft, "ebreak", Assembler.filename), "x0", "x0", 1); :}
+             |  F_FLW:i FRegister:rd Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {:
                   // hack to re-use IType Statement
                   int num = Globals.fregfile.getRegisterNumber(rd);
-                  RESULT = new IType("flw", Assembler.debug, "x" + num, rs1, offset);
+                  RESULT = new IType("flw", info(ileft, String.format("flw %s, %d(%s)", rd, offset, rs1), Assembler.filename), "x" + num, rs1, offset);
                 :}
              ;
 
@@ -520,17 +518,17 @@ IType       ::= I_ADDI Register:rd Delimiter Register:rs1 Delimiter Const:imm
   fsw frs2, offset(rs1)
 */
 
-SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType("sb", Assembler.debug, rs1, rs2, offset); :}
-             |  I_SH Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType("sh", Assembler.debug, rs1, rs2, offset); :}
-             |  I_SW Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
-                {: RESULT = new SType("sw", Assembler.debug, rs1, rs2, offset); :}
-             |  F_FSW FRegister:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+SType       ::= I_SB:i Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sb", info(ileft, String.format("sb %s, %d(%s)", rs2, offset, rs1), Assembler.filename), rs1, rs2, offset); :}
+             |  I_SH:i Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sh", info(ileft, String.format("sh %s, %d(%s)", rs2, offset, rs1), Assembler.filename), rs1, rs2, offset); :}
+             |  I_SW:i Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
+                {: RESULT = new SType("sw", info(ileft, String.format("sw %s, %d(%s)", rs2, offset, rs1), Assembler.filename), rs1, rs2, offset); :}
+             |  F_FSW:i FRegister:rs2 Delimiter Number:offset LPAREN Register:rs1 RPAREN
                 {:
                   // hack to re-use SType Statement
                   int num = Globals.fregfile.getRegisterNumber(rs2);
-                  RESULT = new SType("fsw", Assembler.debug, rs1, "x" + num, offset);
+                  RESULT = new SType("fsw", info(ileft, String.format("fsw %s, %d(%s)", rs2, offset, rs1), Assembler.filename), rs1, "x" + num, offset);
                 :}
              ;
 
@@ -545,18 +543,18 @@ SType       ::= I_SB Register:rs2 Delimiter Number:offset LPAREN Register:rs1 RP
   bgeu rs1, rs2, symbol
 */
 
-BType       ::= I_BEQ Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("beq", Assembler.debug, rs1, rs2, id); :}
-             |  I_BNE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bne", Assembler.debug, rs1, rs2, id); :}
-             |  I_BLT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("blt", Assembler.debug, rs1, rs2, id); :}
-             |  I_BGE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bge", Assembler.debug, rs1, rs2, id); :}
-             |  I_BLTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bltu", Assembler.debug, rs1, rs2, id); :}
-             |  I_BGEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
-                {: RESULT = new BType("bgeu", Assembler.debug, rs1, rs2, id); :}
+BType       ::= I_BEQ:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("beq", info(ileft, String.format("beq %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
+             |  I_BNE:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bne", info(ileft, String.format("bne %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
+             |  I_BLT:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("blt", info(ileft, String.format("blt %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
+             |  I_BGE:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bge", info(ileft, String.format("bge %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
+             |  I_BLTU:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bltu", info(ileft, String.format("bltu %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
+             |  I_BGEU:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+                {: RESULT = new BType("bgeu", info(ileft, String.format("bgeu %s, %s, %s", rs1, rs2, id), Assembler.filename), rs1, rs2, id); :}
              ;
 
 /*
@@ -566,10 +564,10 @@ BType       ::= I_BEQ Register:rs1 Delimiter Register:rs2 Delimiter Id:id
   lui rd, imm
 */
 
-UType       ::= I_AUIPC Register:rd Delimiter Const:imm
-                {: RESULT = new UType("auipc", Assembler.debug, rd, imm); :}
-             |  I_LUI   Register:rd Delimiter Const:imm
-                {: RESULT = new UType("lui", Assembler.debug, rd, imm); :}
+UType       ::= I_AUIPC:i Register:rd Delimiter Const:imm
+                {: RESULT = new UType("auipc", info(ileft, String.format("auipc %s, %d", rd, imm), Assembler.filename), rd, imm); :}
+             |  I_LUI:i   Register:rd Delimiter Const:imm
+                {: RESULT = new UType("lui", info(ileft, String.format("lui %s, %d", rd, imm), Assembler.filename), rd, imm); :}
              ;
 
 /*
@@ -578,8 +576,8 @@ UType       ::= I_AUIPC Register:rd Delimiter Const:imm
   jal rd, symbol
 */
 
-JType       ::= I_JAL Register:rd Delimiter Id:id
-                {: RESULT = new JType("jal", Assembler.debug, rd, id); :}
+JType       ::= I_JAL:i Register:rd Delimiter Id:id
+                {: RESULT = new JType("jal", info(ileft, String.format("jal %s, %s", rd, id), Assembler.filename), rd, id); :}
              ;
 
 /*
@@ -599,100 +597,112 @@ JType       ::= I_JAL Register:rd Delimiter Id:id
   fsw frd, symbol, rt
 */
 
-PSeudos     ::= I_LA Register:rd Delimiter Id:id
+PSeudos     ::= I_LA:i Register:rd Delimiter Id:id
                 {:
                   ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                  stmts.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                  stmts.add(new IType("addi", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                  DebugInfo debug = info(ileft, String.format("la %s, %s", rd, id), Assembler.filename);
+                  stmts.add(new UType("auipc", debug, rd, new Relocation(Relocation.PCRELHI, id, debug)));
+                  stmts.add(new IType("addi", debug, rd, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                   RESULT = stmts;
                 :}
-             |  I_LI Register:rd Delimiter Const:imm
+             |  I_LI:i Register:rd Delimiter Const:imm
                 {:
+                  DebugInfo debug = info(ileft, String.format("li %s, %d", rd, imm), Assembler.filename);
                   if (imm > 2047 || imm < -2048) {
                     int imm_hi =  ((imm >>> 12) + ((imm >>> 11) & 0x1)) & 0x000fffff;
                     int imm_lo = Data.signExtend((imm & 0xfff), 12);
                     ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                    stmts.add(new UType("lui", Assembler.debug, rd, imm_hi));
-                    stmts.add(new IType("addi", Assembler.debug, rd, rd, imm_lo));
+                    stmts.add(new UType("lui", debug, rd, imm_hi));
+                    stmts.add(new IType("addi", debug, rd, rd, imm_lo));
                     RESULT = stmts;
                   } else {
                     ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                    stmts.add(new IType("addi", Assembler.debug, rd, "x0", imm));
+                    stmts.add(new IType("addi", debug, rd, "x0", imm));
                     RESULT = stmts;
                   }
                 :}
-             |  I_CALL Id:id
+             |  I_CALL:i Id:id
                 {:
+                  DebugInfo debug = info(ileft, "call " + id, Assembler.filename);
                   ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                  stmts.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                  stmts.add(new IType("jalr", Assembler.debug, "x1", "x6", new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                  stmts.add(new UType("auipc", debug, "x6", new Relocation(Relocation.PCRELHI, id, debug)));
+                  stmts.add(new IType("jalr", debug, "x1", "x6", new Relocation(Relocation.PCRELLO, id, debug)));
                   RESULT = stmts;
                 :}
-             |  I_TAIL Id:id
+             |  I_TAIL:i Id:id
                 {:
+                  DebugInfo debug = info(ileft, "tail " + id, Assembler.filename);
                   ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                  stmts.add(new UType("auipc", Assembler.debug, "x6", new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                  stmts.add(new IType("jalr", Assembler.debug, "x0", "x6", new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                  stmts.add(new UType("auipc", debug, "x6", new Relocation(Relocation.PCRELHI, id, debug)));
+                  stmts.add(new IType("jalr", debug, "x0", "x6", new Relocation(Relocation.PCRELLO, id, debug)));
                   RESULT = stmts;
                 :}
-             |  I_LB Register:rd Delimiter Id:id
+             |  I_LB:i Register:rd Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("lb %s, %s", rd, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new IType("lb", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rd, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new IType("lb", debug, rd, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                  :}
-             |  I_LH Register:rd Delimiter Id:id
+             |  I_LH:i Register:rd Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("lh %s, %s", rd, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new IType("lh", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rd, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new IType("lh", debug, rd, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                  :}
-             |  I_LW Register:rd Delimiter Id:id
+             |  I_LW:i Register:rd Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("lw %s, %s", rd, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rd, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new IType("lw", Assembler.debug, rd, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rd, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new IType("lw", debug, rd, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                  :}
-             |  F_FLW FRegister:rd Delimiter Id:id Delimiter Register:rt
+             |  F_FLW:i FRegister:rd Delimiter Id:id Delimiter Register:rt
                  {:
+                   DebugInfo debug = info(ileft, String.format("flw %s, %s, %s", rd, id, rt), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
                    // hack to re-use IType Statement
                    int num = Globals.fregfile.getRegisterNumber(rd);
-                   stmts.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new IType("flw", Assembler.debug, "x" + num, rt, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rt, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new IType("flw", debug, "x" + num, rt, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                  :}
-             |  I_SB Register:rd Delimiter Id:id Delimiter Register:rt
+             |  I_SB:i Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
+                   DebugInfo debug = info(ileft, String.format("sb %s, %s, %s", rd, id, rt), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new SType("sb", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rt, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new SType("sb", debug, rt, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                 :}
-             |  I_SH Register:rd Delimiter Id:id Delimiter Register:rt
+             |  I_SH:i Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
+                   DebugInfo debug = info(ileft, String.format("sb %s, %s, %s", rd, id, rt), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new SType("sh", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rt, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new SType("sh", debug, rt, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                 :}
-             |  I_SW Register:rd Delimiter Id:id Delimiter Register:rt
+             |  I_SW:i Register:rd Delimiter Id:id Delimiter Register:rt
                 {:
+                   DebugInfo debug = info(ileft, String.format("sb %s, %s, %s", rd, id, rt), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
-                   stmts.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new SType("sw", Assembler.debug, rt, rd, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rt, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new SType("sw", debug, rt, rd, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                 :}
-             |  F_FSW FRegister:rd Delimiter Id:id Delimiter Register:rt
+             |  F_FSW:i FRegister:rd Delimiter Id:id Delimiter Register:rt
                 {:
+                   DebugInfo debug = info(ileft, String.format("sb %s, %s, %s", rd, id, rt), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(2);
                    // hack to re-use SType Statement
                    int num = Globals.fregfile.getRegisterNumber(rd);
-                   stmts.add(new UType("auipc", Assembler.debug, rt, new Relocation(Relocation.PCRELHI, id, Assembler.debug)));
-                   stmts.add(new SType("fsw", Assembler.debug, rt, "x" + num, new Relocation(Relocation.PCRELLO, id, Assembler.debug)));
+                   stmts.add(new UType("auipc", debug, rt, new Relocation(Relocation.PCRELHI, id, debug)));
+                   stmts.add(new SType("fsw", debug, rt, "x" + num, new Relocation(Relocation.PCRELLO, id, debug)));
                    RESULT = stmts;
                 :}
 /*
@@ -706,47 +716,54 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
   fabs.s frd, frs
   fneg.s frd, frs
 */
-              |  I_NEG Register:rd Delimiter Register:rs
+              |  I_NEG:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("neg %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new RType("sub", Assembler.debug, rd, "x0", rs));
+                   stmts.add(new RType("sub", debug, rd, "x0", rs));
                    RESULT = stmts;
                  :}
-              |  I_SNEZ Register:rd Delimiter Register:rs
+              |  I_SNEZ:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("snez %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new RType("sltu", Assembler.debug, rd, "x0", rs));
+                   stmts.add(new RType("sltu", debug, rd, "x0", rs));
                    RESULT = stmts;
                  :}
-              |  I_SLTZ Register:rd Delimiter Register:rs
+              |  I_SLTZ:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("sltz %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new RType("slt", Assembler.debug, rd, rs, "x0"));
+                   stmts.add(new RType("slt", debug, rd, rs, "x0"));
                    RESULT = stmts;
 
                  :}
-              |  I_SGTZ Register:rd Delimiter Register:rs
+              |  I_SGTZ:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("sgtz %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new RType("slt", Assembler.debug, rd, "x0", rs));
+                   stmts.add(new RType("slt", debug, rd, "x0", rs));
                    RESULT = stmts;
                  :}
-              |  F_FMVS FRegister:rd Delimiter FRegister:rs
+              |  F_FMVS:i FRegister:rd Delimiter FRegister:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("fmv.s %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new FRType("fsgnj.s", Assembler.debug, rd, rs, rs));
+                   stmts.add(new FRType("fsgnj.s", debug, rd, rs, rs));
                    RESULT = stmts;
                  :}
-              |  F_FABSS FRegister:rd Delimiter FRegister:rs
+              |  F_FABSS:i FRegister:rd Delimiter FRegister:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("fabs.s %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new FRType("fsgnjx.s", Assembler.debug, rd, rs, rs));
+                   stmts.add(new FRType("fsgnjx.s", debug, rd, rs, rs));
                    RESULT = stmts;
                  :}
-              |  F_FNEGS FRegister:rd Delimiter FRegister:rs
+              |  F_FNEGS:i FRegister:rd Delimiter FRegister:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("fneg.s %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new FRType("fsgnjn.s", Assembler.debug, rd, rs, rs));
+                   stmts.add(new FRType("fsgnjn.s", debug, rd, rs, rs));
                    RESULT = stmts;
                  :}
 /*
@@ -760,46 +777,53 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
   jalr rs
   ret
 */
-              |  I_NOP
+              |  I_NOP:i
                  {:
+                   DebugInfo debug = info(ileft, "nop", Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("addi", Assembler.debug, "x0", "x0", 0));
+                   stmts.add(new IType("addi", debug, "x0", "x0", 0));
                    RESULT = stmts;
                  :}
-              |  I_MV Register:rd Delimiter Register:rs
+              |  I_MV:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("mv %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("addi", Assembler.debug, rd, rs, 0));
+                   stmts.add(new IType("addi", debug, rd, rs, 0));
                    RESULT = stmts;
                  :}
-              |  I_NOT Register:rd Delimiter Register:rs
+              |  I_NOT:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("not %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("xori", Assembler.debug, rd, rs, -1));
+                   stmts.add(new IType("xori", debug, rd, rs, -1));
                    RESULT = stmts;
                  :}
-              |  I_SEQZ Register:rd Delimiter Register:rs
+              |  I_SEQZ:i Register:rd Delimiter Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("seqz %s, %s", rd, rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("sltiu", Assembler.debug, rd, rs, 1));
+                   stmts.add(new IType("sltiu", debug, rd, rs, 1));
                    RESULT = stmts;
                  :}
-              |  I_JR Register:rs
+              |  I_JR:i Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("jr %s", rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("jalr", Assembler.debug, "x0", rs, 0));
+                   stmts.add(new IType("jalr", debug, "x0", rs, 0));
                    RESULT = stmts;
                  :}
-              |  I_JALR Register:rs
+              |  I_JALR:i Register:rs
                  {:
+                   DebugInfo debug = info(ileft, String.format("jalr %s", rs), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("jalr", Assembler.debug, "x1", rs, 0));
+                   stmts.add(new IType("jalr", debug, "x1", rs, 0));
                    RESULT = stmts;
                  :}
-              |  I_RET
+              |  I_RET:i
                  {:
+                   DebugInfo debug = info(ileft, "ret", Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new IType("jalr", Assembler.debug, "x0", "x1", 0));
+                   stmts.add(new IType("jalr", debug, "x0", "x1", 0));
                    RESULT = stmts;
                  :}
 /*
@@ -816,64 +840,74 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
   bgtu rs, rt, offset
   bleu rs, rt, offset
 */
-              |  I_BEQZ Register:rs Delimiter Id:id
+              |  I_BEQZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("beqz %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("beq", Assembler.debug, rs, "x0", id));
+                   stmts.add(new BType("beq", debug, rs, "x0", id));
                    RESULT = stmts;
                  :}
-              |  I_BNEZ Register:rs Delimiter Id:id
+              |  I_BNEZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bnez %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bne", Assembler.debug, rs, "x0", id));
+                   stmts.add(new BType("bne", debug, rs, "x0", id));
                    RESULT = stmts;
                  :}
-              |  I_BLEZ Register:rs Delimiter Id:id
+              |  I_BLEZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("blez %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bge", Assembler.debug, "x0", rs, id));
+                   stmts.add(new BType("bge", debug, "x0", rs, id));
                    RESULT = stmts;
                  :}
-              |  I_BGEZ Register:rs Delimiter Id:id
+              |  I_BGEZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bgez %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bge", Assembler.debug, rs, "x0", id));
+                   stmts.add(new BType("bge", debug, rs, "x0", id));
                    RESULT = stmts;
                  :}
-              |  I_BLTZ Register:rs Delimiter Id:id
+              |  I_BLTZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bltz %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("blt", Assembler.debug, rs, "x0", id));
+                   stmts.add(new BType("blt", debug, rs, "x0", id));
                    RESULT = stmts;
                  :}
-              |  I_BGTZ Register:rs Delimiter Id:id
+              |  I_BGTZ:i Register:rs Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bgtz %s, %s", rs, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("blt", Assembler.debug, "x0", rs, id));
+                   stmts.add(new BType("blt", debug, "x0", rs, id));
                    RESULT = stmts;
                  :}
-              |  I_BGT Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+              |  I_BGT:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bgt %s, %s, %s", rs1, rs2, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("blt", Assembler.debug, rs2, rs1, id));
+                   stmts.add(new BType("blt", debug, rs2, rs1, id));
                    RESULT = stmts;
                  :}
-              |  I_BLE Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+              |  I_BLE:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("ble %s, %s, %s", rs1, rs2, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bge", Assembler.debug, rs2, rs1, id));
+                   stmts.add(new BType("bge", debug, rs2, rs1, id));
                    RESULT = stmts;
                  :}
-              |  I_BGTU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+              |  I_BGTU:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bgtu %s, %s, %s", rs1, rs2, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bltu", Assembler.debug, rs2, rs1, id));
+                   stmts.add(new BType("bltu", debug, rs2, rs1, id));
                    RESULT = stmts;
                  :}
-              |  I_BLEU Register:rs1 Delimiter Register:rs2 Delimiter Id:id
+              |  I_BLEU:i Register:rs1 Delimiter Register:rs2 Delimiter Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("bleu %s, %s, %s", rs1, rs2, id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new BType("bgeu", Assembler.debug, rs2, rs1, id));
+                   stmts.add(new BType("bgeu", debug, rs2, rs1, id));
                    RESULT = stmts;
                  :}
 /*
@@ -882,16 +916,18 @@ PSeudos     ::= I_LA Register:rd Delimiter Id:id
   jal offset
   j offset
 */
-              |  I_JAL Id:id
+              |  I_JAL:i Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("jal %s", id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new JType("jal", Assembler.debug, "x1", id));
+                   stmts.add(new JType("jal", debug, "x1", id));
                    RESULT = stmts;
                  :}
-              |  I_J Id:id
+              |  I_J:i Id:id
                  {:
+                   DebugInfo debug = info(ileft, String.format("j %s", id), Assembler.filename);
                    ArrayList<Statement> stmts = new ArrayList<Statement>(1);
-                   stmts.add(new JType("jal", Assembler.debug, "x0", id));
+                   stmts.add(new JType("jal", debug, "x0", id));
                    RESULT = stmts;
                  :}
               ;
@@ -914,17 +950,13 @@ Data        ::= DataMode:mode DataList:l
                       int value = l.get(i);
                       // lossy conversion ?
                       if (length == Data.BYTE_LENGTH && !Data.validByte(value) && !Settings.QUIET) {
-                        String filename = Assembler.program.getFilename();
-                        String newline = System.getProperty("line.separator");
-                        String source = Assembler.debug.getSource();
-                        int lineno = Assembler.debug.getLineNumber();
+                        String filename = Assembler.filename;
+                        int lineno = -1;
                         Message.warning(filename + ":" + "assembler:" + lineno + ": " + "lossy conversion to byte: '" + value + "' -> " + (byte)(value & Data.BYTE_MASK));
                       }
                       if (length == Data.HALF_LENGTH && !Data.validHalf(value) && !Settings.QUIET) {
                         String filename = Assembler.program.getFilename();
-                        String newline = System.getProperty("line.separator");
-                        String source = Assembler.debug.getSource();
-                        int lineno = Assembler.debug.getLineNumber();
+                        int lineno = -1;
                         Message.warning(filename + ":" + "assembler:" + lineno + ": " + "lossy conversion to half: '" + value + "' -> " + (short)(value & Data.HALF_MASK));
                       }
                       // store byte by byte
@@ -934,15 +966,15 @@ Data        ::= DataMode:mode DataList:l
                       }
                     }
                   } else
-                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                    Errors.add(info(-1, mode + " " + l, Assembler.filename), "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
              |  D_WORD:mode IdList:l
                 {:
                   if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
                     for (String id: l)
-                      Assembler.program.addRef(Assembler.segment, new Relocation(Relocation.DEFAULT, id, Assembler.debug));
+                      Assembler.program.addRef(Assembler.segment, new Relocation(Relocation.DEFAULT, id, info(modeleft, ".word " + l, Assembler.filename)));
                   } else
-                    Errors.add(Assembler.debug, "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                    Errors.add(info(modeleft, ".word " + l, Assembler.filename), "assembler", mode + " directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
              |  D_ASCIIZ:mode Str:s
                 {:
@@ -953,7 +985,7 @@ Data        ::= DataMode:mode DataList:l
                     // null terminate string
                     Assembler.program.addByte(Assembler.segment, (byte) 0);
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                    Errors.add(info(modeleft, mode + " " + s, Assembler.filename), "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
              |  D_ASCII:mode Str:s
                 {:
@@ -962,20 +994,20 @@ Data        ::= DataMode:mode DataList:l
                     for (int i = 0; i < s.length(); i++)
                       Assembler.program.addByte(Assembler.segment, (byte) s.charAt(i));
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                    Errors.add(info(modeleft, mode + " " + s, Assembler.filename), "assembler", ".string directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                 :}
-             |  D_ZERO Expr:e
+             |  D_ZERO:mode Expr:e
                 {:
                   if (e > 0) {
                     if (!(Assembler.segment == Segment.TEXT || Assembler.segment == Segment.RODATA))
                       for (int i = 0; i < e; i++)
                         Assembler.program.addByte(Assembler.segment, (byte) 0);
                     else
-                      Errors.add(Assembler.debug, "assembler", ".zero directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
+                      Errors.add(info(modeleft, ".zero " + e, Assembler.filename), "assembler", ".zero directive can not appear in " + Assembler.segment.toString().toLowerCase() + " segment");
                   } else
-                    Errors.add(Assembler.debug, "assembler", "invalid .zero argument: '" + e + "', expected value > 0");
+                    Errors.add(info(modeleft, ".zero " + e, Assembler.filename), "assembler", "invalid .zero argument: '" + e + "', expected value > 0");
                 :}
-             |  D_FLOAT FloatList:l
+             |  D_FLOAT:mode FloatList:l
                 {:
                   if ((Assembler.segment == Segment.DATA) || (Assembler.segment == Segment.RODATA)) {
                     for (int i = 0; i < l.size(); i++) {
@@ -987,7 +1019,7 @@ Data        ::= DataMode:mode DataList:l
                       }
                     }
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".float directive can not appear in " + Assembler.segment + " segment");
+                    Errors.add(info(modeleft, ".float " + l, Assembler.filename), "assembler", ".float directive can not appear in " + Assembler.segment + " segment");
                 :}
              ;
 
@@ -1044,8 +1076,8 @@ FloatList   ::= FExpr:f
 Directive   ::= SectionDir
              |  SymbolDir
              |  AlignDir
-             |  DOT Id:id
-                {: Errors.add(Assembler.debug, "assembler", "invalid directive: '." + id + "'"); :}
+             |  DOT:i Id:id
+                {: Errors.add(info(ileft, "." + id, Assembler.filename), "assembler", "invalid directive: '." + id + "'"); :}
              ;
 
 /*
@@ -1074,11 +1106,12 @@ Section     ::= D_TEXT:s
 /*
   .globl id [, id]*
 */
-SymbolDir   ::= D_GLOBL SymList:l
+SymbolDir   ::= D_GLOBL:d SymList:l
                 {:
+                  DebugInfo debug = info(dleft, ".globl " + l, Assembler.filename);
                   for (String id: l) {
-                    if(!Assembler.program.addGlobal(id, Assembler.debug))
-                      Errors.add(Assembler.debug, "assembler", "label '" + id + "' is already defined as global");
+                    if(!Assembler.program.addGlobal(id, debug))
+                      Errors.add(debug, "assembler", "label '" + id + "' is already defined as global");
                   }
                 :}
              ;
@@ -1100,25 +1133,27 @@ SymList     ::= Id:id
   .align n
   .balign n
 */
-AlignDir    ::= D_ALIGN Number:e
+AlignDir    ::= D_ALIGN:d Number:e
                 {:
+                  DebugInfo debug = info(dleft, ".align " + e, Assembler.filename);
                   if (!(Assembler.segment == Segment.TEXT)) {
                     if (Data.inRange(e, 0, 2))
                       Assembler.program.align(e);
                     else
-                      Errors.add(Assembler.debug, "assembler", "invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)");
+                      Errors.add(debug, "assembler", "invalid align value: '" + e + "', expected 0 (byte), 1 (half) or 2 (word)");
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".align directive currently can not appear in text segment");
+                    Errors.add(debug, "assembler", ".align directive currently can not appear in text segment");
                 :}
-             |  D_BALIGN Number:e
+             |  D_BALIGN:d Number:e
                 {:
+                  DebugInfo debug = info(dleft, ".balign " + e, Assembler.filename);
                   if (!(Assembler.segment == Segment.TEXT)) {
                     if (e > 0)
                       Assembler.program.balign(e);
                     else
-                      Errors.add(Assembler.debug, "assembler", "invalid align value: '" + e + "', expected value > 0");
+                      Errors.add(debug, "assembler", "invalid align value: '" + e + "', expected value > 0");
                   } else
-                    Errors.add(Assembler.debug, "assembler", ".balign directive can not appear in text segment");
+                    Errors.add(debug, "assembler", ".balign directive can not appear in text segment");
                 :}
              ;
 
@@ -1131,16 +1166,16 @@ Expr        ::= Expr:e1 PLUS Expr:e2
                 {: RESULT = e1 - e2; :}
              |  Expr:e1 TIMES Expr:e2
                 {: RESULT = e1 * e2; :}
-             |  Expr:e1 DIVIDE Expr:e2
+             |  Expr:e1 DIVIDE:e Expr:e2
                 {:
                   if (e2 == 0)
-                    Errors.add(Assembler.debug, "assembler", "division by zero");
+                    Errors.add(info(eleft, String.format("%d / %d", e1, e2), Assembler.filename), "assembler", "division by zero");
                   RESULT = e1 / e2;
                 :}
-             |  Expr:e1 MOD Expr:e2
+             |  Expr:e1 MOD:e Expr:e2
                 {:
                   if (e2 == 0)
-                    Errors.add(Assembler.debug, "assembler", "division by zero");
+                    Errors.add(info(eleft, String.format("%d / %d", e1, e2), Assembler.filename), "assembler", "division by zero");
                   RESULT = e1 % e2;
                 :}
              |  Expr:e1 SLL Expr:e2

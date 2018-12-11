@@ -182,50 +182,55 @@ public final class Linker {
    * @return a RISC-V linked program
    */
   public static LinkedProgram link(ArrayList<Program> programs) {
-    // reset this
-    Linker.dataAddress = MemorySegments.STATIC_SEGMENT;
-    Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
-    // handle static data
-    Linker.linkRodata(programs);
-    Linker.linkBss(programs);
-    Linker.linkData(programs);
-    Linker.linkSymbols(programs);
-    // link all statements and get linked program
-    LinkedProgram program = Linker.linkPrograms(programs);
-    // report errors
-    Errors.report();
-    // dump statements ?
-    if (Settings.DUMP != null) {
-      File f = new File(Settings.DUMP);
-      try {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-        for (Program p: programs) {
-          boolean filename = true;
-          for (Statement stmt: p.getStatements()) {
-            // write filename
-            if (filename && (programs.size() > 1)) {
-              bw.write(stmt.getDebugInfo().getFilename() + ":");
-              bw.newLine();
-              filename = false;
+    if (programs != null) {
+      // reset this
+      Linker.dataAddress = MemorySegments.STATIC_SEGMENT;
+      Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
+      // handle static data
+      Linker.linkRodata(programs);
+      Linker.linkBss(programs);
+      Linker.linkData(programs);
+      Linker.linkSymbols(programs);
+      // link all statements and get linked program
+      LinkedProgram program = Linker.linkPrograms(programs);
+      // report errors
+      if (!Errors.report()) {
+        // dump statements ?
+        if (Settings.DUMP != null) {
+          File f = new File(Settings.DUMP);
+          try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+            for (Program p: programs) {
+              boolean filename = true;
+              for (Statement stmt: p.getStatements()) {
+                // write filename
+                if (filename && (programs.size() > 1)) {
+                  bw.write(stmt.getDebugInfo().getFilename() + ":");
+                  bw.newLine();
+                  filename = false;
+                }
+                // write result in file
+                int code = stmt.result().get(InstructionField.ALL);
+                String out = String.format("%08x", code);
+                bw.write(out);
+                bw.newLine();
+              }
             }
-            // write result in file
-            int code = stmt.result().get(InstructionField.ALL);
-            String out = String.format("%08x", code);
-            bw.write(out);
-            bw.newLine();
+            bw.close();
+          } catch (Exception e) {
+            if (!Settings.QUIET)
+              Message.warning("the file '" + Settings.DUMP + "' could not be written");
           }
         }
-        bw.close();
-      } catch (Exception e) {
-        if (!Settings.QUIET)
-          Message.warning("the file '" + Settings.DUMP + "' could not be written");
+        // clean all
+        programs = null;
+        System.gc();
+        // return linked program, now simulate ?
+        return program;
       }
+      return null;
     }
-    // clean all
-    programs = null;
-    System.gc();
-    // return linked program, now simulate ?
-    return program;
+    return null;
   }
 
 }

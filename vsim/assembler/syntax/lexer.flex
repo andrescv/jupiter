@@ -26,7 +26,6 @@ package vsim.assembler;
 
 %{
 
-  private int prevState;
   private StringBuffer text;
 
   /**
@@ -37,7 +36,7 @@ package vsim.assembler;
    * @return the cup symbol
    */
   private java_cup.runtime.Symbol symbol(int type) {
-    return this.symbol(type, yytext());
+    return new java_cup.runtime.Symbol(type, yyline + 1, yycolumn + 1, yytext());
   }
 
   /**
@@ -48,26 +47,28 @@ package vsim.assembler;
    * @return the cup symbol
    */
   private java_cup.runtime.Symbol symbol(int type, Object value) {
-    return new java_cup.runtime.Symbol(type, -1, yycolumn + 1, value);
+    return new java_cup.runtime.Symbol(type, yyline + 1, yycolumn + 1, value);
   }
 
 %}
 
 %init{
-  this.prevState = YYINITIAL;
   this.text = new StringBuffer(0);
 %init}
 
 %eofval{
-  int state = yystate();
-  if (state == STRING || state == SBACKSLASH && this.prevState == STRING) {
-    yybegin(YYINITIAL);
-    return symbol(Token.ERROR, "(syntax) unterminated string constant");
-  } else if (state == CHARACTER || state == SBACKSLASH && this.prevState == CHARACTER) {
-    yybegin(YYINITIAL);
-    return symbol(Token.ERROR, "(syntax) unterminated char constant");
+  switch (yystate()) {
+    case STRING:
+      return symbol(Token.ERROR, "EOF in string constant");
+    case CHARACTER:
+      return symbol(Token.ERROR, "EOF in char constant");
+    case SBACKSLASH:
+      return symbol(Token.ERROR, "EOF in string constant");
+    case CBACKSLASH:
+      return symbol(Token.ERROR, "EOF in char constant");
+    default:
+      return symbol(Token.EOF);
   }
-  return symbol(Token.EOF);
 %eofval}
 
 
@@ -75,12 +76,15 @@ package vsim.assembler;
 %class Lexer
 %final
 %cup
+%line
 %column
-%full
+%unicode
 
+%state COMMENT
 %state STRING
 %state SBACKSLASH
 %state CHARACTER
+%state CBACKSLASH
 
 // syntax
 DOT = "."
@@ -107,6 +111,8 @@ STRSTART = \"
 BACKSLASH = "\\"
 CHAR = .
 CHARSTART = \'
+// comments
+COMMENTSTART = "#"|";"
 
 // directives
 D_ZERO = ".zero"
@@ -286,6 +292,9 @@ FLOAT = [+-]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
 // valid whitespace
 WHITESPACE = (" "|\t)
 
+// platoform independent newline
+NEWLINE = \R
+
 // everything else error
 ERROR = .
 %%
@@ -368,6 +377,11 @@ ERROR = .
   {CHARSTART} {
     this.text.setLength(0);
     yybegin(CHARACTER);
+  }
+
+  // commnets
+  {COMMENTSTART} {
+    yybegin(COMMENT);
   }
 
   // labels
@@ -945,6 +959,11 @@ ERROR = .
     }
   }
 
+  // newlines
+  {NEWLINE}+ {
+    return symbol(Token.NEWLINE);
+  }
+
   // ignore whitespace
   {WHITESPACE} { /* do nothing */ }
 
@@ -958,7 +977,6 @@ ERROR = .
 <STRING> {
 
   {BACKSLASH} {
-    this.prevState = STRING;
     yybegin(SBACKSLASH);
   }
 
@@ -971,13 +989,18 @@ ERROR = .
     this.text.append(yytext());
   }
 
+  {NEWLINE} {
+    yypushback(yylength());
+    yybegin(YYINITIAL);
+    return symbol(Token.ERROR, "unterminated string constant");
+  }
+
 }
 
 <CHARACTER> {
 
   {BACKSLASH} {
-    this.prevState = CHARACTER;
-    yybegin(SBACKSLASH);
+    yybegin(CBACKSLASH);
   }
 
   {CHARSTART} {
@@ -993,68 +1016,151 @@ ERROR = .
     this.text.append(yytext());
   }
 
+  {NEWLINE} {
+    yypushback(yylength());
+    yybegin(YYINITIAL);
+    return symbol(Token.ERROR, "unterminated char constant");
+  }
+
 }
 
 <SBACKSLASH> {
 
   "0" {
     this.text.append('\0');
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   "n" {
-    this.text.append('\n');
-    yybegin(this.prevState);
+    this.text.append(System.getProperty("line.separator"));
+    yybegin(STRING);
   }
 
   "t" {
     this.text.append('\t');
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   "f" {
     this.text.append('\f');
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   "b" {
     this.text.append('\b');
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   "v" {
     this.text.append((char)11);
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   "r" {
-    this.text.append((char)'\r');
-    yybegin(this.prevState);
+    this.text.append('\r');
+    yybegin(STRING);
   }
 
   "\"" {
     this.text.append("\"");
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
-  "\'" {
-    this.text.append("\'");
-    yybegin(this.prevState);
-  }
-
-  "\n" {
-    this.text.append("\n");
-    yybegin(this.prevState);
+  "'" {
+    this.text.append("'");
+    yybegin(STRING);
   }
 
   "\\" {
     this.text.append("\\");
-    yybegin(this.prevState);
+    yybegin(STRING);
   }
 
   {CHAR} {
     this.text.append(yytext());
-    yybegin(this.prevState);
+    yybegin(STRING);
+  }
+
+  {NEWLINE} {
+    this.text.append(yytext());
+    yybegin(STRING);
+  }
+
+}
+
+<CBACKSLASH> {
+
+  "0" {
+    this.text.append('\0');
+    yybegin(CHARACTER);
+  }
+
+  "n" {
+    this.text.append('\n');
+    yybegin(CHARACTER);
+  }
+
+  "t" {
+    this.text.append('\t');
+    yybegin(CHARACTER);
+  }
+
+  "f" {
+    this.text.append('\f');
+    yybegin(CHARACTER);
+  }
+
+  "b" {
+    this.text.append('\b');
+    yybegin(CHARACTER);
+  }
+
+  "v" {
+    this.text.append((char)11);
+    yybegin(CHARACTER);
+  }
+
+  "r" {
+    this.text.append((char)'\r');
+    yybegin(CHARACTER);
+  }
+
+  "\"" {
+    this.text.append("\"");
+    yybegin(CHARACTER);
+  }
+
+  "\'" {
+    this.text.append("\'");
+    yybegin(CHARACTER);
+  }
+
+  "\\" {
+    this.text.append("\\");
+    yybegin(CHARACTER);
+  }
+
+  {CHAR} {
+    this.text.append(yytext());
+    yybegin(CHARACTER);
+  }
+
+  {NEWLINE} {
+    yypushback(yylength());
+    yybegin(YYINITIAL);
+    return symbol(Token.ERROR, "unterminated char constant");
+  }
+
+}
+
+<COMMENT> {
+
+  // consume everything
+  {CHAR} { /* NOTHING TO DO */ }
+
+  {NEWLINE} {
+    yypushback(yylength());
+    yybegin(YYINITIAL);
   }
 
 }
