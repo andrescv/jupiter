@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.io.BufferedWriter;
 import vsim.assembler.Program;
 import vsim.assembler.Segment;
+import vsim.assembler.DebugInfo;
 import vsim.riscv.MemorySegments;
+import vsim.assembler.statements.UType;
+import vsim.assembler.statements.IType;
 import vsim.assembler.statements.Statement;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -152,6 +155,22 @@ public final class Linker {
     HashMap<Integer, Statement> all = new HashMap<Integer, Statement>();
     if (Globals.globl.get(Settings.START) != null &&
         Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
+      // far call to start label always the first (two) statements
+      DebugInfo debug = new DebugInfo(0, "call " + Settings.START, "start");
+      // utype statement (CALL start)
+      UType u = new UType("auipc", debug, "x6", new Relocation(Relocation.PCRELHI, Settings.START, debug));
+      u.build(Linker.textAddress);
+      Globals.memory.privStoreWord(Linker.textAddress, u.result().get(InstructionField.ALL));
+      all.put(Linker.textAddress, u);
+      // next word align address
+      Linker.textAddress += Instruction.LENGTH;
+      // itype statement (CALL start)
+      IType i = new IType("jalr", debug, "x1", "x6", new Relocation(Relocation.PCRELLO, Settings.START, debug));
+      i.build(Linker.textAddress);
+      Globals.memory.privStoreWord(Linker.textAddress, i.result().get(InstructionField.ALL));
+      all.put(Linker.textAddress, i);
+      // next word align address
+      Linker.textAddress += Instruction.LENGTH;
       for (Program program: programs) {
         for (Statement stmt: program.getStatements()) {
           // build machine code
@@ -185,7 +204,8 @@ public final class Linker {
     if (programs != null) {
       // reset this
       Linker.dataAddress = MemorySegments.STATIC_SEGMENT;
-      Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
+      // 2 words added because of the two initial statements representing the far call to START label
+      Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN + 2 * Instruction.LENGTH;
       // handle static data
       Linker.linkRodata(programs);
       Linker.linkBss(programs);
