@@ -20,6 +20,7 @@ package vsim.utils;
 import java.io.File;
 import vsim.Globals;
 import vsim.Settings;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public final class Cmd {
    * @see vsim.utils.ArgumentParser
    * @return an array of RISC-V assembler filenames to simulate (if any)
    */
-  public static ArrayList<String> parse(String[] args) {
+  public static ArrayList<File> parse(String[] args) {
     ArgumentParser parser = new ArgumentParser("vsim [options] <files>");
     // simulator available options
     parser.add("-help",    "show this help message and exit");
@@ -103,41 +104,54 @@ public final class Cmd {
       System.exit(0);
     }
     // get files
-    ArrayList<String> files = parser.targets();
+    ArrayList<File> files = parser.targets();
     // find trap handler
     if (Settings.ROOT != null) {
       File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
       if (trapfile.exists()) {
-        Settings.TRAP = trapfile.getAbsolutePath();
+        Settings.TRAP = trapfile;
       }
     }
-    // check project mode
-    if (parser.hasFlag("-all")) {
-      try {
-        // recursively find all files in user cwd
-        Files.find(
-          Paths.get(System.getProperty("user.dir")),
-          Integer.MAX_VALUE,
-          // keep files that ends with .s or .asm extension
-          (filePath, fileAttr) -> {
-            if (fileAttr.isRegularFile()) {
-              String path = filePath.toString();
-              if (path.endsWith(".s") || path.endsWith(".asm"))
-                return true;
-            }
-            return false;
-          }
-        ).forEach(
-          path ->
-            files.add(path.toString())
-        );
-      } catch (Exception e) {
-        if (!Settings.QUIET)
-          Message.warning("An error occurred while recursively searching the files in directory (aborting...)");
-      }
-    }
+    // assemble all files in directory
+    if (parser.hasFlag("-all"))
+      Cmd.getFilesInDir(files);
     files.trimToSize();
     return files;
+  }
+
+
+  /**
+   * This method adds all assembler files in current user directory into an array list.
+   *
+   * @param files array list where file paths will be added
+   * @return true if success, false otherwise
+   */
+  public static boolean getFilesInDir(ArrayList<File> files) {
+    try {
+      // recursively find all files in user cwd
+      Files.find(
+        Paths.get(Settings.DIR.toString()),
+        Integer.MAX_VALUE,
+        // keep files that ends with .s or .asm extension
+        (filePath, fileAttr) -> {
+          if (fileAttr.isRegularFile()) {
+            String path = filePath.toString();
+            if (path.endsWith(".s") || path.endsWith(".asm"))
+              return true;
+          }
+          return false;
+        }
+      ).forEach(
+        path ->
+          files.add(new File(path.toString()))
+      );
+    } catch (IOException e) {
+      Message.error("An error occurred while recursively searching the files in directory (aborting...)");
+      if (!Settings.GUI)
+        System.exit(1);
+      return false;
+    }
+    return true;
   }
 
   /**

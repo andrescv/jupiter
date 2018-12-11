@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -43,7 +44,7 @@ public final class ArgumentParser {
   /** stores the valid options that requires a value */
   private HashSet<String> optsval;
   /** stores all the targers (aka files) */
-  private ArrayList<String> targets;
+  private ArrayList<File> targets;
   /** stores all the parser errors */
   private ArrayList<String> errors;
 
@@ -61,7 +62,7 @@ public final class ArgumentParser {
     this.aliases = new HashMap<String, String>();
     this.options = new TreeMap<String, String>();
     this.optsval = new HashSet<String>();
-    this.targets = new ArrayList<String>();
+    this.targets = new ArrayList<File>();
     this.errors = new ArrayList<String>();
   }
 
@@ -153,11 +154,11 @@ public final class ArgumentParser {
         offset += 1;
       // add targets starting at this offset
       for (int i = offset; this.values.get(i) != null; i++)
-        this.targets.add(this.values.get(i));
+        this.targets.add(new File(this.values.get(i)));
     } else {
       // targets = all values
       for (int pos: this.values.keySet())
-        this.targets.add(this.values.get(pos));
+        this.targets.add(new File(this.values.get(pos)));
     }
   }
 
@@ -229,7 +230,7 @@ public final class ArgumentParser {
    *
    * @return array of targets
    */
-  public ArrayList<String> targets() {
+  public ArrayList<File> targets() {
     return this.targets;
   }
 
