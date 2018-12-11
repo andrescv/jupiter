@@ -66,7 +66,7 @@ public final class Errors {
    * This method adds an error message with some useful debug information to
    * the error list {@link vsim.Errors#errors}.
    *
-   * @param line source line number
+   * @param lineno source line number
    * @param filename source filename
    * @param phase the phase where the error ocurred (e.g assembler, linker)
    * @param msg an error message

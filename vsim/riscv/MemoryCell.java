@@ -140,6 +140,8 @@ public final class MemoryCell {
 
   /**
    * Sets the integer memory cell address and updates all internal properties.
+   *
+   * @param address memory cell address
    */
   public void setIntAddress(int address) {
     this.intAddress = address;
