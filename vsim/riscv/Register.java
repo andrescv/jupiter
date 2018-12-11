@@ -35,7 +35,7 @@ public abstract class Register {
   protected final SimpleStringProperty strValue;
 
   /** register current value */
-  protected int value;
+  protected final SimpleIntegerProperty value;
   /** register default value */
   private final int resetValue;
   /** if the register is editable or not */
@@ -55,7 +55,7 @@ public abstract class Register {
     this.number = new SimpleIntegerProperty(number);
     this.mnemonic = new SimpleStringProperty(mnemonic);
     this.strValue = new SimpleStringProperty("");
-    this.value = value;
+    this.value = new SimpleIntegerProperty(value);
     this.resetValue = value;
     this.editable = editable;
     this.update();
@@ -86,6 +86,15 @@ public abstract class Register {
    */
   public SimpleStringProperty strValueProperty() {
     return this.strValue;
+  }
+
+  /**
+   * This method returns the integer value property.
+   *
+   * @return integer value property
+   */
+  public SimpleIntegerProperty valueProperty() {
+    return this.value;
   }
 
   /**
@@ -121,7 +130,7 @@ public abstract class Register {
    * @return the value of the register
    */
   public int getValue() {
-    return this.value;
+    return this.value.get();
   }
 
   /**
@@ -140,7 +149,7 @@ public abstract class Register {
    */
   public void setValue(int value) {
     if (this.editable) {
-      this.value = value;
+      this.value.set(value);
       this.update();
     }
   }
@@ -149,7 +158,7 @@ public abstract class Register {
    * This method resets the register to its default value.
    */
   public void reset() {
-    this.value = this.resetValue;
+    this.value.set(this.resetValue);
     this.update();
   }
 

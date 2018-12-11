@@ -44,10 +44,10 @@ public final class RVFRegister extends Register {
   public void update() {
     // display in hex format
     if (Settings.DISP_RVF_REG == 0)
-      this.strValue.set(String.format("0x%08x", this.value));
+      this.strValue.set(String.format("0x%08x", this.value.get()));
     // display in float format
     else
-      this.strValue.set(String.format("%.6f", Float.intBitsToFloat(this.value)));
+      this.strValue.set(String.format("%.6f", Float.intBitsToFloat(this.value.get())));
   }
 
 }
