@@ -39,8 +39,7 @@ import java.io.FileNotFoundException;
 
 parser code {:
 
-  public static void parse(String filename) {
-    File file = new File(filename);
+  public static void parse(File file) {
     try {
       Parser parser = new Parser(new Lexer(new FileReader(file)));
       parser.parse();

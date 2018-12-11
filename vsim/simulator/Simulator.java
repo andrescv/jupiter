@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.simulator;
 
+import java.io.File;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.utils.Message;
@@ -42,7 +43,7 @@ public final class Simulator {
    * @see vsim.linker.Linker#link
    * @see vsim.linker.LinkedProgram
    */
-  public static void simulate(ArrayList<String> files) {
+  public static void simulate(ArrayList<File> files) {
     // clear all
     Globals.reset();
     // assemble -> link -> simulate
@@ -89,7 +90,7 @@ public final class Simulator {
    * @see vsim.simulator.Debugger
    * @see vsim.linker.LinkedProgram
    */
-  public static void debug(ArrayList<String> files) {
+  public static void debug(ArrayList<File> files) {
     // clear all
     Globals.reset();
     // assemble -> link -> debug

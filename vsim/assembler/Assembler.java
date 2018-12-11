@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.assembler;
 
 import vsim.Errors;
+import java.io.File;
 import vsim.Globals;
 import vsim.utils.Message;
 import java.util.ArrayList;
@@ -46,17 +47,17 @@ public final class Assembler {
    * @see vsim.assembler.Program
    * @return all the assembled files
    */
-  public static ArrayList<Program> assemble(ArrayList<String> files) {
+  public static ArrayList<Program> assemble(ArrayList<File> files) {
     ArrayList<Program> programs = new ArrayList<Program>();
     // assemble all files
     if (files.size() > 0) {
-      for (String file: files) {
+      for (File file: files) {
         // current filename
-        Assembler.filename = file;
+        Assembler.filename = file.getAbsolutePath();
         // start in text segment
         Assembler.segment = Segment.TEXT;
         // create a new RISC-V Program
-        Program program = new Program(file);
+        Program program = new Program(Assembler.filename);
         // set current program
         Assembler.program = program;
         // parse line by line all file

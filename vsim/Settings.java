@@ -44,10 +44,10 @@ public final class Settings {
   public static File DIR = new File(System.getProperty("user.dir"));
 
   /** installation path */
-  public static String ROOT = null;
+  public static File ROOT = null;
 
   /** trap handler path */
-  public static String TRAP = null;
+  public static File TRAP = null;
 
   /** global start label, set with -start flag */
   public static String START = "main";

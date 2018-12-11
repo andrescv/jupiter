@@ -33,19 +33,15 @@ import com.sun.javafx.application.LauncherImpl;
 public final class VSim {
 
   /**
-   * This method returns the root absolute path
-   *
-   * @return root absolute path
+   * This method returns the root absolute path of V-Sim source code.
    */
-  private static String getRootPath() {
+  private static void setRootPath() {
     try {
       File f = new File(VSim.class.getProtectionDomain().getCodeSource().getLocation().toURI());
       String path = f.getAbsolutePath();
       path = path.substring(0, path.lastIndexOf('/') + 1);
-      return path;
-    } catch (Exception e) {
-      return null;
-    }
+      Settings.ROOT = new File(path);
+    } catch (Exception e) { /* NOTHING */ }
   }
 
   /**
@@ -57,9 +53,9 @@ public final class VSim {
     // run this only if some argument(s) is/are passed
     if (args.length > 0) {
       // set ROOT path
-      Settings.ROOT = VSim.getRootPath();
+      VSim.setRootPath();
       // parse arguments
-      ArrayList<String> files = Cmd.parse(args);
+      ArrayList<File> files = Cmd.parse(args);
       // simulate or debug
       Cmd.title();
       // only if files are provided
