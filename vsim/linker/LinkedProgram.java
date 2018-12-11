@@ -22,7 +22,11 @@ import vsim.Settings;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import vsim.assembler.statements.Statement;
+import static vsim.riscv.instructions.Instruction.LENGTH;
+import static vsim.riscv.MemorySegments.TEXT_SEGMENT_BEGIN;
 
 
 /**
@@ -56,14 +60,11 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method resets the program, localizes the global start address
-   * that is set in VSim settings and makes the program counter point
-   * to this address.
+   * This method resets the program, setting the program counter
+   * equal to the beginning of the text segment.
    */
   public void reset() {
-    // set PC to global start label (simulate far-away call)
-    int startAddress = Globals.globl.get(Settings.START);
-    Globals.regfile.setProgramCounter(startAddress);
+    Globals.regfile.setProgramCounter(TEXT_SEGMENT_BEGIN);
   }
 
   /**
@@ -90,6 +91,25 @@ public final class LinkedProgram {
     }
     breakpoints.trimToSize();
     return breakpoints;
+  }
+
+  /**
+   * Gets observable list of info statements.
+   *
+   * @return observable list of info statements
+   */
+  public ObservableList<InfoStatement> getInfoStatements() {
+    ObservableList<InfoStatement> stmts = FXCollections.observableArrayList();
+    int pc = TEXT_SEGMENT_BEGIN;
+    while (true) {
+      Statement stmt = this.program.get(pc);
+      if (stmt == null)
+        break;
+      else
+        stmts.add(new InfoStatement(pc, stmt));
+      pc += LENGTH;
+    }
+    return stmts;
   }
 
 }
