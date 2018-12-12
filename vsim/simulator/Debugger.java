@@ -71,21 +71,22 @@ public final class Debugger {
   private void help() {
     IO.stdout.println("Available commands: " + System.getProperty("line.separator"));
     // help
-    IO.stdout.println("help/?              - show this help message");
+    IO.stdout.println("help/?               - show this help message");
     // exit
-    IO.stdout.println("exit/quit           - exit the simulator and debugger");
+    IO.stdout.println("exit/quit            - exit the simulator and debugger");
     // execute previous
-    IO.stdout.println("!                   - execute previous command");
+    IO.stdout.println("!                    - execute previous command");
     // print state
-    IO.stdout.println("showx               - print all RVI registers");
-    IO.stdout.println("showf               - print all RVF registers");
-    IO.stdout.println("print regname       - print register");
-    IO.stdout.println("memory address      - print 12 x 4 cells of memory starting at address");
-    IO.stdout.println("memory address rows - print rows x 4 cells of memory starting at address");
-    IO.stdout.println("globals             - print global symbols");
-    IO.stdout.println("locals filename     - print local symbols of a file");
+    IO.stdout.println("showx                - print all RVI registers");
+    IO.stdout.println("showf                - print all RVF registers");
+    IO.stdout.println("print regname        - print register");
+    IO.stdout.println("memory address       - print 12 x 4 cells of memory starting at address");
+    IO.stdout.println("memory address rows  - print rows x 4 cells of memory starting at address");
+    IO.stdout.println("globals              - print global symbols");
+    IO.stdout.println("locals filename      - print local symbols of a file");
     // execution and breakpoints
     IO.stdout.println("step/s               - step the program for 1 instruction");
+    IO.stdout.println("backstep/b           - backstep the program for 1 instruction");
     IO.stdout.println("continue/c           - continue program execution without stepping");
     IO.stdout.println("breakpoint/b address - set a breakpoint at address");
     IO.stdout.println("clear                - clear all breakpoints");
@@ -195,7 +196,7 @@ public final class Debugger {
    * This method tries to step the program by one statement and pretty prints
    * debug information.
    */
-  private void step() {
+  public void step() {
     Statement stmt = program.next();
     int pcVal = Globals.regfile.getProgramCounter();
     String pc = String.format("0x%08x", pcVal);
@@ -204,30 +205,34 @@ public final class Debugger {
       Message.error("attempt to execute non-instruction at " + pc);
       return;
     }
-    // print debugging info
-    String space = "";
+    // get statement machine code
     MachineCode result = stmt.result();
-    String source = stmt.getDebugInfo().getSource();
-    // calculate space (pretty print)
-    for (int j = 0; j < (this.space - source.length()); j++)
-      space += " ";
-    // format all debugging info
-    IO.stdout.println(
-      String.format(
-        "FROM: %s",
-        Colorize.yellow(stmt.getDebugInfo().getFilename())
-      )
-    );
-    IO.stdout.println(
-      String.format(
-        "PC [%s] CODE:%s    %s %s» %s",
-        Colorize.cyan(pc),
-        result.toString(),
-        Colorize.purple(source),
-        space,
-        Globals.iset.get(stmt.getMnemonic()).disassemble(result)
-      )
-    );
+    // display console info (CLI mode only)
+    if (!Settings.GUI) {
+      // print debugging info
+      String space = "";
+      String source = stmt.getDebugInfo().getSource();
+      // calculate space (pretty print)
+      for (int j = 0; j < (this.space - source.length()); j++)
+        space += " ";
+      // format all debugging info
+      IO.stdout.println(
+        String.format(
+          "FROM: %s",
+          Colorize.yellow(stmt.getDebugInfo().getFilename())
+        )
+      );
+      IO.stdout.println(
+        String.format(
+          "PC [%s] CODE:%s    %s %s» %s",
+          Colorize.cyan(pc),
+          result.toString(),
+          Colorize.purple(source),
+          space,
+          Globals.iset.get(stmt.getMnemonic()).disassemble(result)
+        )
+      );
+    }
     // execute instruction
     Globals.iset.get(stmt.getMnemonic()).execute(result);
     // reset breakpoint
@@ -236,10 +241,18 @@ public final class Debugger {
   }
 
   /**
+   * This method tries to backstep the program by one statement restoring also
+   * the simulator state.
+   */
+  public void backstep() {
+    // TODO
+  }
+
+  /**
    * This method continues the program execution until a breakpoint or
    * no more available statements are found.
    */
-  private void forward() {
+  public void forward() {
     Statement stmt;
     int pcVal = Globals.regfile.getProgramCounter();
     while ((stmt = this.program.next()) != null) {
@@ -266,7 +279,7 @@ public final class Debugger {
    *
    * @param address the address of the breakpoint in hex or decimal
    */
-  private void breakpoint(String address) {
+  public void breakpoint(String address) {
     try {
       int addr;
       if (address.startsWith("0x"))
@@ -289,8 +302,11 @@ public final class Debugger {
   /**
    * This method clears all the breakpoints that user set.
    */
-  private void clear() {
+  public void clear() {
     this.breakpoints.clear();
+    // set program breakpoints
+    for (Integer breakpoint: program.getBreakpoints())
+      this.breakpoints.put(breakpoint, true);
     System.gc();
   }
 
@@ -299,7 +315,7 @@ public final class Debugger {
    *
    * @param address a string representing the address in hex or decimal
    */
-  private void delete(String address) {
+  public void delete(String address) {
     int addr;
     try {
       if (address.startsWith("0x"))
@@ -311,7 +327,10 @@ public final class Debugger {
       return;
     }
     if (this.breakpoints.containsKey(addr))
-      this.breakpoints.remove(addr);
+      if (this.program.getStatement(addr) != null && this.program.getStatement(addr).getMnemonic().equals("ebreak"))
+        Message.warning("could not delete a ebreak breakpoint (ignoring)");
+      else
+        this.breakpoints.remove(addr);
     else
       Message.warning("no breakpoint at address: " + address + " (ignoring)");
   }
@@ -331,7 +350,8 @@ public final class Debugger {
   /**
    * This method resets the program and the state of the simulator.
    */
-  private void reset() {
+  public void reset() {
+    // TODO: fix this
     Globals.resetState();
     this.program.reset();
   }
@@ -411,6 +431,12 @@ public final class Debugger {
       if (args.length != 1)
         Message.warning("step command does not expect any argument (ignoring)");
       this.step();
+    }
+    // backstep
+    else if (args[0].equals("backstep") || args[0].equals("b")) {
+      if (args.length != 1)
+        Message.warning("backstep command does not expect any argument (ignoring)");
+      this.backstep();
     }
     // continue
     else if (args[0].equals("continue")  || args[0].equals("c")) {
