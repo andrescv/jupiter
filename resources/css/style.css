@@ -417,6 +417,10 @@
   -fx-text-fill: BLACK;
 }
 
+.table-view .table-row-cell:selected {
+  -fx-background-color: -fx-control-inner-background-alt;
+}
+
 .table-view:focused .table-row-cell:selected .table-cell {
   -fx-text-fill: BLACK;
 }
@@ -460,6 +464,16 @@
 
 .table-view .table-cell.editable-cell {
   -fx-font-family: 'Anonymous Pro';
+  -fx-font-size: 14px;
+}
+
+.table-view.text-table .table-cell {
+  -fx-font-size: 18px;
+  -fx-font-family: 'Anonymous Pro';
+}
+
+.table-view.text-table .table-row-cell .table-cell:non-editable {
+  -fx-cursor: OPEN_HAND;
 }
 
 .table-view .column-overlay {
@@ -487,6 +501,14 @@
   -fx-focus-color: transparent;
 }
 
+.table-view.text-table {
+  -fx-control-inner-background-alt: #fff;
+}
+
+.table-view.text-table .table-row-cell:selected .table-cell {
+  -fx-background-color: #64ffda;
+}
+
 .table-row-cell:grouped {
   -fx-background-color: rgb(230, 230, 230);
 }
@@ -497,4 +519,76 @@
 
 .table-view .menu-item .label {
   -fx-padding: 5 0 5 0;
+}
+
+.table-view.text-table *.scroll-bar:horizontal *.increment-button,
+.table-view.text-table *.scroll-bar:horizontal *.decrement-button {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.table-view.text-table *.scroll-bar:horizontal *.increment-arrow,
+.table-view.text-table *.scroll-bar:horizontal *.decrement-arrow {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+  -fx-shape: null;
+}
+
+/*
+  CheckBox Styles
+*/
+
+.check-box {
+  -unchecked-color: #5A5A5A;
+  -checked-color: #e53935;
+  -fx-cursor: HAND;
+}
+
+.jfx-check-box .box-container {
+  -fx-shape: "M 400 100 L 400 100 A 50 50 0 1 1 400 250 A 50 50 0 1 1 400 100 ";
+  -fx-padding: 10;
+}
+
+.check-box .box,
+.check-box:indeterminate .box,
+.check-box:indeterminate:selected .box {
+  -fx-pref-width: 18;
+  -fx-pref-height: 18;
+  -fx-min-width: -fx-pref-width;
+  -fx-max-width: -fx-pref-width;
+  -fx-min-height: -fx-pref-height;
+  -fx-max-height: -fx-pref-height;
+  -fx-background-color: TRANSPARENT;
+  -fx-background-radius: 2;
+  -fx-border-color: -unchecked-color;
+  -fx-border-style: solid;
+  -fx-border-radius: 2;
+  -fx-border-width: 2;
+}
+
+.check-box:selected .box {
+  -fx-border-color: -checked-color;
+  -fx-background-color: -checked-color;
+}
+
+.check-box:selected .mark {
+  -fx-shape: "M384 690l452-452 60 60-512 512-238-238 60-60z";
+  -fx-max-width: 15;
+  -fx-max-height: 12;
+  -fx-background-color: #ffffff;
+  -fx-border-color: #ffffff;
+  -fx-border-width: 2;
+  -fx-border-radius: 2;
+}
+
+.check-box .indeterminate-mark{
+  -fx-background-color: -checked-color;
+  -fx-background-radius: 2;
+  -fx-border-width: 0;
+  -fx-max-width: 10;
+  -fx-max-height: 10;
 }

@@ -64,12 +64,13 @@
                   </JFXButton>
                </children>
             </HBox>
-            <TableView id="textTable" fx:id="textTable" prefHeight="243.0" prefWidth="438.0" VBox.vgrow="ALWAYS">
+            <TableView id="textTable" fx:id="textTable" editable="true" prefHeight="243.0" prefWidth="438.0" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="txtAddrCol" editable="false" prefWidth="75.0" sortable="false" text="Address" />
-                  <TableColumn fx:id="txtMachineCode" editable="false" prefWidth="75.0" sortable="false" text="Machine Code" />
-                  <TableColumn fx:id="txtSourceCode" editable="false" prefWidth="75.0" sortable="false" text="Source Code" />
-                  <TableColumn fx:id="txtBasicCode" editable="false" prefWidth="75.0" sortable="false" text="Basic Code" />
+                  <TableColumn fx:id="txtBkptCol" maxWidth="50.0" minWidth="50.0" prefWidth="-1.0" resizable="false" sortable="false" text="Bkpt" />
+                  <TableColumn fx:id="txtAddrCol" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="-1.0" resizable="false" sortable="false" text="Address" />
+                  <TableColumn fx:id="txtMachineCode" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="-1.0" resizable="false" sortable="false" text="Machine Code" />
+                  <TableColumn fx:id="txtSourceCode" editable="false" prefWidth="-1.0" sortable="false" text="Source Code" />
+                  <TableColumn fx:id="txtBasicCode" editable="false" prefWidth="-1.0" sortable="false" text="Basic Code" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

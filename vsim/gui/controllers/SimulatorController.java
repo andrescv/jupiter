@@ -1,23 +1,36 @@
 package vsim.gui.controllers;
 
+import java.io.File;
 import vsim.Globals;
 import vsim.Settings;
+import vsim.utils.Cmd;
 import javafx.fxml.FXML;
+import vsim.linker.Linker;
 import vsim.utils.Message;
 import vsim.riscv.Register;
+import java.util.ArrayList;
 import javafx.util.Callback;
 import vsim.riscv.MemoryCell;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
+import vsim.simulator.Debugger;
+import vsim.assembler.Assembler;
+import javafx.stage.FileChooser;
+import vsim.linker.LinkedProgram;
+import vsim.linker.InfoStatement;
+import vsim.riscv.MemorySegments;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
+import vsim.gui.components.InfoCell;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TableView;
 import com.jfoenix.controls.JFXTabPane;
+import vsim.gui.components.BooleanCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.ContextMenu;
+import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
 import vsim.gui.components.MemoryEditingCell;
 import javafx.scene.control.SeparatorMenuItem;
@@ -44,15 +57,17 @@ public class SimulatorController {
   @FXML protected JFXButton dumpBtn;
 
   /** Simulator text segment table view */
-  @FXML protected TableView<?> textTable;
+  @FXML protected TableView<InfoStatement> textTable;
+  /** Simulator text segment breakpoint column */
+  @FXML protected TableColumn<InfoStatement, Boolean> txtBkptCol;
   /** Simulator text segment table view memory address column */
-  @FXML protected TableColumn<?, ?> txtAddrCol;
+  @FXML protected TableColumn<InfoStatement, String> txtAddrCol;
   /** Simulator text segment table view machine code column */
-  @FXML protected TableColumn<?, ?> txtMachineCode;
+  @FXML protected TableColumn<InfoStatement, String> txtMachineCode;
   /** Simulator text segment table view source code column */
-  @FXML protected TableColumn<?, ?> txtSourceCode;
+  @FXML protected TableColumn<InfoStatement, String> txtSourceCode;
   /** Simulator text segment table view basic code column */
-  @FXML protected TableColumn<?, ?> txtBasicCode;
+  @FXML protected TableColumn<InfoStatement, String> txtBasicCode;
 
   /** Hardware tab pane */
   @FXML protected JFXTabPane hardware;
@@ -102,6 +117,12 @@ public class SimulatorController {
   /** Reference to main controller */
   private MainController mainController;
 
+  /** V-Sim debugger */
+  private Debugger debugger;
+
+  /** current program info statements */
+  private ObservableList<InfoStatement> stmts;
+
   /**
    * Initialize simulator controller.
    *
@@ -111,55 +132,90 @@ public class SimulatorController {
     this.mainController = controller;
     this.initRegFiles();
     this.initMemory();
+    this.initText();
+    this.initButtons();
   }
 
   /**
    * Assembles all files in directory.
    */
   protected void assemble() {
-    // TODO
+    // reset simulator state
+    Globals.reset();
+    this.debugger = null;
+    this.stmts = null;
+    this.textTable.getItems().clear();
+    ArrayList<File> files = new ArrayList<File>();
+    if (Cmd.getFilesInDir(files)) {
+      LinkedProgram program = Linker.link(Assembler.assemble(files));
+      if (program != null) {
+        program.reset();
+        this.debugger = new Debugger(program);
+        this.stmts = program.getInfoStatements();
+        for (InfoStatement stmt: this.stmts)
+          stmt.breakpointProperty().addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
+        this.textTable.setItems(this.stmts);
+        this.textTable.getSelectionModel().select(0);
+        this.mainController.selectSimulatorTab();
+        /*
+          Align table columns
+
+          Ref:
+          https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
+        */
+        Platform.runLater(() -> this.textTable.refresh());
+      }
+    };
   }
 
   /**
    * Go step control, runs all the program.
    */
   protected void go() {
-    // TODO
+    this.debugger.forward();
   }
 
   /**
    * Step flow control, advances the simulator by 1 step.
    */
   protected void step() {
-    // TODO
+    this.debugger.step();
   }
 
   /**
    * Backstep flow control, goes back to the previous step.
    */
   protected void backstep() {
-    // TODO
+    this.debugger.backstep();
   }
 
   /**
    * Resets all the simulator state and starts again.
    */
   protected void reset() {
-    // TODO
+    this.debugger.reset();
   }
 
   /**
    * Clear all breakpoints that were set.
    */
   protected void clearAllBreakpoints() {
-    // TODO
+    for (InfoStatement stmt: this.stmts) {
+      if (!stmt.isEbreak() && stmt.getBreakpoint())
+        stmt.setBreakpoint(false);
+    }
   }
 
   /**
    * Dumps generated machine code to a file.
    */
   protected void dump() {
-    // TODO
+    FileChooser chooser = new FileChooser();
+    chooser.setTitle("Dump Machine Code To File");
+    File file = chooser.showSaveDialog(this.mainController.stage);
+    if (file != null) {
+      // TODO
+    }
   }
 
   /**
@@ -171,6 +227,78 @@ public class SimulatorController {
     this.backstepBtn.setOnAction(e -> this.backstep());
     this.resetBtn.setOnAction(e -> this.reset());
     this.dumpBtn.setOnAction(e -> this.dump());
+  }
+
+  /**
+   * This methods adds or deletes a breakpoint at the stament address
+   *
+   * @param add true if breakpoint will be added, false if will be deleted
+   * @param stmt program info statement
+   */
+  private void breakpoint(boolean add, InfoStatement stmt) {
+    String address = stmt.getAddress();
+    if (add)
+      this.debugger.breakpoint(address);
+    else
+      this.debugger.delete(address);
+    this.textTable.refresh();
+  }
+
+  /**
+   * This method initializes the text segment table.
+   */
+  @SuppressWarnings("unchecked")
+  private void initText() {
+    this.textTable.getStyleClass().add("text-table");
+    // PC current row
+    this.textTable.getSelectionModel().selectedIndexProperty().addListener((e, oldVal, newVal) -> {
+      int row = Math.min(
+        (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / 4,
+        this.textTable.getItems().size() - 1
+      );
+      if (row != newVal.intValue())
+        Platform.runLater(() -> {
+          this.textTable.getSelectionModel().select(row);
+          this.textTable.scrollTo(row);
+        });
+    });
+    Globals.regfile.programCounterProperty().addListener(e -> {
+      int row = Math.min(
+        (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / 4,
+        this.textTable.getItems().size() - 1
+      );
+      this.textTable.getSelectionModel().select(row);
+      this.textTable.scrollTo(row);
+    });
+    // default cell factory
+    Callback<TableColumn<InfoStatement, String>,
+      TableCell<InfoStatement, String>> cellFactory
+          = (TableColumn<InfoStatement, String> p) -> new InfoCell();
+    this.txtAddrCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("address"));
+    this.txtAddrCol.setCellFactory(cellFactory);
+    this.txtMachineCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("machineCode"));
+    this.txtMachineCode.setCellFactory(cellFactory);
+    this.txtSourceCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("sourceCode"));
+    this.txtSourceCode.setCellFactory(cellFactory);
+    this.txtBasicCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("basicCode"));
+    this.txtBasicCode.setCellFactory(cellFactory);
+    // default cell factory for breakpoint col
+    Callback<TableColumn<InfoStatement, Boolean>,
+      TableCell<InfoStatement, Boolean>> boolCellFactory
+          = (TableColumn<InfoStatement, Boolean> p) -> new BooleanCell();
+    this.txtBkptCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, Boolean>("breakpoint"));
+    this.txtBkptCol.setCellFactory(boolCellFactory);
+    // disable table columns reordering (hacky and ugly)
+    this.textTable.getColumns().addListener(new ListChangeListener() {
+      @Override
+      public void onChanged(Change change) {
+        change.next();
+        if (change.wasReplaced()) {
+          textTable.getColumns().clear();
+          textTable.getColumns().addAll(txtAddrCol, txtMachineCode, txtSourceCode, txtBasicCode);
+        }
+      }
+    });
   }
 
   /**
