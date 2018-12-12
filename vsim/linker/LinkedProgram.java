@@ -68,6 +68,16 @@ public final class LinkedProgram {
   }
 
   /**
+   * This method returns the statement at the given address.
+   *
+   * @param address address of the statement
+   * @return statement at the given address or null if no statement at that address
+   */
+  public Statement getStatement(int address) {
+    return this.program.get(address);
+  }
+
+  /**
    * This method returns all the available statements.
    *
    * @see vsim.assembler.statements.Statement
