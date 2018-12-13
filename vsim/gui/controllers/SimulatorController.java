@@ -7,13 +7,17 @@ import vsim.utils.Cmd;
 import javafx.fxml.FXML;
 import vsim.linker.Linker;
 import vsim.utils.Message;
+import java.io.FileWriter;
+import java.io.IOException;
 import vsim.riscv.Register;
 import java.util.ArrayList;
 import javafx.util.Callback;
 import vsim.riscv.MemoryCell;
+import java.io.BufferedWriter;
+import javafx.css.PseudoClass;
+import vsim.simulator.Debugger;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
-import vsim.simulator.Debugger;
 import vsim.assembler.Assembler;
 import javafx.stage.FileChooser;
 import vsim.linker.LinkedProgram;
@@ -23,6 +27,7 @@ import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import vsim.gui.components.InfoCell;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableCell;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TableView;
@@ -36,8 +41,11 @@ import vsim.gui.components.MemoryEditingCell;
 import javafx.scene.control.SeparatorMenuItem;
 import vsim.gui.components.RegisterEditingCell;
 import javafx.collections.ListChangeListener.Change;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import static vsim.riscv.instructions.Instruction.LENGTH;
 
 
 /**
@@ -120,8 +128,15 @@ public class SimulatorController {
   /** V-Sim debugger */
   private Debugger debugger;
 
-  /** current program info statements */
-  private ObservableList<InfoStatement> stmts;
+  /** Text table virtual flow */
+  private VirtualFlow<?> vflow;
+  /** RVI table virtual flow */
+  private VirtualFlow<?> rviVFlow;
+  /** RVF table virtual flow */
+  private VirtualFlow<?> rvfVFlow;
+
+  /** Last register modified */
+  private Register lastReg;
 
   /**
    * Initialize simulator controller.
@@ -143,7 +158,6 @@ public class SimulatorController {
     // reset simulator state
     Globals.reset();
     this.debugger = null;
-    this.stmts = null;
     this.textTable.getItems().clear();
     ArrayList<File> files = new ArrayList<File>();
     if (Cmd.getFilesInDir(files)) {
@@ -151,11 +165,10 @@ public class SimulatorController {
       if (program != null) {
         program.reset();
         this.debugger = new Debugger(program);
-        this.stmts = program.getInfoStatements();
-        for (InfoStatement stmt: this.stmts)
+        ObservableList<InfoStatement> stmts = program.getInfoStatements();
+        for (InfoStatement stmt: stmts)
           stmt.breakpointProperty().addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
-        this.textTable.setItems(this.stmts);
-        this.textTable.getSelectionModel().select(0);
+        this.textTable.setItems(stmts);
         this.mainController.selectSimulatorTab();
         /*
           Align table columns
@@ -163,7 +176,10 @@ public class SimulatorController {
           Ref:
           https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
         */
-        Platform.runLater(() -> this.textTable.refresh());
+        Platform.runLater(() -> {
+          this.textTable.refresh();
+          this.vflow = (VirtualFlow<?>)((TableViewSkin<?>)this.textTable.getSkin()).getChildren().get(1);
+        });
       }
     };
   }
@@ -200,7 +216,7 @@ public class SimulatorController {
    * Clear all breakpoints that were set.
    */
   protected void clearAllBreakpoints() {
-    for (InfoStatement stmt: this.stmts) {
+    for (InfoStatement stmt: this.textTable.getItems()) {
       if (!stmt.isEbreak() && stmt.getBreakpoint())
         stmt.setBreakpoint(false);
     }
@@ -214,19 +230,28 @@ public class SimulatorController {
     chooser.setTitle("Dump Machine Code To File");
     File file = chooser.showSaveDialog(this.mainController.stage);
     if (file != null) {
-      // TODO
+      try {
+        if (!file.exists())
+          file.createNewFile();
+      } catch (IOException e) {
+        Message.error("the file " + file + " could not be created");
+        return;
+      }
+      try {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        for (InfoStatement stmt: this.textTable.getItems()) {
+          bw.write(stmt.getMachineCode());
+          bw.newLine();
+        }
+        bw.close();
+        Message.log("machine code dumped to: " + file);
+      } catch (IOException e) {
+        Message.error("the file " + file  + " could not be written");
+      } finally {
+        if (file.exists() && file.length() == 0)
+          file.delete();
+      }
     }
-  }
-
-  /**
-   * This method initializes simulator control buttons.
-   */
-  private void initButtons() {
-    this.goBtn.setOnAction(e -> this.go());
-    this.stepBtn.setOnAction(e -> this.step());
-    this.backstepBtn.setOnAction(e -> this.backstep());
-    this.resetBtn.setOnAction(e -> this.reset());
-    this.dumpBtn.setOnAction(e -> this.dump());
   }
 
   /**
@@ -245,30 +270,59 @@ public class SimulatorController {
   }
 
   /**
+   * This method initializes simulator control buttons.
+   */
+  private void initButtons() {
+    this.goBtn.setOnAction(e -> this.go());
+    this.stepBtn.setOnAction(e -> this.step());
+    this.backstepBtn.setOnAction(e -> this.backstep());
+    this.resetBtn.setOnAction(e -> this.reset());
+    this.dumpBtn.setOnAction(e -> this.dump());
+  }
+
+  /**
    * This method initializes the text segment table.
    */
   @SuppressWarnings("unchecked")
   private void initText() {
     this.textTable.getStyleClass().add("text-table");
     // PC current row
-    this.textTable.getSelectionModel().selectedIndexProperty().addListener((e, oldVal, newVal) -> {
-      int row = Math.min(
-        (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / 4,
-        this.textTable.getItems().size() - 1
-      );
-      if (row != newVal.intValue())
-        Platform.runLater(() -> {
-          this.textTable.getSelectionModel().select(row);
-          this.textTable.scrollTo(row);
-        });
-    });
     Globals.regfile.programCounterProperty().addListener(e -> {
-      int row = Math.min(
-        (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / 4,
-        this.textTable.getItems().size() - 1
-      );
-      this.textTable.getSelectionModel().select(row);
-      this.textTable.scrollTo(row);
+      // refresh table to fire updateItem in table row
+      this.textTable.refresh();
+      int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / LENGTH;
+      int row = Math.min(pc, this.textTable.getItems().size() - 1);
+      if (pc >= this.textTable.getItems().size()) {
+        this.goBtn.setDisable(true);
+        this.stepBtn.setDisable(true);
+      } else {
+        this.goBtn.setDisable(false);
+        this.stepBtn.setDisable(false);
+      }
+      int first = this.vflow.getFirstVisibleCell().getIndex();
+      int last = this.vflow.getLastVisibleCell().getIndex();
+      if (row >= last || row <= first)
+        this.textTable.scrollTo(row);
+    });
+    // apply style to row with address = current PC
+    PseudoClass currentPc = PseudoClass.getPseudoClass("pc");
+    this.textTable.setRowFactory(e -> {
+      return new TableRow<InfoStatement>(){
+        @Override
+        public void updateItem(InfoStatement stmt, boolean isEmpty) {
+          super.updateItem(stmt, isEmpty);
+          if (isEmpty || stmt == null) {
+            this.pseudoClassStateChanged(currentPc, false);
+            return;
+          }
+          String address = stmt.getAddress();
+          String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
+          if (pc.equals(address))
+            this.pseudoClassStateChanged(currentPc, true);
+          else
+            this.pseudoClassStateChanged(currentPc, false);
+        }
+      };
     });
     // default cell factory
     Callback<TableColumn<InfoStatement, String>,
@@ -288,17 +342,6 @@ public class SimulatorController {
           = (TableColumn<InfoStatement, Boolean> p) -> new BooleanCell();
     this.txtBkptCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, Boolean>("breakpoint"));
     this.txtBkptCol.setCellFactory(boolCellFactory);
-    // disable table columns reordering (hacky and ugly)
-    this.textTable.getColumns().addListener(new ListChangeListener() {
-      @Override
-      public void onChanged(Change change) {
-        change.next();
-        if (change.wasReplaced()) {
-          textTable.getColumns().clear();
-          textTable.getColumns().addAll(txtAddrCol, txtMachineCode, txtSourceCode, txtBasicCode);
-        }
-      }
-    });
   }
 
   /**
@@ -396,7 +439,37 @@ public class SimulatorController {
     this.rviValue.getStyleClass().add("editable-cell");
     this.rviValue.setCellFactory(cellFactory);
     this.rviValue.setOnEditCommit(e -> this.updateRVIRegister(e));
-    this.rviTable.setItems(Globals.regfile.getRVI());
+    // apply style to modified rvi register
+    ObservableList<Register> rviList = Globals.regfile.getRVI();
+    for (Register reg: rviList) {
+      reg.setOnSetValueListener(new Register.OnSetValueListener() {
+        @Override
+        public void onValueSet(int number) {
+          hardware.getSelectionModel().select(rviTab);
+          lastReg = reg;
+          int first = rviVFlow.getFirstVisibleCell().getIndex();
+          int last = rviVFlow.getLastVisibleCell().getIndex();
+          if (number >= last || number <= first)
+            rviTable.scrollTo(number);
+          rviTable.refresh();
+        }
+      });
+    }
+    PseudoClass changed = PseudoClass.getPseudoClass("changed");
+    this.rviTable.setRowFactory(e -> {
+      return new TableRow<Register>() {
+        @Override
+        public void updateItem(Register reg, boolean isEmpty) {
+          super.updateItem(reg, isEmpty);
+          if (isEmpty || reg == null || lastReg == null) {
+            this.pseudoClassStateChanged(changed, false);
+            return;
+          }
+          this.pseudoClassStateChanged(changed, reg == lastReg);
+        }
+      };
+    });
+    this.rviTable.setItems(rviList);
     // RVF table
     this.rvfMnemonic.setCellValueFactory(new PropertyValueFactory<Register, String>("mnemonic"));
     this.rvfMnemonic.getStyleClass().add("editable-cell");
@@ -406,7 +479,36 @@ public class SimulatorController {
     this.rvfValue.getStyleClass().add("editable-cell");
     this.rvfValue.setCellFactory(cellFactory);
     this.rvfValue.setOnEditCommit(e -> this.updateRVFRegister(e));
-    this.rvfTable.setItems(Globals.fregfile.getRVF());
+    // apply style to modified rvf register
+    ObservableList<Register> rvfList = Globals.fregfile.getRVF();
+    for (Register reg: rvfList) {
+      reg.setOnSetValueListener(new Register.OnSetValueListener() {
+        @Override
+        public void onValueSet(int number) {
+          hardware.getSelectionModel().select(rvfTab);
+          lastReg = reg;
+          int first = rvfVFlow.getFirstVisibleCell().getIndex();
+          int last = rvfVFlow.getLastVisibleCell().getIndex();
+          if (number >= last || number <= first)
+            rvfTable.scrollTo(number);
+          rvfTable.refresh();
+        }
+      });
+    }
+    this.rvfTable.setRowFactory(e -> {
+      return new TableRow<Register>() {
+        @Override
+        public void updateItem(Register reg, boolean isEmpty) {
+          super.updateItem(reg, isEmpty);
+          if (isEmpty || reg == null || lastReg == null) {
+            this.pseudoClassStateChanged(changed, false);
+            return;
+          }
+          this.pseudoClassStateChanged(changed, reg == lastReg);
+        }
+      };
+    });
+    this.rvfTable.setItems(rvfList);
     // set rvi table context menu
     MenuItem hex = new MenuItem("Hex Display Mode");
     hex.setOnAction(e -> this.rviDisplayHex());
@@ -439,6 +541,8 @@ public class SimulatorController {
     Platform.runLater(() -> {
       this.rviTable.refresh();
       this.rvfTable.refresh();
+      this.rviVFlow = (VirtualFlow<?>)((TableViewSkin<?>)this.rviTable.getSkin()).getChildren().get(1);
+      this.rvfVFlow = (VirtualFlow<?>)((TableViewSkin<?>)this.rvfTable.getSkin()).getChildren().get(1);
     });
     // disable table columns reordering (hacky and ugly)
     this.rviTable.getColumns().addListener(new ListChangeListener() {
