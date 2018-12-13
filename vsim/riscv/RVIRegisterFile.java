@@ -263,6 +263,28 @@ public final class RVIRegisterFile {
   }
 
   /**
+   * This method gets the current state of the RVI register file.
+   *
+   * @return RVI register file state
+   */
+  public HashMap<String, Integer> getState() {
+    HashMap<String, Integer> state = new HashMap<String, Integer>();
+    for (int i = 0; i < MNEMONICS.length; i++)
+      state.put("x" + i, this.rf.get("x" + i).getValue());
+    return state;
+  }
+
+  /**
+   * This methods sets the state of the RVI register file.
+   *
+   * @param state state of the rvi register file
+   */
+  public void setState(HashMap<String, Integer> state) {
+    for (String key: state.keySet())
+      this.rf.get(key).setValue(state.get(key));
+  }
+
+  /**
    * This method returns an observable list of registers.
    *
    * @return observable list of registers

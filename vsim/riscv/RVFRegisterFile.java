@@ -234,6 +234,28 @@ public final class RVFRegisterFile {
   }
 
   /**
+   * This method gets the current state of the RVF register file.
+   *
+   * @return RVF register file state
+   */
+  public HashMap<String, Integer> getState() {
+    HashMap<String, Integer> state = new HashMap<String, Integer>();
+    for (int i = 0; i < MNEMONICS.length; i++)
+      state.put("f" + i, this.rf.get("f" + i).getValue());
+    return state;
+  }
+
+  /**
+   * This methods sets the state of the RVF register file.
+   *
+   * @param state state of the rvf register file
+   */
+  public void setState(HashMap<String, Integer> state) {
+    for (String key: state.keySet())
+      this.rf.get(key).setValue(state.get(key));
+  }
+
+  /**
    * This method returns an observable list of registers.
    *
    * @return observable list of registers
