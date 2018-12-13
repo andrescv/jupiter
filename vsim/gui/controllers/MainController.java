@@ -74,8 +74,8 @@ public class MainController {
   private void initConsole() {
     // redirects standard output and error streams
     PrintStream ps = new PrintStream(new CustomOutputStream(this.console));
-    System.setOut(ps);
-    System.setErr(ps);
+    IO.stdout = ps;
+    IO.stderr = ps;
     // create a new input stream
     IO.stdin = new CustomBufferedReader();
     // clear option

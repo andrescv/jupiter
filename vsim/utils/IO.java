@@ -33,9 +33,9 @@ public final class IO {
   public static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
   /** standard output */
-  public static final PrintStream stdout = System.out;
+  public static PrintStream stdout = System.out;
 
   /** standard err */
-  public static final PrintStream stderr = System.err;
+  public static PrintStream stderr = System.err;
 
 }
