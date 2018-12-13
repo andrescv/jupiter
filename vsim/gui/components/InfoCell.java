@@ -11,27 +11,21 @@ import javafx.scene.control.TableCell;
 public final class InfoCell extends TableCell<InfoStatement, String> {
 
   /**
-   * Creates a new memory editing cell with a Tooltip.
-   */
-  public InfoCell() {
-    super();
-    Tooltip tt = new Tooltip();
-    tt.textProperty().bind(this.itemProperty().asString());
-    this.setTooltip(tt);
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
   public void updateItem(String item, boolean empty) {
     super.updateItem(item, empty);
     if (empty) {
-      this.setText(null);
+      this.setText("");
       this.setGraphic(null);
     } else {
       this.setText(this.getItem() == null ? "" : this.getItem().toString());
       this.setGraphic(null);
+      if (this.getTooltip() == null) {
+        Tooltip tt = new Tooltip(this.getText());
+        this.setTooltip(tt);
+      }
     }
   }
 

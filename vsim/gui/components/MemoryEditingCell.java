@@ -20,22 +20,12 @@ public final class MemoryEditingCell extends TableCell<MemoryCell, String> {
   private TextField textField;
 
   /**
-   * Creates a new memory editing cell with a Tooltip.
-   */
-  public MemoryEditingCell() {
-    super();
-    Tooltip tt = new Tooltip();
-    tt.textProperty().bind(this.itemProperty().asString());
-    this.setTooltip(tt);
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
   public void startEdit() {
     MemoryCell cell = (MemoryCell)this.getTableRow().getItem();
-    if (!isEmpty() && Globals.memory.checkAddress(cell.getIntAddress())) {
+    if (!this.isEmpty() && Globals.memory.checkAddress(cell.getIntAddress())) {
       super.startEdit();
       this.createTextField();
       this.setText(null);
@@ -62,6 +52,7 @@ public final class MemoryEditingCell extends TableCell<MemoryCell, String> {
     super.updateItem(item, empty);
     if (empty) {
       this.setText(null);
+      this.setTooltip(null);
       this.setGraphic(null);
     } else {
       if (this.isEditing()) {
@@ -69,10 +60,13 @@ public final class MemoryEditingCell extends TableCell<MemoryCell, String> {
           this.textField.setText(this.getString());
         }
         this.setText(null);
+        this.setTooltip(null);
         this.setGraphic(textField);
       } else {
         this.setText(this.getString());
         this.setGraphic(null);
+        Tooltip tt = new Tooltip(this.getString());
+        this.setTooltip(tt);
       }
     }
   }
