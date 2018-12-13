@@ -41,6 +41,9 @@ public abstract class Register {
   /** if the register is editable or not */
   private final boolean editable;
 
+  /** on value set listenet */
+  private OnSetValueListener listener;
+
   /**
    * Unique constructor that initializes a new register.
    *
@@ -143,6 +146,15 @@ public abstract class Register {
   }
 
   /**
+   * This methods sets the on set value listener of the register.
+   *
+   * @param listener on set value listener
+   */
+  public void setOnSetValueListener(OnSetValueListener listener) {
+    this.listener = listener;
+  }
+
+  /**
    * This method sets the value of the register if the register is editable.
    *
    * @param value the new register value
@@ -151,6 +163,10 @@ public abstract class Register {
     if (this.editable) {
       this.value.set(value);
       this.update();
+    }
+    // fire on value set if possible
+    if (this.listener != null) {
+      this.listener.onValueSet(this.getNumber());
     }
   }
 
@@ -175,6 +191,18 @@ public abstract class Register {
   @Override
   public String toString() {
     return Colorize.blue(String.format("0x%08x", this.value));
+  }
+
+  /**
+   * Inner interface for on value set listening.
+   */
+  public interface OnSetValueListener {
+    /**
+     * Called when setValue method of register is called.
+     *
+     * @param number register number
+     */
+    void onValueSet(int number);
   }
 
 }
