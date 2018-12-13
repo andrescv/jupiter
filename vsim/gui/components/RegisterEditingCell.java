@@ -19,22 +19,12 @@ public final class RegisterEditingCell extends TableCell<Register, String> {
   private TextField textField;
 
   /**
-   * Creates a new register editing cell with a Tooltip.
-   */
-  public RegisterEditingCell() {
-    super();
-    Tooltip tt = new Tooltip();
-    tt.textProperty().bind(this.itemProperty().asString());
-    this.setTooltip(tt);
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
   public void startEdit() {
     Register reg = (Register)this.getTableRow().getItem();
-    if (!isEmpty() && reg.isEditable()) {
+    if (!this.isEmpty() && reg.isEditable()) {
       super.startEdit();
       this.createTextField();
       this.setText(null);
@@ -61,6 +51,7 @@ public final class RegisterEditingCell extends TableCell<Register, String> {
     super.updateItem(item, empty);
     if (empty) {
       this.setText(null);
+      this.setTooltip(null);
       this.setGraphic(null);
     } else {
       if (this.isEditing()) {
@@ -68,9 +59,12 @@ public final class RegisterEditingCell extends TableCell<Register, String> {
           this.textField.setText(this.getString());
         }
         this.setText(null);
+        this.setTooltip(null);
         this.setGraphic(textField);
       } else {
         this.setText(this.getString());
+        Tooltip tt = new Tooltip(this.getString());
+        this.setTooltip(tt);
         this.setGraphic(null);
       }
     }
