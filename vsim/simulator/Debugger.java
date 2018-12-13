@@ -38,6 +38,8 @@ import vsim.assembler.statements.Statement;
  */
 public final class Debugger {
 
+  /** simulator history */
+  private History history;
   /** a linked program to debug */
   private LinkedProgram program;
   /** a history of breakpoints */
@@ -63,6 +65,8 @@ public final class Debugger {
     // set program breakpoints
     for (Integer breakpoint: program.getBreakpoints())
       this.breakpoints.put(breakpoint, true);
+    // create history
+    this.history = new History();
   }
 
   /**
@@ -233,6 +237,8 @@ public final class Debugger {
         )
       );
     }
+    // save prev state
+    this.history.push();
     // execute instruction
     Globals.iset.get(stmt.getMnemonic()).execute(result);
     // reset breakpoint
@@ -245,7 +251,7 @@ public final class Debugger {
    * the simulator state.
    */
   public void backstep() {
-    // TODO
+    this.history.pop();
   }
 
   /**
@@ -254,15 +260,16 @@ public final class Debugger {
    */
   public void forward() {
     Statement stmt;
-    int pcVal = Globals.regfile.getProgramCounter();
     while ((stmt = this.program.next()) != null) {
       // get actual program counter
-      pcVal = Globals.regfile.getProgramCounter();
+      int pcVal = Globals.regfile.getProgramCounter();
       // breakpoint at this point ?
       if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
         this.breakpoints.put(pcVal, false);
         return;
       }
+      // save history
+      this.history.push();
       // execute instruction
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       // reset breakpoint
@@ -270,7 +277,7 @@ public final class Debugger {
         this.breakpoints.put(pcVal, true);
     }
     // error if no exit/exit2 ecall
-    String pc = String.format("0x%08x", pcVal);
+    String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
     Message.error("attempt to execute non-instruction at " + pc);
   }
 
@@ -307,7 +314,6 @@ public final class Debugger {
     // set program breakpoints
     for (Integer breakpoint: program.getBreakpoints())
       this.breakpoints.put(breakpoint, true);
-    System.gc();
   }
 
   /**
@@ -351,8 +357,7 @@ public final class Debugger {
    * This method resets the program and the state of the simulator.
    */
   public void reset() {
-    // TODO: fix this
-    Globals.resetState();
+    this.history.popAll();
     this.program.reset();
   }
 

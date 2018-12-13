@@ -112,6 +112,21 @@ public final class Memory {
   }
 
   /**
+   * This method stores a byte in memory at address given without checks.
+   *
+   * @param address address where to store the byte
+   * @param value the byte value
+   */
+  private void privStoreByte(int address, int value) {
+    this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+    // refresh memory cells
+    if (Settings.GUI) {
+      for (MemoryCell cell: this.cells)
+        cell.update();
+    }
+  }
+
+  /**
    * This method stores a half in memory at address given.
    *
    * @param address address where to store the half
@@ -320,6 +335,29 @@ public final class Memory {
   private void updateMemoryCells() {
     for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
       this.cells.get(j).setIntAddress(i);
+  }
+
+  /**
+   * This method gets the current state of the main memory.
+   *
+   * @return state of the main memory
+   */
+  public HashMap<Integer, Byte> getState() {
+    HashMap<Integer, Byte> state = new HashMap<Integer, Byte>();
+    for (Integer addr: this.memory.keySet())
+      state.put(addr, this.memory.get(addr));
+    return state;
+  }
+
+  /**
+   * This methods sets the state of the main memory.
+   *
+   * @param state state of the main memory
+   */
+  public void setState(HashMap<Integer, Byte> state) {
+    this.memory.clear();
+    for (Integer addr: state.keySet())
+      this.privStoreByte(addr, state.get(addr));
   }
 
   /**
