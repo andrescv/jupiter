@@ -162,11 +162,13 @@ public abstract class Register {
   public void setValue(int value) {
     if (this.editable) {
       this.value.set(value);
-      this.update();
-    }
-    // fire on value set if possible
-    if (this.listener != null) {
-      this.listener.onValueSet(this.getNumber());
+      // only update this if GUI mode
+      if (Settings.GUI)
+        this.update();
+      // fire on value set if possible
+      if (this.listener != null) {
+        this.listener.onValueSet(this.getNumber());
+      }
     }
   }
 
