@@ -205,7 +205,7 @@ public final class Debugger {
     int pcVal = Globals.regfile.getProgramCounter();
     String pc = String.format("0x%08x", pcVal);
     // no more statements
-    if (stmt == null) {
+    if (stmt == null && !Globals.EXIT) {
       Message.error("attempt to execute non-instruction at " + pc);
       return;
     }
@@ -277,8 +277,10 @@ public final class Debugger {
         this.breakpoints.put(pcVal, true);
     }
     // error if no exit/exit2 ecall
-    String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
-    Message.error("attempt to execute non-instruction at " + pc);
+    if (!Globals.EXIT) {
+      String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
+      Message.error("attempt to execute non-instruction at " + pc);
+    }
   }
 
   /**
@@ -357,6 +359,7 @@ public final class Debugger {
    * This method resets the program and the state of the simulator.
    */
   public void reset() {
+    Globals.EXIT = false;
     this.history.popAll();
     this.program.reset();
   }
