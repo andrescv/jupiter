@@ -31,6 +31,9 @@ import vsim.assembler.SymbolTable;
  */
 public final class Globals {
 
+  /** If user use the exit/exit2 ecall */
+  public static boolean EXIT = false;
+
   /** RISC-V (RV32) principal memory (RAM) */
   public static final Memory memory = Memory.ram;
 
@@ -73,6 +76,7 @@ public final class Globals {
    * This method reset the simulator state and global and local symbol tables
    */
   public static void reset() {
+    Globals.EXIT = false;
     Errors.clear();
     Globals.resetST();
     Globals.resetState();
