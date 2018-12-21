@@ -281,7 +281,7 @@ public final class Syscall {
   private static void exit() {
     IO.stdout.println();
     Message.log("exit(0)");
-    Globals.EXIT = true;
+    Globals.exit.set(true);
     if (!Settings.GUI)
       System.exit(0);
   }
@@ -391,7 +391,7 @@ public final class Syscall {
    */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
-    Globals.EXIT = true;
+    Globals.exit.set(true);
     IO.stdout.println();
     Message.log("exit(" + status + ")");
     if (!Settings.GUI)
