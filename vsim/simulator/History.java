@@ -59,7 +59,18 @@ public final class History {
    * This methods pops all the history saved.
    */
   public void popAll() {
-    while (this.pop());
+    if (this.memHist.size() > 0) {
+      // use the very first element
+      Globals.regfile.setProgramCounter(this.pcHist.get(0));
+      Globals.memory.setState(this.memHist.get(0));
+      Globals.regfile.setState(this.rviHist.get(0));
+      Globals.fregfile.setState(this.rvfHist.get(0));
+      // clear stacks
+      this.pcHist.clear();
+      this.memHist.clear();
+      this.rviHist.clear();
+      this.rvfHist.clear();
+    }
   }
 
 }
