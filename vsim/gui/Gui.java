@@ -41,7 +41,7 @@ public final class Gui extends Application {
     JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
     decorator.setCustomMaximize(true);
     // create scene
-    Scene scene = new Scene(decorator, 800, 600);
+    Scene scene = new Scene(decorator, 1024, 800);
     // add styles
     scene.getStylesheets().add(getClass().getResource("/resources/css/style.css").toExternalForm());
     scene.getStylesheets().add(Gui.MATERIAL);
