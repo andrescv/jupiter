@@ -25,6 +25,7 @@ import vsim.utils.Data;
 import java.util.Random;
 import vsim.utils.Message;
 import java.io.IOException;
+import vsim.simulator.Status;
 
 
 /**
@@ -281,7 +282,7 @@ public final class Syscall {
   private static void exit() {
     IO.stdout.println();
     Message.log("exit(0)");
-    Globals.exit.set(true);
+    Status.EXIT.set(true);
     if (!Settings.GUI)
       System.exit(0);
   }
@@ -391,7 +392,7 @@ public final class Syscall {
    */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
-    Globals.exit.set(true);
+    Status.EXIT.set(true);
     IO.stdout.println();
     Message.log("exit(" + status + ")");
     if (!Settings.GUI)
