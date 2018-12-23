@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.62" prefHeight="431.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
+<SplitPane dividerPositions="0.62" prefHeight="553.0" prefWidth="837.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
    <items>
-      <VBox alignment="CENTER" minWidth="450.0" prefHeight="263.0" prefWidth="578.0">
+      <VBox alignment="CENTER" minWidth="520.0" prefHeight="263.0" prefWidth="520.0">
          <children>
             <HBox id="runBtns" alignment="CENTER">
                <children>
@@ -22,6 +22,15 @@
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../img/icons/goBtn.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton id="stopBtn" fx:id="stopBtn" text="Stop">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/icons/stopBtn.png" />
                            </image>
                         </ImageView>
                      </graphic>
