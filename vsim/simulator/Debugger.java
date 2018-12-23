@@ -237,10 +237,12 @@ public final class Debugger {
         )
       );
     }
-    // save prev state
-    this.history.push();
+    // save current pc to history
+    this.history.pushPCAndHeap();
     // execute instruction
     Globals.iset.get(stmt.getMnemonic()).execute(result);
+    // save diff between prev executed state and current executed states
+    this.history.pushState();
     // reset breakpoint
     if (this.breakpoints.containsKey(pcVal))
       this.breakpoints.put(pcVal, true);
@@ -270,10 +272,12 @@ public final class Debugger {
         this.breakpoints.put(pcVal, false);
         return;
       }
-      // save history
-      this.history.push();
+      // save current pc to history
+      this.history.pushPCAndHeap();
       // execute instruction
       Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
+      // save diff between prev executed state and current executed states
+      this.history.pushState();
       // reset breakpoint
       if (this.breakpoints.containsKey(pcVal))
         this.breakpoints.put(pcVal, true);

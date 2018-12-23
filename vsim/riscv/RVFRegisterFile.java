@@ -47,6 +47,9 @@ public final class RVFRegisterFile {
   /** register file dictionary */
   private HashMap<String, Register> rf;
 
+  /** current register file diff */
+  private HashMap<String, Integer> diff;
+
   /**
    * Unique constructor that initializes a newly RVFRegisterFile object.
    *
@@ -55,6 +58,7 @@ public final class RVFRegisterFile {
    */
   private RVFRegisterFile() {
     this.rf = new HashMap<String, Register>();
+    this.diff = new HashMap<String, Integer>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // all registers are editable
@@ -152,8 +156,12 @@ public final class RVFRegisterFile {
    */
   public void setRegister(int number, float value) {
     Register reg = this.rf.get("f" + number);
-    if (reg != null)
-      reg.setValue(Float.floatToIntBits(value));
+    if (reg != null) {
+      int intVal = Float.floatToIntBits(value);
+      if (intVal != reg.getValue())
+        this.diff.put("f" + number, reg.getValue());
+      reg.setValue(intVal);
+    }
   }
 
   /**
@@ -164,8 +172,12 @@ public final class RVFRegisterFile {
    */
   public void setRegister(String name, float value) {
     Register reg = this.rf.get(name);
-    if (reg != null)
-      reg.setValue(Float.floatToIntBits(value));
+    if (reg != null) {
+      int intVal = Float.floatToIntBits(value);
+      if (intVal != reg.getValue())
+        this.diff.put("f" + reg.getNumber(), reg.getValue());
+      reg.setValue(intVal);
+    }
   }
 
   /**
@@ -176,8 +188,11 @@ public final class RVFRegisterFile {
    */
   public void setRegisterInt(int number, int value) {
     Register reg = this.rf.get("f" + number);
-    if (reg != null)
+    if (reg != null) {
+      if (value != reg.getValue())
+        this.diff.put("f" + number, reg.getValue());
       reg.setValue(value);
+    }
   }
 
   /**
@@ -188,6 +203,8 @@ public final class RVFRegisterFile {
     for (int i = 0; i < MNEMONICS.length; i++) {
       this.rf.get("f" + i).reset();
     }
+    // reset current diff
+    this.diff.clear();
   }
 
   /**
@@ -234,25 +251,24 @@ public final class RVFRegisterFile {
   }
 
   /**
-   * This method gets the current state of the RVF register file.
+   * This method gets the current diff of the RVF register file.
    *
-   * @return RVF register file state
+   * @return RVF register file diff
    */
-  public HashMap<String, Integer> getState() {
-    HashMap<String, Integer> state = new HashMap<String, Integer>();
-    for (int i = 0; i < MNEMONICS.length; i++)
-      state.put("f" + i, this.rf.get("f" + i).getValue());
-    return state;
+  public HashMap<String, Integer> getDiff() {
+    HashMap<String, Integer> diff = this.diff;
+    this.diff = new HashMap<String, Integer>();
+    return diff;
   }
 
   /**
-   * This methods sets the state of the RVF register file.
+   * This methods restores the RVF register file given a diff between states.
    *
-   * @param state state of the rvf register file
+   * @param diff diff between states of the rvf register file
    */
-  public void setState(HashMap<String, Integer> state) {
-    for (String key: state.keySet())
-      this.rf.get(key).setValue(state.get(key));
+  public void restore(HashMap<String, Integer> diff) {
+    for (String key: diff.keySet())
+      this.rf.get(key).setValue(diff.get(key));
   }
 
   /**
