@@ -24,16 +24,11 @@ import vsim.riscv.InstructionSet;
 import vsim.riscv.RVIRegisterFile;
 import vsim.riscv.RVFRegisterFile;
 import vsim.assembler.SymbolTable;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 
 /**
  * The Globals class contains a collection of globally-available data structures.
  */
 public final class Globals {
-
-  /** If user use the exit/exit2 ecall */
-  public static final AtomicBoolean exit = new AtomicBoolean(false);
 
   /** RISC-V (RV32) principal memory (RAM) */
   public static final Memory memory = Memory.ram;
@@ -77,7 +72,6 @@ public final class Globals {
    * This method reset the simulator state and global and local symbol tables
    */
   public static void reset() {
-    Globals.exit.set(false);
     Errors.clear();
     Globals.resetST();
     Globals.resetState();
