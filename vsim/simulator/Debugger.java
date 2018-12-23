@@ -199,53 +199,67 @@ public final class Debugger {
   /**
    * This method tries to step the program by one statement and pretty prints
    * debug information.
+   *
+   * @param goStep if its a go step or a normal step
+   * @return true if could step the program, false otherwise
    */
-  public void step() {
+  public boolean step(boolean goStep) {
     Statement stmt = program.next();
     int pcVal = Globals.regfile.getProgramCounter();
     String pc = String.format("0x%08x", pcVal);
-    // no more statements
-    if (stmt == null && !Globals.exit.get()) {
+    if (stmt != null) {
+      if (goStep) {
+        // breakpoint at this point ?
+        if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
+          this.breakpoints.put(pcVal, false);
+          return true;
+        }
+      }
+      // get statement machine code
+      MachineCode result = stmt.result();
+      // display console info (CLI mode only)
+      if (!Settings.GUI && !goStep) {
+        // print debugging info
+        String space = "";
+        String source = stmt.getDebugInfo().getSource();
+        // calculate space (pretty print)
+        for (int j = 0; j < (this.space - source.length()); j++)
+          space += " ";
+        // format all debugging info
+        IO.stdout.println(
+          String.format(
+            "FROM: %s",
+            Colorize.yellow(stmt.getDebugInfo().getFilename())
+          )
+        );
+        IO.stdout.println(
+          String.format(
+            "PC [%s] CODE:%s    %s %s» %s",
+            Colorize.cyan(pc),
+            result.toString(),
+            Colorize.purple(source),
+            space,
+            Globals.iset.get(stmt.getMnemonic()).disassemble(result)
+          )
+        );
+      }
+      // save current pc to history
+      this.history.pushPCAndHeap();
+      // execute instruction
+      Globals.iset.get(stmt.getMnemonic()).execute(result);
+      // save diff between prev executed state and current executed states
+      this.history.pushState();
+      // reset breakpoint
+      if (this.breakpoints.containsKey(pcVal))
+        this.breakpoints.put(pcVal, true);
+      return true;
+    }
+    // error if no exit/exit2 ecall
+    if (!Status.EXIT.get()) {
+      Status.EXIT.set(true);
       Message.error("attempt to execute non-instruction at " + pc);
-      return;
     }
-    // get statement machine code
-    MachineCode result = stmt.result();
-    // display console info (CLI mode only)
-    if (!Settings.GUI) {
-      // print debugging info
-      String space = "";
-      String source = stmt.getDebugInfo().getSource();
-      // calculate space (pretty print)
-      for (int j = 0; j < (this.space - source.length()); j++)
-        space += " ";
-      // format all debugging info
-      IO.stdout.println(
-        String.format(
-          "FROM: %s",
-          Colorize.yellow(stmt.getDebugInfo().getFilename())
-        )
-      );
-      IO.stdout.println(
-        String.format(
-          "PC [%s] CODE:%s    %s %s» %s",
-          Colorize.cyan(pc),
-          result.toString(),
-          Colorize.purple(source),
-          space,
-          Globals.iset.get(stmt.getMnemonic()).disassemble(result)
-        )
-      );
-    }
-    // save current pc to history
-    this.history.pushPCAndHeap();
-    // execute instruction
-    Globals.iset.get(stmt.getMnemonic()).execute(result);
-    // save diff between prev executed state and current executed states
-    this.history.pushState();
-    // reset breakpoint
-    if (this.breakpoints.containsKey(pcVal))
-      this.breakpoints.put(pcVal, true);
+    return false;
   }
 
   /**
@@ -260,33 +274,8 @@ public final class Debugger {
    * This method continues the program execution until a breakpoint or
    * no more available statements are found.
    */
-  public void forward() {
-    while (!Globals.exit.get()) {
-      Statement stmt = this.program.next();
-      if (stmt == null)
-        break;
-      // get actual program counter
-      int pcVal = Globals.regfile.getProgramCounter();
-      // breakpoint at this point ?
-      if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
-        this.breakpoints.put(pcVal, false);
-        return;
-      }
-      // save current pc to history
-      this.history.pushPCAndHeap();
-      // execute instruction
-      Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
-      // save diff between prev executed state and current executed states
-      this.history.pushState();
-      // reset breakpoint
-      if (this.breakpoints.containsKey(pcVal))
-        this.breakpoints.put(pcVal, true);
-    }
-    // error if no exit/exit2 ecall
-    if (!Globals.exit.get()) {
-      String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
-      Message.error("attempt to execute non-instruction at " + pc);
-    }
+  public void go() {
+    while (this.step(true));
   }
 
   /**
@@ -365,7 +354,7 @@ public final class Debugger {
    * This method resets the program and the state of the simulator.
    */
   public void reset() {
-    Globals.exit.set(false);
+    Status.reset();
     this.history.popAll();
     this.program.reset();
   }
@@ -444,7 +433,7 @@ public final class Debugger {
     else if (args[0].equals("step") || args[0].equals("s")){
       if (args.length != 1)
         Message.warning("step command does not expect any argument (ignoring)");
-      this.step();
+      this.step(false);
     }
     // backstep
     else if (args[0].equals("backstep") || args[0].equals("b")) {
@@ -456,7 +445,7 @@ public final class Debugger {
     else if (args[0].equals("continue")  || args[0].equals("c")) {
       if (args.length != 1)
         Message.warning("continue command does not expect any argument (ignoring)");
-      this.forward();
+      this.go();
     }
     // breakpoint
     else if (args[0].equals("breakpoint") || args[0].equals("b")) {
