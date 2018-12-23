@@ -1,6 +1,7 @@
 package vsim.gui.components;
 
 import javafx.fxml.FXML;
+import vsim.utils.Message;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.stage.Modality;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.application.Platform;
 import javafx.scene.input.KeyEvent;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
@@ -106,13 +108,26 @@ public final class InputDialog {
    * @return user input text
    */
   public String showAndWait() {
-    this.stage.showAndWait();
-    String data = "";
-    if (this.enterPressed)
-      data = this.text.getText();
-    this.text.setText("");
-    this.enterPressed = false;
-    return data;
+    final StringBuffer data = new StringBuffer();
+    Platform.runLater(() -> {
+      this.stage.showAndWait();
+      synchronized (data) {
+        if (this.enterPressed)
+          data.append(this.text.getText());
+        this.text.setText("");
+        this.enterPressed = false;
+        data.notify();
+      }
+    });
+    synchronized (data) {
+      try {
+        data.wait();
+        return data.toString();
+      } catch (InterruptedException e) {
+        Message.warning("could not get input");
+        return "";
+      }
+    }
   }
 
 }
