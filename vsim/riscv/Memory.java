@@ -44,6 +44,9 @@ public final class Memory {
   /** all allocated bytes */
   private HashMap<Integer, Byte> memory;
 
+  /** current memory diff */
+  private HashMap<Integer, Byte> diff;
+
   /** memory cell list */
   private ObservableList<MemoryCell> cells;
 
@@ -55,6 +58,7 @@ public final class Memory {
    */
   private Memory() {
     this.memory = new HashMap<Integer, Byte>();
+    this.diff = new HashMap<Integer, Byte>();
     // create initial memory cells
     this.cells = FXCollections.observableArrayList();
     for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
@@ -102,8 +106,12 @@ public final class Memory {
    * @param value the byte value
    */
   public void storeByte(int address, int value) {
-    if (Memory.checkStore(address))
-      this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+    if (Memory.checkStore(address)) {
+      if (value != 0)
+        this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+      else
+        this.memory.remove(address);
+    }
     // refresh memory cells
     if (Settings.GUI) {
       for (MemoryCell cell: this.cells)
@@ -118,7 +126,10 @@ public final class Memory {
    * @param value the byte value
    */
   private void privStoreByte(int address, int value) {
-    this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+    if (value != 0)
+      this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+    else
+      this.memory.remove(address);
     // refresh memory cells
     if (Settings.GUI) {
       for (MemoryCell cell: this.cells)
@@ -338,26 +349,42 @@ public final class Memory {
   }
 
   /**
-   * This method gets the current state of the main memory.
+   *  This method returns the current heap address.
    *
-   * @return state of the main memory
+   * @return current heap address
    */
-  public HashMap<Integer, Byte> getState() {
-    HashMap<Integer, Byte> state = new HashMap<Integer, Byte>();
-    for (Integer addr: this.memory.keySet())
-      state.put(addr, this.memory.get(addr));
-    return state;
+  public int getHeapPointer() {
+    return MemorySegments.HEAP_SEGMENT;
   }
 
   /**
-   * This methods sets the state of the main memory.
+   * This method restores the heap segment to a given value.
    *
-   * @param state state of the main memory
+   * @param value the heap segment address value to use for restore
    */
-  public void setState(HashMap<Integer, Byte> state) {
-    this.memory.clear();
-    for (Integer addr: state.keySet())
-      this.privStoreByte(addr, state.get(addr));
+  public void restoreHeap(int value) {
+    MemorySegments.HEAP_SEGMENT = value;
+  }
+
+  /**
+   * This method gets the current diff of the main memory.
+   *
+   * @return main memory diff
+   */
+  public HashMap<Integer, Byte> getDiff() {
+    HashMap<Integer, Byte> diff = this.diff;
+    this.diff = new HashMap<Integer, Byte>();
+    return diff;
+  }
+
+  /**
+   * This methods restores the main memory given a diff between states.
+   *
+   * @param diff diff between states of the main memory
+   */
+  public void restore(HashMap<Integer, Byte> diff) {
+    for (Integer key: diff.keySet())
+      this.privStoreByte(key, diff.get(key));
   }
 
   /**

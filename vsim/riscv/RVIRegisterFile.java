@@ -51,6 +51,9 @@ public final class RVIRegisterFile {
   /** program counter register */
   private Register pc;
 
+  /** current register file diff */
+  private HashMap<String, Integer> diff;
+
   /**
    * Unique constructor that initializes a newly RVIRegisterFile object.
    *
@@ -59,6 +62,7 @@ public final class RVIRegisterFile {
    */
   private RVIRegisterFile() {
     this.rf = new HashMap<String, Register>();
+    this.diff = new HashMap<String, Integer>();
     // add 32 general purpose registers
     for (int i = 0; i < MNEMONICS.length; i++) {
       // note: only "zero" register is not editable
@@ -155,8 +159,11 @@ public final class RVIRegisterFile {
    */
   public void setRegister(int number, int value) {
     Register reg = this.rf.get("x" + number);
-    if (reg != null)
+    if (reg != null) {
+      if (value != reg.getValue())
+        this.diff.put("x" + number, reg.getValue());
       reg.setValue(value);
+    }
   }
 
   /**
@@ -167,8 +174,11 @@ public final class RVIRegisterFile {
    */
   public void setRegister(String name, int value) {
     Register reg = this.rf.get(name);
-    if (reg != null)
+    if (reg != null) {
+      if (value != reg.getValue())
+        this.diff.put("x" + reg.getNumber(), reg.getValue());
       reg.setValue(value);
+    }
   }
 
   /**
@@ -201,6 +211,8 @@ public final class RVIRegisterFile {
     // set default value for stack and global pointer
     this.rf.get("sp").setValue(MemorySegments.STACK_POINTER);
     this.rf.get("gp").setValue(MemorySegments.HEAP_SEGMENT);
+    // reset diff
+    this.diff.clear();
   }
 
   /**
@@ -263,25 +275,24 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method gets the current state of the RVI register file.
+   * This method gets the current diff of the RVI register file.
    *
-   * @return RVI register file state
+   * @return RVI register file diff
    */
-  public HashMap<String, Integer> getState() {
-    HashMap<String, Integer> state = new HashMap<String, Integer>();
-    for (int i = 0; i < MNEMONICS.length; i++)
-      state.put("x" + i, this.rf.get("x" + i).getValue());
-    return state;
+  public HashMap<String, Integer> getDiff() {
+    HashMap<String, Integer> diff = this.diff;
+    this.diff = new HashMap<String, Integer>();
+    return diff;
   }
 
   /**
-   * This methods sets the state of the RVI register file.
+   * This methods restores the RVF register file given a diff between states.
    *
-   * @param state state of the rvi register file
+   * @param diff diff between states of the rvf register file
    */
-  public void setState(HashMap<String, Integer> state) {
-    for (String key: state.keySet())
-      this.rf.get(key).setValue(state.get(key));
+  public void restore(HashMap<String, Integer> diff) {
+    for (String key: diff.keySet())
+      this.rf.get(key).setValue(diff.get(key));
   }
 
   /**
