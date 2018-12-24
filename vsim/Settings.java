@@ -40,6 +40,9 @@ public final class Settings {
   /** display mode of memory cell */
   public static int DISP_MEM_CELL = 0;
 
+  /** history length (backstep) */
+  public static int HIST_SIZE = 2000;
+
   /** user directory */
   public static File DIR = new File(System.getProperty("user.dir"));
 
