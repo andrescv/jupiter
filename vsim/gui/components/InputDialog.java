@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import java.io.IOException;
 import javafx.stage.Modality;
+import vsim.simulator.Status;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -72,8 +73,6 @@ public final class InputDialog {
         if (InputDialog.ESCAPE.match(e))
           this.cancel();
       });
-      // request input focus
-      this.text.requestFocus();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -108,25 +107,39 @@ public final class InputDialog {
    * @return user input text
    */
   public String showAndWait() {
-    final StringBuffer data = new StringBuffer();
-    Platform.runLater(() -> {
-      this.stage.showAndWait();
+    if (Status.RUNNING.get()) {
+      final StringBuffer data = new StringBuffer();
+      Platform.runLater(() -> {
+        // request input focus
+        this.text.requestFocus();
+        this.stage.showAndWait();
+        synchronized (data) {
+          if (this.enterPressed)
+            data.append(this.text.getText());
+          this.text.setText("");
+          this.enterPressed = false;
+          data.notify();
+        }
+      });
       synchronized (data) {
-        if (this.enterPressed)
-          data.append(this.text.getText());
-        this.text.setText("");
-        this.enterPressed = false;
-        data.notify();
+        try {
+          data.wait();
+          return data.toString();
+        } catch (InterruptedException e) {
+          Message.warning("could not get input");
+          return "";
+        }
       }
-    });
-    synchronized (data) {
-      try {
-        data.wait();
-        return data.toString();
-      } catch (InterruptedException e) {
-        Message.warning("could not get input");
-        return "";
-      }
+    } else {
+      String data = "";
+      // request input focus
+      this.text.requestFocus();
+      this.stage.showAndWait();
+      if (this.enterPressed)
+        data = this.text.getText();
+      this.text.setText("");
+      this.enterPressed = false;
+      return data;
     }
   }
 
