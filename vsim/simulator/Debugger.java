@@ -67,6 +67,8 @@ public final class Debugger {
       this.breakpoints.put(breakpoint, true);
     // create history
     this.history = new History();
+    // take a snapshot of the memory
+    Globals.memory.snapshot();
   }
 
   /**
@@ -355,7 +357,8 @@ public final class Debugger {
    */
   public void reset() {
     Status.reset();
-    this.history.popAll();
+    Globals.resetState();
+    this.history.reset();
     this.program.reset();
   }
 
