@@ -44,6 +44,12 @@ public final class Memory {
   /** all allocated bytes */
   private HashMap<Integer, Byte> memory;
 
+  /** memory snapshot */
+  private HashMap<Integer, Byte> snap;
+
+  /** heap snapshot */
+  private int heapSnap;
+
   /** current memory diff */
   private HashMap<Integer, Byte> diff;
 
@@ -59,6 +65,7 @@ public final class Memory {
   private Memory() {
     this.memory = new HashMap<Integer, Byte>();
     this.diff = new HashMap<Integer, Byte>();
+    this.heapSnap = -1;
     // create initial memory cells
     this.cells = FXCollections.observableArrayList();
     for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
@@ -69,7 +76,27 @@ public final class Memory {
    * This method clears all the allocated bytes of the memory.
    */
   public void reset() {
-    this.memory.clear();
+    // reset memory
+    if (this.snap != null)
+      this.memory = this.snap;
+    else
+      this.memory.clear();
+    // reset heap segment pointer
+    MemorySegments.HEAP_SEGMENT = this.heapSnap;
+    // refresh memory cells
+    if (Settings.GUI) {
+      for (MemoryCell cell: this.cells)
+        cell.update();
+    }
+  }
+
+  /**
+   * Saves a memory and heap snapshot to reset later.
+   */
+  @SuppressWarnings("unchecked")
+  public void snapshot() {
+    this.snap = (HashMap<Integer, Byte>)this.memory.clone();
+    this.heapSnap = MemorySegments.HEAP_SEGMENT;
   }
 
   /**
