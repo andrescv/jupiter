@@ -12,9 +12,11 @@ import java.io.IOException;
 import vsim.riscv.Register;
 import java.util.ArrayList;
 import javafx.util.Callback;
+import vsim.simulator.Status;
 import vsim.riscv.MemoryCell;
 import java.io.BufferedWriter;
 import javafx.css.PseudoClass;
+import javafx.concurrent.Task;
 import vsim.simulator.Debugger;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
@@ -26,6 +28,7 @@ import vsim.riscv.MemorySegments;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import vsim.gui.components.InfoCell;
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableCell;
@@ -55,6 +58,8 @@ public class SimulatorController {
 
   /** Simulator go button */
   @FXML protected JFXButton goBtn;
+  /** Simulator stop button */
+  @FXML protected JFXButton stopBtn;
   /** Simulator step button */
   @FXML protected JFXButton stepBtn;
   /** Simulator backstep button */
@@ -138,6 +143,9 @@ public class SimulatorController {
   /** Last register modified */
   private Register lastReg;
 
+  /** current go task */
+  private Task<Boolean> goTask;
+
   /**
    * Initialize simulator controller.
    *
@@ -159,12 +167,14 @@ public class SimulatorController {
     Globals.reset();
     this.debugger = null;
     this.textTable.getItems().clear();
+    Status.READY.set(false);
     ArrayList<File> files = new ArrayList<File>();
     if (Cmd.getFilesInDir(files)) {
       LinkedProgram program = Linker.link(Assembler.assemble(files));
       if (program != null) {
         program.reset();
         this.debugger = new Debugger(program);
+        Status.READY.set(true);
         ObservableList<InfoStatement> stmts = program.getInfoStatements();
         for (InfoStatement stmt: stmts)
           stmt.breakpointProperty().addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
@@ -185,17 +195,39 @@ public class SimulatorController {
   }
 
   /**
-   * Go step control, runs all the program.
+   * Go simulator control, runs all the program.
    */
   protected void go() {
-    this.debugger.forward();
+    this.goTask = new Task<Boolean>() {
+      @Override
+      protected Boolean call() throws Exception {
+        Status.RUNNING.set(true);
+        refreshTables();
+        while (!this.isCancelled() && debugger.step(true));
+        Status.RUNNING.set(false);
+        refreshTables();
+        if (this.isCancelled())
+          return false;
+        return true;
+      }
+    };
+    Thread th = new Thread(this.goTask);
+    th.setDaemon(true);
+    th.start();
+  }
+
+  /**
+   * Stop simulator control, stops program execution.
+   */
+  protected void stop() {
+    this.goTask.cancel();
   }
 
   /**
    * Step flow control, advances the simulator by 1 step.
    */
   protected void step() {
-    this.debugger.step();
+    this.debugger.step(false);
   }
 
   /**
@@ -266,7 +298,7 @@ public class SimulatorController {
       this.debugger.breakpoint(address);
     else
       this.debugger.delete(address);
-    this.textTable.refresh();
+    Platform.runLater(() -> this.textTable.refresh());
   }
 
   /**
@@ -274,10 +306,17 @@ public class SimulatorController {
    */
   private void initButtons() {
     this.goBtn.setOnAction(e -> this.go());
+    this.goBtn.disableProperty().bind(Bindings.or(Status.EXIT, Status.RUNNING));
+    this.stopBtn.setOnAction(e -> this.stop());
+    this.stopBtn.disableProperty().bind(Bindings.not(Status.RUNNING));
     this.stepBtn.setOnAction(e -> this.step());
+    this.stepBtn.disableProperty().bind(Bindings.or(Status.EXIT, Status.RUNNING));
     this.backstepBtn.setOnAction(e -> this.backstep());
+    this.backstepBtn.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.EXIT, Status.RUNNING)));
     this.resetBtn.setOnAction(e -> this.reset());
+    this.resetBtn.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EMPTY));
     this.dumpBtn.setOnAction(e -> this.dump());
+    this.dumpBtn.disableProperty().bind(Status.RUNNING);
   }
 
   /**
@@ -288,21 +327,18 @@ public class SimulatorController {
     this.textTable.getStyleClass().add("text-table");
     // PC current row
     Globals.regfile.programCounterProperty().addListener(e -> {
-      // refresh table to fire updateItem in table row
-      this.textTable.refresh();
-      int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / LENGTH;
-      int row = Math.min(pc, this.textTable.getItems().size() - 1);
-      if (pc >= this.textTable.getItems().size()) {
-        this.goBtn.setDisable(true);
-        this.stepBtn.setDisable(true);
-      } else {
-        this.goBtn.setDisable(false);
-        this.stepBtn.setDisable(false);
+      if (!Status.RUNNING.get()) {
+        Platform.runLater(() -> {
+          // refresh table to fire updateItem in table row
+          this.textTable.refresh();
+          int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / LENGTH;
+          int row = Math.min(pc, this.textTable.getItems().size() - 1);
+          int first = this.vflow.getFirstVisibleCell().getIndex();
+          int last = this.vflow.getLastVisibleCell().getIndex();
+          if (row >= last || row <= first)
+            this.textTable.scrollTo(row);
+        });
       }
-      int first = this.vflow.getFirstVisibleCell().getIndex();
-      int last = this.vflow.getLastVisibleCell().getIndex();
-      if (row >= last || row <= first)
-        this.textTable.scrollTo(row);
     });
     // apply style to row with address = current PC
     PseudoClass currentPc = PseudoClass.getPseudoClass("pc");
@@ -311,7 +347,7 @@ public class SimulatorController {
         @Override
         public void updateItem(InfoStatement stmt, boolean isEmpty) {
           super.updateItem(stmt, isEmpty);
-          if (isEmpty || stmt == null) {
+          if (isEmpty || stmt == null || Status.RUNNING.get()) {
             this.pseudoClassStateChanged(currentPc, false);
             return;
           }
@@ -445,13 +481,17 @@ public class SimulatorController {
       reg.setOnSetValueListener(new Register.OnSetValueListener() {
         @Override
         public void onValueSet(int number) {
-          hardware.getSelectionModel().select(rviTab);
           lastReg = reg;
-          int first = rviVFlow.getFirstVisibleCell().getIndex();
-          int last = rviVFlow.getLastVisibleCell().getIndex();
-          if (number >= last || number <= first)
-            rviTable.scrollTo(number);
-          rviTable.refresh();
+          if (!Status.RUNNING.get()) {
+            Platform.runLater(() -> {
+              hardware.getSelectionModel().select(rviTab);
+              int first = rviVFlow.getFirstVisibleCell().getIndex();
+              int last = rviVFlow.getLastVisibleCell().getIndex();
+              if (number >= last || number <= first)
+                rviTable.scrollTo(number);
+              rviTable.refresh();
+            });
+          }
         }
       });
     }
@@ -461,7 +501,7 @@ public class SimulatorController {
         @Override
         public void updateItem(Register reg, boolean isEmpty) {
           super.updateItem(reg, isEmpty);
-          if (isEmpty || reg == null || lastReg == null) {
+          if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
             this.pseudoClassStateChanged(changed, false);
             return;
           }
@@ -485,13 +525,17 @@ public class SimulatorController {
       reg.setOnSetValueListener(new Register.OnSetValueListener() {
         @Override
         public void onValueSet(int number) {
-          hardware.getSelectionModel().select(rvfTab);
           lastReg = reg;
-          int first = rvfVFlow.getFirstVisibleCell().getIndex();
-          int last = rvfVFlow.getLastVisibleCell().getIndex();
-          if (number >= last || number <= first)
-            rvfTable.scrollTo(number);
-          rvfTable.refresh();
+          if (!Status.RUNNING.get()) {
+            Platform.runLater(() -> {
+              hardware.getSelectionModel().select(rvfTab);
+              int first = rvfVFlow.getFirstVisibleCell().getIndex();
+              int last = rvfVFlow.getLastVisibleCell().getIndex();
+              if (number >= last || number <= first)
+                rvfTable.scrollTo(number);
+              rvfTable.refresh();
+            });
+          }
         }
       });
     }
@@ -500,7 +544,7 @@ public class SimulatorController {
         @Override
         public void updateItem(Register reg, boolean isEmpty) {
           super.updateItem(reg, isEmpty);
-          if (isEmpty || reg == null || lastReg == null) {
+          if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
             this.pseudoClassStateChanged(changed, false);
             return;
           }
@@ -564,6 +608,18 @@ public class SimulatorController {
           rvfTable.getColumns().addAll(rvfMnemonic, rvfNumber, rvfValue);
         }
       }
+    });
+  }
+
+  /**
+   * Refreshes all simulator tables views.
+   */
+  private void refreshTables() {
+    Platform.runLater(() -> {
+      this.textTable.refresh();
+      this.rviTable.refresh();
+      this.rvfTable.refresh();
+      this.memTable.refresh();
     });
   }
 
@@ -662,7 +718,7 @@ public class SimulatorController {
       Message.warning("invalid memory cell value: " + newValue);
     }
     // always refresh table
-    this.memTable.refresh();
+    Platform.runLater(() -> this.memTable.refresh());
   }
 
   /**
@@ -689,7 +745,7 @@ public class SimulatorController {
       Message.warning("invalid register value: " + newValue);
     }
     // always refresh table
-    this.rviTable.refresh();
+    Platform.runLater(() -> this.rviTable.refresh());
   }
 
   /**
@@ -712,7 +768,7 @@ public class SimulatorController {
     } catch (Exception e) {
       Message.warning("invalid register value: " + newValue);
     }
-    this.rvfTable.refresh();
+    Platform.runLater(() -> this.rvfTable.refresh());
   }
 
   /**
