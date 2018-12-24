@@ -2,6 +2,7 @@ package vsim.gui.controllers;
 
 import javafx.fxml.FXML;
 import javafx.event.Event;
+import vsim.simulator.Status;
 import javafx.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
@@ -101,13 +102,15 @@ public class MenuBarController {
     this.selectAll.disableProperty().bind(fileCond);
     this.findInBuffer.disableProperty().bind(fileCond);
     this.replaceInBuffer.disableProperty().bind(fileCond);
+    // dont allow assemble the program again
+    this.assemble.disableProperty().bind(Status.READY);
     // disable sim flow control if the editor tab is selected
     ReadOnlyBooleanProperty editorSelected = this.mainController.editorTab.selectedProperty();
-    this.go.disableProperty().bind(editorSelected);
-    this.step.disableProperty().bind(editorSelected);
-    this.backstep.disableProperty().bind(editorSelected);
-    this.reset.disableProperty().bind(editorSelected);
-    this.clearBreakpoints.disableProperty().bind(editorSelected);
+    this.go.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    this.step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    this.backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
+    this.reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, editorSelected)));
+    this.clearBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
   }
 
   /*-------------------------------------------------------*

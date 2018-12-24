@@ -1,15 +1,18 @@
 package vsim.gui.controllers;
 
+import vsim.Globals;
 import vsim.utils.IO;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import java.io.PrintStream;
+import vsim.simulator.Status;
 import javafx.scene.image.Image;
 import javafx.scene.control.Tab;
 import javafx.scene.input.Clipboard;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.beans.binding.Bindings;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.ContextMenu;
 import vsim.gui.utils.CustomOutputStream;
@@ -49,6 +52,13 @@ public class MainController {
   public void initialize(Stage stage) {
     this.stage = stage;
     this.initConsole();
+    // disable simulation tab if project is not ready
+    this.simTab.disableProperty().bind(Bindings.not(Status.READY));
+    // set ready to false whenever the tab being selected is the editor tab
+    this.main.getSelectionModel().selectedItemProperty().addListener((e, oldTab, newTab) -> {
+      if (newTab == this.editorTab)
+        Status.READY.set(false);
+    });
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
