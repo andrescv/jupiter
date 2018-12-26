@@ -11,6 +11,9 @@ public final class Status {
   /** if simulation is running */
   public static final SimpleBooleanProperty RUNNING = new SimpleBooleanProperty(false);
 
+  /** if simulation is stopped by the user */
+  public static final SimpleBooleanProperty STOPPED = new SimpleBooleanProperty(false);
+
   /** if simulation executes an exit/exit2 ecall */
   public static final SimpleBooleanProperty EXIT = new SimpleBooleanProperty(false);
 
@@ -24,6 +27,7 @@ public final class Status {
     Status.RUNNING.set(false);
     Status.EXIT.set(false);
     Status.EMPTY.set(true);
+    Status.STOPPED.set(false);
   }
 
 }
