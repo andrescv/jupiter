@@ -164,6 +164,7 @@ public class SimulatorController {
    */
   protected void assemble() {
     // reset simulator state
+    Status.reset();
     Globals.reset();
     this.debugger = null;
     this.textTable.getItems().clear();
@@ -198,6 +199,7 @@ public class SimulatorController {
    * Go simulator control, runs all the program.
    */
   protected void go() {
+    Status.STOPPED.set(false);
     this.goTask = new Task<Boolean>() {
       @Override
       protected Boolean call() throws Exception {
@@ -220,6 +222,7 @@ public class SimulatorController {
    * Stop simulator control, stops program execution.
    */
   protected void stop() {
+    Status.STOPPED.set(true);
     this.goTask.cancel();
   }
 
@@ -227,7 +230,16 @@ public class SimulatorController {
    * Step flow control, advances the simulator by 1 step.
    */
   protected void step() {
-    this.debugger.step(false);
+    Status.STOPPED.set(false);
+    Thread th = new Thread(new Task<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        debugger.step(false);
+        return true;
+      }
+    });
+    th.setDaemon(true);
+    th.start();
   }
 
   /**
