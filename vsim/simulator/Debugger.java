@@ -493,18 +493,12 @@ public final class Debugger {
   public void run() {
     while (true) {
       Cmd.prompt();
-      try {
-        // read a line from stdin
-        String line = IO.stdin.readLine();
-        if (line == null) { IO.stdout.println(); continue; }
-        if (line.equals("")) continue;
-        // interpret line
-        this.interpret(line.trim().toLowerCase().split(" "));
-      } catch (IOException e) {
-        Message.panic("input could not be read");
-      } catch (Exception e) {
-        Message.panic("unexpected exception");
-      }
+      // read a line from stdin
+      String line = IO.readString(Integer.MAX_VALUE);
+      if (line == null) { IO.stdout.println(); continue; }
+      if (line.equals("")) continue;
+      // interpret line
+      this.interpret(line.trim().toLowerCase().split(" "));
     }
   }
 
