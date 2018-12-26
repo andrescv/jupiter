@@ -205,7 +205,7 @@ public final class Debugger {
    * @param goStep if its a go step or a normal step
    * @return true if could step the program, false otherwise
    */
-  public boolean step(boolean goStep) {
+  public synchronized boolean step(boolean goStep) {
     Statement stmt = program.next();
     int pcVal = Globals.regfile.getProgramCounter();
     String pc = String.format("0x%08x", pcVal);
