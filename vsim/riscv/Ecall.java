@@ -29,11 +29,11 @@ import vsim.simulator.Status;
 
 
 /**
- * The class Syscall contains methods that implement syscalls.
+ * The class Ecall contains methods that implement common environmental calls.
  */
-public final class Syscall {
+public final class Ecall {
 
-  // SPIM syscall codes
+  // SPIM ecall codes
   private static final int PRINT_INT    = 1;
   private static final int PRINT_FLOAT  = 2;
   private static final int PRINT_STRING = 4;
@@ -49,7 +49,7 @@ public final class Syscall {
   private static final int WRITE        = 15;
   private static final int CLOSE        = 16;
   private static final int EXIT2        = 17;
-  // VSim syscall codes
+  // V-Sim ecall codes
   private static final int SLEEP        = 18;
   private static final int CWD          = 19;
   private static final int TIME         = 20;
@@ -77,79 +77,79 @@ public final class Syscall {
     // match syscall code
     switch (syscode) {
       case PRINT_INT:
-        Syscall.printInt();
+        Ecall.printInt();
         break;
       case PRINT_FLOAT:
-        Syscall.printFloat();
+        Ecall.printFloat();
         break;
       case PRINT_STRING:
-        Syscall.printString();
+        Ecall.printString();
         break;
       case READ_INT:
-        Syscall.readInt();
+        Ecall.readInt();
         break;
       case READ_FLOAT:
-        Syscall.readFloat();
+        Ecall.readFloat();
         break;
       case READ_STRING:
-        Syscall.readString();
+        Ecall.readString();
         break;
       case SBRK:
-        Syscall.sbrk();
+        Ecall.sbrk();
         break;
       case EXIT:
-        Syscall.exit();
+        Ecall.exit();
         break;
       case PRINT_CHAR:
-        Syscall.printChar();
+        Ecall.printChar();
         break;
       case READ_CHAR:
-        Syscall.readChar();
+        Ecall.readChar();
         break;
       case OPEN:
-        Syscall.open();
+        Ecall.open();
         break;
       case READ:
-        Syscall.read();
+        Ecall.read();
         break;
       case WRITE:
-        Syscall.write();
+        Ecall.write();
         break;
       case CLOSE:
-        Syscall.close();
+        Ecall.close();
         break;
       case EXIT2:
-        Syscall.exit2();
+        Ecall.exit2();
         break;
       case SLEEP:
-        Syscall.sleep();
+        Ecall.sleep();
         break;
       case CWD:
-        Syscall.cwd();
+        Ecall.cwd();
         break;
       case TIME:
-        Syscall.time();
+        Ecall.time();
         break;
       case PRINT_HEX:
-        Syscall.printHex();
+        Ecall.printHex();
         break;
       case PRINT_BIN:
-        Syscall.printBin();
+        Ecall.printBin();
         break;
       case PRINT_USGN:
-        Syscall.printUsgn();
+        Ecall.printUsgn();
         break;
       case SET_SEED:
-        Syscall.setSeed();
+        Ecall.setSeed();
         break;
       case RAND_INT:
-        Syscall.randInt();
+        Ecall.randInt();
         break;
       case RAND_INT_RNG:
-        Syscall.randIntRng();
+        Ecall.randIntRng();
         break;
       case RAND_FLOAT:
-        Syscall.randFloat();
+        Ecall.randFloat();
         break;
       default:
         if (!Settings.QUIET)
@@ -163,7 +163,7 @@ public final class Syscall {
    */
   private static void printInt() {
     int num = Globals.regfile.getRegister("a1");
-    IO.stdout.print(num);
+    IO.stdout.print(Integer.toString(num));
   }
 
   /**
@@ -172,7 +172,7 @@ public final class Syscall {
    */
   private static void printFloat() {
     float num = Globals.fregfile.getRegister("fa0");
-    IO.stdout.print(num);
+    IO.stdout.print(Float.toString(num));
   }
 
   /**
@@ -188,7 +188,7 @@ public final class Syscall {
       s.append(c);
       buffer++;
     }
-    IO.stdout.print(s);
+    IO.stdout.print(s.toString());
   }
 
   /**
@@ -197,16 +197,10 @@ public final class Syscall {
    */
   private static void readInt() {
     try {
-      Globals.regfile.setRegister("a0", Integer.parseInt(IO.stdin.readLine()));
-    } catch (IOException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: integer number could not be read");
+      Globals.regfile.setRegister("a0", IO.readInt());
     } catch (NumberFormatException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: invalid integer number");
-    } catch (NullPointerException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: no input (null)");
     }
   }
 
@@ -216,16 +210,10 @@ public final class Syscall {
    */
   private static void readFloat() {
     try {
-      Globals.fregfile.setRegister("fa0", Float.parseFloat(IO.stdin.readLine()));
-    } catch (IOException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: float number could not be read");
+      Globals.fregfile.setRegister("fa0", IO.readFloat());
     } catch (NumberFormatException e) {
       if (!Settings.QUIET)
         Message.warning("ecall: invalid float number");
-    } catch (NullPointerException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: no input (null)");
     }
   }
 
@@ -235,27 +223,15 @@ public final class Syscall {
    * at address given in register a1 until length given in register a2 is reached.
    */
   private static void readString() {
-    try {
-      String s = IO.stdin.readLine();
-      int buffer = Globals.regfile.getRegister("a1");
-      int length = Globals.regfile.getRegister("a2");
-      int minLength = Math.min(length, s.length() + 1);
-      for (int i = 0; i < minLength; i++) {
-        // null terminated string
-        if (i == (minLength - 1))
-          Globals.memory.storeByte(buffer++, 0);
-        else {
-          char c = s.charAt(i);
-          Globals.memory.storeByte(buffer++, c);
-        }
-      }
-    } catch (IOException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: string could not be read");
-    } catch (NullPointerException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: no input (null)");
+    int buffer = Globals.regfile.getRegister("a1");
+    int length = Math.max(Globals.regfile.getRegister("a2") - 1, 0);
+    String s = IO.readString(length);
+    int minLength = Math.min(length, s.length());
+    for (int i = 0; i < minLength; i++) {
+      char c = s.charAt(i);
+      Globals.memory.storeByte(buffer++, c);
     }
+    Globals.memory.storeByte(buffer, 0);
   }
 
   /**
@@ -293,7 +269,7 @@ public final class Syscall {
    */
   private static void printChar() {
     char c = (char)Globals.regfile.getRegister("a1");
-    IO.stdout.print(c);
+    IO.stdout.print(c + "");
   }
 
   /**
@@ -301,12 +277,7 @@ public final class Syscall {
    * char from stdin, then saves the char value in register a0.
    */
   private static void readChar() {
-    try {
-      Globals.regfile.setRegister("a0", IO.stdin.read());
-    } catch (IOException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: char could not be read");
-    }
+    Globals.regfile.setRegister("a0", IO.readChar());
   }
 
   /**
@@ -456,14 +427,14 @@ public final class Syscall {
    */
   private static void printUsgn() {
     int value = Globals.regfile.getRegister("a1");
-    IO.stdout.print(Integer.toUnsignedLong(value));
+    IO.stdout.print(Long.toString(Integer.toUnsignedLong(value)));
   }
 
   /**
    * This method implements the SET_SEED syscall.
    */
   private static void setSeed() {
-    Syscall.RNG.setSeed(Globals.regfile.getRegister("a1"));
+    Ecall.RNG.setSeed(Globals.regfile.getRegister("a1"));
   }
 
   /**
@@ -472,7 +443,7 @@ public final class Syscall {
   private static void randInt() {
     Globals.regfile.setRegister(
       "a0",
-      Syscall.RNG.nextInt()
+      Ecall.RNG.nextInt()
     );
   }
 
@@ -484,7 +455,7 @@ public final class Syscall {
     int max = Globals.regfile.getRegister("a2");
     Globals.regfile.setRegister(
       "a0",
-      Syscall.RNG.nextInt((max - min) + 1) + min
+      Ecall.RNG.nextInt((max - min) + 1) + min
     );
   }
 
@@ -494,7 +465,7 @@ public final class Syscall {
   private static void randFloat() {
     Globals.fregfile.setRegister(
       "fa0",
-      Syscall.RNG.nextFloat()
+      Ecall.RNG.nextFloat()
     );
   }
 
