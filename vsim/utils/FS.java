@@ -101,7 +101,7 @@ public final class FS {
       int rbytes = 0;
       for (int i = 0; i < nbytes; i++) {
         try {
-          int c = IO.stdin.read();
+          int c = IO.readChar();
           if (c == -1)
             c = 0;
           Globals.memory.storeByte(buffer++, c);
