@@ -526,8 +526,8 @@ public class EditorController {
     // get selected tree item
     TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
     // get user new path
-    InputDialog dialog = new InputDialog("Enter the path for the new file");
-    String filename = dialog.showAndWait();
+    InputDialog dialog = new InputDialog();
+    String filename = dialog.showAndWait("Enter the path for the new file");
     // if user actually pressed enter
     if (filename.length() > 0) {
       // only accept assembler files
@@ -563,8 +563,8 @@ public class EditorController {
     // get selected tree item
     TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
     // get user new path
-    InputDialog dialog = new InputDialog("Enter the path for the new folder");
-    String dirname = dialog.showAndWait();
+    InputDialog dialog = new InputDialog();
+    String dirname = dialog.showAndWait("Enter the path for the new folder");
     // if user actually pressed enter
     if (dirname.length() > 0) {
       // create new path
@@ -586,8 +586,8 @@ public class EditorController {
    */
   private void renameDir() {
     TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
-    InputDialog dialog = new InputDialog("Enter the path for the new folder");
-    String dirname = dialog.showAndWait();
+    InputDialog dialog = new InputDialog();
+    String dirname = dialog.showAndWait("Enter the path for the new folder");
     if (dirname.length() > 0) {
       File newPath = new File(item.getPath().getParent() + File.separator + dirname);
       File oldPath = item.getPath();
@@ -633,8 +633,8 @@ public class EditorController {
     // get selected tree item
     TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
     // get user new path
-    InputDialog dialog = new InputDialog("Enter the path for the new file");
-    String filename = dialog.showAndWait();
+    InputDialog dialog = new InputDialog();
+    String filename = dialog.showAndWait("Enter the path for the new file");
     // if user actually pressed enter
     if (filename.length() > 0) {
       // create new path
