@@ -43,6 +43,9 @@ public final class Settings {
   /** history length (backstep) */
   public static int HIST_SIZE = 2000;
 
+  /** if popup an input dialog for input ecalls */
+  public static boolean POPUP_ECALL_INPUT = false;
+
   /** user directory */
   public static File DIR = new File(System.getProperty("user.dir"));
 
