@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import vsim.simulator.Status;
 import javafx.scene.image.Image;
 import javafx.scene.control.Tab;
+import vsim.gui.utils.ConsoleInput;
 import javafx.scene.input.Clipboard;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.MenuItem;
@@ -16,7 +17,6 @@ import javafx.beans.binding.Bindings;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.ContextMenu;
 import vsim.gui.utils.CustomOutputStream;
-import vsim.gui.utils.CustomBufferedReader;
 import javafx.scene.input.ClipboardContent;
 
 /**
@@ -82,12 +82,11 @@ public class MainController {
    * Initialize V-Sim console text area.
    */
   private void initConsole() {
-    // redirects standard output and error streams
-    PrintStream ps = new PrintStream(new CustomOutputStream(this.console));
-    IO.stdout = ps;
-    IO.stderr = ps;
-    // create a new input stream
-    IO.stdin = new CustomBufferedReader();
+    // assign the new gui "standard input"
+    IO.guistdin = new ConsoleInput(this.console);
+    // redirect stdout and stderr
+    IO.stdout = new PrintStream(new CustomOutputStream(this.console));
+    IO.stderr = IO.stdout;
     // clear option
     MenuItem clear = new MenuItem("clear");
     clear.setOnAction(e -> this.console.setText(""));
@@ -126,7 +125,6 @@ public class MainController {
     ContextMenu menu = new ContextMenu();
     menu.getItems().addAll(clear, copy, copyAll);
     this.console.setContextMenu(menu);
-    this.console.setEditable(false);
   }
 
 }
