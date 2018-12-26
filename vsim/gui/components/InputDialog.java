@@ -18,6 +18,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXDecorator;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCodeCombination;
+import java.util.concurrent.ArrayBlockingQueue;
 
 
 /**
@@ -33,6 +34,8 @@ public final class InputDialog {
 
   /** If user hits enter key */
   private boolean enterPressed;
+  /** user input queue */
+  private final ArrayBlockingQueue<String> queue;
   /** Dialog stage */
   private Stage stage;
   /** Dialog enter button */
@@ -45,10 +48,10 @@ public final class InputDialog {
    *
    * @param title dialog title
    */
-  public InputDialog(String title) {
+  public InputDialog() {
     try {
       this.stage = new Stage();
-      this.stage.setTitle(title);
+      this.queue = new ArrayBlockingQueue<String>(1);
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/InputDialog.fxml"));
@@ -79,13 +82,6 @@ public final class InputDialog {
   }
 
   /**
-   * Creates an input dialog without a default "Enter your input..." title.
-   */
-  public InputDialog() {
-    this("Enter your input...");
-  }
-
-  /**
    * Cancel action.
    */
   private void cancel() {
@@ -106,41 +102,46 @@ public final class InputDialog {
    *
    * @return user input text
    */
-  public String showAndWait() {
-    if (Status.RUNNING.get()) {
-      final StringBuffer data = new StringBuffer();
-      Platform.runLater(() -> {
-        // request input focus
-        this.text.requestFocus();
-        this.stage.showAndWait();
-        synchronized (data) {
-          if (this.enterPressed)
-            data.append(this.text.getText());
-          this.text.setText("");
-          this.enterPressed = false;
-          data.notify();
-        }
-      });
-      synchronized (data) {
-        try {
-          data.wait();
-          return data.toString();
-        } catch (InterruptedException e) {
-          Message.warning("could not get input");
-          return "";
-        }
-      }
-    } else {
-      String data = "";
+  public String getInput(String title) {
+    Platform.runLater(() -> {
+      // clean text field
+      this.text.setText("");
+      this.enterPressed = false;
       // request input focus
+      this.stage.setTitle(title);
       this.text.requestFocus();
       this.stage.showAndWait();
       if (this.enterPressed)
-        data = this.text.getText();
-      this.text.setText("");
-      this.enterPressed = false;
-      return data;
+        this.queue.offer(this.text.getText());
+      else
+        this.queue.offer("");
+    });
+    try {
+      return this.queue.take();
+    } catch (InterruptedException e) {
+      return "";
+    } finally {
+      this.queue.clear();
     }
+  }
+
+  /**
+   * Shows input dialog and returns user input text.
+   *
+   * @param title dialog title
+   * @return user input text
+   */
+  public String showAndWait(String title) {
+    String data = "";
+    this.stage.setTitle(title);
+    // request input focus
+    this.text.requestFocus();
+    this.stage.showAndWait();
+    if (this.enterPressed)
+      data = this.text.getText();
+    this.text.setText("");
+    this.enterPressed = false;
+    return data;
   }
 
 }
