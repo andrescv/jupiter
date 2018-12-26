@@ -214,7 +214,7 @@ public final class Debugger {
         // breakpoint at this point ?
         if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
           this.breakpoints.put(pcVal, false);
-          return true;
+          return false;
         }
       }
       // get statement machine code
