@@ -198,6 +198,119 @@ public final class EditorTab extends Tab {
   }
 
   /**
+   * Uses the editor undo manager to make an undo.
+   */
+  public void undo() {
+    if (this.editor.isUndoAvailable())
+      this.editor.undo();
+  }
+
+  /**
+   * Uses the editor undo manager to make a redo.
+   */
+  public void redo() {
+    if (this.editor.isRedoAvailable())
+      this.editor.redo();
+  }
+
+  /**
+   * Uses the editor clipboard actions to make a cut of selected text.
+   */
+  public void cut() {
+    this.editor.cut();
+  }
+
+  /**
+   * Uses the editor clipboard actions to make a copy of selected text.
+   */
+  public void copy() {
+    this.editor.copy();
+  }
+
+  /**
+   * Uses the editor clipboard actions to make a paste.
+   */
+  public void paste() {
+    this.editor.paste();
+  }
+
+  /**
+   * Uses the editor navigation actions to select all text content.
+   */
+  public void selectAll() {
+    this.editor.selectAll();
+  }
+
+  /**
+   * This method selects a text in editor if possible.
+   *
+   * @param start start index of selection range
+   * @param end end index of selection range
+   */
+  public void select(int start, int end) {
+    if (start >= 0 && end <= this.editor.getLength()) {
+      this.editor.moveTo(start);
+      this.editor.requestFollowCaret();
+      this.editor.selectRange(start, end);
+    }
+  }
+
+  /**
+   * This method replaces a selected text in editor if possible.
+   *
+   * @param text replacement text
+   */
+  public void replace(String text) {
+    if (this.isEditorTextSelected())
+      this.editor.replaceSelection(text);
+  }
+
+  /**
+   * This method selects and replaces a text in editor if possible.
+   *
+   * @param text replacement text
+   */
+  public void replace(int start, int end, String text) {
+    this.select(start, end);
+    if (this.isEditorTextSelected())
+      this.editor.replaceSelection(text);
+  }
+
+  /**
+   * Gets editor current text.
+   *
+   * @return editor text
+   */
+  public String getEditorText() {
+    return this.editor.getText();
+  }
+
+  /**
+   * Gets editor current caret position.
+   *
+   * @return editor caret position
+   */
+  public int getEditorCaretPosition() {
+    return this.editor.getCaretPosition();
+  }
+
+  /**
+   * if there is selected text in editor.
+   *
+   * @return true if editor has selected text, false otherwise
+   */
+  public boolean isEditorTextSelected() {
+    return this.editor.getSelectedText().length() > 0;
+  }
+
+  /**
+   * Deselects editor selected text (if any).
+   */
+  public void deselect() {
+    this.editor.deselect();
+  }
+
+  /**
    * Handles editor changes.
    */
   private void handleChange() {
