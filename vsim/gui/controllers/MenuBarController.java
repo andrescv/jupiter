@@ -35,19 +35,6 @@ public class MenuBarController {
   /** File menu quit option */
   @FXML protected MenuItem quit;
 
-  /** Run menu assemble option */
-  @FXML protected MenuItem assemble;
-  /** Run menu go option */
-  @FXML protected MenuItem go;
-  /** Run menu step option */
-  @FXML protected MenuItem step;
-  /** Run menu backstep option */
-  @FXML protected MenuItem backstep;
-  /** Run menu reset option */
-  @FXML protected MenuItem reset;
-  /** Run menu clear breakpoints option */
-  @FXML protected MenuItem clearBreakpoints;
-
   /** Edit menu undo option */
   @FXML protected MenuItem undo;
   /** Edit menu redo option */
@@ -60,12 +47,21 @@ public class MenuBarController {
   @FXML protected MenuItem paste;
   /** Edit menu select all option */
   @FXML protected MenuItem selectAll;
-  /** Edit menu find in buffer option */
-  @FXML protected MenuItem findInBuffer;
-  /** Edit menu replace in buffer option */
-  @FXML protected MenuItem replaceInBuffer;
-  /** Edit menu preferences option */
-  @FXML protected MenuItem preferences;
+  /** Edit menu find/replace in buffer option */
+  @FXML protected MenuItem findReplaceInBuffer;
+
+  /** Run menu assemble option */
+  @FXML protected MenuItem assemble;
+  /** Run menu go option */
+  @FXML protected MenuItem go;
+  /** Run menu step option */
+  @FXML protected MenuItem step;
+  /** Run menu backstep option */
+  @FXML protected MenuItem backstep;
+  /** Run menu reset option */
+  @FXML protected MenuItem reset;
+  /** Run menu clear breakpoints option */
+  @FXML protected MenuItem clearBreakpoints;
 
   /** Help menu help option */
   @FXML protected MenuItem help;
@@ -100,8 +96,7 @@ public class MenuBarController {
     this.copy.disableProperty().bind(fileCond);
     this.paste.disableProperty().bind(fileCond);
     this.selectAll.disableProperty().bind(fileCond);
-    this.findInBuffer.disableProperty().bind(fileCond);
-    this.replaceInBuffer.disableProperty().bind(fileCond);
+    this.findReplaceInBuffer.disableProperty().bind(fileCond);
     // dont allow assemble the program again
     this.assemble.disableProperty().bind(Status.READY);
     // disable sim flow control if the editor tab is selected
@@ -160,6 +155,38 @@ public class MenuBarController {
       Platform.exit();
     }
   }
+
+  /*-------------------------------------------------------*
+   |                      Edit Menu                        |
+   *-------------------------------------------------------*/
+
+   @FXML protected void undo(ActionEvent e) {
+     this.mainController.editorController.undo();
+   }
+
+   @FXML protected void redo(ActionEvent e) {
+     this.mainController.editorController.redo();
+   }
+
+   @FXML protected void cut(ActionEvent e) {
+     this.mainController.editorController.cut();
+   }
+
+   @FXML protected void copy(ActionEvent e) {
+     this.mainController.editorController.copy();
+   }
+
+   @FXML protected void paste(ActionEvent e) {
+     this.mainController.editorController.paste();
+   }
+
+   @FXML protected void selectAll(ActionEvent e) {
+     this.mainController.editorController.selectAll();
+   }
+
+   @FXML protected void findReplaceInBuffer(ActionEvent e) {
+     this.mainController.editorController.findReplaceInBuffer();
+   }
 
   /*-------------------------------------------------------*
    |                      Run Menu                         |

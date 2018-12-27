@@ -26,6 +26,7 @@ import com.jfoenix.controls.JFXTabPane;
 import vsim.gui.components.InputDialog;
 import vsim.gui.components.DeleteDialog;
 import javafx.scene.control.ContextMenu;
+import vsim.gui.components.FindReplaceDialog;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 
@@ -50,6 +51,9 @@ public class EditorController {
   /** tree view file context menu */
   private ContextMenu fileContext;
 
+  /** Find/Replace in buffer dialog */
+  private FindReplaceDialog findReplaceDialog;
+
   /** Reference to main controller */
   protected MainController mainController;
 
@@ -60,6 +64,8 @@ public class EditorController {
    */
   protected void initialize(MainController controller) {
     this.mainController = controller;
+    // create a new find replace dialog
+    this.findReplaceDialog = new FindReplaceDialog(this);
     // add a new untitled tab
     this.addNewUntitledTab();
     // update tree root and start directory watcher
@@ -236,6 +242,56 @@ public class EditorController {
       }
     } else
       this.closeAllTabs();
+  }
+
+  /**
+   * Undo editor action.
+   */
+  protected void undo() {
+    this.getSelectedTab().undo();
+  }
+
+  /**
+   * Redo editor action.
+   */
+  protected void redo() {
+    this.getSelectedTab().redo();
+  }
+
+  /**
+   * Cut editor action.
+   */
+  protected void cut() {
+    this.getSelectedTab().cut();
+  }
+
+  /**
+   * Copy editor action.
+   */
+  protected void copy() {
+    this.getSelectedTab().copy();
+  }
+
+  /**
+   * Paste editor action.
+   */
+  protected void paste() {
+    this.getSelectedTab().paste();
+  }
+
+  /**
+   * Select editor action.
+   */
+  protected void selectAll() {
+    this.getSelectedTab().selectAll();
+  }
+
+  /**
+   * Shows find/replace in buffer dialog.
+   */
+  protected void findReplaceInBuffer() {
+    if (!this.findReplaceDialog.isShowing())
+      this.findReplaceDialog.show();
   }
 
   /**
@@ -441,8 +497,17 @@ public class EditorController {
    *
    * @return selected tab
    */
-  private EditorTab getSelectedTab() {
+  public EditorTab getSelectedTab() {
     return (EditorTab)this.editor.getSelectionModel().getSelectedItem();
+  }
+
+  /**
+   * Gets editor tab pane.
+   *
+   * @return editor tab pane
+   */
+  public JFXTabPane getEditor() {
+    return this.editor;
   }
 
   /**

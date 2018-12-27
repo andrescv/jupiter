@@ -119,6 +119,96 @@
             </MenuItem>
          </items>
       </Menu>
+      <Menu mnemonicParsing="false" text="_Edit">
+         <items>
+            <MenuItem fx:id="undo" mnemonicParsing="false" onAction="#undo" text="Undo">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/undo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="redo" mnemonicParsing="false" onAction="#redo" text="Redo">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/redo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="cut" mnemonicParsing="false" onAction="#cut" text="Cut">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/cut.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="copy" mnemonicParsing="false" onAction="#copy" text="Copy">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/copy.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="paste" mnemonicParsing="false" onAction="#paste" text="Paste">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/paste.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="selectAll" mnemonicParsing="false" onAction="#selectAll" text="Select All">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/select.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="findReplaceInBuffer" mnemonicParsing="false" onAction="#findReplaceInBuffer" text="Find/Replace in Buffer">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/find.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+         </items>
+      </Menu>
       <Menu mnemonicParsing="false" text="_Run">
          <items>
             <MenuItem fx:id="assemble" mnemonicParsing="false" onAction="#assemble" text="Assemble">
@@ -191,121 +281,6 @@
                   <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/icons/clear.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-         </items>
-      </Menu>
-      <Menu mnemonicParsing="false" text="_Edit">
-         <items>
-            <MenuItem fx:id="undo" mnemonicParsing="false" text="Undo">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/undo.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <MenuItem fx:id="redo" mnemonicParsing="false" text="Redo">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/redo.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="cut" mnemonicParsing="false" text="Cut">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/cut.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <MenuItem fx:id="copy" mnemonicParsing="false" text="Copy">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/copy.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <MenuItem fx:id="paste" mnemonicParsing="false" text="Paste">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/paste.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <MenuItem fx:id="selectAll" mnemonicParsing="false" text="Select All">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/select.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="findInBuffer" mnemonicParsing="false" text="Find in Buffer">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/find.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <MenuItem fx:id="replaceInBuffer" mnemonicParsing="false" text="Replace in Buffer">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="H" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/replace.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </MenuItem>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="preferences" mnemonicParsing="false" text="Preferences">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="COMMA" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-               <graphic>
-                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../img/icons/preferences.png" />
                      </image>
                   </ImageView>
                </graphic>
