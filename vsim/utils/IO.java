@@ -44,7 +44,7 @@ public final class IO {
   public static ConsoleInput guistdin = null;
 
   /** GUI input dialog */
-  public static final InputDialog dialog = new InputDialog();
+  public static InputDialog dialog = null;
 
   /**
    * Reads an integer value from current standard input.
@@ -58,7 +58,7 @@ public final class IO {
         if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
           input = IO.guistdin.readString(-1);
         else
-          input = IO.dialog.getInput("Enter an integer value");
+          input = IO.getDialog().getInput("Enter an integer value");
     } else {
       try {
         input = IO.stdin.readLine();
@@ -83,7 +83,7 @@ public final class IO {
         if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
           input = IO.guistdin.readString(-1);
         else
-          input = IO.dialog.getInput("Enter a float value");
+          input = IO.getDialog().getInput("Enter a float value");
     } else {
       try {
         input = IO.stdin.readLine();
@@ -108,7 +108,7 @@ public final class IO {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(maxLength);
       else
-        input = IO.dialog.getInput("Enter a string");
+        input = IO.getDialog().getInput("Enter a string");
     } else {
       try {
         input = IO.stdin.readLine();
@@ -134,7 +134,7 @@ public final class IO {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(1);
       else
-        input = IO.dialog.getInput("Enter a character value");
+        input = IO.getDialog().getInput("Enter a character value");
     } else {
       try {
         input = IO.stdin.readLine();
@@ -144,6 +144,15 @@ public final class IO {
     if (input == null)
       input = "0";
     return (int)input.charAt(0);
+  }
+
+  /**
+   * Gets the GUI input dialog.
+   */
+  private static InputDialog getDialog() {
+    if (IO.dialog == null)
+      IO.dialog = new InputDialog();
+    return IO.dialog;
   }
 
  }
