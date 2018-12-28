@@ -182,6 +182,7 @@ public final class EditorTab extends Tab {
       this.hasChanged = false;
       this.editor.updateLastText();
       this.setText(this.name);
+      this.updateIcon();
     }
   }
 
@@ -195,6 +196,39 @@ public final class EditorTab extends Tab {
     this.untitled = -1;
     this.editor.unsubscribe();
     this.closed = true;
+  }
+
+  /**
+   * Useful method for checking if external delete happens.
+   */
+  public void checkExternalDelete() {
+    if (this.path != null && !this.path.exists() && this.editor.getText().length() != 0) {
+      this.hasChanged = true;
+      this.updateIcon();
+    }
+  }
+
+  /**
+   * Useful method for checking if external modify happens.
+   */
+  public void checkExternalModify() {
+    if (this.path != null && !this.hasChanged) {
+      try {
+        // read file
+        FileInputStream fis = new FileInputStream(this.path);
+        byte[] data = new byte[(int) this.path.length()];
+        fis.read(data);
+        fis.close();
+        String text = new String(data);
+        if (!text.equals(this.editor.getText())) {
+          // set editor default text
+          this.editor.setEditorText(new String(data));
+          this.hasChanged = false;
+        }
+      } catch (IOException e) {
+        // just ignore external modification
+      }
+    }
   }
 
   /**

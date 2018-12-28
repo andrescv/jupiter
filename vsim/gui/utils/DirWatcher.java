@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.io.IOException;
+import javafx.concurrent.Task;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchEvent;
 import java.nio.file.LinkOption;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
 import javafx.application.Platform;
+import vsim.gui.components.TreePath;
 import javafx.scene.control.TreeView;
 import vsim.gui.controllers.EditorController;
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -20,10 +22,13 @@ import static java.nio.file.StandardWatchEventKinds.*;
 /**
  * Utility class that recursively watches a directory.
  */
-public final class DirWatcher {
+public final class DirWatcher extends Task<Void> {
 
-  /** Thread watcher */
-  private Thread thread;
+  /** current dir watcher task */
+  private static DirWatcher current;
+  /** Expanded tab lookup */
+  private static final HashMap<File, Boolean> expanded = new HashMap<File, Boolean>();
+
   /** Reference to editor controller */
   private EditorController controller;
   /** Java watch service utility */
@@ -44,23 +49,23 @@ public final class DirWatcher {
       throw new RuntimeException(e);
     }
     this.keys = new HashMap<WatchKey, Path>();
-    this.registerAll(Settings.DIR);
   }
 
   /**
-   * Re-starts the thread watcher using {@code vsim.Settings.DIR} as root.
+   * {@inheritDoc}
    */
-  public void start() {
-    // stop previous thread
-    if (this.thread != null) {
-      this.thread.interrupt();
-      this.thread = null;
-    }
-    // clear old keys
-    this.keys.clear();
-    // register new keys and run thread
+  @Override
+  public Void call() throws Exception {
+    // set the new tree root
+    Platform.runLater(() -> this.controller.cleanTree());
+    TreePath root = new TreePath(Settings.DIR, true, DirWatcher.expanded);
+    Platform.runLater(() -> this.controller.setRoot(root));
+    // register new keys
     this.registerAll(Settings.DIR);
-    this.run();
+    // run loop
+    this.loop();
+    // meh
+    return null;
   }
 
   /**
@@ -68,7 +73,7 @@ public final class DirWatcher {
    */
   private void loop() {
     // forever ...
-    while (true) {
+    while (!this.isCancelled()) {
       // wait for key to be signalled
       WatchKey key;
       try {
@@ -92,7 +97,25 @@ public final class DirWatcher {
         Path name = ev.context();
         Path child = dir.resolve(name);
         // update tree view
-        Platform.runLater(() -> this.controller.updateTree());
+        if (kind == ENTRY_CREATE || kind == ENTRY_DELETE) {
+          // set the new tree root
+          TreePath root = new TreePath(Settings.DIR, true, DirWatcher.expanded);
+          Platform.runLater(() -> this.controller.setRoot(root));
+        }
+        // clean expanded
+        if (kind == ENTRY_DELETE) {
+          // check external deletions
+          Platform.runLater(() -> this.controller.checkExternalDelete());
+          Object[] fileKeys = DirWatcher.expanded.keySet().toArray();
+          for (int i = 0; i < fileKeys.length; i++) {
+            File k = (File)fileKeys[i];
+            if (!k.exists())
+              DirWatcher.expanded.remove(k);
+          }
+        }
+        // check external modifications
+        if (kind == ENTRY_MODIFY)
+          Platform.runLater(() -> this.controller.checkExternalModify());
         // if directory is created, then register it and its sub-directories
         if (kind == ENTRY_CREATE && Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS))
           registerAll(child.toFile());
@@ -110,15 +133,6 @@ public final class DirWatcher {
   }
 
   /**
-   * Creates a new thread watcher and starts it.
-   */
-  private void run() {
-    this.thread = new Thread(this::loop, "DirWatcher");
-    this.thread.setDaemon(true);
-    this.thread.start();
-  }
-
-  /**
    * Register all keys recursively.
    *
    * @param root starting root directory
@@ -131,13 +145,62 @@ public final class DirWatcher {
         Path rootPath = root.toPath();
         WatchKey key = rootPath.register(this.watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         this.keys.put(key, rootPath);
-        // walk directory tree
-        for (File f: root.listFiles())
-          this.registerAll(f);
+        File[] files = root.listFiles();
+        if (files != null) {
+          // walk directory tree
+          for (File f: files)
+            this.registerAll(f);
+        }
       } catch (IOException e) {
         // TODO what to do if a I/O error occurs
       }
     }
+  }
+
+  /**
+   * Opens a path setting its expanded info to true.
+   *
+   * @param path path to open
+   */
+  public static void open(File path) {
+    DirWatcher.expanded.put(path, true);
+  }
+
+  /**
+   * Removes path directory if if it is in expanded lookup.
+   *
+   * @param path path to remove
+   */
+  public static void close(File path) {
+    DirWatcher.expanded.remove(path);
+  }
+
+  /**
+   * Sets newPath with oldPath expanded info if oldPath is in expanded lookup.
+   *
+   * @param oldPath old path
+   * @param newPath new path
+   */
+  public static void rename(File oldPath, File newPath) {
+    if (DirWatcher.expanded.get(oldPath) != null)
+      DirWatcher.expanded.put(newPath, DirWatcher.expanded.get(oldPath));
+  }
+
+  /**
+   * Starts a new dir watcher task and cancel any previous task if any.
+   *
+   * @param tree tree view to update
+   */
+  public static void start(EditorController controller) {
+    // stop previous task
+    if (DirWatcher.current != null)
+      DirWatcher.current.cancel();
+    // run new watcher task
+    DirWatcher.expanded.clear();
+    DirWatcher.current = new DirWatcher(controller);
+    Thread t = new Thread(DirWatcher.current);
+    t.setDaemon(true);
+    t.start();
   }
 
 }
