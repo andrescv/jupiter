@@ -6,10 +6,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import vsim.gui.utils.Icons;
 import java.io.FileInputStream;
 import javafx.scene.control.Tab;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import java.nio.file.StandardOpenOption;
 import static java.nio.file.StandardOpenOption.*;
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -357,12 +356,7 @@ public final class EditorTab extends Tab {
    */
   private void updateIcon() {
     if (this.hasChanged && this.getGraphic() == null) {
-      Image img = new Image(getClass().getResource("/resources/img/icons/dot.png").toExternalForm());
-      ImageView icon = new ImageView();
-      icon.setFitWidth(12);
-      icon.setFitHeight(12);
-      icon.setImage(img);
-      this.setGraphic(icon);
+      this.setGraphic(Icons.getImage("dot", 12, 12));
     } else if (!this.hasChanged)
       this.setGraphic(null);
   }

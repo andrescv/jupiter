@@ -3,8 +3,7 @@ package vsim.gui.components;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Comparator;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import vsim.gui.utils.Icons;
 import javafx.scene.control.TreeItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,24 +44,11 @@ public final class TreePath extends TreeItem<String> {
     }
     // set item icon
     if (this.path.isDirectory()) {
-      String imgPath = isRoot ? "/resources/img/icons/root.png" : "/resources/img/icons/folder.png";
-      Image image = new Image(getClass().getResource(imgPath).toExternalForm());
-      ImageView icon = new ImageView();
-      icon.setImage(image);
-      icon.setFitHeight(20);
-      icon.setFitWidth(20);
-      this.setGraphic(icon);
-      this.expandedProperty().addListener((e, oldVal, newVal) -> {
-        this.expanded.put(path, (Boolean)newVal);
-      });
-    } else {
-      Image image = new Image(getClass().getResource("/resources/img/icons/file.png").toExternalForm());
-      ImageView icon = new ImageView();
-      icon.setImage(image);
-      icon.setFitHeight(18);
-      icon.setFitWidth(18);
-      this.setGraphic(icon);
-    }
+      String iconName = isRoot ? "root" : "folder";
+      this.setGraphic(Icons.getImage(iconName));
+      this.expandedProperty().addListener((e, oldVal, newVal) -> this.expanded.put(path, (Boolean)newVal));
+    } else
+      this.setGraphic(Icons.getImage("file"));
   }
 
   /**

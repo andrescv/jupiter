@@ -6,11 +6,10 @@ import javafx.fxml.FXML;
 import vsim.utils.Message;
 import java.io.IOException;
 import java.util.ArrayList;
+import vsim.gui.utils.Icons;
 import javafx.scene.control.Tab;
 import javafx.stage.FileChooser;
-import javafx.scene.image.Image;
 import vsim.gui.utils.DirWatcher;
-import javafx.scene.image.ImageView;
 import vsim.gui.components.TreePath;
 import javafx.scene.control.TreeItem;
 import javafx.stage.DirectoryChooser;
@@ -63,42 +62,10 @@ public class EditorController {
     this.findReplaceDialog = new FindReplaceDialog(this);
     // add a new untitled tab
     this.addNewUntitledTab();
+    // init tree
+    this.initTree();
     // start directory watcher
     DirWatcher.start(this);
-    // create tree context menu
-    MenuItem newFile = new MenuItem("New File");
-    newFile.setOnAction(e -> this.addNewFile());
-    MenuItem newFolder = new MenuItem("New Folder");
-    newFolder.setOnAction(e -> this.addNewFolder());
-    MenuItem renameDir = new MenuItem("Rename");
-    renameDir.setOnAction(e -> this.renameDir());
-    MenuItem deleteDir = new MenuItem("Delete");
-    deleteDir.setOnAction(e -> this.deleteDir());
-    this.setGraphic(newFile, "/resources/img/icons/new_file.png");
-    this.setGraphic(newFolder, "/resources/img/icons/new_folder.png");
-    this.setGraphic(renameDir, "/resources/img/icons/edit.png");
-    this.setGraphic(deleteDir, "/resources/img/icons/trash.png");
-    this.dirContext = new ContextMenu();
-    this.dirContext.getItems().addAll(newFile, newFolder, renameDir, deleteDir);
-    MenuItem renameFile = new MenuItem("Rename");
-    renameFile.setOnAction(e -> this.renameFile());
-    MenuItem deleteFile = new MenuItem("Delete");
-    deleteFile.setOnAction(e -> this.deleteFile());
-    this.setGraphic(renameFile, "/resources/img/icons/edit.png");
-    this.setGraphic(deleteFile, "/resources/img/icons/trash.png");
-    this.fileContext = new ContextMenu();
-    this.fileContext.getItems().addAll(renameFile, deleteFile);
-    this.tree.setOnMouseClicked(e -> {
-      this.dirContext.hide();
-      this.fileContext.hide();
-      TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
-      if (item != null) {
-        if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
-          this.addTitledTab(item.getPath());
-        else if (e.getButton() == MouseButton.SECONDARY)
-          this.openContextMenu(item, e.getScreenX(), e.getScreenY());
-      }
-    });
   }
 
   /**
@@ -462,20 +429,6 @@ public class EditorController {
   }
 
   /**
-   * Sets a graphic to a menu item.
-   *
-   * @param item menu item to add graphic
-   * @param path menu item graphic path
-   */
-  private void setGraphic(MenuItem item, String path) {
-    ImageView img = new ImageView();
-    img.setFitWidth(20.0);
-    img.setFitHeight(20.0);
-    img.setImage(new Image(getClass().getResourceAsStream(path)));
-    item.setGraphic(img);
-  }
-
-  /**
    * Recursively deletes a directory and remove open tabs if necessary.
    *
    * @param dir directory to delete
@@ -706,6 +659,48 @@ public class EditorController {
       if (tab != null && deleted)
         this.closeTab(tab);
     }
+  }
+
+  /**
+   * Initializes editor tree view and context menus.
+   */
+  private void initTree() {
+    // create tree directory context menu
+    MenuItem newFile = new MenuItem("New File");
+    newFile.setOnAction(e -> this.addNewFile());
+    newFile.setGraphic(Icons.getImage("new_file"));
+    MenuItem newFolder = new MenuItem("New Folder");
+    newFolder.setOnAction(e -> this.addNewFolder());
+    newFolder.setGraphic(Icons.getImage("new_folder"));
+    MenuItem renameDir = new MenuItem("Rename");
+    renameDir.setOnAction(e -> this.renameDir());
+    renameDir.setGraphic(Icons.getImage("edit"));
+    MenuItem deleteDir = new MenuItem("Delete");
+    deleteDir.setOnAction(e -> this.deleteDir());
+    deleteDir.setGraphic(Icons.getImage("trash"));
+    this.dirContext = new ContextMenu();
+    this.dirContext.getItems().addAll(newFile, newFolder, renameDir, deleteDir);
+    // create tree file context menu
+    MenuItem renameFile = new MenuItem("Rename");
+    renameFile.setOnAction(e -> this.renameFile());
+    renameFile.setGraphic(Icons.getImage("edit"));
+    MenuItem deleteFile = new MenuItem("Delete");
+    deleteFile.setOnAction(e -> this.deleteFile());
+    deleteFile.setGraphic(Icons.getImage("trash"));
+    this.fileContext = new ContextMenu();
+    this.fileContext.getItems().addAll(renameFile, deleteFile);
+    // add click action to tree
+    this.tree.setOnMouseClicked(e -> {
+      this.dirContext.hide();
+      this.fileContext.hide();
+      TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
+      if (item != null) {
+        if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
+          this.addTitledTab(item.getPath());
+        else if (e.getButton() == MouseButton.SECONDARY)
+          this.openContextMenu(item, e.getScreenX(), e.getScreenY());
+      }
+    });
   }
 
 }

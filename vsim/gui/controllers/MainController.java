@@ -5,19 +5,18 @@ import vsim.utils.IO;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import java.io.PrintStream;
+import vsim.gui.utils.Icons;
 import vsim.simulator.Status;
-import javafx.scene.image.Image;
 import javafx.scene.control.Tab;
 import vsim.gui.utils.ConsoleInput;
-import javafx.scene.input.Clipboard;
-import javafx.scene.image.ImageView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.beans.binding.Bindings;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.ContextMenu;
 import vsim.gui.utils.CustomOutputStream;
-import javafx.scene.input.ClipboardContent;
+import com.jfoenix.controls.JFXProgressBar;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  * Main controller class.
@@ -30,6 +29,9 @@ public class MainController {
   @FXML protected Tab editorTab;
   /** Main tab pane simulator tab */
   @FXML protected Tab simTab;
+
+  /** Simulator progress bar */
+  @FXML protected JFXProgressBar progressBar;
 
   /** Console text area */
   @FXML protected TextArea console;
@@ -50,6 +52,7 @@ public class MainController {
    * @param stage primary stage
    */
   public void initialize(Stage stage) {
+    this.loading(true);
     this.stage = stage;
     this.initConsole();
     // disable simulation tab if project is not ready
@@ -62,6 +65,7 @@ public class MainController {
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
+    this.loading(false);
   }
 
   /**
@@ -79,6 +83,18 @@ public class MainController {
   }
 
   /**
+   * Handles progress bar state.
+   *
+   * @param isLoading if currently in loading mode
+   */
+  protected void loading(boolean isLoading) {
+    if (isLoading)
+      this.progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+    else
+      this.progressBar.setProgress(0.0f);
+  }
+
+  /**
    * Initialize V-Sim console text area.
    */
   private void initConsole() {
@@ -90,40 +106,18 @@ public class MainController {
     // clear option
     MenuItem clear = new MenuItem("clear");
     clear.setOnAction(e -> this.console.setText(""));
-    ImageView clearImg = new ImageView();
-    clearImg.setFitWidth(20.0);
-    clearImg.setFitHeight(20.0);
-    clearImg.setImage(new Image(getClass().getResourceAsStream("/resources/img/icons/clear.png")));
-    clear.setGraphic(clearImg);
+    clear.setGraphic(Icons.getImage("clear"));
     // copy option
     MenuItem copy = new MenuItem("copy");
-    copy.setOnAction(e -> {
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      ClipboardContent content = new ClipboardContent();
-      content.putString(this.console.getSelectedText());
-      clipboard.setContent(content);
-    });
-    ImageView copyImg = new ImageView();
-    copyImg.setFitWidth(20.0);
-    copyImg.setFitHeight(20.0);
-    copyImg.setImage(new Image(getClass().getResourceAsStream("/resources/img/icons/copy.png")));
-    copy.setGraphic(copyImg);
-    // copy all option
-    MenuItem copyAll = new MenuItem("copy all");
-    copyAll.setOnAction(e -> {
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      ClipboardContent content = new ClipboardContent();
-      content.putString(this.console.getText());
-      clipboard.setContent(content);
-    });
-    ImageView copyAllImg = new ImageView();
-    copyAllImg.setFitWidth(20.0);
-    copyAllImg.setFitHeight(20.0);
-    copyAllImg.setImage(new Image(getClass().getResourceAsStream("/resources/img/icons/copyAll.png")));
-    copyAll.setGraphic(copyAllImg);
+    copy.setOnAction(e -> this.console.copy());
+    copy.setGraphic(Icons.getImage("copy"));
+    // select all option
+    MenuItem selectAll = new MenuItem("select all");
+    selectAll.setOnAction(e -> this.console.selectAll());
+    selectAll.setGraphic(Icons.getImage("select"));
     // set context menu with this options
     ContextMenu menu = new ContextMenu();
-    menu.getItems().addAll(clear, copy, copyAll);
+    menu.getItems().addAll(clear, copy, selectAll);
     this.console.setContextMenu(menu);
   }
 
