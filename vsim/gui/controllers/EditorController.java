@@ -3,7 +3,6 @@ package vsim.gui.controllers;
 import java.io.File;
 import vsim.Settings;
 import javafx.fxml.FXML;
-import java.util.HashMap;
 import vsim.utils.Message;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +32,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * Editor controller class.
  */
 public class EditorController {
-
-  /** Expanded tab lookup */
-  private HashMap<File, Boolean> expanded;
 
   /** Current directory tree view */
   @FXML protected TreeView<String> tree;
@@ -67,11 +63,8 @@ public class EditorController {
     this.findReplaceDialog = new FindReplaceDialog(this);
     // add a new untitled tab
     this.addNewUntitledTab();
-    // update tree root and start directory watcher
-    this.expanded = new HashMap<File, Boolean>();
-    this.watcher = new DirWatcher(this);
-    this.updateTree();
-    this.watcher.start();
+    // start directory watcher
+    DirWatcher.start(this);
     // create tree context menu
     MenuItem newFile = new MenuItem("New File");
     newFile.setOnAction(e -> this.addNewFile());
@@ -109,6 +102,38 @@ public class EditorController {
   }
 
   /**
+   * Cleans tree root.
+   */
+  public void cleanTree() {
+    this.tree.setRoot(null);
+  }
+
+  /**
+   * Sets tree root.
+   */
+  public void setRoot(TreePath root) {
+    this.tree.setRoot(root);
+  }
+
+  /**
+   * Checks if a external delete is performed to an open tab.
+   */
+  public void checkExternalDelete() {
+    for (Tab tab: this.editor.getTabs()) {
+      ((EditorTab) tab).checkExternalDelete();
+    }
+  }
+
+  /**
+   * Checks if a external modify is performed to an open tab.
+   */
+  public void checkExternalModify() {
+    for (Tab tab: this.editor.getTabs()) {
+      ((EditorTab) tab).checkExternalModify();
+    }
+  }
+
+  /**
    * Adds a new untitled tab.
    */
   protected void addNewUntitledTab() {
@@ -142,9 +167,8 @@ public class EditorController {
     File dir = chooser.showDialog(this.mainController.stage);
     if (dir != null && !dir.equals(Settings.DIR)) {
       Settings.DIR = dir;
-      this.expanded.clear();
-      this.updateTree();
-      this.watcher.start();
+      // start directory watcher
+      DirWatcher.start(this);
     }
   }
 
@@ -292,13 +316,6 @@ public class EditorController {
   protected void findReplaceInBuffer() {
     if (!this.findReplaceDialog.isShowing())
       this.findReplaceDialog.show();
-  }
-
-  /**
-   * Updates tree view
-   */
-  public void updateTree() {
-    this.tree.setRoot(new TreePath(Settings.DIR, true, this.expanded));
   }
 
   /**
@@ -459,7 +476,7 @@ public class EditorController {
   }
 
   /**
-   * Recursively deletes a directory and remove opened tabs if necessary.
+   * Recursively deletes a directory and remove open tabs if necessary.
    *
    * @param dir directory to delete
    * @return true if directory was deleted, false if not
@@ -473,13 +490,13 @@ public class EditorController {
       // only if all sub-directories and files were deleted
       // we can delete the parent directory
       if (deleted && dir.delete()) {
-        this.expanded.remove(dir);
+        DirWatcher.close(dir);
         return true;
       }
       return false;
     }
-    // if its a file just delete the file and close the opened
-    // tab if there is a opened tab with the same path
+    // if its a file just delete the file and close the open
+    // tab if there is an open tab with the same path
     else {
       EditorTab tab = null;
       for (Tab openTab: this.editor.getTabs()) {
@@ -490,7 +507,7 @@ public class EditorController {
         }
       }
       boolean deleted = dir.delete();
-      // close the opened tab only if we actually delete the file
+      // close the open tab only if we actually delete the file
       if (tab != null && deleted)
         this.closeTab(tab);
       return deleted;
@@ -498,7 +515,7 @@ public class EditorController {
   }
 
   /**
-   * Renames old opened tabs that have an absolute path with a prefix
+   * Renames old open tabs that have an absolute path with a prefix
    * equal to the old path passed as argument, and prepends the new
    * path prefix.
    *
@@ -573,7 +590,7 @@ public class EditorController {
       else {
         // create all necessary folders
         if (path.mkdirs())
-          this.expanded.put(path, true);
+          DirWatcher.open(path);
         else
           Message.warning("could not create folder: " + path);
       }
@@ -590,15 +607,12 @@ public class EditorController {
     if (dirname.length() > 0) {
       File newPath = new File(item.getPath().getParent() + File.separator + dirname);
       File oldPath = item.getPath();
-      // rename file and find a opened tab
+      // rename file and find a open tab
       if (!oldPath.equals(newPath) && !newPath.exists()) {
         newPath.mkdirs();
         if (item.getPath().renameTo(newPath)) {
           this.renameOpenedTabsWith(oldPath, newPath);
-          if (this.expanded.get(oldPath) != null) {
-            this.expanded.put(newPath, this.expanded.get(oldPath));
-            this.expanded.remove(oldPath);
-          }
+          DirWatcher.rename(oldPath, newPath);
         } else
           Message.warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
       }
@@ -625,8 +639,8 @@ public class EditorController {
   }
 
   /**
-   * Renames a file and renames opened tab if there is an
-   * opened tab with the same old path.
+   * Renames a file and renames open tab if there is an
+   * open tab with the same old path.
    */
   private void renameFile() {
     // get selected tree item
@@ -640,7 +654,7 @@ public class EditorController {
       File newPath = new File(item.getPath().getParent() + File.separator + filename);
       // get old file path
       File oldPath = item.getPath();
-      // rename file and find a opened tab
+      // rename file and find a open tab
       if (!oldPath.equals(newPath) && !newPath.exists()) {
         EditorTab tab = null;
         for (Tab openTab: this.editor.getTabs()) {
@@ -665,8 +679,8 @@ public class EditorController {
   }
 
   /**
-   * Deletes a file and also closes an opened tab if there is an
-   * opened tab with the same path.
+   * Deletes a file and also closes an open tab if there is an
+   * open tab with the same path.
    */
   private void deleteFile() {
     // only if user really wants to delete the file
@@ -675,7 +689,7 @@ public class EditorController {
     if (delete) {
       // get selected tree item
       TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
-      // find opened tab (if any)
+      // find open tab (if any)
       EditorTab tab = null;
       for (Tab openTab: this.editor.getTabs()) {
         EditorTab t = (EditorTab)openTab;
