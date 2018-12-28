@@ -89,7 +89,7 @@
       </VBox>
       <JFXTabPane fx:id="hardware" maxWidth="304.0" minWidth="304.0" prefHeight="493.0" prefWidth="304.0" SplitPane.resizableWithParent="false">
          <tabs>
-            <Tab fx:id="rviTab" text="RVI">
+            <Tab fx:id="rviTab" closable="false" text="RVI">
                <content>
                   <TableView fx:id="rviTable" editable="true" prefHeight="200.0" prefWidth="448.0">
                      <columns>
@@ -103,7 +103,7 @@
                   </TableView>
                </content>
             </Tab>
-            <Tab fx:id="rvfTab" text="RVF">
+            <Tab fx:id="rvfTab" closable="false" text="RVF">
                <content>
                   <TableView fx:id="rvfTable" editable="true" prefHeight="200.0" prefWidth="200.0">
                      <columns>
@@ -117,7 +117,7 @@
                   </TableView>
                </content>
             </Tab>
-            <Tab fx:id="memTab" text="Memory">
+            <Tab fx:id="memTab" closable="false" text="Memory">
                <content>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
