@@ -7,7 +7,6 @@ import java.util.HashMap;
 import vsim.utils.Message;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import javafx.scene.control.Tab;
 import javafx.stage.FileChooser;
 import javafx.scene.image.Image;
@@ -114,7 +113,8 @@ public class EditorController {
    */
   protected void addNewUntitledTab() {
     this.mainController.selectEditorTab();
-    EditorTab tab = new EditorTab();
+    final EditorTab tab = new EditorTab();
+    tab.setOnCloseRequest(e -> this.closeTabSafetly(tab));
     this.editor.getTabs().add(tab);
     this.editor.getSelectionModel().select(tab);
   }
@@ -298,7 +298,7 @@ public class EditorController {
    * Updates tree view
    */
   public void updateTree() {
-    this.tree.setRoot(this.getTree(Settings.DIR, true));
+    this.tree.setRoot(new TreePath(Settings.DIR, true, this.expanded));
   }
 
   /**
@@ -313,74 +313,6 @@ public class EditorController {
       this.fileContext.show(this.tree, x, y);
     else
       this.dirContext.show(this.tree, x, y);
-  }
-
-  /**
-   * Returns a directory tree.
-   *
-   * @param directory directory to walk through
-   * @param isRoot if the directory is the root directory
-   * @return TreePath corresponding to the root node
-   */
-  private TreePath getTree(File directory, boolean isRoot) {
-    TreePath root = new TreePath(directory);
-    // expand tree item if its the root item
-    Boolean expandedProp = this.expanded.get(directory);
-    if (expandedProp != null)
-      root.setExpanded(expandedProp);
-    else if (isRoot) {
-      root.setExpanded(true);
-      this.expanded.put(root.getPath(), true);
-    } else
-      this.expanded.put(root.getPath(), false);
-    // set item icon
-    String path = isRoot ? "/resources/img/icons/root.png" : "/resources/img/icons/folder.png";
-    Image image = new Image(getClass().getResource(path).toExternalForm());
-    ImageView icon = new ImageView();
-    icon.setImage(image);
-    icon.setFitHeight(20);
-    icon.setFitWidth(20);
-    root.setGraphic(icon);
-    root.expandedProperty().addListener((e, oldVal, newVal) -> {
-      this.expanded.put(directory, (Boolean)newVal);
-    });
-    // walk directory tree
-    for (File f: directory.listFiles()) {
-      if (f.isDirectory() && !f.isHidden())
-        root.getChildren().add(this.getTree(f, false));
-      else if (!f.isHidden()) {
-        String filename = f.getName();
-        if (filename.endsWith(".s") || filename.endsWith(".asm")) {
-          image = new Image(getClass().getResource("/resources/img/icons/file.png").toExternalForm());
-          icon = new ImageView();
-          icon.setImage(image);
-          icon.setFitHeight(18);
-          icon.setFitWidth(18);
-          TreePath child = new TreePath(f);
-          child.setGraphic(icon);
-          root.getChildren().add(child);
-        }
-      }
-    }
-    // sort root children
-    root.getChildren().sort(new Comparator<TreeItem<String>>() {
-      @Override
-      public int compare(TreeItem<String> tp, TreeItem<String> tq) {
-        TreePath p = (TreePath)tp;
-        TreePath q = (TreePath)tq;
-        String fn = p.getPath().getName().toString();
-        String qn = q.getPath().getName().toString();
-        boolean pd = p.getPath().isDirectory();
-        boolean qd = q.getPath().isDirectory();
-        if (pd && !qd)
-          return -1;
-        else if (!pd && qd)
-          return 1;
-        else
-          return fn.compareToIgnoreCase(qn);
-      }
-    });
-    return root;
   }
 
   /**
@@ -412,7 +344,9 @@ public class EditorController {
             tab = reuse;
             tab.setPathAndOpen(file);
           } else {
-            tab = new EditorTab(file);
+            final EditorTab newTab = new EditorTab(file);
+            tab = newTab;
+            tab.setOnCloseRequest(e -> this.closeTabSafetly(newTab));
             this.editor.getTabs().add(tab);
           }
         }
