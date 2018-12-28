@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.FileInputStream;
 import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import java.nio.file.StandardOpenOption;
 import static java.nio.file.StandardOpenOption.*;
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -135,10 +137,8 @@ public final class EditorTab extends Tab {
     this.untitled = -1;
     this.path = path;
     this.name = path.getName();
-    if (this.hasChanged)
-      this.setText(this.name + " *");
-    else
-      this.setText(this.name);
+    this.setText(this.name);
+    this.updateIcon();
   }
 
   /**
@@ -315,12 +315,22 @@ public final class EditorTab extends Tab {
    */
   private void handleChange() {
     this.hasChanged = this.editor.hasChanged();
-    // set * in tab text
-    if (this.hasChanged && !this.getText().endsWith("*"))
-      this.setText(this.name + " *");
-    // if no changes set default name
-    else if (!this.hasChanged)
-      this.setText(this.name);
+    this.updateIcon();
+  }
+
+  /**
+   * Updates editor graphic icon.
+   */
+  private void updateIcon() {
+    if (this.hasChanged && this.getGraphic() == null) {
+      Image img = new Image(getClass().getResource("/resources/img/icons/dot.png").toExternalForm());
+      ImageView icon = new ImageView();
+      icon.setFitWidth(12);
+      icon.setFitHeight(12);
+      icon.setImage(img);
+      this.setGraphic(icon);
+    } else if (!this.hasChanged)
+      this.setGraphic(null);
   }
 
   /**

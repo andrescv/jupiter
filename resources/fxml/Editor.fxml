@@ -23,6 +23,6 @@
             <TreeView fx:id="tree" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <JFXTabPane id="editorTabs" fx:id="editor" />
+      <JFXTabPane id="editorTabs" fx:id="editor" tabClosingPolicy="ALL_TABS" />
    </items>
 </SplitPane>
