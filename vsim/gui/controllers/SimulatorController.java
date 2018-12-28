@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import vsim.riscv.Register;
 import java.util.ArrayList;
+import vsim.gui.utils.Icons;
 import javafx.util.Callback;
 import vsim.simulator.Status;
 import vsim.riscv.MemoryCell;
@@ -19,14 +20,12 @@ import javafx.css.PseudoClass;
 import javafx.concurrent.Task;
 import vsim.simulator.Debugger;
 import javafx.scene.control.Tab;
-import javafx.scene.image.Image;
 import vsim.assembler.Assembler;
 import javafx.stage.FileChooser;
 import vsim.linker.LinkedProgram;
 import vsim.linker.InfoStatement;
 import vsim.riscv.MemorySegments;
 import javafx.application.Platform;
-import javafx.scene.image.ImageView;
 import vsim.gui.components.InfoCell;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.MenuItem;
@@ -427,25 +426,25 @@ public class SimulatorController {
     // Set memory table context menu
     MenuItem text = new MenuItem("Jump To Text Segment");
     text.setOnAction(e -> Globals.memory.text());
-    this.setGraphic(text, "/resources/img/icons/jump.png");
+    text.setGraphic(Icons.getImage("jump"));
     MenuItem data = new MenuItem("Jump To Data Segment");
     data.setOnAction(e -> Globals.memory.data());
-    this.setGraphic(data, "/resources/img/icons/jump.png");
+    data.setGraphic(Icons.getImage("jump"));
     MenuItem heap = new MenuItem("Jump To Heap Segment");
     heap.setOnAction(e -> Globals.memory.heap());
-    this.setGraphic(heap, "/resources/img/icons/jump.png");
+    heap.setGraphic(Icons.getImage("jump"));
     MenuItem stack = new MenuItem("Jump To Stack Segment");
     stack.setOnAction(e -> Globals.memory.stack());
-    this.setGraphic(stack, "/resources/img/icons/jump.png");
+    stack.setGraphic(Icons.getImage("jump"));
     MenuItem ascii = new MenuItem("ASCII Display Mode");
     ascii.setOnAction(e -> this.memoryDisplayAscii());
-    this.setGraphic(ascii, "/resources/img/icons/ascii.png");
+    ascii.setGraphic(Icons.getImage("ascii"));
     MenuItem hex = new MenuItem("Hex Display Mode");
     hex.setOnAction(e -> this.memoryDisplayHex());
-    this.setGraphic(hex, "/resources/img/icons/hex.png");
+    hex.setGraphic(Icons.getImage("hex"));
     MenuItem decimal = new MenuItem("Decimal Display Mode");
     decimal.setOnAction(e -> this.memoryDisplayDecimal());
-    this.setGraphic(decimal, "/resources/img/icons/decimal.png");
+    decimal.setGraphic(Icons.getImage("decimal"));
     ContextMenu menu = new ContextMenu();
     menu.getItems().addAll(text, data, heap, stack, new SeparatorMenuItem(), hex, decimal, ascii);
     this.memTable.setContextMenu(menu);
@@ -568,23 +567,23 @@ public class SimulatorController {
     // set rvi table context menu
     MenuItem hex = new MenuItem("Hex Display Mode");
     hex.setOnAction(e -> this.rviDisplayHex());
-    this.setGraphic(hex, "/resources/img/icons/hex.png");
+    hex.setGraphic(Icons.getImage("hex"));
     MenuItem decimal = new MenuItem("Decimal Display Mode");
     decimal.setOnAction(e -> this.rviDisplayDecimal());
-    this.setGraphic(decimal, "/resources/img/icons/decimal.png");
+    decimal.setGraphic(Icons.getImage("decimal"));
     MenuItem unsigned = new MenuItem("Unsigned Display Mode");
     unsigned.setOnAction(e -> this.rviDisplayUnsigned());
-    this.setGraphic(unsigned, "/resources/img/icons/unsigned.png");
+    unsigned.setGraphic(Icons.getImage("unsigned"));
     ContextMenu menu = new ContextMenu();
     menu.getItems().addAll(hex, decimal, unsigned);
     this.rviTable.setContextMenu(menu);
     // set rvf table context menu
     hex = new MenuItem("Hex Display Mode");
     hex.setOnAction(e -> this.rvfDisplayHex());
-    this.setGraphic(hex, "/resources/img/icons/hex.png");
+    hex.setGraphic(Icons.getImage("hex"));
     MenuItem dfloat = new MenuItem("Float Display Mode");
     dfloat.setOnAction(e -> this.rvfDisplayFloat());
-    this.setGraphic(dfloat, "/resources/img/icons/float.png");
+    dfloat.setGraphic(Icons.getImage("float"));
     menu = new ContextMenu();
     menu.getItems().addAll(hex, dfloat);
     this.rvfTable.setContextMenu(menu);
@@ -781,20 +780,6 @@ public class SimulatorController {
       Message.warning("invalid register value: " + newValue);
     }
     Platform.runLater(() -> this.rvfTable.refresh());
-  }
-
-  /**
-   * Sets a graphic to a menu item.
-   *
-   * @param item menu item to add graphic
-   * @param path menu item graphic path
-   */
-  private void setGraphic(MenuItem item, String path) {
-    ImageView img = new ImageView();
-    img.setFitWidth(20.0);
-    img.setFitHeight(20.0);
-    img.setImage(new Image(getClass().getResourceAsStream(path)));
-    item.setGraphic(img);
   }
 
 }

@@ -7,9 +7,9 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.scene.Parent;
 import java.io.IOException;
+import vsim.gui.utils.Icons;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.StageStyle;
-import javafx.scene.image.Image;
 import javafx.scene.control.Label;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Platform;
@@ -35,7 +35,7 @@ public final class Preloader extends javafx.application.Preloader {
   public void start(Stage stage) throws IOException {
     // remove main frame and buttons (close, minimize, maximize...)
     stage.initStyle(StageStyle.UNDECORATED);
-    stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
+    stage.getIcons().add(Icons.getFavicon());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/Preloader.fxml"));
     loader.setController(this);
     Parent root = loader.load();

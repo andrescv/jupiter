@@ -4,8 +4,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import java.io.IOException;
+import vsim.gui.utils.Icons;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import javafx.application.Application;
 import com.jfoenix.controls.JFXDecorator;
 import vsim.gui.controllers.MainController;
@@ -33,7 +33,7 @@ public final class Gui extends Application {
   @Override
   public void start(Stage stage) throws IOException {
     stage.setTitle("V-Sim");
-    stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
+    stage.getIcons().add(Icons.getFavicon());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/Main.fxml"));
     Parent root = loader.load();
     MainController controller = (MainController)loader.getController();

@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import java.io.IOException;
 import java.util.ArrayList;
+import vsim.gui.utils.Icons;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXCheckBox;
@@ -47,7 +47,7 @@ public final class FindReplaceDialog {
       this.stage = new Stage();
       this.controller = controller;
       this.found = new ArrayList<Integer>();
-      this.stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/img/favicon.png")));
+      this.stage.getIcons().add(Icons.getFavicon());
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/FindReplaceDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
