@@ -68,222 +68,252 @@ public class EditorController {
     DirWatcher.start(this);
   }
 
-  /**
-   * Cleans tree root.
-   */
-  public void cleanTree() {
-    this.tree.setRoot(null);
-  }
+  /*-------------------------------------------------------*
+   |                    public actions                     |
+   *-------------------------------------------------------*/
 
-  /**
-   * Sets tree root.
-   */
-  public void setRoot(TreePath root) {
-    this.tree.setRoot(root);
-  }
+   /**
+    * Cleans tree root.
+    */
+   public void cleanTree() {
+     this.tree.setRoot(null);
+   }
 
-  /**
-   * Checks if a external delete is performed to an open tab.
-   */
-  public void checkExternalDelete() {
-    for (Tab tab: this.editor.getTabs()) {
-      ((EditorTab) tab).checkExternalDelete();
-    }
-  }
+   /**
+    * Sets tree root.
+    */
+   public void setRoot(TreePath root) {
+     this.tree.setRoot(root);
+   }
 
-  /**
-   * Checks if a external modify is performed to an open tab.
-   */
-  public void checkExternalModify() {
-    for (Tab tab: this.editor.getTabs()) {
-      ((EditorTab) tab).checkExternalModify();
-    }
-  }
+   /**
+    * Checks if a external delete is performed to an open tab.
+    */
+   public void checkExternalDelete() {
+     for (Tab tab: this.editor.getTabs()) {
+       ((EditorTab) tab).checkExternalDelete();
+     }
+   }
 
-  /**
-   * Adds a new untitled tab.
-   */
-  protected void addNewUntitledTab() {
-    this.mainController.selectEditorTab();
-    final EditorTab tab = new EditorTab();
-    tab.setOnCloseRequest(e -> this.closeTabSafetly(tab));
-    this.editor.getTabs().add(tab);
-    this.editor.getSelectionModel().select(tab);
-  }
+   /**
+    * Checks if a external modify is performed to an open tab.
+    */
+   public void checkExternalModify() {
+     for (Tab tab: this.editor.getTabs()) {
+       ((EditorTab) tab).checkExternalModify();
+     }
+   }
 
-  /**
-   * Adds a new titled tab by opening a file.
-   */
-  protected void addTitledTab() {
-    this.mainController.selectEditorTab();
-    FileChooser chooser = new FileChooser();
-    chooser.setTitle("Open RISC-V File");
-    chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
-    File file = chooser.showOpenDialog(this.mainController.stage);
-    this.addTitledTab(file);
-  }
+   /**
+    * Gets current selected tab.
+    *
+    * @return selected tab
+    */
+   public EditorTab getSelectedTab() {
+     return (EditorTab)this.editor.getSelectionModel().getSelectedItem();
+   }
 
-  /**
-   * Opens a new project directory and makes it default.
-   */
-  protected void openFolder() {
-    this.mainController.selectEditorTab();
-    DirectoryChooser chooser = new DirectoryChooser();
-    chooser.setTitle("Open RISC-V Project");
-    chooser.setInitialDirectory(Settings.DIR);
-    File dir = chooser.showDialog(this.mainController.stage);
-    if (dir != null && !dir.equals(Settings.DIR)) {
-      Settings.DIR = dir;
-      // start directory watcher
-      DirWatcher.start(this);
-    }
-  }
+   /**
+    * Gets editor tab pane.
+    *
+    * @return editor tab pane
+    */
+   public JFXTabPane getEditor() {
+     return this.editor;
+   }
 
-  /**
-   * Saves current selected tab if necessary.
-   */
-  protected void saveTab() {
-    EditorTab tab = this.getSelectedTab();
-    this.saveTab(tab, false);
-  }
+  /*-------------------------------------------------------*
+   |                  protected actions                    |
+   *-------------------------------------------------------*/
 
-  /**
-   * Saves as current selected tab.
-   */
-  protected void saveTabAs() {
-    EditorTab tab = this.getSelectedTab();
-    FileChooser chooser = new FileChooser();
-    chooser.setTitle("Save RISC-V File As...");
-    chooser.setInitialFileName(tab.getName());
-    chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
-    File file = chooser.showSaveDialog(this.mainController.stage);
-    if (file != null) {
-      // backup current file path
-      File old = tab.getPath();
-      // change path and save
-      try {
-        tab.setPath(file);
-        tab.save();
-      } catch (IOException e) {
-        // revert file path if something goes wrong...
-        if (old != null)
-          tab.setPath(old);
-        Message.warning("Could not save file: " + file);
-      }
-    }
-  }
+   /**
+    * Adds a new untitled tab.
+    */
+   protected void addNewUntitledTab() {
+     this.mainController.selectEditorTab();
+     final EditorTab tab = new EditorTab();
+     tab.setOnCloseRequest(e -> {e.consume(); this.closeTabSafetly(tab);});
+     this.editor.getTabs().add(tab);
+     this.editor.getSelectionModel().select(tab);
+   }
 
-  /**
-   * Saves all tabs.
-   */
-  protected void saveAllTabs() {
-    for (Tab openTab: this.editor.getTabs()) {
-      EditorTab tab = (EditorTab)openTab;
-      this.saveTab(tab, false);
-    }
-  }
+   /**
+    * Adds a new titled tab by opening a file.
+    */
+   protected void addTitledTab() {
+     this.mainController.selectEditorTab();
+     FileChooser chooser = new FileChooser();
+     chooser.setTitle("Open RISC-V File");
+     chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
+     File file = chooser.showOpenDialog(this.mainController.stage);
+     this.addTitledTab(file);
+   }
 
-  /**
-   * Closes current selected tab.
-   */
-  protected void closeTab() {
-    EditorTab tab = this.getSelectedTab();
-    if (tab != null)
-      this.closeTabSafetly(tab);
-  }
+   /**
+    * Opens a new project directory and makes it default.
+    */
+   protected void openFolder() {
+     this.mainController.selectEditorTab();
+     DirectoryChooser chooser = new DirectoryChooser();
+     chooser.setTitle("Open RISC-V Project");
+     chooser.setInitialDirectory(Settings.DIR);
+     File dir = chooser.showDialog(this.mainController.stage);
+     if (dir != null && !dir.equals(Settings.DIR)) {
+       Settings.DIR = dir;
+       // start directory watcher
+       DirWatcher.start(this);
+     }
+   }
 
-  /**
-   * Closes all tabs.
-   */
-  protected void closeAllTabs() {
-    ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
-    for (Tab openTab: tabs) {
-      EditorTab tab = (EditorTab)openTab;
-      this.closeTabSafetly(tab);
-      if (!tab.isClosed())
-        break;
-    }
-  }
+   /**
+    * Saves current selected tab if necessary.
+    */
+   protected void saveTab() {
+     EditorTab tab = this.getSelectedTab();
+     this.saveTab(tab, false);
+   }
 
-  /**
-   * Closes all tabs after saving all changes.
-   */
-  protected void quit() {
-    this.mainController.selectEditorTab();
-    boolean save = false;
-    for (Tab openTab: this.editor.getTabs())
-      save |= ((EditorTab) openTab).hasChanged();
-    if (save) {
-      CloseDialog dialog = new CloseDialog();
-      switch (dialog.showAndWait()) {
-        case 0:
-          (new ArrayList<Tab>(this.editor.getTabs())).forEach(e -> this.closeTab((EditorTab) e));
-          break;
-        case 1:
-          ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
-          for (Tab openTab: tabs) {
-            EditorTab tab = (EditorTab)openTab;
-            this.saveTab(tab, true);
-            if (!tab.isClosed())
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-    } else
-      this.closeAllTabs();
-  }
+   /**
+    * Saves as current selected tab.
+    */
+   protected void saveTabAs() {
+     EditorTab tab = this.getSelectedTab();
+     FileChooser chooser = new FileChooser();
+     chooser.setTitle("Save RISC-V File As...");
+     chooser.setInitialFileName(tab.getName());
+     chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
+     File file = chooser.showSaveDialog(this.mainController.stage);
+     if (file != null) {
+       // backup current file path
+       File old = tab.getPath();
+       // change path and save
+       try {
+         tab.setPath(file);
+         tab.save();
+       } catch (IOException e) {
+         // revert file path if something goes wrong...
+         if (old != null)
+           tab.setPath(old);
+         Message.warning("Could not save file: " + file);
+       }
+     }
+   }
 
-  /**
-   * Undo editor action.
-   */
-  protected void undo() {
-    this.getSelectedTab().undo();
-  }
+   /**
+    * Saves all tabs.
+    */
+   protected void saveAllTabs() {
+     for (Tab openTab: this.editor.getTabs()) {
+       EditorTab tab = (EditorTab)openTab;
+       this.saveTab(tab, false);
+     }
+   }
 
-  /**
-   * Redo editor action.
-   */
-  protected void redo() {
-    this.getSelectedTab().redo();
-  }
+   /**
+    * Closes current selected tab.
+    */
+   protected void closeTab() {
+     EditorTab tab = this.getSelectedTab();
+     if (tab != null)
+       this.closeTabSafetly(tab);
+   }
 
-  /**
-   * Cut editor action.
-   */
-  protected void cut() {
-    this.getSelectedTab().cut();
-  }
+   /**
+    * Closes all tabs.
+    */
+   protected void closeAllTabs() {
+     ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
+     for (Tab openTab: tabs) {
+       EditorTab tab = (EditorTab)openTab;
+       this.closeTabSafetly(tab);
+       if (!tab.isClosed())
+         break;
+     }
+   }
 
-  /**
-   * Copy editor action.
-   */
-  protected void copy() {
-    this.getSelectedTab().copy();
-  }
+   /**
+    * Closes all tabs after saving all changes.
+    */
+   protected void quit() {
+     this.mainController.selectEditorTab();
+     boolean save = false;
+     for (Tab openTab: this.editor.getTabs())
+       save |= ((EditorTab) openTab).hasChanged();
+     if (save) {
+       CloseDialog dialog = new CloseDialog();
+       switch (dialog.showAndWait()) {
+         case 0:
+           (new ArrayList<Tab>(this.editor.getTabs())).forEach(e -> this.closeTab((EditorTab) e));
+           break;
+         case 1:
+           ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
+           for (Tab openTab: tabs) {
+             EditorTab tab = (EditorTab)openTab;
+             this.saveTab(tab, true);
+             if (!tab.isClosed())
+               break;
+           }
+           break;
+         default:
+           break;
+       }
+     } else
+       this.closeAllTabs();
+   }
 
-  /**
-   * Paste editor action.
-   */
-  protected void paste() {
-    this.getSelectedTab().paste();
-  }
+   /**
+    * Undo editor action.
+    */
+   protected void undo() {
+     this.getSelectedTab().undo();
+   }
 
-  /**
-   * Select editor action.
-   */
-  protected void selectAll() {
-    this.getSelectedTab().selectAll();
-  }
+   /**
+    * Redo editor action.
+    */
+   protected void redo() {
+     this.getSelectedTab().redo();
+   }
 
-  /**
-   * Shows find/replace in buffer dialog.
-   */
-  protected void findReplaceInBuffer() {
-    if (!this.findReplaceDialog.isShowing())
-      this.findReplaceDialog.show();
-  }
+   /**
+    * Cut editor action.
+    */
+   protected void cut() {
+     this.getSelectedTab().cut();
+   }
+
+   /**
+    * Copy editor action.
+    */
+   protected void copy() {
+     this.getSelectedTab().copy();
+   }
+
+   /**
+    * Paste editor action.
+    */
+   protected void paste() {
+     this.getSelectedTab().paste();
+   }
+
+   /**
+    * Select editor action.
+    */
+   protected void selectAll() {
+     this.getSelectedTab().selectAll();
+   }
+
+   /**
+    * Shows find/replace in buffer dialog.
+    */
+   protected void findReplaceInBuffer() {
+     if (!this.findReplaceDialog.isShowing())
+       this.findReplaceDialog.show();
+   }
+
+  /*-------------------------------------------------------*
+   |                   private actions                     |
+   *-------------------------------------------------------*/
 
   /**
    * Opens a dynamic context menu at mouse position.
@@ -330,7 +360,7 @@ public class EditorController {
           } else {
             final EditorTab newTab = new EditorTab(file);
             tab = newTab;
-            tab.setOnCloseRequest(e -> this.closeTabSafetly(newTab));
+            tab.setOnCloseRequest(e -> {e.consume(); this.closeTabSafetly(newTab);});
             this.editor.getTabs().add(tab);
           }
         }
@@ -381,8 +411,7 @@ public class EditorController {
   private void closeTabSafetly(EditorTab tab) {
     if (tab.hasChanged()) {
       SaveDialog dialog = new SaveDialog(tab.getName());
-      int result = dialog.showAndWait();
-      switch (result) {
+      switch (dialog.showAndWait()) {
         // dont save
         case 0:
           this.closeTab(tab);
@@ -411,24 +440,6 @@ public class EditorController {
   }
 
   /**
-   * Gets current selected tab.
-   *
-   * @return selected tab
-   */
-  public EditorTab getSelectedTab() {
-    return (EditorTab)this.editor.getSelectionModel().getSelectedItem();
-  }
-
-  /**
-   * Gets editor tab pane.
-   *
-   * @return editor tab pane
-   */
-  public JFXTabPane getEditor() {
-    return this.editor;
-  }
-
-  /**
    * Recursively deletes a directory and remove open tabs if necessary.
    *
    * @param dir directory to delete
@@ -438,8 +449,11 @@ public class EditorController {
     // if its a directory first delete all sub-directories and files
     if (dir.isDirectory()) {
       boolean deleted = true;
-      for (File f : dir.listFiles())
-        deleted &= this.deleteDir(f);
+      File[] files = dir.listFiles();
+      if (files != null) {
+        for (File f : files)
+          deleted &= this.deleteDir(f);
+      }
       // only if all sub-directories and files were deleted
       // we can delete the parent directory
       if (deleted && dir.delete()) {
@@ -497,7 +511,7 @@ public class EditorController {
     // get user new path
     InputDialog dialog = new InputDialog();
     String filename = dialog.showAndWait("Enter the path for the new file");
-    // if user actually pressed enter
+    // if user actually enters a filename
     if (filename.length() > 0) {
       // only accept assembler files
       if (filename.endsWith(".s") || filename.endsWith(".asm")) {
@@ -534,7 +548,7 @@ public class EditorController {
     // get user new path
     InputDialog dialog = new InputDialog();
     String dirname = dialog.showAndWait("Enter the path for the new folder");
-    // if user actually pressed enter
+    // if user actually enters a dir name
     if (dirname.length() > 0) {
       // create new path
       File path = new File(item.getPath() + File.separator + dirname);
@@ -557,6 +571,7 @@ public class EditorController {
     TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
     InputDialog dialog = new InputDialog();
     String dirname = dialog.showAndWait("Enter the path for the new folder");
+    // if user actually enters a new name
     if (dirname.length() > 0) {
       File newPath = new File(item.getPath().getParent() + File.separator + dirname);
       File oldPath = item.getPath();
@@ -583,8 +598,7 @@ public class EditorController {
   private void deleteDir() {
     // only if user really wants to delete the directory
     DeleteDialog dialog = new DeleteDialog();
-    boolean delete = dialog.showAndWait();
-    if (delete) {
+    if (dialog.showAndWait()) {
       TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
       if (!this.deleteDir(item.getPath()))
         Message.warning("could not delete directory " + item.getPath());
@@ -601,7 +615,7 @@ public class EditorController {
     // get user new path
     InputDialog dialog = new InputDialog();
     String filename = dialog.showAndWait("Enter the path for the new file");
-    // if user actually pressed enter
+    // if user actually enters a new name
     if (filename.length() > 0) {
       // create new path
       File newPath = new File(item.getPath().getParent() + File.separator + filename);
@@ -661,46 +675,50 @@ public class EditorController {
     }
   }
 
-  /**
-   * Initializes editor tree view and context menus.
-   */
-  private void initTree() {
-    // create tree directory context menu
-    MenuItem newFile = new MenuItem("New File");
-    newFile.setOnAction(e -> this.addNewFile());
-    newFile.setGraphic(Icons.getImage("new_file"));
-    MenuItem newFolder = new MenuItem("New Folder");
-    newFolder.setOnAction(e -> this.addNewFolder());
-    newFolder.setGraphic(Icons.getImage("new_folder"));
-    MenuItem renameDir = new MenuItem("Rename");
-    renameDir.setOnAction(e -> this.renameDir());
-    renameDir.setGraphic(Icons.getImage("edit"));
-    MenuItem deleteDir = new MenuItem("Delete");
-    deleteDir.setOnAction(e -> this.deleteDir());
-    deleteDir.setGraphic(Icons.getImage("trash"));
-    this.dirContext = new ContextMenu();
-    this.dirContext.getItems().addAll(newFile, newFolder, renameDir, deleteDir);
-    // create tree file context menu
-    MenuItem renameFile = new MenuItem("Rename");
-    renameFile.setOnAction(e -> this.renameFile());
-    renameFile.setGraphic(Icons.getImage("edit"));
-    MenuItem deleteFile = new MenuItem("Delete");
-    deleteFile.setOnAction(e -> this.deleteFile());
-    deleteFile.setGraphic(Icons.getImage("trash"));
-    this.fileContext = new ContextMenu();
-    this.fileContext.getItems().addAll(renameFile, deleteFile);
-    // add click action to tree
-    this.tree.setOnMouseClicked(e -> {
-      this.dirContext.hide();
-      this.fileContext.hide();
-      TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
-      if (item != null) {
-        if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
-          this.addTitledTab(item.getPath());
-        else if (e.getButton() == MouseButton.SECONDARY)
-          this.openContextMenu(item, e.getScreenX(), e.getScreenY());
-      }
-    });
-  }
+  /*-------------------------------------------------------*
+   |                       Inits                           |
+   *-------------------------------------------------------*/
+
+   /**
+    * Initializes editor tree view and context menus.
+    */
+   private void initTree() {
+     // create tree directory context menu
+     MenuItem newFile = new MenuItem("New File");
+     newFile.setOnAction(e -> this.addNewFile());
+     newFile.setGraphic(Icons.getImage("new_file"));
+     MenuItem newFolder = new MenuItem("New Folder");
+     newFolder.setOnAction(e -> this.addNewFolder());
+     newFolder.setGraphic(Icons.getImage("new_folder"));
+     MenuItem renameDir = new MenuItem("Rename");
+     renameDir.setOnAction(e -> this.renameDir());
+     renameDir.setGraphic(Icons.getImage("edit"));
+     MenuItem deleteDir = new MenuItem("Delete");
+     deleteDir.setOnAction(e -> this.deleteDir());
+     deleteDir.setGraphic(Icons.getImage("trash"));
+     this.dirContext = new ContextMenu();
+     this.dirContext.getItems().addAll(newFile, newFolder, renameDir, deleteDir);
+     // create tree file context menu
+     MenuItem renameFile = new MenuItem("Rename");
+     renameFile.setOnAction(e -> this.renameFile());
+     renameFile.setGraphic(Icons.getImage("edit"));
+     MenuItem deleteFile = new MenuItem("Delete");
+     deleteFile.setOnAction(e -> this.deleteFile());
+     deleteFile.setGraphic(Icons.getImage("trash"));
+     this.fileContext = new ContextMenu();
+     this.fileContext.getItems().addAll(renameFile, deleteFile);
+     // add click action to tree
+     this.tree.setOnMouseClicked(e -> {
+       this.dirContext.hide();
+       this.fileContext.hide();
+       TreePath item = (TreePath)this.tree.getSelectionModel().getSelectedItem();
+       if (item != null) {
+         if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
+           this.addTitledTab(item.getPath());
+         else if (e.getButton() == MouseButton.SECONDARY)
+           this.openContextMenu(item, e.getScreenX(), e.getScreenY());
+       }
+     });
+   }
 
 }
