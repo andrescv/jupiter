@@ -158,6 +158,10 @@ public class SimulatorController {
     this.initButtons();
   }
 
+  /*-------------------------------------------------------*
+   |                  protected actions                    |
+   *-------------------------------------------------------*/
+
   /**
    * Assembles all files in directory.
    */
@@ -290,12 +294,15 @@ public class SimulatorController {
         Message.log("machine code dumped to: " + file);
       } catch (IOException e) {
         Message.error("the file " + file  + " could not be written");
-      } finally {
         if (file.exists() && file.length() == 0)
           file.delete();
       }
     }
   }
+
+  /*-------------------------------------------------------*
+   |                   private actions                     |
+   *-------------------------------------------------------*/
 
   /**
    * This methods adds or deletes a breakpoint at the stament address
@@ -311,6 +318,187 @@ public class SimulatorController {
       this.debugger.delete(address);
     Platform.runLater(() -> this.textTable.refresh());
   }
+
+  /**
+   * Refreshes all simulator tables views.
+   */
+  private void refreshTables() {
+    Platform.runLater(() -> {
+      this.textTable.refresh();
+      this.rviTable.refresh();
+      this.rvfTable.refresh();
+      this.memTable.refresh();
+    });
+  }
+
+  /**
+   * Changes memory display setting to hexadecimal.
+   */
+  private void memoryDisplayHex() {
+    Settings.DISP_MEM_CELL = 0;
+    Platform.runLater(() -> {
+      for (MemoryCell cell: this.memTable.getItems())
+        cell.update();
+    });
+  }
+
+  /**
+   * Changes memory display setting to ascii.
+   */
+  private void memoryDisplayAscii() {
+    Settings.DISP_MEM_CELL = 1;
+    Platform.runLater(() -> {
+      for (MemoryCell cell: this.memTable.getItems())
+        cell.update();
+    });
+  }
+
+  /**
+   * Changes memory display setting to decimal.
+   */
+  private void memoryDisplayDecimal() {
+    Settings.DISP_MEM_CELL = 2;
+    Platform.runLater(() -> {
+      for (MemoryCell cell: this.memTable.getItems())
+        cell.update();
+    });
+  }
+
+  /**
+   * Changes rvi register display setting to decimal.
+   */
+  private void rviDisplayDecimal() {
+    Settings.DISP_RVI_REG = 2;
+    Platform.runLater(() -> {
+      for (Register reg: this.rviTable.getItems())
+        reg.update();
+    });
+  }
+
+  /**
+   * Changes rvi register display setting to unsigned.
+   */
+  private void rviDisplayUnsigned() {
+    Settings.DISP_RVI_REG = 1;
+    Platform.runLater(() -> {
+      for (Register reg: this.rviTable.getItems())
+        reg.update();
+    });
+  }
+
+  /**
+   * Changes rvi register display setting to hexadecimal.
+   */
+  private void rviDisplayHex() {
+    Settings.DISP_RVI_REG = 0;
+    Platform.runLater(() -> {
+      for (Register reg: this.rviTable.getItems())
+        reg.update();
+    });
+  }
+
+  /**
+   * Changes rvf register display setting to hexadecimal.
+   */
+  private void rvfDisplayHex() {
+    Settings.DISP_RVF_REG = 0;
+    Platform.runLater(() -> {
+      for (Register reg: this.rvfTable.getItems())
+        reg.update();
+    });
+  }
+
+  /**
+   * Changes rvf register display setting to float.
+   */
+  private void rvfDisplayFloat() {
+    Settings.DISP_RVF_REG = 1;
+    Platform.runLater(() -> {
+      for (Register reg: this.rvfTable.getItems())
+        reg.update();
+    });
+  }
+
+  /**
+   * Updates an editable memory cell offset column.
+   *
+   * @param t cell edit event
+   */
+  private void updateMemoryCell(CellEditEvent<MemoryCell, String> t) {
+    // get offset
+    int offset = t.getTablePosition().getColumn() - 1;
+    // get memory cell to get integer address
+    MemoryCell cell = (MemoryCell)t.getTableView().getItems().get(t.getTablePosition().getRow());
+    String newValue = t.getNewValue().trim();
+    // convert input to an integer value
+    try {
+      // user enters a hex
+      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
+        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue.substring(2), 16));
+      // user enters a decimal
+      else
+        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue));
+    } catch (Exception e) {
+      Message.warning("invalid memory cell value: " + newValue);
+    }
+    // always refresh table
+    Platform.runLater(() -> this.memTable.refresh());
+  }
+
+  /**
+   * Updates an editable rvi register cell column.
+   *
+   * @param t cell edit event
+   */
+  private void updateRVIRegister(CellEditEvent<Register, String> t) {
+    // get register to set value
+    Register reg = (Register)t.getTableView().getItems().get(t.getTablePosition().getRow());
+    // get user input
+    String newValue = t.getNewValue().trim();
+    try {
+      // user enters a hex
+      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
+        reg.setValue(Integer.parseInt(newValue.substring(2), 16));
+      // user enters a binary
+      else if (newValue.matches("^0[bB][01]+$"))
+        reg.setValue(Integer.parseInt(newValue.substring(2), 2));
+      // user enters a decimal
+      else
+        reg.setValue(Integer.parseInt(newValue));
+    } catch (Exception e) {
+      Message.warning("invalid register value: " + newValue);
+    }
+    // always refresh table
+    Platform.runLater(() -> this.rviTable.refresh());
+  }
+
+  /**
+   * Updates an editable rvf register cell column.
+   *
+   * @param t cell edit event
+   */
+  private void updateRVFRegister(CellEditEvent<Register, String> t) {
+    // get register to set value
+    Register reg = (Register)t.getTableView().getItems().get(t.getTablePosition().getRow());
+    // get user input
+    String newValue = t.getNewValue().trim();
+    try {
+      // user enters a hex value
+      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
+        reg.setValue(Integer.parseInt(newValue));
+      // user enters a float
+      else
+        reg.setValue(Float.floatToIntBits(Float.parseFloat(newValue)));
+    } catch (Exception e) {
+      Message.warning("invalid register value: " + newValue);
+    }
+    Platform.runLater(() -> this.rvfTable.refresh());
+  }
+
+
+  /*-------------------------------------------------------*
+   |                       Inits                           |
+   *-------------------------------------------------------*/
 
   /**
    * This method initializes simulator control buttons.
@@ -489,20 +677,17 @@ public class SimulatorController {
     // apply style to modified rvi register
     ObservableList<Register> rviList = Globals.regfile.getRVI();
     for (Register reg: rviList) {
-      reg.setOnSetValueListener(new Register.OnSetValueListener() {
-        @Override
-        public void onValueSet(int number) {
-          lastReg = reg;
-          if (!Status.RUNNING.get()) {
-            Platform.runLater(() -> {
-              hardware.getSelectionModel().select(rviTab);
-              int first = rviVFlow.getFirstVisibleCell().getIndex();
-              int last = rviVFlow.getLastVisibleCell().getIndex();
-              if (number >= last || number <= first)
-                rviTable.scrollTo(number);
-              rviTable.refresh();
-            });
-          }
+      reg.setOnSetValueListener(number -> {
+        lastReg = reg;
+        if (!Status.RUNNING.get()) {
+          Platform.runLater(() -> {
+            hardware.getSelectionModel().select(rviTab);
+            int first = rviVFlow.getFirstVisibleCell().getIndex();
+            int last = rviVFlow.getLastVisibleCell().getIndex();
+            if (number >= last || number <= first)
+              rviTable.scrollTo(number);
+            rviTable.refresh();
+          });
         }
       });
     }
@@ -533,20 +718,17 @@ public class SimulatorController {
     // apply style to modified rvf register
     ObservableList<Register> rvfList = Globals.fregfile.getRVF();
     for (Register reg: rvfList) {
-      reg.setOnSetValueListener(new Register.OnSetValueListener() {
-        @Override
-        public void onValueSet(int number) {
-          lastReg = reg;
-          if (!Status.RUNNING.get()) {
-            Platform.runLater(() -> {
-              hardware.getSelectionModel().select(rvfTab);
-              int first = rvfVFlow.getFirstVisibleCell().getIndex();
-              int last = rvfVFlow.getLastVisibleCell().getIndex();
-              if (number >= last || number <= first)
-                rvfTable.scrollTo(number);
-              rvfTable.refresh();
-            });
-          }
+      reg.setOnSetValueListener(number -> {
+        lastReg = reg;
+        if (!Status.RUNNING.get()) {
+          Platform.runLater(() -> {
+            hardware.getSelectionModel().select(rvfTab);
+            int first = rvfVFlow.getFirstVisibleCell().getIndex();
+            int last = rvfVFlow.getLastVisibleCell().getIndex();
+            if (number >= last || number <= first)
+              rvfTable.scrollTo(number);
+            rvfTable.refresh();
+          });
         }
       });
     }
@@ -596,6 +778,7 @@ public class SimulatorController {
     Platform.runLater(() -> {
       this.rviTable.refresh();
       this.rvfTable.refresh();
+      // get virtual flows
       this.rviVFlow = (VirtualFlow<?>)((TableViewSkin<?>)this.rviTable.getSkin()).getChildren().get(1);
       this.rvfVFlow = (VirtualFlow<?>)((TableViewSkin<?>)this.rvfTable.getSkin()).getChildren().get(1);
     });
@@ -620,166 +803,6 @@ public class SimulatorController {
         }
       }
     });
-  }
-
-  /**
-   * Refreshes all simulator tables views.
-   */
-  private void refreshTables() {
-    Platform.runLater(() -> {
-      this.textTable.refresh();
-      this.rviTable.refresh();
-      this.rvfTable.refresh();
-      this.memTable.refresh();
-    });
-  }
-
-  /**
-   * Changes memory display setting to hexadecimal.
-   */
-  private void memoryDisplayHex() {
-    Settings.DISP_MEM_CELL = 0;
-    for (MemoryCell cell: this.memTable.getItems())
-      cell.update();
-  }
-
-  /**
-   * Changes memory display setting to ascii.
-   */
-  private void memoryDisplayAscii() {
-    Settings.DISP_MEM_CELL = 1;
-    for (MemoryCell cell: this.memTable.getItems())
-      cell.update();
-  }
-
-  /**
-   * Changes memory display setting to decimal.
-   */
-  private void memoryDisplayDecimal() {
-    Settings.DISP_MEM_CELL = 2;
-    for (MemoryCell cell: this.memTable.getItems())
-      cell.update();
-  }
-
-  /**
-   * Changes rvi register display setting to decimal.
-   */
-  private void rviDisplayDecimal() {
-    Settings.DISP_RVI_REG = 2;
-    for (Register reg: this.rviTable.getItems())
-      reg.update();
-  }
-
-  /**
-   * Changes rvi register display setting to unsigned.
-   */
-  private void rviDisplayUnsigned() {
-    Settings.DISP_RVI_REG = 1;
-    for (Register reg: this.rviTable.getItems())
-      reg.update();
-  }
-
-  /**
-   * Changes rvi register display setting to hexadecimal.
-   */
-  private void rviDisplayHex() {
-    Settings.DISP_RVI_REG = 0;
-    for (Register reg: this.rviTable.getItems())
-      reg.update();
-  }
-
-  /**
-   * Changes rvf register display setting to hexadecimal.
-   */
-  private void rvfDisplayHex() {
-    Settings.DISP_RVF_REG = 0;
-    for (Register reg: this.rvfTable.getItems())
-      reg.update();
-  }
-
-  /**
-   * Changes rvf register display setting to float.
-   */
-  private void rvfDisplayFloat() {
-    Settings.DISP_RVF_REG = 1;
-    for (Register reg: this.rvfTable.getItems())
-      reg.update();
-  }
-
-  /**
-   * Updates an editable memory cell offset column.
-   *
-   * @param t cell edit event
-   */
-  private void updateMemoryCell(CellEditEvent<MemoryCell, String> t) {
-    // get offset
-    int offset = t.getTablePosition().getColumn() - 1;
-    // get memory cell to get integer address
-    MemoryCell cell = (MemoryCell)t.getTableView().getItems().get(t.getTablePosition().getRow());
-    String newValue = t.getNewValue().trim();
-    // convert input to an integer value
-    try {
-      // user enters a hex
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue.substring(2), 16));
-      // user enters a decimal
-      else
-        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue));
-    } catch (Exception e) {
-      Message.warning("invalid memory cell value: " + newValue);
-    }
-    // always refresh table
-    Platform.runLater(() -> this.memTable.refresh());
-  }
-
-  /**
-   * Updates an editable rvi register cell column.
-   *
-   * @param t cell edit event
-   */
-  private void updateRVIRegister(CellEditEvent<Register, String> t) {
-    // get register to set value
-    Register reg = (Register)t.getTableView().getItems().get(t.getTablePosition().getRow());
-    // get user input
-    String newValue = t.getNewValue().trim();
-    try {
-      // user enters a hex
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        reg.setValue(Integer.parseInt(newValue.substring(2), 16));
-      // user enters a binary
-      else if (newValue.matches("^0[bB][01]+$"))
-        reg.setValue(Integer.parseInt(newValue.substring(2), 2));
-      // user enters a decimal
-      else
-        reg.setValue(Integer.parseInt(newValue));
-    } catch (Exception e) {
-      Message.warning("invalid register value: " + newValue);
-    }
-    // always refresh table
-    Platform.runLater(() -> this.rviTable.refresh());
-  }
-
-  /**
-   * Updates an editable rvf register cell column.
-   *
-   * @param t cell edit event
-   */
-  private void updateRVFRegister(CellEditEvent<Register, String> t) {
-    // get register to set value
-    Register reg = (Register)t.getTableView().getItems().get(t.getTablePosition().getRow());
-    // get user input
-    String newValue = t.getNewValue().trim();
-    try {
-      // user enters a hex value
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        reg.setValue(Integer.parseInt(newValue));
-      // user enters a float
-      else
-        reg.setValue(Float.floatToIntBits(Float.parseFloat(newValue)));
-    } catch (Exception e) {
-      Message.warning("invalid register value: " + newValue);
-    }
-    Platform.runLater(() -> this.rvfTable.refresh());
   }
 
 }
