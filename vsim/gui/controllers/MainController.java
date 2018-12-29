@@ -1,6 +1,7 @@
 package vsim.gui.controllers;
 
 import vsim.Globals;
+import vsim.Settings;
 import vsim.utils.IO;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
@@ -8,15 +9,17 @@ import java.io.PrintStream;
 import vsim.gui.utils.Icons;
 import vsim.simulator.Status;
 import javafx.scene.control.Tab;
+import javafx.scene.control.Label;
 import vsim.gui.utils.ConsoleInput;
+import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.beans.binding.Bindings;
+import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.ContextMenu;
 import vsim.gui.utils.CustomOutputStream;
-import com.jfoenix.controls.JFXProgressBar;
-import javafx.scene.control.ProgressIndicator;
+
 
 /**
  * Main controller class.
@@ -30,8 +33,11 @@ public class MainController {
   /** Main tab pane simulator tab */
   @FXML protected Tab simTab;
 
-  /** Simulator progress bar */
-  @FXML protected JFXProgressBar progressBar;
+  /** Version label */
+  @FXML protected Label version;
+
+  /** Simulator progress */
+  @FXML protected JFXSpinner progress;
 
   /** Console text area */
   @FXML protected TextArea console;
@@ -52,7 +58,7 @@ public class MainController {
    * @param stage primary stage
    */
   public void initialize(Stage stage) {
-    this.loading(true);
+    this.loading(false);
     this.stage = stage;
     this.initConsole();
     // disable simulation tab if project is not ready
@@ -65,7 +71,7 @@ public class MainController {
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
-    this.loading(false);
+    this.version.setText(Settings.VERSION);
   }
 
   /**
@@ -88,10 +94,12 @@ public class MainController {
    * @param isLoading if currently in loading mode
    */
   protected void loading(boolean isLoading) {
-    if (isLoading)
-      this.progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-    else
-      this.progressBar.setProgress(0.0f);
+    Platform.runLater(() -> {
+      if (isLoading)
+        this.progress.setVisible(true);
+      else
+        this.progress.setVisible(false);
+    });
   }
 
   /**
