@@ -379,13 +379,14 @@
 
 .text-area {
   -fx-background-insets: 0;
-  -fx-background-radius: 0, 0, 0, 0;
+  -fx-background-radius: 0;
   -fx-border-width: 0;
   -fx-background-color: transparent, white, transparent, white;
   -fx-text-box-border: white;
 }
 
 .text-area .content {
+  -fx-background-radius: 0;
   -fx-background-color: transparent, white, transparent, white;
 }
 
