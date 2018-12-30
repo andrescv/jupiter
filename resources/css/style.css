@@ -214,7 +214,7 @@
 */
 
 .jfx-tab-pane {
-  -fx-background-color: -fx-primary-light;
+  -fx-background-color: -fx-primary;
 }
 
 .jfx-tab-pane .tab-header-area .jfx-rippler{
