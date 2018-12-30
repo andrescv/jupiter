@@ -63,8 +63,7 @@ public final class RegisterEditingCell extends TableCell<Register, String> {
         this.setGraphic(textField);
       } else {
         this.setText(this.getString());
-        Tooltip tt = new Tooltip(this.getString());
-        this.setTooltip(tt);
+        this.setTooltip(new Tooltip(this.getString()));
         this.setGraphic(null);
       }
     }

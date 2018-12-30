@@ -16,16 +16,13 @@ public final class InfoCell extends TableCell<InfoStatement, String> {
   @Override
   public void updateItem(String item, boolean empty) {
     super.updateItem(item, empty);
-    if (empty) {
+    if (empty || item == null) {
       this.setText("");
       this.setGraphic(null);
     } else {
-      this.setText(this.getItem() == null ? "" : this.getItem().toString());
+      this.setText(item);
       this.setGraphic(null);
-      if (this.getTooltip() == null) {
-        Tooltip tt = new Tooltip(this.getText());
-        this.setTooltip(tt);
-      }
+      this.setTooltip(new Tooltip(this.getText()));
     }
   }
 
