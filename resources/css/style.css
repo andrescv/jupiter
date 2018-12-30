@@ -34,6 +34,7 @@
 */
 .jfx-decorator {
   -fx-decorator-color: -fx-primary-dark;
+  -fx-background-color: -fx-primary-dark;
 }
 
 .jfx-decorator-text {
@@ -300,7 +301,7 @@
   -fx-background-color: -fx-code-area-bg;
   -fx-font-weight: bold;
   -fx-font-family: 'Envy Code R';
-  -fx-font-size: 16px;
+  -fx-font-size: 14pt;
   -fx-font-smoothing-type: gray;
 }
 
@@ -309,6 +310,7 @@
 }
 
 .code-area .lineno {
+  -fx-font-size: 14pt;
   -fx-text-fill: -fx-lineno-text;
   -fx-background-color: -fx-lineno-bg;
 }
@@ -626,6 +628,7 @@
 .check-box.setting:selected .box {
   -fx-border-color: #0F9D58 !important;
   -fx-background-color: #0F9D58 !important;
+  -fx-label-padding: 0;
 }
 
 .check-box:selected .mark {
