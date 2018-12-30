@@ -361,7 +361,7 @@
                   </ImageView>
                </graphic>
             </MenuItem>
-            <MenuItem fx:id="about" mnemonicParsing="false" text="About">
+            <MenuItem fx:id="about" mnemonicParsing="false" onAction="#about" text="About">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.beans.binding.Bindings;
 import vsim.gui.components.InputDialog;
+import vsim.gui.components.AboutDialog;
 import com.jfoenix.controls.JFXCheckBox;
 import javafx.beans.binding.BooleanBinding;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -101,6 +102,9 @@ public class MenuBarController {
   /** Help menu about option */
   @FXML private MenuItem about;
 
+  /** About dialog */
+  private AboutDialog aboutDialog;
+
   /** Reference to Main controller */
   private MainController mainController;
 
@@ -145,6 +149,11 @@ public class MenuBarController {
     this.onlyOpenBox.setSelected(Settings.ASSEMBLE_ONLY_OPEN);
     this.warningsBox.setSelected(Settings.EXTRICT);
     this.permitBox.setSelected(!Settings.BARE);
+    this.showLabelsBox.setText("");
+    this.popupBox.setText("");
+    this.onlyOpenBox.setText("");
+    this.warningsBox.setText("");
+    this.permitBox.setText("");
   }
 
   /*-------------------------------------------------------*
@@ -304,12 +313,15 @@ public class MenuBarController {
   /*-------------------------------------------------------*
    |                      Help Menu                        |
    *-------------------------------------------------------*/
+
   @FXML private void help(ActionEvent e) {
     // TODO
   }
 
   @FXML private void about(ActionEvent e) {
-    // TODO
+    if (this.aboutDialog == null)
+      this.aboutDialog = new AboutDialog();
+    this.aboutDialog.show();
   }
 
 }
