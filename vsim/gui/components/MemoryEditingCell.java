@@ -65,8 +65,7 @@ public final class MemoryEditingCell extends TableCell<MemoryCell, String> {
       } else {
         this.setText(this.getString());
         this.setGraphic(null);
-        Tooltip tt = new Tooltip(this.getString());
-        this.setTooltip(tt);
+        this.setTooltip(new Tooltip(this.getString()));
       }
     }
   }
