@@ -73,6 +73,7 @@ public final class VSim {
     } else {
       Settings.GUI = true;
       System.setProperty("prism.lcdtext", "false");
+      Settings.load();
       LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
     }
   }

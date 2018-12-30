@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import vsim.gui.utils.Icons;
 import javafx.util.Callback;
 import vsim.simulator.Status;
+import java.util.Collections;
 import vsim.riscv.MemoryCell;
 import java.io.BufferedWriter;
 import javafx.css.PseudoClass;
@@ -25,8 +26,10 @@ import javafx.stage.FileChooser;
 import vsim.linker.LinkedProgram;
 import vsim.linker.InfoStatement;
 import vsim.riscv.MemorySegments;
+import vsim.gui.utils.SymbolInfo;
 import javafx.application.Platform;
 import vsim.gui.components.InfoCell;
+import javafx.scene.control.Tooltip;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableRow;
@@ -121,6 +124,15 @@ public class SimulatorController {
   /** RISC-V memory table view offset 3 column */
   @FXML protected TableColumn<MemoryCell, String> memOffset3;
 
+  /** Assembler Symbol Table tab */
+  @FXML protected Tab STTab;
+  /** Assembler Symbol Table table view */
+  @FXML protected TableView<SymbolInfo> STTable;
+  /** Assembler Symbol Table symbol name column */
+  @FXML protected TableColumn<SymbolInfo, String> stSymbol;
+  /** Assembler Symbol Table symbol address column */
+  @FXML protected TableColumn<SymbolInfo, String> stAddress;
+
   /** RISC-V memory up button */
   @FXML protected JFXButton upBtn;
   /** RISC-V memory down button */
@@ -154,6 +166,7 @@ public class SimulatorController {
     this.mainController = controller;
     this.initRegFiles();
     this.initMemory();
+    this.initST();
     this.initText();
     this.initButtons();
   }
@@ -169,8 +182,10 @@ public class SimulatorController {
     // reset simulator state
     Status.reset();
     Globals.reset();
+    this.mainController.loading(true);
     this.debugger = null;
     this.textTable.getItems().clear();
+    this.STTable.getItems().clear();
     Status.READY.set(false);
     ArrayList<File> files = new ArrayList<File>();
     if (Cmd.getFilesInDir(files)) {
@@ -178,22 +193,44 @@ public class SimulatorController {
       if (program != null) {
         program.reset();
         this.debugger = new Debugger(program);
-        Status.READY.set(true);
         ObservableList<InfoStatement> stmts = program.getInfoStatements();
         for (InfoStatement stmt: stmts)
           stmt.breakpointProperty().addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
+        // update text table view
         this.textTable.setItems(stmts);
-        this.mainController.selectSimulatorTab();
-        /*
-          Align table columns
-
-          Ref:
-          https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
-        */
-        Platform.runLater(() -> {
-          this.textTable.refresh();
-          this.vflow = (VirtualFlow<?>)((TableViewSkin<?>)this.textTable.getSkin()).getChildren().get(1);
+        // update symbol table table view
+        ArrayList<String> symFiles = new ArrayList<String>(Globals.local.keySet());
+        Collections.sort(symFiles);
+        for (String file: symFiles) {
+          this.STTable.getItems().add(new SymbolInfo(file, -1, true));
+          ArrayList<SymbolInfo> symbols = new ArrayList<SymbolInfo>();
+          for (String name: Globals.local.get(file).labels())
+            symbols.add(new SymbolInfo(name, Globals.local.get(file).get(name), false));
+          Collections.sort(symbols);
+          symbols.forEach(e -> this.STTable.getItems().add(e));
+        }
+        // if i just use Platform.runLater like suggested in here:
+        // https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
+        // column headers are misaligned and ugly anyways.
+        // dont know why this is necessary or I'm missing something...
+        Thread t = new Thread(() -> {
+          try {
+            Thread.sleep(50);
+          } catch (InterruptedException e) {
+          } finally {
+            Platform.runLater(() -> {
+              this.textTable.requestFocus();
+              this.textTable.refresh();
+              this.STTable.refresh();
+              this.vflow = (VirtualFlow<?>)((TableViewSkin<?>)this.textTable.getSkin()).getChildren().get(1);
+              Status.READY.set(true);
+              this.mainController.selectSimulatorTab();
+              this.mainController.loading(false);
+            });
+          }
         });
+        t.setDaemon(true);
+        t.start();
       }
     };
   }
@@ -207,9 +244,11 @@ public class SimulatorController {
       @Override
       protected Boolean call() throws Exception {
         Status.RUNNING.set(true);
+        mainController.loading(true);
         refreshTables();
         while (!this.isCancelled() && debugger.step(true));
         Status.RUNNING.set(false);
+        mainController.loading(false);
         refreshTables();
         if (this.isCancelled())
           return false;
@@ -237,7 +276,9 @@ public class SimulatorController {
     Thread th = new Thread(new Task<Boolean>() {
       @Override
       public Boolean call() throws Exception {
+        mainController.loading(true);
         debugger.step(false);
+        mainController.loading(false);
         return true;
       }
     });
@@ -297,6 +338,21 @@ public class SimulatorController {
         if (file.exists() && file.length() == 0)
           file.delete();
       }
+    }
+  }
+
+  /**
+   * Shows Symbol Table tab if SHOW_LABELS setting is set to true.
+   */
+  protected void showST() {
+    if (Settings.SHOW_LABELS) {
+      if (!this.hardware.getTabs().contains(this.STTab))
+        this.hardware.getTabs().add(this.STTab);
+    } else {
+      Tab selected = this.hardware.getSelectionModel().getSelectedItem();
+      this.hardware.getTabs().remove(this.STTab);
+      if (selected == this.STTab)
+        this.hardware.getSelectionModel().select(0);
     }
   }
 
@@ -803,6 +859,45 @@ public class SimulatorController {
         }
       }
     });
+  }
+
+  /**
+   * This method initializes ST table.
+   */
+  private void initST() {
+    this.stSymbol.setCellValueFactory(new PropertyValueFactory<SymbolInfo, String>("name"));
+    this.stAddress.setCellValueFactory(new PropertyValueFactory<SymbolInfo, String>("address"));
+    PseudoClass symFile = PseudoClass.getPseudoClass("symFile");
+    this.stSymbol.setCellFactory(tc -> {
+      return new TableCell<SymbolInfo, String>() {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          SymbolInfo sym = (SymbolInfo)this.getTableRow().getItem();
+          if (item != null && !empty && sym != null) {
+            if (!sym.isFile())
+              this.setText(item);
+            else {
+              this.setText(new File(item).getName());
+              this.pseudoClassStateChanged(symFile, true);
+            }
+            this.setTooltip(new Tooltip(item));
+          }
+        }
+      };
+    });
+    this.stAddress.setCellFactory(tc -> {
+      return new TableCell<SymbolInfo, String>() {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          SymbolInfo sym = (SymbolInfo)this.getTableRow().getItem();
+          if (item != null && !empty && sym != null && !sym.isFile())
+            this.setText(item);
+        }
+      };
+    });
+    this.showST();
   }
 
 }
