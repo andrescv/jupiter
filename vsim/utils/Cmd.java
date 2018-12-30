@@ -46,6 +46,7 @@ public final class Cmd {
     parser.add("-all",     "assemble all files in directory");
     parser.add("-bare",    "bare machine (no pseudo-ops)");
     parser.add("-quiet",   "do not print warnings");
+    parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-nocolor", "do not colorize output");
     parser.add("-usage",   "print usage of an instruction and exit", "<mnemonic>");
     parser.add("-notitle", "do not print V-Sim title");
@@ -69,6 +70,7 @@ public final class Cmd {
     // override default Settings
     Settings.BARE = parser.hasFlag("-bare");
     Settings.QUIET = parser.hasFlag("-quiet");
+    Settings.EXTRICT = parser.hasFlag("-extrict");
     Settings.COLORIZE = !parser.hasFlag("-nocolor");
     Settings.TITLE = !parser.hasFlag("-notitle");
     Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;
