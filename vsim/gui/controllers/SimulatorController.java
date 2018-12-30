@@ -231,7 +231,8 @@ public class SimulatorController {
         });
         t.setDaemon(true);
         t.start();
-      }
+      } else
+        this.mainController.loading(false);
     };
   }
 
