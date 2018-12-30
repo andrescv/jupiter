@@ -292,29 +292,29 @@
          <items>
             <MenuItem fx:id="showLabels" mnemonicParsing="false" onAction="#showLabels" text="Show Labels Tab (Symbol Table)">
                <graphic>
-                  <JFXCheckBox fx:id="showLabelsBox" text=" " />
+                  <JFXCheckBox fx:id="showLabelsBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <MenuItem fx:id="popup" mnemonicParsing="false" onAction="#popup" text="Popup Dialog For Input Ecalls">
                <graphic>
-                  <JFXCheckBox fx:id="popupBox" text=" " />
+                  <JFXCheckBox fx:id="popupBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="onlyOpen" mnemonicParsing="false" onAction="#onlyOpen" text="Assemble All Files Currently Open">
                <graphic>
-                  <JFXCheckBox fx:id="onlyOpenBox" text=" " />
+                  <JFXCheckBox fx:id="onlyOpenBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <MenuItem fx:id="warnings" mnemonicParsing="false" onAction="#warnings" text="Assembler Warnings Are Consider Errors">
                <graphic>
-                  <JFXCheckBox fx:id="warningsBox" text=" " />
+                  <JFXCheckBox fx:id="warningsBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="permit" mnemonicParsing="false" onAction="#permit" text="Permit Pseudo Instructions">
                <graphic>
-                  <JFXCheckBox fx:id="permitBox" text=" " />
+                  <JFXCheckBox fx:id="permitBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />

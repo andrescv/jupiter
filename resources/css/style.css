@@ -623,6 +623,11 @@
   -fx-background-color: -checked-color;
 }
 
+.check-box.setting:selected .box {
+  -fx-border-color: #0F9D58 !important;
+  -fx-background-color: #0F9D58 !important;
+}
+
 .check-box:selected .mark {
   -fx-shape: "M384 690l452-452 60 60-512 512-238-238 60-60z";
   -fx-max-width: 15;
