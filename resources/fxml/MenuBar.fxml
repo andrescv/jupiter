@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -281,6 +282,65 @@
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/icons/clear.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="_Settings">
+         <items>
+            <MenuItem fx:id="showLabels" mnemonicParsing="false" onAction="#showLabels" text="Show Labels Tab (Symbol Table)">
+               <graphic>
+                  <JFXCheckBox fx:id="showLabelsBox" text=" " />
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="popup" mnemonicParsing="false" onAction="#popup" text="Popup Dialog For Input Ecalls">
+               <graphic>
+                  <JFXCheckBox fx:id="popupBox" text=" " />
+               </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="onlyOpen" mnemonicParsing="false" onAction="#onlyOpen" text="Assemble All Files Currently Open">
+               <graphic>
+                  <JFXCheckBox fx:id="onlyOpenBox" text=" " />
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="warnings" mnemonicParsing="false" onAction="#warnings" text="Assembler Warnings Are Consider Errors">
+               <graphic>
+                  <JFXCheckBox fx:id="warningsBox" text=" " />
+               </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="permit" mnemonicParsing="false" onAction="#permit" text="Permit Pseudo Instructions">
+               <graphic>
+                  <JFXCheckBox fx:id="permitBox" text=" " />
+               </graphic>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/editor.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="trap" mnemonicParsing="false" onAction="#trap" text="Trap Handler">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/trap.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="start" mnemonicParsing="false" onAction="#start" text="Change Start Label">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/label.png" />
                      </image>
                   </ImageView>
                </graphic>

@@ -9,16 +9,16 @@ import java.io.PrintStream;
 import vsim.gui.utils.Icons;
 import vsim.simulator.Status;
 import javafx.scene.control.Tab;
-import javafx.scene.control.Label;
 import vsim.gui.utils.ConsoleInput;
 import javafx.application.Platform;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.beans.binding.Bindings;
-import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.ContextMenu;
 import vsim.gui.utils.CustomOutputStream;
+import com.jfoenix.controls.JFXProgressBar;
 
 
 /**
@@ -33,11 +33,8 @@ public class MainController {
   /** Main tab pane simulator tab */
   @FXML protected Tab simTab;
 
-  /** Version label */
-  @FXML protected Label version;
-
   /** Simulator progress */
-  @FXML protected JFXSpinner progress;
+  @FXML protected JFXProgressBar progress;
 
   /** Console text area */
   @FXML protected TextArea console;
@@ -71,7 +68,6 @@ public class MainController {
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
-    this.version.setText(Settings.VERSION);
   }
 
   /**
@@ -96,9 +92,9 @@ public class MainController {
   protected void loading(boolean isLoading) {
     Platform.runLater(() -> {
       if (isLoading)
-        this.progress.setVisible(true);
+        this.progress.setProgress(-1.0f);
       else
-        this.progress.setVisible(false);
+        this.progress.setProgress(0.0f);
     });
   }
 

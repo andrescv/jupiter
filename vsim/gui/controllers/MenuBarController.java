@@ -1,13 +1,19 @@
 package vsim.gui.controllers;
 
+import java.io.File;
+import vsim.Settings;
 import javafx.fxml.FXML;
 import javafx.event.Event;
 import vsim.simulator.Status;
 import javafx.event.ActionEvent;
+import javafx.stage.FileChooser;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.beans.binding.Bindings;
+import vsim.gui.components.InputDialog;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.beans.binding.BooleanBinding;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 
 
@@ -17,56 +23,83 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 public class MenuBarController {
 
   /** File menu new file option */
-  @FXML protected MenuItem newFile;
+  @FXML private MenuItem newFile;
   /** File menu open file option */
-  @FXML protected MenuItem openFile;
+  @FXML private MenuItem openFile;
   /** File menu open folder option */
-  @FXML protected MenuItem openFolder;
+  @FXML private MenuItem openFolder;
   /** File menu save option */
-  @FXML protected MenuItem save;
+  @FXML private MenuItem save;
   /** File menu save as... option */
-  @FXML protected MenuItem saveAs;
+  @FXML private MenuItem saveAs;
   /** File menu save all option */
-  @FXML protected MenuItem saveAll;
+  @FXML private MenuItem saveAll;
   /** File menu close tab option */
-  @FXML protected MenuItem closeTab;
+  @FXML private MenuItem closeTab;
   /** File menu close all tabs option */
-  @FXML protected MenuItem closeAll;
+  @FXML private MenuItem closeAll;
   /** File menu quit option */
-  @FXML protected MenuItem quit;
+  @FXML private MenuItem quit;
 
   /** Edit menu undo option */
-  @FXML protected MenuItem undo;
+  @FXML private MenuItem undo;
   /** Edit menu redo option */
-  @FXML protected MenuItem redo;
+  @FXML private MenuItem redo;
   /** Edit menu cut option */
-  @FXML protected MenuItem cut;
+  @FXML private MenuItem cut;
   /** Edit menu copy option */
-  @FXML protected MenuItem copy;
+  @FXML private MenuItem copy;
   /** Edit menu paste option */
-  @FXML protected MenuItem paste;
+  @FXML private MenuItem paste;
   /** Edit menu select all option */
-  @FXML protected MenuItem selectAll;
+  @FXML private MenuItem selectAll;
   /** Edit menu find/replace in buffer option */
-  @FXML protected MenuItem findReplaceInBuffer;
+  @FXML private MenuItem findReplaceInBuffer;
 
   /** Run menu assemble option */
-  @FXML protected MenuItem assemble;
+  @FXML private MenuItem assemble;
   /** Run menu go option */
-  @FXML protected MenuItem go;
+  @FXML private MenuItem go;
   /** Run menu step option */
-  @FXML protected MenuItem step;
+  @FXML private MenuItem step;
   /** Run menu backstep option */
-  @FXML protected MenuItem backstep;
+  @FXML private MenuItem backstep;
   /** Run menu reset option */
-  @FXML protected MenuItem reset;
+  @FXML private MenuItem reset;
   /** Run menu clear breakpoints option */
-  @FXML protected MenuItem clearBreakpoints;
+  @FXML private MenuItem clearBreakpoints;
+
+  /** Settings menu show labels option */
+  @FXML private MenuItem showLabels;
+  /** Settings menu show labels checkbox */
+  @FXML private JFXCheckBox showLabelsBox;
+  /** Settings menu popup for ecalls option */
+  @FXML private MenuItem popup;
+  /** Settings menu popup for ecalls checkbox */
+  @FXML private JFXCheckBox popupBox;
+  /** Settings menu assemble only open files option */
+  @FXML private MenuItem onlyOpen;
+  /** Settings menu assemble only open files checkbox */
+  @FXML private JFXCheckBox onlyOpenBox;
+  /** Settings menu warnings = errors option */
+  @FXML private MenuItem warnings;
+  /** Settings menu warnings = errors checkbox */
+  @FXML private JFXCheckBox warningsBox;
+  /** Settings menu change start label option */
+  @FXML private MenuItem start;
+  /** Settings menu permit pseudos option */
+  @FXML private MenuItem permit;
+  /** Settings menu permit pseudos checkbox */
+  @FXML private JFXCheckBox permitBox;
+  /** Settings menu editor option */
+  @FXML private MenuItem editor;
+  /** Settings menu trap handler option */
+  @FXML private MenuItem trap;
 
   /** Help menu help option */
-  @FXML protected MenuItem help;
+  @FXML private MenuItem help;
   /** Help menu about option */
-  @FXML protected MenuItem about;
+  @FXML private MenuItem about;
 
   /** Reference to Main controller */
   private MainController mainController;
@@ -106,45 +139,51 @@ public class MenuBarController {
     this.backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
     this.reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, editorSelected)));
     this.clearBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
+    // reflect settings
+    this.showLabelsBox.setSelected(Settings.SHOW_LABELS);
+    this.popupBox.setSelected(Settings.POPUP_ECALL_INPUT);
+    this.onlyOpenBox.setSelected(Settings.ASSEMBLE_ONLY_OPEN);
+    this.warningsBox.setSelected(Settings.EXTRICT);
+    this.permitBox.setSelected(!Settings.BARE);
   }
 
   /*-------------------------------------------------------*
    |                     File Menu                         |
    *-------------------------------------------------------*/
 
-  @FXML protected void newFile(ActionEvent event) {
+  @FXML private void newFile(ActionEvent event) {
     this.mainController.editorController.addNewUntitledTab();
   }
 
-  @FXML protected void openFile(ActionEvent event) {
+  @FXML private void openFile(ActionEvent event) {
     this.mainController.editorController.addTitledTab();
   }
 
-  @FXML protected void openFolder(ActionEvent event) {
+  @FXML private void openFolder(ActionEvent event) {
     this.mainController.editorController.openFolder();
   }
 
-  @FXML protected void save(ActionEvent event) {
+  @FXML private void save(ActionEvent event) {
     this.mainController.editorController.saveTab();
   }
 
-  @FXML protected void saveAs(ActionEvent event) {
+  @FXML private void saveAs(ActionEvent event) {
     this.mainController.editorController.saveTabAs();
   }
 
-  @FXML protected void saveAll(ActionEvent event) {
+  @FXML private void saveAll(ActionEvent event) {
     this.mainController.editorController.saveAllTabs();
   }
 
-  @FXML protected void closeTab(ActionEvent event) {
+  @FXML private void closeTab(ActionEvent event) {
     this.mainController.editorController.closeTab();
   }
 
-  @FXML protected void closeAllTabs(ActionEvent event) {
+  @FXML private void closeAllTabs(ActionEvent event) {
     this.mainController.editorController.closeAllTabs();
   }
 
-  @FXML protected void quit(Event event) {
+  @FXML private void quit(Event event) {
     this.mainController.editorController.quit();
     // only
     if (!this.mainController.editorController.editor.getTabs().isEmpty())
@@ -160,31 +199,31 @@ public class MenuBarController {
    |                      Edit Menu                        |
    *-------------------------------------------------------*/
 
-   @FXML protected void undo(ActionEvent e) {
+   @FXML private void undo(ActionEvent e) {
      this.mainController.editorController.undo();
    }
 
-   @FXML protected void redo(ActionEvent e) {
+   @FXML private void redo(ActionEvent e) {
      this.mainController.editorController.redo();
    }
 
-   @FXML protected void cut(ActionEvent e) {
+   @FXML private void cut(ActionEvent e) {
      this.mainController.editorController.cut();
    }
 
-   @FXML protected void copy(ActionEvent e) {
+   @FXML private void copy(ActionEvent e) {
      this.mainController.editorController.copy();
    }
 
-   @FXML protected void paste(ActionEvent e) {
+   @FXML private void paste(ActionEvent e) {
      this.mainController.editorController.paste();
    }
 
-   @FXML protected void selectAll(ActionEvent e) {
+   @FXML private void selectAll(ActionEvent e) {
      this.mainController.editorController.selectAll();
    }
 
-   @FXML protected void findReplaceInBuffer(ActionEvent e) {
+   @FXML private void findReplaceInBuffer(ActionEvent e) {
      this.mainController.editorController.findReplaceInBuffer();
    }
 
@@ -192,28 +231,85 @@ public class MenuBarController {
    |                      Run Menu                         |
    *-------------------------------------------------------*/
 
-  @FXML protected void assemble(ActionEvent e) {
+  @FXML private void assemble(ActionEvent e) {
     this.mainController.simulatorController.assemble();
   }
 
-  @FXML protected void go(ActionEvent e) {
+  @FXML private void go(ActionEvent e) {
     this.mainController.simulatorController.go();
   }
 
-  @FXML protected void step(ActionEvent e) {
+  @FXML private void step(ActionEvent e) {
     this.mainController.simulatorController.step();
   }
 
-  @FXML protected void backstep(ActionEvent e) {
+  @FXML private void backstep(ActionEvent e) {
     this.mainController.simulatorController.backstep();
   }
 
-  @FXML protected void reset(ActionEvent e) {
+  @FXML private void reset(ActionEvent e) {
     this.mainController.simulatorController.reset();
   }
 
-  @FXML protected void clearAllBreakpoints(ActionEvent e) {
+  @FXML private void clearAllBreakpoints(ActionEvent e) {
     this.mainController.simulatorController.clearAllBreakpoints();
+  }
+
+  /*-------------------------------------------------------*
+   |                    Settings Menu                      |
+   *-------------------------------------------------------*/
+
+   @FXML private void showLabels(ActionEvent e) {
+     this.showLabelsBox.setSelected(Settings.toggleShowLabels());
+     this.mainController.simulatorController.showST();
+   }
+
+   @FXML private void popup(ActionEvent e) {
+     this.popupBox.setSelected(Settings.togglePopup());
+   }
+
+   @FXML private void onlyOpen(ActionEvent e) {
+     this.onlyOpenBox.setSelected(Settings.toggleAssembleOnlyOpen());
+   }
+
+   @FXML private void warnings(ActionEvent e) {
+     this.warningsBox.setSelected(Settings.toggleExtrict());
+   }
+
+   @FXML private void start(ActionEvent e) {
+     InputDialog dialog = new InputDialog();
+     String start = dialog.showAndWait("Enter new global start label");
+     if (start.length() > 0) {
+       Settings.setStart(start);
+     }
+   }
+
+   @FXML private void permit(ActionEvent e) {
+     this.permitBox.setSelected(!Settings.toggleBare());
+   }
+
+   @FXML private void editor(ActionEvent e) {
+     // TODO
+   }
+
+   @FXML private void trap(ActionEvent e) {
+     FileChooser chooser = new FileChooser();
+     chooser.setTitle("Load RISC-V Trap Handler");
+     chooser.setInitialDirectory(Settings.DIR);
+     chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
+     File file = chooser.showOpenDialog(this.mainController.stage);
+     // TODO
+   }
+
+  /*-------------------------------------------------------*
+   |                      Help Menu                        |
+   *-------------------------------------------------------*/
+  @FXML private void help(ActionEvent e) {
+    // TODO
+  }
+
+  @FXML private void about(ActionEvent e) {
+    // TODO
   }
 
 }

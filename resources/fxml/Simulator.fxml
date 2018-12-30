@@ -93,9 +93,9 @@
                <content>
                   <TableView fx:id="rviTable" editable="true" prefHeight="200.0" prefWidth="448.0">
                      <columns>
-                        <TableColumn fx:id="rviMnemonic" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
-                        <TableColumn fx:id="rviNumber" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
-                        <TableColumn fx:id="rviValue" editable="true" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
+                        <TableColumn fx:id="rviMnemonic" editable="false" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
+                        <TableColumn fx:id="rviNumber" editable="false" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
+                        <TableColumn fx:id="rviValue" editable="true" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -105,11 +105,11 @@
             </Tab>
             <Tab fx:id="rvfTab" closable="false" text="RVF">
                <content>
-                  <TableView fx:id="rvfTable" editable="true" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="rvfTable" editable="true" prefHeight="200.0" prefWidth="300.0">
                      <columns>
-                        <TableColumn fx:id="rvfMnemonic" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
-                        <TableColumn fx:id="rvfNumber" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
-                        <TableColumn fx:id="rvfValue" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
+                        <TableColumn fx:id="rvfMnemonic" editable="false" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Mnemonic" />
+                        <TableColumn fx:id="rvfNumber" editable="false" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Number" />
+                        <TableColumn fx:id="rvfValue" maxWidth="100.0" minWidth="90.0" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Value" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -123,7 +123,7 @@
                      <children>
                         <TableView fx:id="memTable" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="memAddress" editable="false" prefWidth="75.0" sortable="false" style="-fx-alignment: CENTER;" text="Address" />
+                              <TableColumn fx:id="memAddress" editable="false" prefWidth="-1.0" sortable="false" style="-fx-alignment: CENTER;" text="Address" />
                               <TableColumn fx:id="memOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+0" />
                               <TableColumn fx:id="memOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+1" />
                               <TableColumn fx:id="memOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="+2" />
@@ -157,6 +157,19 @@
                         </HBox>
                      </children>
                   </VBox>
+               </content>
+            </Tab>
+            <Tab fx:id="STTab" closable="false" text="ST">
+               <content>
+                  <TableView fx:id="STTable" prefHeight="200.0" prefWidth="448.0">
+                     <columns>
+                        <TableColumn fx:id="stSymbol" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Symbol" />
+                        <TableColumn fx:id="stAddress" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Address" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
                </content>
             </Tab>
          </tabs>
