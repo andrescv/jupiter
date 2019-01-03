@@ -1,33 +1,24 @@
 package vsim.gui;
 
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-import java.io.IOException;
-import vsim.gui.utils.Icons;
-import javafx.fxml.FXMLLoader;
-import javafx.application.Application;
 import com.jfoenix.controls.JFXDecorator;
+import java.io.IOException;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import vsim.gui.controllers.MainController;
-
+import vsim.gui.utils.Icons;
 
 public final class Gui extends Application {
-
-  /** Monokai syntax theme */
-  public static final String MONOKAI = Gui.class.getResource("/resources/css/themes/monokai.css").toExternalForm();
-  /** One Light syntax theme */
-  public static final String ONELIGHT = Gui.class.getResource("/resources/css/themes/onelight.css").toExternalForm();
-  /** Eclipse syntax theme */
-  public static final String ECLIPSE = Gui.class.getResource("/resources/css/themes/eclipse.css").toExternalForm();
-  /** Material syntax theme */
-  public static final String MATERIAL = Gui.class.getResource("/resources/css/themes/material.css").toExternalForm();
 
   @Override
   public void init() {
     // wait 2 seconds before start :)
     try {
       Thread.sleep(2000);
-    } catch (Exception e) { }
+    } catch (Exception e) {
+    }
   }
 
   @Override
@@ -36,7 +27,7 @@ public final class Gui extends Application {
     stage.getIcons().add(Icons.getFavicon());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/Main.fxml"));
     Parent root = loader.load();
-    MainController controller = (MainController)loader.getController();
+    MainController controller = (MainController) loader.getController();
     controller.initialize(stage);
     JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
     decorator.setCustomMaximize(true);
@@ -44,9 +35,7 @@ public final class Gui extends Application {
     Scene scene = new Scene(decorator, 1024, 800);
     // add styles
     scene.getStylesheets().add(getClass().getResource("/resources/css/style.css").toExternalForm());
-    scene.getStylesheets().add(Gui.MATERIAL);
     stage.setScene(scene);
     stage.show();
   }
-
 }

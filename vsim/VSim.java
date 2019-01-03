@@ -17,32 +17,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
-import java.io.File;
-import vsim.gui.Gui;
-import vsim.utils.Cmd;
-import vsim.gui.Preloader;
-import vsim.utils.Message;
-import java.util.ArrayList;
-import vsim.simulator.Simulator;
 import com.sun.javafx.application.LauncherImpl;
+import java.io.File;
+import java.util.ArrayList;
+import vsim.gui.Gui;
+import vsim.gui.Preloader;
+import vsim.simulator.Simulator;
+import vsim.utils.Cmd;
+import vsim.utils.Message;
 
-
-/**
- * The VSim class contains the main method of V-Sim simulator.
- */
+/** The VSim class contains the main method of V-Sim simulator AKA Launcher. */
 public final class VSim {
-
-  /**
-   * This method returns the root absolute path of V-Sim source code.
-   */
-  private static void setRootPath() {
-    try {
-      File f = new File(VSim.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-      String path = f.getAbsolutePath();
-      path = path.substring(0, path.lastIndexOf('/') + 1);
-      Settings.ROOT = new File(path);
-    } catch (Exception e) { /* NOTHING */ }
-  }
 
   /**
    * This method is used to launch the V-Sim simulator.
@@ -50,10 +35,10 @@ public final class VSim {
    * @param args command line arguments
    */
   public static void main(String[] args) {
+    // set ROOT path
+    Settings.setRootPath();
     // run this only if some argument(s) is/are passed
     if (args.length > 0) {
-      // set ROOT path
-      VSim.setRootPath();
       // parse arguments
       ArrayList<File> files = Cmd.parse(args);
       // simulate or debug
@@ -61,15 +46,11 @@ public final class VSim {
       // only if files are provided
       if (files.size() > 0) {
         // add trap handler if any
-        if (Settings.TRAP != null)
-          files.add(0, Settings.TRAP);
+        if (Settings.TRAP != null) files.add(0, Settings.TRAP);
         // simulate/debug program
-        if (!Settings.DEBUG)
-          Simulator.simulate(files);
-        else
-          Simulator.debug(files);
-      } else
-        Message.panic("no input files");
+        if (!Settings.DEBUG) Simulator.simulate(files);
+        else Simulator.debug(files);
+      } else Message.panic("no input files");
     } else {
       Settings.GUI = true;
       System.setProperty("prism.lcdtext", "false");
@@ -77,5 +58,4 @@ public final class VSim {
       LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
     }
   }
-
 }
