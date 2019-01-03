@@ -1,24 +1,21 @@
 package vsim.gui.components;
 
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-import java.io.IOException;
-import vsim.gui.utils.Icons;
-import javafx.stage.Modality;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
-import javafx.scene.input.KeyCombination;
+import java.io.IOException;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import vsim.gui.utils.Icons;
 
-
-/**
- * This class represents a text input dialog.
- */
+/** This class represents a text input dialog. */
 public final class SaveDialog {
 
   /** Escape key combination */
@@ -35,6 +32,8 @@ public final class SaveDialog {
   @FXML private JFXButton cancel;
   /** Dialog dont save button */
   @FXML private JFXButton dontSave;
+  /** Dialog message */
+  @FXML private Label msg;
 
   /** Save dialog result */
   private int result;
@@ -44,71 +43,65 @@ public final class SaveDialog {
    *
    * @param filename save dialog title filename
    */
-  public SaveDialog(String filename) {
+  public SaveDialog() {
     try {
       this.result = -1;
       this.stage = new Stage();
-      this.stage.setTitle(String.format("'%s' has changes, do you want to save them?", filename));
+      this.stage.setTitle("Save...");
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(Icons.getFavicon());
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/SaveDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+      decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 425, 160));
+      this.stage.setScene(new Scene(decorator, 419, 189));
       // save actions
       this.save.setOnAction(e -> this.save());
-      this.save.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.save();
-      });
+      this.save.setOnKeyPressed(
+          e -> {
+            if (SaveDialog.ENTER.match(e)) this.save();
+          });
       // cancel actions
       this.cancel.setOnAction(e -> this.cancel());
-      this.cancel.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.cancel();
-      });
+      this.cancel.setOnKeyPressed(
+          e -> {
+            if (SaveDialog.ENTER.match(e)) this.cancel();
+          });
       // dont save actions
       this.dontSave.setOnAction(e -> this.dontSave());
-      this.dontSave.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.dontSave();
-      });
+      this.dontSave.setOnKeyPressed(
+          e -> {
+            if (SaveDialog.ENTER.match(e)) this.dontSave();
+          });
       // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (SaveDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-      // set focus on save button
-      this.save.requestFocus();
+      this.stage.addEventHandler(
+          KeyEvent.KEY_RELEASED,
+          e -> {
+            if (SaveDialog.ESCAPE.match(e)) this.cancel();
+          });
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  /**
-   * Save action.
-   */
+  /** Save action. */
   private void save() {
     this.result = 1;
-    this.stage.close();
+    this.stage.hide();
   }
 
-  /**
-   * Dont save action.
-   */
+  /** Dont save action. */
   private void dontSave() {
     this.result = 0;
-    this.stage.close();
+    this.stage.hide();
   }
 
-  /**
-   * Cancel action.
-   */
+  /** Cancel action. */
   private void cancel() {
     this.result = -1;
-    this.stage.close();
+    this.stage.hide();
   }
 
   /**
@@ -116,9 +109,10 @@ public final class SaveDialog {
    *
    * @return result code
    */
-  public int showAndWait() {
+  public int showAndWait(String filename) {
+    this.result = -1;
+    this.msg.setText(String.format("'%s' has changes, do you want to save them?", filename));
     this.stage.showAndWait();
     return this.result;
   }
-
 }

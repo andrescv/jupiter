@@ -1,24 +1,20 @@
 package vsim.gui.components;
 
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-import java.io.IOException;
-import vsim.gui.utils.Icons;
-import javafx.stage.Modality;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
-import javafx.scene.input.KeyCombination;
+import java.io.IOException;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import vsim.gui.utils.Icons;
 
-
-/**
- * This class represents a close dialog.
- */
+/** This class represents a close dialog. */
 public final class DeleteDialog {
 
   /** Escape key combination */
@@ -44,51 +40,47 @@ public final class DeleteDialog {
       this.stage.setTitle("Delete Item");
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/DeleteDialog.fxml"));
+      FXMLLoader loader =
+          new FXMLLoader(getClass().getResource("/resources/fxml/DeleteDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+      decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 440, 160));
+      this.stage.setScene(new Scene(decorator, 437, 166));
       // cancel actions
       this.cancel.setOnAction(e -> this.cancel());
-      this.cancel.setOnKeyPressed(e -> {
-        if (DeleteDialog.ENTER.match(e))
-          this.cancel();
-      });
+      this.cancel.setOnKeyPressed(
+          e -> {
+            if (DeleteDialog.ENTER.match(e)) this.cancel();
+          });
       // delete actions
       this.delete.setOnAction(e -> this.delete());
-      this.delete.setOnKeyPressed(e -> {
-        if (DeleteDialog.ENTER.match(e))
-          this.delete();
-      });
+      this.delete.setOnKeyPressed(
+          e -> {
+            if (DeleteDialog.ENTER.match(e)) this.delete();
+          });
       // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (DeleteDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-      // set focus on delete button
-      this.delete.requestFocus();
+      this.stage.addEventHandler(
+          KeyEvent.KEY_RELEASED,
+          e -> {
+            if (DeleteDialog.ESCAPE.match(e)) this.cancel();
+          });
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-
-  /**
-   * Delete action.
-   */
+  /** Delete action. */
   private void delete() {
     this.result = true;
     this.stage.close();
   }
 
-  /**
-   * Cancel action.
-   */
+  /** Cancel action. */
   private void cancel() {
     this.result = false;
-    this.stage.close();
+    this.stage.hide();
   }
 
   /**
@@ -97,8 +89,8 @@ public final class DeleteDialog {
    * @return result code
    */
   public boolean showAndWait() {
+    this.result = false;
     this.stage.showAndWait();
     return this.result;
   }
-
 }

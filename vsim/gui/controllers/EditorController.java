@@ -366,8 +366,8 @@ public class EditorController {
    */
   private void closeTabSafetly(EditorTab tab) {
     if (tab.hasChanged()) {
-      SaveDialog dialog = new SaveDialog(tab.getName());
-      switch (dialog.showAndWait()) {
+      SaveDialog dialog = new SaveDialog();
+      switch (dialog.showAndWait(tab.getName())) {
           // dont save
         case 0:
           this.closeTab(tab);

@@ -1,24 +1,20 @@
 package vsim.gui.components;
 
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.util.ArrayList;
-import vsim.gui.utils.Icons;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXDecorator;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import vsim.gui.controllers.EditorController;
+import vsim.gui.utils.Icons;
 
-
-/**
- * This class represents a Find and Replace dialog.
- */
+/** This class represents a Find and Replace dialog. */
 public final class FindReplaceDialog {
 
   /** Dialog stage */
@@ -48,12 +44,14 @@ public final class FindReplaceDialog {
       this.controller = controller;
       this.found = new ArrayList<Integer>();
       this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/FindReplaceDialog.fxml"));
+      FXMLLoader loader =
+          new FXMLLoader(getClass().getResource("/resources/fxml/FindReplaceDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+      decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 480, 200));
+      this.stage.setScene(new Scene(decorator, 479, 198));
       // add actions
       this.find.setOnAction(e -> this.find());
       this.replace.setOnAction(e -> this.replace());
@@ -63,15 +61,17 @@ public final class FindReplaceDialog {
       // perform a search if case sensitive checkbox selected property changes
       this.caseSensitive.selectedProperty().addListener((e, oldVal, newVal) -> this.search());
       // and also perform a search if selected tab changes
-      this.controller.getEditor().getSelectionModel().selectedItemProperty().addListener((e, oldVal, newVal) -> this.search());
+      this.controller
+          .getEditor()
+          .getSelectionModel()
+          .selectedItemProperty()
+          .addListener((e, oldVal, newVal) -> this.search());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  /**
-   * Searches all indexes in editor text that matches find text field.
-   */
+  /** Searches all indexes in editor text that matches find text field. */
   private void search() {
     // get selected tab
     EditorTab tab = this.controller.getSelectedTab();
@@ -80,8 +80,12 @@ public final class FindReplaceDialog {
       this.current = tab;
       // clear previous content
       this.found.clear();
-      String find = this.caseSensitive.isSelected() ? this.findText.getText() : this.findText.getText().toLowerCase();
-      String text = this.caseSensitive.isSelected() ? tab.getEditorText() : tab.getEditorText().toLowerCase();
+      String find =
+          this.caseSensitive.isSelected()
+              ? this.findText.getText()
+              : this.findText.getText().toLowerCase();
+      String text =
+          this.caseSensitive.isSelected() ? tab.getEditorText() : tab.getEditorText().toLowerCase();
       int lastIndex = 0;
       // search all indexes
       while (lastIndex != -1) {
@@ -95,8 +99,7 @@ public final class FindReplaceDialog {
       this.setSearchTitle(false, false);
     } else {
       // remove any selection in editor
-      if (current != null)
-        this.current.deselect();
+      if (current != null) this.current.deselect();
       // cleanup all state
       this.current = null;
       this.found.clear();
@@ -117,7 +120,7 @@ public final class FindReplaceDialog {
       int minDiff = Integer.MAX_VALUE;
       int caretPos = this.current.getEditorCaretPosition();
       int counter = 0;
-      for (Integer i: this.found) {
+      for (Integer i : this.found) {
         int diff = i - caretPos;
         // use the index that is closest to editor caret position
         if (diff >= 0 && diff <= minDiff) {
@@ -131,9 +134,7 @@ public final class FindReplaceDialog {
     return -1;
   }
 
-  /**
-   * Selects the next found match.
-   */
+  /** Selects the next found match. */
   private void find() {
     if (this.current != null && this.found.size() > 0) {
       int result = this.found.get(this.getSearchIndex());
@@ -142,14 +143,11 @@ public final class FindReplaceDialog {
     }
   }
 
-  /**
-   * Replaces the current selected match.
-   */
+  /** Replaces the current selected match. */
   private void replace() {
     if (this.current != null && this.found.size() > 0) {
       // do a find if no selected text, otherwise replace will not take effect
-      if (!this.current.isEditorTextSelected())
-        this.find();
+      if (!this.current.isEditorTextSelected()) this.find();
       this.current.replace(this.replaceText.getText());
       // because indexes change, need to do a search again
       this.search();
@@ -158,9 +156,7 @@ public final class FindReplaceDialog {
     }
   }
 
-  /**
-   * Replaces all matches.
-   */
+  /** Replaces all matches. */
   private void replaceAll() {
     if (this.current != null && this.found.size() > 0) {
       // just loop until no more matches
@@ -168,7 +164,8 @@ public final class FindReplaceDialog {
         // always get the head of the array (ascending mode)
         int index = this.found.remove(0);
         // replace match
-        this.current.replace(index, index + this.findText.getText().length(), this.replaceText.getText());
+        this.current.replace(
+            index, index + this.findText.getText().length(), this.replaceText.getText());
         // perform a search to refresh indexes
         this.search();
       }
@@ -184,20 +181,17 @@ public final class FindReplaceDialog {
     int size = this.found.size();
     if (size > 0 && !defaultTitle) {
       if (dispIndex)
-        this.stage.setTitle(String.format("Find And Replace (%d results) (%d of %d)", size, this.getSearchIndex() + 1, size));
-      else
-        this.stage.setTitle(String.format("Find And Replace (%d results)", size));
+        this.stage.setTitle(
+            String.format(
+                "Find And Replace (%d results) (%d of %d)", size, this.getSearchIndex() + 1, size));
+      else this.stage.setTitle(String.format("Find And Replace (%d results)", size));
     } else {
-      if (defaultTitle)
-        this.stage.setTitle("Find And Replace");
-      else
-        this.stage.setTitle("Find And Replace (no results)");
+      if (defaultTitle) this.stage.setTitle("Find And Replace");
+      else this.stage.setTitle("Find And Replace (no results)");
     }
   }
 
-  /**
-   * Shows dialog and performs initial search if possible.
-   */
+  /** Shows dialog and performs initial search if possible. */
   public void show() {
     this.search();
     this.stage.show();
@@ -213,5 +207,4 @@ public final class FindReplaceDialog {
   public boolean isShowing() {
     return this.stage.isShowing();
   }
-
 }
