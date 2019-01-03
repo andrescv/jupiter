@@ -22,7 +22,7 @@
   Colors
 */
 
-* {
+.root {
   -fx-primary: #212121;
   -fx-primary-dark: #000;
   -fx-primary-light: #484848;
@@ -30,7 +30,7 @@
 }
 
 /*
-  JFXDecorator styles
+  JFXDecorator Styles
 */
 .jfx-decorator {
   -fx-decorator-color: -fx-primary-dark;
@@ -41,6 +41,65 @@
   -fx-font-family: 'Roboto';
   -fx-font-weight: bold;
   -fx-font-size: 16px;
+}
+
+/*
+  JFXSlider Styles
+*/
+
+.jfx-slider {
+  -jfx-default-thumb: -fx-secondary;
+}
+
+/*
+  JFXComboBox Styles
+*/
+.jfx-combo-box {
+  -jfx-focus-color: -fx-secondary;
+  -jfx-unfocus-color: -fx-secondary;
+  -fx-prompt-text-fill: #fff;
+  -fx-cursor: HAND;
+}
+
+.jfx-combo-box .list-cell {
+  -fx-background-color: -fx-primary;
+  -fx-text-fill: #fff;
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-font-size: 12pt;
+}
+
+.jfx-combo-box .list-cell {
+  -fx-background: -fx-primary-light;
+  -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+  -fx-background-color: -fx-primary-light;
+  -fx-background-insets: 0, 0;
+  -fx-effect: none;
+  -fx-cursor: HAND;
+}
+
+.combo-box-popup .list-view .list-cell {
+  -fx-background-color: -fx-primary-light;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover
+{
+    -fx-background-color: -fx-secondary;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: -fx-secondary;
+}
+
+
+.jfx-combo-box > .arrow-button .arrow,
+.jfx-combo-box:editable > .arrow-button .arrow,
+.jfx-combo-box:editable:focused > .arrow-button .arrow {
+  -fx-background-color: -fx-secondary;
 }
 
 /*
@@ -286,7 +345,7 @@
 }
 
 #upBtn {
-  -fx-background-color: #00897b ;
+  -fx-background-color: #00897b;
 }
 
 #downBtn {
@@ -297,12 +356,34 @@
   CodeArea Styles
 */
 
+.root {
+  -fx-syntax: #B2CCD6;
+  -fx-operator: #89DDF3;
+  -fx-directive: #82AAFF;
+  -fx-keyword: #C792EA;
+  -fx-label: #F78C6A;
+  -fx-identifier: #FFCB6B;
+  -fx-register: #DDDDDD;
+  -fx-number: #F07178;
+  -fx-comment: #545454;
+  -fx-string: #C3E88D;
+  -fx-stringb: #89DDF3;
+  -fx-error: #EF4D13;
+  -fx-code-area-bg: #212121;
+  -fx-selection: #3b3b3b;
+  -fx-lineno-text: #B2CCD6;
+  -fx-lineno-bg: #212121;
+  -fx-caret: #009688;
+  -fx-caret-bg: #1b1b1b;
+}
+
 .code-area {
   -fx-background-color: -fx-code-area-bg;
-  -fx-font-weight: bold;
+  -fx-font-weight: normal;
+  -fx-font-style: normal;
   -fx-font-family: 'Envy Code R';
   -fx-font-size: 14pt;
-  -fx-font-smoothing-type: gray;
+
 }
 
 .code-area .selection {
@@ -310,7 +391,9 @@
 }
 
 .code-area .lineno {
-  -fx-font-size: 14pt;
+  -fx-font-family: 'Monospaced';
+  -fx-font-weight: normal;
+  -fx-font-style: normal;
   -fx-text-fill: -fx-lineno-text;
   -fx-background-color: -fx-lineno-bg;
 }
@@ -592,59 +675,22 @@
   CheckBox Styles
 */
 
-.check-box {
-  -unchecked-color: #5A5A5A;
-  -checked-color: #e53935;
+.jfx-check-box {
   -fx-cursor: HAND;
 }
 
-.jfx-check-box .box-container {
-  -fx-shape: "M 400 100 L 400 100 A 50 50 0 1 1 400 250 A 50 50 0 1 1 400 100 ";
-  -fx-padding: 10;
+.jfx-check-box:selected .box {
+  -fx-border-color: -fx-secondary !important;
+  -fx-background-color: -fx-secondary !important;
 }
 
-.check-box .box,
-.check-box:indeterminate .box,
-.check-box:indeterminate:selected .box {
-  -fx-pref-width: 18;
-  -fx-pref-height: 18;
-  -fx-min-width: -fx-pref-width;
-  -fx-max-width: -fx-pref-width;
-  -fx-min-height: -fx-pref-height;
-  -fx-max-height: -fx-pref-height;
-  -fx-background-color: TRANSPARENT;
-  -fx-background-radius: 2;
-  -fx-border-color: -unchecked-color;
-  -fx-border-style: solid;
-  -fx-border-radius: 2;
-  -fx-border-width: 2;
-}
-
-.check-box:selected .box {
-  -fx-border-color: -checked-color;
-  -fx-background-color: -checked-color;
-}
-
-.check-box.setting:selected .box {
+.jfx-check-box.setting:selected .box {
   -fx-border-color: #0F9D58 !important;
   -fx-background-color: #0F9D58 !important;
   -fx-label-padding: 0;
 }
 
-.check-box:selected .mark {
-  -fx-shape: "M384 690l452-452 60 60-512 512-238-238 60-60z";
-  -fx-max-width: 15;
-  -fx-max-height: 12;
-  -fx-background-color: #ffffff;
-  -fx-border-color: #ffffff;
-  -fx-border-width: 2;
-  -fx-border-radius: 2;
-}
-
-.check-box .indeterminate-mark{
-  -fx-background-color: -checked-color;
-  -fx-background-radius: 2;
-  -fx-border-width: 0;
-  -fx-max-width: 10;
-  -fx-max-height: 10;
+.jfx-radio-button {
+  -jfx-selected-color: -fx-secondary;
+  -jfx-unselected-color: #eee;
 }

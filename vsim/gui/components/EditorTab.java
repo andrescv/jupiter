@@ -1,22 +1,18 @@
 package vsim.gui.components;
 
+import static java.nio.file.StandardOpenOption.*;
+
 import java.io.File;
-import java.util.HashSet;
-import javafx.stage.Stage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import vsim.gui.utils.Icons;
-import java.io.FileInputStream;
-import javafx.scene.control.Tab;
 import java.nio.file.StandardOpenOption;
-import static java.nio.file.StandardOpenOption.*;
+import java.util.HashSet;
+import javafx.scene.control.Tab;
 import org.fxmisc.flowless.VirtualizedScrollPane;
+import vsim.gui.utils.Icons;
 
-
-/**
- * This class is used as a editor tab for the editor tab pane.
- */
+/** This class is used as a editor tab for the editor tab pane. */
 public final class EditorTab extends Tab {
 
   /** untitled tabs set */
@@ -62,9 +58,7 @@ public final class EditorTab extends Tab {
     this.editor.textProperty().addListener(e -> this.handleChange());
   }
 
-  /**
-   * Creates a new untitled tab.
-   */
+  /** Creates a new untitled tab. */
   public EditorTab() {
     super();
     this.closed = false;
@@ -130,8 +124,7 @@ public final class EditorTab extends Tab {
    */
   public void setPath(File path) {
     // remove untitled number
-    if (this.untitled != -1)
-      EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
     // update tab state
     this.untitled = -1;
     this.path = path;
@@ -148,8 +141,7 @@ public final class EditorTab extends Tab {
    */
   public void setPathAndOpen(File path) throws IOException {
     // remove untitled number
-    if (this.untitled != -1)
-      EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
     // update tab state
     this.untitled = -1;
     this.path = path;
@@ -167,15 +159,15 @@ public final class EditorTab extends Tab {
 
   /**
    * Saves editor text to file if path != null.
+   *
    * @throws IOException if the file cannot be saved
    */
   public void save() throws IOException {
     if (this.path != null) {
       // create new file if necessary
-      if (!this.path.exists())
-        this.path.createNewFile();
+      if (!this.path.exists()) this.path.createNewFile();
       // truncate existing file
-      StandardOpenOption[] opts = new StandardOpenOption[]{WRITE, TRUNCATE_EXISTING};
+      StandardOpenOption[] opts = new StandardOpenOption[] {WRITE, TRUNCATE_EXISTING};
       Files.write(this.path.toPath(), this.editor.getText().getBytes(), opts);
       // update editor state
       this.hasChanged = false;
@@ -185,21 +177,16 @@ public final class EditorTab extends Tab {
     }
   }
 
-  /**
-   * Close tab and unsubscribe syntax highlighting.
-   */
+  /** Close tab and unsubscribe syntax highlighting. */
   public void close() {
     // remove untitled number
-    if (this.untitled != -1)
-      EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
     this.untitled = -1;
     this.editor.unsubscribe();
     this.closed = true;
   }
 
-  /**
-   * Useful method for checking if external delete happens.
-   */
+  /** Useful method for checking if external delete happens. */
   public void checkExternalDelete() {
     if (this.path != null && !this.path.exists() && this.editor.getText().length() != 0) {
       this.hasChanged = true;
@@ -207,9 +194,7 @@ public final class EditorTab extends Tab {
     }
   }
 
-  /**
-   * Useful method for checking if external modify happens.
-   */
+  /** Useful method for checking if external modify happens. */
   public void checkExternalModify() {
     if (this.path != null && !this.hasChanged) {
       try {
@@ -230,46 +215,32 @@ public final class EditorTab extends Tab {
     }
   }
 
-  /**
-   * Uses the editor undo manager to make an undo.
-   */
+  /** Uses the editor undo manager to make an undo. */
   public void undo() {
-    if (this.editor.isUndoAvailable())
-      this.editor.undo();
+    if (this.editor.isUndoAvailable()) this.editor.undo();
   }
 
-  /**
-   * Uses the editor undo manager to make a redo.
-   */
+  /** Uses the editor undo manager to make a redo. */
   public void redo() {
-    if (this.editor.isRedoAvailable())
-      this.editor.redo();
+    if (this.editor.isRedoAvailable()) this.editor.redo();
   }
 
-  /**
-   * Uses the editor clipboard actions to make a cut of selected text.
-   */
+  /** Uses the editor clipboard actions to make a cut of selected text. */
   public void cut() {
     this.editor.cut();
   }
 
-  /**
-   * Uses the editor clipboard actions to make a copy of selected text.
-   */
+  /** Uses the editor clipboard actions to make a copy of selected text. */
   public void copy() {
     this.editor.copy();
   }
 
-  /**
-   * Uses the editor clipboard actions to make a paste.
-   */
+  /** Uses the editor clipboard actions to make a paste. */
   public void paste() {
     this.editor.paste();
   }
 
-  /**
-   * Uses the editor navigation actions to select all text content.
-   */
+  /** Uses the editor navigation actions to select all text content. */
   public void selectAll() {
     this.editor.selectAll();
   }
@@ -294,8 +265,7 @@ public final class EditorTab extends Tab {
    * @param text replacement text
    */
   public void replace(String text) {
-    if (this.isEditorTextSelected())
-      this.editor.replaceSelection(text);
+    if (this.isEditorTextSelected()) this.editor.replaceSelection(text);
   }
 
   /**
@@ -305,8 +275,7 @@ public final class EditorTab extends Tab {
    */
   public void replace(int start, int end, String text) {
     this.select(start, end);
-    if (this.isEditorTextSelected())
-      this.editor.replaceSelection(text);
+    if (this.isEditorTextSelected()) this.editor.replaceSelection(text);
   }
 
   /**
@@ -336,29 +305,27 @@ public final class EditorTab extends Tab {
     return this.editor.getSelectedText().length() > 0;
   }
 
-  /**
-   * Deselects editor selected text (if any).
-   */
+  /** Deselects editor selected text (if any). */
   public void deselect() {
     this.editor.deselect();
   }
 
-  /**
-   * Handles editor changes.
-   */
+  /** Updates editor settings. */
+  public void updateSettings() {
+    this.editor.updateSettings();
+  }
+
+  /** Handles editor changes. */
   private void handleChange() {
     this.hasChanged = this.editor.hasChanged();
     this.updateIcon();
   }
 
-  /**
-   * Updates editor graphic icon.
-   */
+  /** Updates editor graphic icon. */
   private void updateIcon() {
     if (this.hasChanged && this.getGraphic() == null) {
       this.setGraphic(Icons.getImage("dot", 12, 12));
-    } else if (!this.hasChanged)
-      this.setGraphic(null);
+    } else if (!this.hasChanged) this.setGraphic(null);
   }
 
   /**
@@ -379,5 +346,4 @@ public final class EditorTab extends Tab {
     EditorTab.UNTITLED.add(count);
     return count;
   }
-
 }

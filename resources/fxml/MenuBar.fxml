@@ -326,6 +326,9 @@
                      </image>
                   </ImageView>
                </graphic>
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="COMMA" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
             </MenuItem>
             <MenuItem fx:id="trap" mnemonicParsing="false" onAction="#trap" text="Trap Handler">
                <graphic>
