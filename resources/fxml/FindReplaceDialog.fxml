@@ -10,21 +10,21 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="475.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="475.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <JFXTextField fx:id="findText" layoutX="20.0" layoutY="23.0" prefHeight="26.0" prefWidth="441.0" promptText="Find in current buffer" style="-jfx-focus-color: #0277bd;">
+      <JFXTextField fx:id="findText" focusColor="#fe315c" layoutX="16.0" layoutY="14.0" prefHeight="30.0" prefWidth="449.0" promptText="Find in current buffer" unFocusColor="#fe315c">
          <font>
             <Font name="Roboto Regular" size="14.0" />
          </font></JFXTextField>
-      <JFXTextField fx:id="replaceText" layoutX="20.0" layoutY="70.0" prefHeight="26.0" prefWidth="441.0" promptText="Replace in current buffer" style="-jfx-focus-color: #0277bd;">
+      <JFXTextField fx:id="replaceText" focusColor="#fe315c" layoutX="16.0" layoutY="65.0" prefHeight="30.0" prefWidth="449.0" promptText="Replace in current buffer" unFocusColor="#fe315c">
          <font>
             <Font name="Roboto Regular" size="14.0" />
          </font></JFXTextField>
-      <HBox alignment="CENTER" layoutX="25.0" layoutY="116.0" spacing="5.0">
+      <HBox alignment="CENTER" layoutX="16.0" layoutY="116.0" spacing="5.0">
          <children>
             <JFXButton fx:id="find" style="-fx-background-color: #388e3c;" text="Find" textFill="WHITE">
                <font>
-                  <Font name="Roboto Bold" size="13.0" />
+                  <Font name="Roboto Bold" size="14.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -36,10 +36,13 @@
                      </cursor>
                   </ImageView>
                </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </JFXButton>
             <JFXButton fx:id="replace" style="-fx-background-color: #ff6f00;" text="Replace" textFill="WHITE">
                <font>
-                  <Font name="Roboto Bold" size="13.0" />
+                  <Font name="Roboto Bold" size="14.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -54,7 +57,7 @@
             </JFXButton>
             <JFXButton fx:id="replaceAll" style="-fx-background-color: #d32f2f;" text="Replace All" textFill="WHITE">
                <font>
-                  <Font name="Roboto Bold" size="13.0" />
+                  <Font name="Roboto Bold" size="14.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -67,7 +70,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
-            <JFXCheckBox fx:id="caseSensitive" style="-fx-label-padding: 0;" text=" Case Sensitive">
+            <JFXCheckBox fx:id="caseSensitive" style="-fx-label-padding: 0;" text=" Case Sensitive" textFill="#eeeeee">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

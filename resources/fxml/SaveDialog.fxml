@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,14 +9,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="128.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="151.0" prefWidth="415.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="14.0" layoutY="29.0" text="Your changes will be lost if you close this item without saving">
+      <Label fx:id="msg" layoutX="11.0" layoutY="14.0" text="'riscv1.asm' has changes, do you want to save them ?" textFill="#eeeeee" wrapText="true" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="9.0">
          <font>
-            <Font name="Roboto Bold" size="14.0" />
+            <Font name="Roboto Bold" size="16.0" />
          </font>
       </Label>
-      <HBox layoutX="101.0" layoutY="71.0" spacing="10.0">
+      <HBox layoutX="89.0" layoutY="70.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <children>
             <JFXButton fx:id="save" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #388e3c;" text="Save" textFill="WHITE">
                <graphic>
@@ -25,8 +26,14 @@
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </JFXButton>
-            <JFXButton fx:id="cancel" prefHeight="37.0" prefWidth="87.0" style="-fx-background-color: #0277bd;" text="Cancel" textFill="WHITE">
+            <JFXButton fx:id="cancel" prefHeight="37.0" prefWidth="99.0" style="-fx-background-color: #0277bd;" text="Cancel" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -34,6 +41,12 @@
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </JFXButton>
             <JFXButton fx:id="dontSave" prefHeight="37.0" prefWidth="113.0" style="-fx-background-color: #d32f2f;" text="Don't Save" textFill="WHITE">
                <graphic>
@@ -43,8 +56,19 @@
                      </image>
                   </ImageView>
                </graphic>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </JFXButton>
          </children>
       </HBox>
+      <Label layoutX="18.0" layoutY="66.0" text="Your changes will be lost if you close this item without saving" textFill="#cdcdcd" wrapText="true">
+         <font>
+            <Font name="Roboto Bold Italic" size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
