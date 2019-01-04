@@ -74,7 +74,11 @@ public final class SaveDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 419, 189));
+      Scene scene = new Scene(decorator, 419, 189);
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim.css").toExternalForm());
+      this.stage.setScene(scene);
       // save actions
       this.save.setOnAction(e -> this.save());
       this.save.setOnKeyPressed(e -> {

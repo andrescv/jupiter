@@ -73,7 +73,11 @@ public final class InputDialog {
       decorator.setGraphic(Icons.getImage("logo"));
       this.enterPressed = false;
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 304, 150));
+      Scene scene = new Scene(decorator, 304, 150);
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim.css").toExternalForm());
+      this.stage.setScene(scene);
       // enter actions
       this.enter.setOnAction(e -> this.enter());
       this.enter.setOnKeyPressed(e -> {
