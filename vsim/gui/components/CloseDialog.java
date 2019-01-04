@@ -66,7 +66,10 @@ public final class CloseDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 637, 166));
+      Scene scene = new Scene(decorator, 637, 166);
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm());
+      this.stage.setScene(scene);
       // save actions
       this.save.setOnAction(e -> this.save());
       this.save.setOnKeyPressed(e -> {

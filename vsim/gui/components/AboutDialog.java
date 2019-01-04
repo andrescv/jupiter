@@ -57,7 +57,10 @@ public final class AboutDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 504, 312));
+      Scene scene = new Scene(decorator, 504, 312);
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm());
+      this.stage.setScene(scene);
       this.version.setText(Settings.VERSION);
     } catch (IOException e) {
       throw new RuntimeException(e);

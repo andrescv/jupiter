@@ -140,7 +140,8 @@ public final class EditorDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       Scene scene = new Scene(decorator, 704, 638);
-      scene.getStylesheets().addAll(getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
           getClass().getResource("/css/vsim.css").toExternalForm());
       this.stage.setScene(scene);
       // enable color pickers only if custom option is selected

@@ -68,7 +68,11 @@ public final class FindReplaceDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       this.stage.setResizable(false);
-      this.stage.setScene(new Scene(decorator, 479, 198));
+      Scene scene = new Scene(decorator, 479, 198);
+      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim.css").toExternalForm());
+      this.stage.setScene(scene);
       // add actions
       this.find.setOnAction(e -> this.find());
       this.replace.setOnAction(e -> this.replace());
