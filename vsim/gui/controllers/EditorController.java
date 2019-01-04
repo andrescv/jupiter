@@ -56,8 +56,6 @@ public class EditorController {
     this.mainController = controller;
     // create a new find replace dialog
     this.findReplaceDialog = new FindReplaceDialog(this);
-    // add a new untitled tab
-    this.addNewUntitledTab();
     // init tree
     this.initTree();
     // start directory watcher
@@ -267,6 +265,34 @@ public class EditorController {
   /** Updates all tabs with saved settings. */
   protected void updateSettings() {
     for (Tab tab : this.editor.getTabs()) ((EditorTab) tab).updateSettings();
+  }
+
+  /**
+   * Determines if all open tabs are saved.
+   *
+   * @return true if all tabs are saved, false otherwise
+   */
+  protected boolean allSaved() {
+    for (Tab tab : this.editor.getTabs()) {
+      EditorTab t = (EditorTab) tab;
+      if (t.isUntitled() || t.hasChanged() || !t.getPath().exists()) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Gets all open and saved paths.
+   *
+   * @return array list of open and saved paths
+   */
+  protected ArrayList<File> getSavedPaths() {
+    ArrayList<File> files = new ArrayList<File>();
+    for (Tab tab : this.editor.getTabs()) {
+      EditorTab t = (EditorTab) tab;
+      if (!t.isUntitled() && !t.hasChanged() && t.getPath().exists()) files.add(t.getPath());
+    }
+    files.trimToSize();
+    return files;
   }
 
   /*-------------------------------------------------------*
