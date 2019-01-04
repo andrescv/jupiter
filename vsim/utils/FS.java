@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import java.util.HashMap;
 import vsim.Globals;
 import vsim.Settings;
-import java.util.HashMap;
 
 
 /**
@@ -39,17 +39,17 @@ public final class FS {
   /** write only open flag */
   public static final int O_WRONLY = 0b0000010;
   /** read and write open flag */
-  public static final int O_RDWR   = 0b0000100;
+  public static final int O_RDWR = 0b0000100;
   /** append open flag */
   public static final int O_APPEND = 0b0001000;
   /** truncate open flag */
-  public static final int O_TRUNC  = 0b0010000;
+  public static final int O_TRUNC = 0b0010000;
   /** create open flag */
-  public static final int O_CREAT  = 0b0100000;
+  public static final int O_CREAT = 0b0100000;
   /** excl open flag */
-  public static final int O_EXCL   = 0b1000000;
+  public static final int O_EXCL = 0b1000000;
   /** flags mask */
-  public static final int O_MASK   = 0b1111111;
+  public static final int O_MASK = 0b1111111;
 
   /** current open files */
   private static final HashMap<Integer, OpenFile> open = new HashMap<Integer, OpenFile>();
@@ -153,7 +153,7 @@ public final class FS {
       StringBuffer s = new StringBuffer(0);
       int wbytes = 0;
       for (int i = 0; i < nbytes; i++) {
-        char c = (char)Globals.memory.loadByteUnsigned(buffer++);
+        char c = (char) Globals.memory.loadByteUnsigned(buffer++);
         s.append(c);
         wbytes++;
       }

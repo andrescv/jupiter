@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package vsim.assembler.statements;
 import vsim.Globals;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
@@ -48,8 +47,7 @@ public final class R4Type extends Statement {
    * @param rs2 register source 2
    * @param rs3 register source 3
    */
-  public R4Type(String mnemonic, DebugInfo debug,
-               String rd, String rs1, String rs2, String rs3) {
+  public R4Type(String mnemonic, DebugInfo debug, String rd, String rs1, String rs2, String rs3) {
     super(mnemonic, debug);
     this.rd = rd;
     this.rs1 = rs1;
@@ -65,17 +63,17 @@ public final class R4Type extends Statement {
   @Override
   public void build(int pc) {
     Instruction inst = Globals.iset.get(this.mnemonic);
-    int rd  = Globals.fregfile.getRegisterNumber(this.rd);
+    int rd = Globals.fregfile.getRegisterNumber(this.rd);
     int rs1 = Globals.fregfile.getRegisterNumber(this.rs1);
     int rs2 = Globals.fregfile.getRegisterNumber(this.rs2);
     int rs3 = Globals.fregfile.getRegisterNumber(this.rs3);
     int opcode = inst.getOpCode();
-    this.code.set(InstructionField.RD,  rd);
+    this.code.set(InstructionField.RD, rd);
     this.code.set(InstructionField.FMT, 0b00);
     this.code.set(InstructionField.RS1, rs1);
     this.code.set(InstructionField.RS2, rs2);
     this.code.set(InstructionField.RS3, rs3);
-    this.code.set(InstructionField.RM,  0b111); // dynamic
+    this.code.set(InstructionField.RM, 0b111); // dynamic
     this.code.set(InstructionField.OPCODE, opcode);
   }
 

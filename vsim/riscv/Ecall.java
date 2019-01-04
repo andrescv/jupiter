@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-import vsim.Globals;
-import vsim.utils.IO;
-import vsim.utils.FS;
-import vsim.Settings;
-import vsim.utils.Data;
 import java.util.Random;
-import vsim.utils.Message;
-import java.io.IOException;
+import vsim.Globals;
+import vsim.Settings;
 import vsim.simulator.Status;
+import vsim.utils.Data;
+import vsim.utils.FS;
+import vsim.utils.IO;
+import vsim.utils.Message;
 
 
 /**
@@ -34,43 +33,41 @@ import vsim.simulator.Status;
 public final class Ecall {
 
   // SPIM ecall codes
-  private static final int PRINT_INT    = 1;
-  private static final int PRINT_FLOAT  = 2;
+  private static final int PRINT_INT = 1;
+  private static final int PRINT_FLOAT = 2;
   private static final int PRINT_STRING = 4;
-  private static final int READ_INT     = 5;
-  private static final int READ_FLOAT   = 6;
-  private static final int READ_STRING  = 8;
-  private static final int SBRK         = 9;
-  private static final int EXIT         = 10;
-  private static final int PRINT_CHAR   = 11;
-  private static final int READ_CHAR    = 12;
-  private static final int OPEN         = 13;
-  private static final int READ         = 14;
-  private static final int WRITE        = 15;
-  private static final int CLOSE        = 16;
-  private static final int EXIT2        = 17;
+  private static final int READ_INT = 5;
+  private static final int READ_FLOAT = 6;
+  private static final int READ_STRING = 8;
+  private static final int SBRK = 9;
+  private static final int EXIT = 10;
+  private static final int PRINT_CHAR = 11;
+  private static final int READ_CHAR = 12;
+  private static final int OPEN = 13;
+  private static final int READ = 14;
+  private static final int WRITE = 15;
+  private static final int CLOSE = 16;
+  private static final int EXIT2 = 17;
   // V-Sim ecall codes
-  private static final int SLEEP        = 18;
-  private static final int CWD          = 19;
-  private static final int TIME         = 20;
-  private static final int PRINT_HEX    = 21;
-  private static final int PRINT_BIN    = 22;
-  private static final int PRINT_USGN   = 23;
-  private static final int SET_SEED     = 24;
-  private static final int RAND_INT     = 25;
+  private static final int SLEEP = 18;
+  private static final int CWD = 19;
+  private static final int TIME = 20;
+  private static final int PRINT_HEX = 21;
+  private static final int PRINT_BIN = 22;
+  private static final int PRINT_USGN = 23;
+  private static final int SET_SEED = 24;
+  private static final int RAND_INT = 25;
   private static final int RAND_INT_RNG = 26;
-  private static final int RAND_FLOAT   = 27;
+  private static final int RAND_FLOAT = 27;
 
   /** random number generator */
   private static final Random RNG = new Random();
 
-
   /**
-   * This method is used to simulate the ecall instruction, it is
-   * called in {@link vsim.riscv.instructions.itype.Ecall#compute} to handle
-   * the ecall request. First obtains the syscall code from register a0 and then
-   * tries to match this code with the available syscalls. If the code does not
-   * match an available syscall a warning is generated.
+   * This method is used to simulate the ecall instruction, it is called in
+   * {@link vsim.riscv.instructions.itype.Ecall#compute} to handle the ecall request. First obtains the syscall code
+   * from register a0 and then tries to match this code with the available syscalls. If the code does not match an
+   * available syscall a warning is generated.
    */
   public static void handler() {
     int syscode = Globals.regfile.getRegister("a0");
@@ -158,8 +155,8 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the PRINT_INT syscall, first gets the int
-   * value from a1 register and then prints it to stdout.
+   * This method implements the PRINT_INT syscall, first gets the int value from a1 register and then prints it to
+   * stdout.
    */
   private static void printInt() {
     int num = Globals.regfile.getRegister("a1");
@@ -167,8 +164,8 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the PRINT_FLOAT syscall, first gets the float
-   * value from f12 register and then prints it to stdout.
+   * This method implements the PRINT_FLOAT syscall, first gets the float value from f12 register and then prints it to
+   * stdout.
    */
   private static void printFloat() {
     float num = Globals.fregfile.getRegister("fa0");
@@ -176,15 +173,14 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the PRINT_STRING syscall, first gets the address
-   * of the buffer to print from register a1 and then obtains char by char
-   * the null terminated string from memory, then prints it.
+   * This method implements the PRINT_STRING syscall, first gets the address of the buffer to print from register a1 and
+   * then obtains char by char the null terminated string from memory, then prints it.
    */
   private static void printString() {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer(0);
     char c;
-    while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
+    while ((c = (char) Globals.memory.loadByteUnsigned(buffer)) != '\0') {
       s.append(c);
       buffer++;
     }
@@ -192,8 +188,8 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the READ_INT syscall, first tries to get the int
-   * value from stdin and then saves it in register a0.
+   * This method implements the READ_INT syscall, first tries to get the int value from stdin and then saves it in
+   * register a0.
    */
   private static void readInt() {
     try {
@@ -205,8 +201,8 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the READ_FLOAT syscall, first tries to get the float
-   * value from stdin and then saves it in register fa0.
+   * This method implements the READ_FLOAT syscall, first tries to get the float value from stdin and then saves it in
+   * register fa0.
    */
   private static void readFloat() {
     try {
@@ -218,9 +214,8 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the READ_STRING syscall, first tries to read a
-   * line from stdin, then stores char by char the string in memory starting
-   * at address given in register a1 until length given in register a2 is reached.
+   * This method implements the READ_STRING syscall, first tries to read a line from stdin, then stores char by char the
+   * string in memory starting at address given in register a1 until length given in register a2 is reached.
    */
   private static void readString() {
     int buffer = Globals.regfile.getRegister("a1");
@@ -235,10 +230,9 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the SBRK syscall, first gets the number of
-   * bytes to allocate from register a1, then calls {@link vsim.riscv.Memory#allocateBytesFromHeap}
-   * to obtain the address/pointer to the allocated space then saves the result
-   * in register a0.
+   * This method implements the SBRK syscall, first gets the number of bytes to allocate from register a1, then calls
+   * {@link vsim.riscv.Memory#allocateBytesFromHeap} to obtain the address/pointer to the allocated space then saves the
+   * result in register a0.
    */
   private static void sbrk() {
     int numBytes = Globals.regfile.getRegister("a1");
@@ -252,8 +246,7 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the EXIT syscall, first logs the status, then
-   * calls System.exit(0).
+   * This method implements the EXIT syscall, first logs the status, then calls System.exit(0).
    */
   private static void exit() {
     IO.stdout.println();
@@ -264,17 +257,17 @@ public final class Ecall {
   }
 
   /**
-   * This method implements the PRINT_CHAR syscall, first obtains the char
-   * value from register a1, then prints it to stdout.
+   * This method implements the PRINT_CHAR syscall, first obtains the char value from register a1, then prints it to
+   * stdout.
    */
   private static void printChar() {
-    char c = (char)Globals.regfile.getRegister("a1");
+    char c = (char) Globals.regfile.getRegister("a1");
     IO.stdout.print(c + "");
   }
 
   /**
-   * This method implements the READ_CHAR syscall, first tries to read a
-   * char from stdin, then saves the char value in register a0.
+   * This method implements the READ_CHAR syscall, first tries to read a char from stdin, then saves the char value in
+   * register a0.
    */
   private static void readChar() {
     Globals.regfile.setRegister("a0", IO.readChar());
@@ -289,17 +282,11 @@ public final class Ecall {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer(0);
     char c;
-    while ((c = (char)Globals.memory.loadByteUnsigned(buffer)) != '\0') {
+    while ((c = (char) Globals.memory.loadByteUnsigned(buffer)) != '\0') {
       s.append(c);
       buffer++;
     }
-    Globals.regfile.setRegister(
-      "a0",
-      FS.open(
-        s.toString(),
-        Globals.regfile.getRegister("a2")
-      )
-    );
+    Globals.regfile.setRegister("a0", FS.open(s.toString(), Globals.regfile.getRegister("a2")));
   }
 
   /**
@@ -309,14 +296,8 @@ public final class Ecall {
    */
   private static void read() {
     if (Globals.regfile.getRegister("a3") > 0) {
-      Globals.regfile.setRegister(
-        "a0",
-        FS.read(
-          Globals.regfile.getRegister("a1"),
-          Globals.regfile.getRegister("a2"),
-          Globals.regfile.getRegister("a3")
-        )
-      );
+      Globals.regfile.setRegister("a0", FS.read(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
+          Globals.regfile.getRegister("a3")));
     } else {
       if (!Settings.QUIET)
         Message.warning("ecall: number of bytes should be > 0");
@@ -330,14 +311,8 @@ public final class Ecall {
    */
   private static void write() {
     if (Globals.regfile.getRegister("a3") > 0) {
-      Globals.regfile.setRegister(
-        "a0",
-        FS.write(
-          Globals.regfile.getRegister("a1"),
-          Globals.regfile.getRegister("a2"),
-          Globals.regfile.getRegister("a3")
-        )
-      );
+      Globals.regfile.setRegister("a0", FS.write(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
+          Globals.regfile.getRegister("a3")));
     } else {
       if (!Settings.QUIET)
         Message.warning("ecall: number of bytes should be > 0");
@@ -350,16 +325,12 @@ public final class Ecall {
    * @see vsim.utils.FS#close
    */
   private static void close() {
-    Globals.regfile.setRegister(
-      "a0",
-      FS.close(Globals.regfile.getRegister("a1"))
-    );
+    Globals.regfile.setRegister("a0", FS.close(Globals.regfile.getRegister("a1")));
   }
 
   /**
-   * This method implements the EXIT2 syscall, first obtains the status code
-   * from register a1, prints the status, then calls System.exit with the
-   * obtained status.
+   * This method implements the EXIT2 syscall, first obtains the status code from register a1, prints the status, then
+   * calls System.exit with the obtained status.
    */
   private static void exit2() {
     int status = Globals.regfile.getRegister("a1");
@@ -378,7 +349,8 @@ public final class Ecall {
     if (millis >= 0) {
       try {
         Thread.sleep(millis);
-      } catch (Exception e) { /* DO NOTHING*/ }
+      } catch (Exception e) {
+        /* DO NOTHING */ }
     } else {
       if (!Settings.QUIET)
         Message.warning("ecall: milliseconds should be >= 0");
@@ -392,7 +364,7 @@ public final class Ecall {
     String path = System.getProperty("user.dir");
     int buffer = Globals.regfile.getRegister("a1");
     for (int i = 0; i < path.length(); i++) {
-      Globals.memory.storeByte(buffer++, (int)path.charAt(i));
+      Globals.memory.storeByte(buffer++, (int) path.charAt(i));
     }
     Globals.memory.storeByte(buffer, 0);
   }
@@ -402,8 +374,8 @@ public final class Ecall {
    */
   private static void time() {
     long time = System.currentTimeMillis();
-    Globals.regfile.setRegister("a1", (int)(time >>> Data.WORD_LENGTH_BITS));
-    Globals.regfile.setRegister("a0", (int)(time  & 0xffffffffL));
+    Globals.regfile.setRegister("a1", (int) (time >>> Data.WORD_LENGTH_BITS));
+    Globals.regfile.setRegister("a0", (int) (time & 0xffffffffL));
   }
 
   /**
@@ -441,10 +413,7 @@ public final class Ecall {
    * This method implements the RAND_INT syscall.
    */
   private static void randInt() {
-    Globals.regfile.setRegister(
-      "a0",
-      Ecall.RNG.nextInt()
-    );
+    Globals.regfile.setRegister("a0", Ecall.RNG.nextInt());
   }
 
   /**
@@ -453,20 +422,14 @@ public final class Ecall {
   private static void randIntRng() {
     int min = Globals.regfile.getRegister("a1");
     int max = Globals.regfile.getRegister("a2");
-    Globals.regfile.setRegister(
-      "a0",
-      Ecall.RNG.nextInt((max - min) + 1) + min
-    );
+    Globals.regfile.setRegister("a0", Ecall.RNG.nextInt((max - min) + 1) + min);
   }
 
   /**
    * This method implements the RAND_FLOAT syscall.
    */
   private static void randFloat() {
-    Globals.fregfile.setRegister(
-      "fa0",
-      Ecall.RNG.nextFloat()
-    );
+    Globals.fregfile.setRegister("fa0", Ecall.RNG.nextFloat());
   }
 
 }

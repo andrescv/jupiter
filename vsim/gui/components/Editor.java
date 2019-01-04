@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.components;
 
 import java.io.StringReader;
@@ -14,8 +31,9 @@ import org.fxmisc.wellbehaved.event.InputMap;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.reactfx.Subscription;
 import vsim.Settings;
-import vsim.gui.syntax.Lexer;
-import vsim.gui.syntax.Token;
+import vsim.gui.utils.Lexer;
+import vsim.gui.utils.Token;
+
 
 /** A subclass of CodeArea that colorize text based on RISC-V syntax. */
 public final class Editor extends CodeArea {
@@ -24,50 +42,12 @@ public final class Editor extends CodeArea {
   private static final String NL = System.getProperty("line.separator");
 
   /** Color lookups and Font styles */
-  public static final String STYLE =
-      "-fx-syntax: %s;"
-          + NL
-          + "-fx-operator: %s;"
-          + NL
-          + "-fx-directive: %s;"
-          + NL
-          + "-fx-keyword: %s;"
-          + NL
-          + "-fx-label: %s;"
-          + NL
-          + "-fx-identifier: %s;"
-          + NL
-          + "-fx-register: %s;"
-          + NL
-          + "-fx-number: %s;"
-          + NL
-          + "-fx-comment: %s;"
-          + NL
-          + "-fx-string: %s;"
-          + NL
-          + "-fx-stringb: %s;"
-          + NL
-          + "-fx-error: %s;"
-          + NL
-          + "-fx-code-area-bg: %s;"
-          + NL
-          + "-fx-selection: %s;"
-          + NL
-          + "-fx-lineno-text: %s;"
-          + NL
-          + "-fx-lineno-bg: %s;"
-          + NL
-          + "-fx-caret: %s;"
-          + NL
-          + "-fx-caret-bg: %s;"
-          + NL
-          + "-fx-font-weight: %s;"
-          + NL
-          + "-fx-font-style: %s;"
-          + NL
-          + "-fx-font-family: '%s';"
-          + NL
-          + "-fx-font-size: %dpt;";
+  public static final String STYLE = "-fx-syntax: %s;" + NL + "-fx-operator: %s;" + NL + "-fx-directive: %s;" + NL
+      + "-fx-keyword: %s;" + NL + "-fx-label: %s;" + NL + "-fx-identifier: %s;" + NL + "-fx-register: %s;" + NL
+      + "-fx-number: %s;" + NL + "-fx-comment: %s;" + NL + "-fx-string: %s;" + NL + "-fx-stringb: %s;" + NL
+      + "-fx-error: %s;" + NL + "-fx-code-area-bg: %s;" + NL + "-fx-selection: %s;" + NL + "-fx-lineno-text: %s;" + NL
+      + "-fx-lineno-bg: %s;" + NL + "-fx-caret: %s;" + NL + "-fx-caret-bg: %s;" + NL + "-fx-font-weight: %s;" + NL
+      + "-fx-font-style: %s;" + NL + "-fx-font-family: '%s';" + NL + "-fx-font-size: %dpt;";
 
   /** Last editor text */
   private String lastText;
@@ -101,68 +81,50 @@ public final class Editor extends CodeArea {
     // add line numbering
     this.setParagraphGraphicFactory(LineNumberFactory.get(this));
     // recompute the syntax highlighting 500 ms after user stops editing area
-    this.subscription =
-        this
-            // plain changes = ignore style changes that are emitted when syntax highlighting is
-            // reapplied
-            // multi plain changes = save computation by not rerunning the code multiple times
-            // when making multiple changes (e.g. renaming a method at multiple parts in file)
-            .multiPlainChanges()
-            // do not emit an event until 50 ms have passed since the last emission of previous
-            // stream
-            .successionEnds(Duration.ofMillis(50))
-            // run the following code block when previous stream emits an event
-            .subscribe(ignore -> this.setStyleSpans(0, computeHighlighting()));
+    this.subscription = this
+        // plain changes = ignore style changes that are emitted when syntax highlighting is
+        // reapplied
+        // multi plain changes = save computation by not rerunning the code multiple times
+        // when making multiple changes (e.g. renaming a method at multiple parts in file)
+        .multiPlainChanges()
+        // do not emit an event until 50 ms have passed since the last emission of previous
+        // stream
+        .successionEnds(Duration.ofMillis(50))
+        // run the following code block when previous stream emits an event
+        .subscribe(ignore -> this.setStyleSpans(0, computeHighlighting()));
     // add some input maps
-    Nodes.addInputMap(
-        this,
-        InputMap.sequence(
-            // navigation
-            InputMap.consumeWhen(
-                EventPattern.keyPressed(KeyCode.LEFT),
-                () -> this.beginningTab(false),
-                e -> this.moveTo(this.getCaretPosition() - this.tabSize.length())),
-            InputMap.consumeWhen(
-                EventPattern.keyPressed(KeyCode.KP_LEFT),
-                () -> this.beginningTab(false),
-                e -> this.moveTo(this.getCaretPosition() - this.tabSize.length())),
-            InputMap.consumeWhen(
-                EventPattern.keyPressed(KeyCode.RIGHT),
-                () -> this.beginningTab(true),
-                e -> this.moveTo(this.getCaretPosition() + this.tabSize.length())),
-            InputMap.consumeWhen(
-                EventPattern.keyPressed(KeyCode.KP_RIGHT),
-                () -> this.beginningTab(true),
-                e -> this.moveTo(this.getCaretPosition() + this.tabSize.length())),
-            // enter for auto-indent
-            InputMap.consume(
-                EventPattern.keyPressed(KeyCode.ENTER),
-                e -> {
-                  this.insertText(
-                      this.getCurrentParagraph(),
-                      this.getCaretColumn(),
-                      System.getProperty("line.separator"));
-                  if (this.autoIndent) {
-                    String line = this.getParagraph(this.getCurrentParagraph() - 1).getText();
-                    String spaces = "";
-                    for (int i = 0; i < line.length(); i++) {
-                      if (line.charAt(i) == ' ') spaces += " ";
-                      else break;
-                    }
-                    this.insertText(this.getCurrentParagraph(), this.getCaretColumn(), spaces);
-                  }
-                }),
-            // backspace
-            InputMap.consumeWhen(
-                EventPattern.keyPressed(KeyCode.BACK_SPACE),
-                () -> this.beginningTab(false),
-                e -> {
-                  int pos = this.getCaretPosition();
-                  this.replaceText(pos - this.tabSize.length(), pos, "");
-                }),
-            // tab for tabsize
-            InputMap.consume(
-                EventPattern.keyPressed(KeyCode.TAB), e -> this.replaceSelection(this.tabSize))));
+    Nodes.addInputMap(this, InputMap.sequence(
+        // navigation
+        InputMap.consumeWhen(EventPattern.keyPressed(KeyCode.LEFT), () -> this.beginningTab(false),
+            e -> this.moveTo(this.getCaretPosition() - this.tabSize.length())),
+        InputMap.consumeWhen(EventPattern.keyPressed(KeyCode.KP_LEFT), () -> this.beginningTab(false),
+            e -> this.moveTo(this.getCaretPosition() - this.tabSize.length())),
+        InputMap.consumeWhen(EventPattern.keyPressed(KeyCode.RIGHT), () -> this.beginningTab(true),
+            e -> this.moveTo(this.getCaretPosition() + this.tabSize.length())),
+        InputMap.consumeWhen(EventPattern.keyPressed(KeyCode.KP_RIGHT), () -> this.beginningTab(true),
+            e -> this.moveTo(this.getCaretPosition() + this.tabSize.length())),
+        // enter for auto-indent
+        InputMap.consume(EventPattern.keyPressed(KeyCode.ENTER), e -> {
+          this.insertText(this.getCurrentParagraph(), this.getCaretColumn(), System.getProperty("line.separator"));
+          if (this.autoIndent) {
+            String line = this.getParagraph(this.getCurrentParagraph() - 1).getText();
+            String spaces = "";
+            for (int i = 0; i < line.length(); i++) {
+              if (line.charAt(i) == ' ')
+                spaces += " ";
+              else
+                break;
+            }
+            this.insertText(this.getCurrentParagraph(), this.getCaretColumn(), spaces);
+          }
+        }),
+        // backspace
+        InputMap.consumeWhen(EventPattern.keyPressed(KeyCode.BACK_SPACE), () -> this.beginningTab(false), e -> {
+          int pos = this.getCaretPosition();
+          this.replaceText(pos - this.tabSize.length(), pos, "");
+        }),
+        // tab for tabsize
+        InputMap.consume(EventPattern.keyPressed(KeyCode.TAB), e -> this.replaceSelection(this.tabSize))));
     // forget undo history
     this.getUndoManager().forgetHistory();
   }
@@ -221,31 +183,14 @@ public final class Editor extends CodeArea {
   }
 
   private void updateStyle() {
-    String style =
-        String.format(
-            Editor.STYLE,
-            Settings.CODE_AREA_SYNTAX,
-            Settings.CODE_AREA_OPERATOR,
-            Settings.CODE_AREA_DIRECTIVE,
-            Settings.CODE_AREA_KEYWORD,
-            Settings.CODE_AREA_LABEL,
-            Settings.CODE_AREA_IDENTIFIER,
-            Settings.CODE_AREA_REGISTER,
-            Settings.CODE_AREA_NUMBER,
-            Settings.CODE_AREA_COMMENT,
-            Settings.CODE_AREA_STRING,
-            Settings.CODE_AREA_BACKSLASH,
-            Settings.CODE_AREA_ERROR,
-            Settings.CODE_AREA_BG,
-            Settings.CODE_AREA_SELECTION,
-            Settings.CODE_AREA_LINENO_COLOR,
-            Settings.CODE_AREA_LINENO_BG,
-            Settings.CODE_AREA_CARET_COLOR,
-            Settings.CODE_AREA_LINE_HIGHLIGHT,
-            Settings.CODE_AREA_FONT_WEIGHT,
-            Settings.CODE_AREA_FONT_STYLE,
-            Settings.CODE_AREA_FONT_FAMILY,
-            Settings.CODE_AREA_FONT_SIZE);
+    String style = String.format(Editor.STYLE, Settings.CODE_AREA_SYNTAX, Settings.CODE_AREA_OPERATOR,
+        Settings.CODE_AREA_DIRECTIVE, Settings.CODE_AREA_KEYWORD, Settings.CODE_AREA_LABEL,
+        Settings.CODE_AREA_IDENTIFIER, Settings.CODE_AREA_REGISTER, Settings.CODE_AREA_NUMBER,
+        Settings.CODE_AREA_COMMENT, Settings.CODE_AREA_STRING, Settings.CODE_AREA_BACKSLASH, Settings.CODE_AREA_ERROR,
+        Settings.CODE_AREA_BG, Settings.CODE_AREA_SELECTION, Settings.CODE_AREA_LINENO_COLOR,
+        Settings.CODE_AREA_LINENO_BG, Settings.CODE_AREA_CARET_COLOR, Settings.CODE_AREA_LINE_HIGHLIGHT,
+        Settings.CODE_AREA_FONT_WEIGHT, Settings.CODE_AREA_FONT_STYLE, Settings.CODE_AREA_FONT_FAMILY,
+        Settings.CODE_AREA_FONT_SIZE);
     this.setStyle(style);
   }
 
@@ -262,7 +207,8 @@ public final class Editor extends CodeArea {
 
   protected void setTabSize(int size) {
     this.tabSize = "";
-    for (int i = 0; i < size; i++) this.tabSize += " ";
+    for (int i = 0; i < size; i++)
+      this.tabSize += " ";
   }
 
   private void setTabSize() {
@@ -282,11 +228,13 @@ public final class Editor extends CodeArea {
     String line = this.getParagraph(this.getCurrentParagraph()).getText();
     int pos = 0;
     for (pos = 0; pos < line.length(); pos++) {
-      if (line.charAt(pos) != ' ') break;
+      if (line.charAt(pos) != ' ')
+        break;
     }
     if (((!exclude && col > 0) || exclude)
         && ((exclude && col <= (pos - this.tabSize.length())) || (!exclude && col <= pos))
-        && (col % this.tabSize.length() == 0)) return true;
+        && (col % this.tabSize.length() == 0))
+      return true;
     return false;
   }
 }

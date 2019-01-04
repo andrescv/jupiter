@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
-import vsim.utils.IO;
-import vsim.utils.Message;
 import java.util.ArrayList;
 import vsim.assembler.DebugInfo;
+import vsim.utils.IO;
+import vsim.utils.Message;
 
 
 /**
@@ -32,8 +32,7 @@ public final class Errors {
   private static final ArrayList<String> errors = new ArrayList<String>();
 
   /**
-   * This method adds a raw error message to the error list
-   * {@link vsim.Errors#errors}.
+   * This method adds a raw error message to the error list {@link vsim.Errors#errors}.
    *
    * @param msg an error message
    */
@@ -43,8 +42,7 @@ public final class Errors {
   }
 
   /**
-   * This method adds an error message with useful debug information to the
-   * error list {@link vsim.Errors#errors}.
+   * This method adds an error message with useful debug information to the error list {@link vsim.Errors#errors}.
    *
    * @param debug debug information
    * @param phase the phase where the error ocurred (e.g assembler, linker)
@@ -55,16 +53,12 @@ public final class Errors {
     String newline = System.getProperty("line.separator");
     String source = debug.getSource();
     int lineno = debug.getLineNumber();
-    Errors.add(
-      filename + ":" + phase + ":" + lineno + ": " + msg +
-      newline + "    |" +
-      newline + "    └─ (source line) " + source
-    );
+    Errors.add(filename + ":" + phase + ":" + lineno + ": " + msg + newline + "    |" + newline
+        + "    └─ (source line) " + source);
   }
 
   /**
-   * This method adds an error message with some useful debug information to
-   * the error list {@link vsim.Errors#errors}.
+   * This method adds an error message with some useful debug information to the error list {@link vsim.Errors#errors}.
    *
    * @param lineno source line number
    * @param filename source filename
@@ -76,15 +70,15 @@ public final class Errors {
   }
 
   /**
-   * This method reports all the current errors and exits if there are
-   * any errors in the error list {@link vsim.Errors#errors}.
+   * This method reports all the current errors and exits if there are any errors in the error list
+   * {@link vsim.Errors#errors}.
    *
    * @return true if there are errors, false otherwise.
    */
   public static boolean report() {
     if (Errors.errors.size() > 0) {
       // print every error message
-      for (String msg: Errors.errors)
+      for (String msg : Errors.errors)
         Message.error(msg + System.getProperty("line.separator"));
       // report how many errors ocurred
       IO.stderr.println(Errors.errors.size() + " errors(s)");
@@ -100,8 +94,7 @@ public final class Errors {
   }
 
   /**
-   * This method clears all the errors in the error list
-   * {@link vsim.Errors#errors}.
+   * This method clears all the errors in the error list {@link vsim.Errors#errors}.
    */
   public static void clear() {
     Errors.errors.clear();

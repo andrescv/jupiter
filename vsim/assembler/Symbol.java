@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
-import vsim.utils.IO;
 import vsim.utils.Colorize;
+import vsim.utils.IO;
 
 
 /**
@@ -32,8 +32,7 @@ public final class Symbol {
   private int address;
 
   /**
-   * Unique constructor that initializes a new symbol given
-   * a segment and an address.
+   * Unique constructor that initializes a new symbol given a segment and an address.
    *
    * @param segment the segment the symbol belongs
    * @param address the address attached to the symbol
@@ -48,13 +47,8 @@ public final class Symbol {
    * This method pretty prints the symbol.
    */
   public void print() {
-    IO.stdout.println(
-      String.format(
-        "[%s] @ %s",
-        Colorize.green(this.segment.toString().toLowerCase()),
-        Colorize.blue(String.format("0x%08x", this.address))
-      )
-    );
+    IO.stdout.println(String.format("[%s] @ %s", Colorize.green(this.segment.toString().toLowerCase()),
+        Colorize.blue(String.format("0x%08x", this.address))));
   }
 
   /**

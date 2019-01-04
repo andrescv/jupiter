@@ -1,11 +1,23 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.controllers;
 
 import static vsim.riscv.instructions.Instruction.LENGTH;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTabPane;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,6 +45,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTabPane;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.assembler.Assembler;
@@ -52,6 +68,7 @@ import vsim.simulator.Debugger;
 import vsim.simulator.Status;
 import vsim.utils.Cmd;
 import vsim.utils.Message;
+
 
 /** Simulator controller class. */
 public class SimulatorController {
@@ -187,7 +204,8 @@ public class SimulatorController {
     this.mainController.editorController.saveAllTabs();
     if (this.mainController.editorController.allSaved()) {
       ArrayList<File> files;
-      if (Settings.ASSEMBLE_ONLY_OPEN) files = this.mainController.editorController.getSavedPaths();
+      if (Settings.ASSEMBLE_ONLY_OPEN)
+        files = this.mainController.editorController.getSavedPaths();
       else {
         files = new ArrayList<File>();
         Cmd.getFilesInDir(files);
@@ -199,8 +217,7 @@ public class SimulatorController {
           this.debugger = new Debugger(program);
           ObservableList<InfoStatement> stmts = program.getInfoStatements();
           for (InfoStatement stmt : stmts)
-            stmt.breakpointProperty()
-                .addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
+            stmt.breakpointProperty().addListener((e, oldVal, newVal) -> this.breakpoint(newVal, stmt));
           // update text table view
           this.textTable.setItems(stmts);
           // update symbol table table view
@@ -218,54 +235,52 @@ public class SimulatorController {
           // https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
           // column headers are misaligned and ugly anyways.
           // dont know why this is necessary or I'm missing something...
-          Thread t =
-              new Thread(
-                  () -> {
-                    try {
-                      Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                    } finally {
-                      Platform.runLater(
-                          () -> {
-                            this.textTable.requestFocus();
-                            this.textTable.refresh();
-                            this.STTable.refresh();
-                            this.vflow =
-                                (VirtualFlow<?>)
-                                    ((TableViewSkin<?>) this.textTable.getSkin())
-                                        .getChildren()
-                                        .get(1);
-                            Status.READY.set(true);
-                            this.mainController.selectSimulatorTab();
-                            this.mainController.loading(false);
-                          });
-                    }
-                  });
+          Thread t = new Thread(() -> {
+            try {
+              Thread.sleep(50);
+            } catch (InterruptedException e) {
+            } finally {
+              Platform.runLater(() -> {
+                this.textTable.requestFocus();
+                this.textTable.refresh();
+                this.STTable.refresh();
+                this.vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.textTable.getSkin()).getChildren().get(1);
+                Status.READY.set(true);
+                this.mainController.selectSimulatorTab();
+                this.mainController.loading(false);
+              });
+            }
+          });
           t.setDaemon(true);
           t.start();
-        } else this.mainController.loading(false);
-      } else this.mainController.loading(false);
-    } else this.mainController.loading(false);
+        } else
+          this.mainController.loading(false);
+      } else
+        this.mainController.loading(false);
+    } else
+      this.mainController.loading(false);
   }
 
   /** Go simulator control, runs all the program. */
   protected void go() {
     Status.STOPPED.set(false);
-    this.goTask =
-        new Task<Boolean>() {
-          @Override
-          protected Boolean call() throws Exception {
-            Status.RUNNING.set(true);
-            mainController.loading(true);
-            refreshTables();
-            while (!this.isCancelled() && debugger.step(true)) ;
-            Status.RUNNING.set(false);
-            mainController.loading(false);
-            refreshTables();
-            if (this.isCancelled()) return false;
-            return true;
-          }
-        };
+    this.goTask = new Task<Boolean>() {
+
+      @Override
+      protected Boolean call() throws Exception {
+        Status.RUNNING.set(true);
+        mainController.loading(true);
+        refreshTables();
+        while (!this.isCancelled() && debugger.step(true))
+          ;
+        Status.RUNNING.set(false);
+        mainController.loading(false);
+        refreshTables();
+        if (this.isCancelled())
+          return false;
+        return true;
+      }
+    };
     Thread th = new Thread(this.goTask);
     th.setDaemon(true);
     th.start();
@@ -280,17 +295,16 @@ public class SimulatorController {
   /** Step flow control, advances the simulator by 1 step. */
   protected void step() {
     Status.STOPPED.set(false);
-    Thread th =
-        new Thread(
-            new Task<Boolean>() {
-              @Override
-              public Boolean call() throws Exception {
-                mainController.loading(true);
-                debugger.step(false);
-                mainController.loading(false);
-                return true;
-              }
-            });
+    Thread th = new Thread(new Task<Boolean>() {
+
+      @Override
+      public Boolean call() throws Exception {
+        mainController.loading(true);
+        debugger.step(false);
+        mainController.loading(false);
+        return true;
+      }
+    });
     th.setDaemon(true);
     th.start();
   }
@@ -308,7 +322,8 @@ public class SimulatorController {
   /** Clear all breakpoints that were set. */
   protected void clearAllBreakpoints() {
     for (InfoStatement stmt : this.textTable.getItems()) {
-      if (!stmt.isEbreak() && stmt.getBreakpoint()) stmt.setBreakpoint(false);
+      if (!stmt.isEbreak() && stmt.getBreakpoint())
+        stmt.setBreakpoint(false);
     }
   }
 
@@ -319,7 +334,8 @@ public class SimulatorController {
     File file = chooser.showSaveDialog(this.mainController.stage);
     if (file != null) {
       try {
-        if (!file.exists()) file.createNewFile();
+        if (!file.exists())
+          file.createNewFile();
       } catch (IOException e) {
         Message.error("the file " + file + " could not be created");
         return;
@@ -334,7 +350,8 @@ public class SimulatorController {
         Message.log("machine code dumped to: " + file);
       } catch (IOException e) {
         Message.error("the file " + file + " could not be written");
-        if (file.exists() && file.length() == 0) file.delete();
+        if (file.exists() && file.length() == 0)
+          file.delete();
       }
     }
   }
@@ -342,11 +359,13 @@ public class SimulatorController {
   /** Shows Symbol Table tab if SHOW_LABELS setting is set to true. */
   protected void showST() {
     if (Settings.SHOW_LABELS) {
-      if (!this.hardware.getTabs().contains(this.STTab)) this.hardware.getTabs().add(this.STTab);
+      if (!this.hardware.getTabs().contains(this.STTab))
+        this.hardware.getTabs().add(this.STTab);
     } else {
       Tab selected = this.hardware.getSelectionModel().getSelectedItem();
       this.hardware.getTabs().remove(this.STTab);
-      if (selected == this.STTab) this.hardware.getSelectionModel().select(0);
+      if (selected == this.STTab)
+        this.hardware.getSelectionModel().select(0);
     }
   }
 
@@ -362,92 +381,93 @@ public class SimulatorController {
    */
   private void breakpoint(boolean add, InfoStatement stmt) {
     String address = stmt.getAddress();
-    if (add) this.debugger.breakpoint(address);
-    else this.debugger.delete(address);
+    if (add)
+      this.debugger.breakpoint(address);
+    else
+      this.debugger.delete(address);
     Platform.runLater(() -> this.textTable.refresh());
   }
 
   /** Refreshes all simulator tables views. */
   private void refreshTables() {
-    Platform.runLater(
-        () -> {
-          this.textTable.refresh();
-          this.rviTable.refresh();
-          this.rvfTable.refresh();
-          this.memTable.refresh();
-        });
+    Platform.runLater(() -> {
+      this.textTable.refresh();
+      this.rviTable.refresh();
+      this.rvfTable.refresh();
+      this.memTable.refresh();
+    });
   }
 
   /** Changes memory display setting to hexadecimal. */
   private void memoryDisplayHex() {
     Settings.DISP_MEM_CELL = 0;
-    Platform.runLater(
-        () -> {
-          for (MemoryCell cell : this.memTable.getItems()) cell.update();
-        });
+    Platform.runLater(() -> {
+      for (MemoryCell cell : this.memTable.getItems())
+        cell.update();
+    });
   }
 
   /** Changes memory display setting to ascii. */
   private void memoryDisplayAscii() {
     Settings.DISP_MEM_CELL = 1;
-    Platform.runLater(
-        () -> {
-          for (MemoryCell cell : this.memTable.getItems()) cell.update();
-        });
+    Platform.runLater(() -> {
+      for (MemoryCell cell : this.memTable.getItems())
+        cell.update();
+    });
   }
 
   /** Changes memory display setting to decimal. */
   private void memoryDisplayDecimal() {
     Settings.DISP_MEM_CELL = 2;
-    Platform.runLater(
-        () -> {
-          for (MemoryCell cell : this.memTable.getItems()) cell.update();
-        });
+    Platform.runLater(() -> {
+      for (MemoryCell cell : this.memTable.getItems())
+        cell.update();
+    });
   }
 
   /** Changes rvi register display setting to decimal. */
   private void rviDisplayDecimal() {
     Settings.DISP_RVI_REG = 2;
-    Platform.runLater(
-        () -> {
-          for (Register reg : this.rviTable.getItems()) reg.update();
-        });
+    Platform.runLater(() -> {
+      for (Register reg : this.rviTable.getItems())
+        reg.update();
+    });
   }
 
   /** Changes rvi register display setting to unsigned. */
   private void rviDisplayUnsigned() {
     Settings.DISP_RVI_REG = 1;
-    Platform.runLater(
-        () -> {
-          for (Register reg : this.rviTable.getItems()) reg.update();
-        });
+    Platform.runLater(() -> {
+      for (Register reg : this.rviTable.getItems())
+        reg.update();
+    });
   }
 
   /** Changes rvi register display setting to hexadecimal. */
   private void rviDisplayHex() {
     Settings.DISP_RVI_REG = 0;
-    Platform.runLater(
-        () -> {
-          for (Register reg : this.rviTable.getItems()) reg.update();
-        });
+    Platform.runLater(() -> {
+      for (Register reg : this.rviTable.getItems())
+        reg.update();
+    });
   }
 
   /** Changes rvf register display setting to hexadecimal. */
   private void rvfDisplayHex() {
     Settings.DISP_RVF_REG = 0;
-    Platform.runLater(
-        () -> {
-          for (Register reg : this.rvfTable.getItems()) reg.update();
-        });
+    Platform.runLater(() -> {
+      for (Register reg : this.rvfTable.getItems())
+        reg.update();
+    });
   }
 
   /** Changes rvf register display setting to float. */
   private void rvfDisplayFloat() {
     Settings.DISP_RVF_REG = 1;
-    Platform.runLater(
-        () -> {
-          for (Register reg : this.rvfTable.getItems()) reg.update();
-        });
+    Platform.runLater(() -> {
+      for (Register reg : this.rvfTable.getItems())
+        reg.update();
+    });
   }
 
   /**
@@ -465,10 +485,10 @@ public class SimulatorController {
     try {
       // user enters a hex
       if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        Globals.memory.storeByte(
-            cell.getIntAddress() + offset, Integer.parseInt(newValue.substring(2), 16));
+        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue.substring(2), 16));
       // user enters a decimal
-      else Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue));
+      else
+        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue));
     } catch (Exception e) {
       Message.warning("invalid memory cell value: " + newValue);
     }
@@ -494,7 +514,8 @@ public class SimulatorController {
       else if (newValue.matches("^0[bB][01]+$"))
         reg.setValue(Integer.parseInt(newValue.substring(2), 2));
       // user enters a decimal
-      else reg.setValue(Integer.parseInt(newValue));
+      else
+        reg.setValue(Integer.parseInt(newValue));
     } catch (Exception e) {
       Message.warning("invalid register value: " + newValue);
     }
@@ -514,9 +535,11 @@ public class SimulatorController {
     String newValue = t.getNewValue().trim();
     try {
       // user enters a hex value
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$")) reg.setValue(Integer.parseInt(newValue));
+      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
+        reg.setValue(Integer.parseInt(newValue));
       // user enters a float
-      else reg.setValue(Float.floatToIntBits(Float.parseFloat(newValue)));
+      else
+        reg.setValue(Float.floatToIntBits(Float.parseFloat(newValue)));
     } catch (Exception e) {
       Message.warning("invalid register value: " + newValue);
     }
@@ -536,9 +559,7 @@ public class SimulatorController {
     this.stepBtn.setOnAction(e -> this.step());
     this.stepBtn.disableProperty().bind(Bindings.or(Status.EXIT, Status.RUNNING));
     this.backstepBtn.setOnAction(e -> this.backstep());
-    this.backstepBtn
-        .disableProperty()
-        .bind(Bindings.or(Status.EMPTY, Bindings.or(Status.EXIT, Status.RUNNING)));
+    this.backstepBtn.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.EXIT, Status.RUNNING)));
     this.resetBtn.setOnAction(e -> this.reset());
     this.resetBtn.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EMPTY));
     this.dumpBtn.setOnAction(e -> this.dump());
@@ -550,63 +571,56 @@ public class SimulatorController {
   private void initText() {
     this.textTable.getStyleClass().add("text-table");
     // PC current row
-    Globals.regfile
-        .programCounterProperty()
-        .addListener(
-            e -> {
-              if (!Status.RUNNING.get()) {
-                Platform.runLater(
-                    () -> {
-                      // refresh table to fire updateItem in table row
-                      this.textTable.refresh();
-                      int pc =
-                          (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN)
-                              / LENGTH;
-                      int row = Math.min(pc, this.textTable.getItems().size() - 1);
-                      int first = this.vflow.getFirstVisibleCell().getIndex();
-                      int last = this.vflow.getLastVisibleCell().getIndex();
-                      if (row >= last || row <= first) this.textTable.scrollTo(row);
-                    });
-              }
-            });
+    Globals.regfile.programCounterProperty().addListener(e -> {
+      if (!Status.RUNNING.get()) {
+        Platform.runLater(() -> {
+          // refresh table to fire updateItem in table row
+          this.textTable.refresh();
+          int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / LENGTH;
+          int row = Math.min(pc, this.textTable.getItems().size() - 1);
+          int first = this.vflow.getFirstVisibleCell().getIndex();
+          int last = this.vflow.getLastVisibleCell().getIndex();
+          if (row >= last || row <= first)
+            this.textTable.scrollTo(row);
+        });
+      }
+    });
     // apply style to row with address = current PC
     PseudoClass currentPc = PseudoClass.getPseudoClass("pc");
-    this.textTable.setRowFactory(
-        e -> {
-          return new TableRow<InfoStatement>() {
-            @Override
-            public void updateItem(InfoStatement stmt, boolean isEmpty) {
-              super.updateItem(stmt, isEmpty);
-              if (isEmpty || stmt == null || Status.RUNNING.get()) {
-                this.pseudoClassStateChanged(currentPc, false);
-                return;
-              }
-              String address = stmt.getAddress();
-              String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
-              if (pc.equals(address)) this.pseudoClassStateChanged(currentPc, true);
-              else this.pseudoClassStateChanged(currentPc, false);
-            }
-          };
-        });
+    this.textTable.setRowFactory(e -> {
+      return new TableRow<InfoStatement>() {
+
+        @Override
+        public void updateItem(InfoStatement stmt, boolean isEmpty) {
+          super.updateItem(stmt, isEmpty);
+          if (isEmpty || stmt == null || Status.RUNNING.get()) {
+            this.pseudoClassStateChanged(currentPc, false);
+            return;
+          }
+          String address = stmt.getAddress();
+          String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
+          if (pc.equals(address))
+            this.pseudoClassStateChanged(currentPc, true);
+          else
+            this.pseudoClassStateChanged(currentPc, false);
+        }
+      };
+    });
     // default cell factory
-    Callback<TableColumn<InfoStatement, String>, TableCell<InfoStatement, String>> cellFactory =
-        (TableColumn<InfoStatement, String> p) -> new InfoCell();
+    Callback<TableColumn<InfoStatement, String>, TableCell<InfoStatement, String>> cellFactory = (
+        TableColumn<InfoStatement, String> p) -> new InfoCell();
     this.txtAddrCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("address"));
     this.txtAddrCol.setCellFactory(cellFactory);
-    this.txtMachineCode.setCellValueFactory(
-        new PropertyValueFactory<InfoStatement, String>("machineCode"));
+    this.txtMachineCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("machineCode"));
     this.txtMachineCode.setCellFactory(cellFactory);
-    this.txtSourceCode.setCellValueFactory(
-        new PropertyValueFactory<InfoStatement, String>("sourceCode"));
+    this.txtSourceCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("sourceCode"));
     this.txtSourceCode.setCellFactory(cellFactory);
-    this.txtBasicCode.setCellValueFactory(
-        new PropertyValueFactory<InfoStatement, String>("basicCode"));
+    this.txtBasicCode.setCellValueFactory(new PropertyValueFactory<InfoStatement, String>("basicCode"));
     this.txtBasicCode.setCellFactory(cellFactory);
     // default cell factory for breakpoint col
-    Callback<TableColumn<InfoStatement, Boolean>, TableCell<InfoStatement, Boolean>>
-        boolCellFactory = (TableColumn<InfoStatement, Boolean> p) -> new BooleanCell();
-    this.txtBkptCol.setCellValueFactory(
-        new PropertyValueFactory<InfoStatement, Boolean>("breakpoint"));
+    Callback<TableColumn<InfoStatement, Boolean>, TableCell<InfoStatement, Boolean>> boolCellFactory = (
+        TableColumn<InfoStatement, Boolean> p) -> new BooleanCell();
+    this.txtBkptCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, Boolean>("breakpoint"));
     this.txtBkptCol.setCellFactory(boolCellFactory);
   }
 
@@ -614,8 +628,8 @@ public class SimulatorController {
   @SuppressWarnings("unchecked")
   private void initMemory() {
     // cell factory
-    Callback<TableColumn<MemoryCell, String>, TableCell<MemoryCell, String>> cellFactory =
-        (TableColumn<MemoryCell, String> p) -> new MemoryEditingCell();
+    Callback<TableColumn<MemoryCell, String>, TableCell<MemoryCell, String>> cellFactory = (
+        TableColumn<MemoryCell, String> p) -> new MemoryEditingCell();
     // set memory columns
     this.memAddress.setCellValueFactory(new PropertyValueFactory<MemoryCell, String>("address"));
     this.memAddress.getStyleClass().add("editable-cell");
@@ -665,36 +679,33 @@ public class SimulatorController {
     menu.getItems().addAll(text, data, heap, stack, new SeparatorMenuItem(), hex, decimal, ascii);
     this.memTable.setContextMenu(menu);
     /*
-      Align table columns
-
-      Ref:
-      https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
-    */
+     * Align table columns
+     *
+     * Ref:
+     * https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-
+     * scrollbar
+     */
     Platform.runLater(() -> this.memTable.refresh());
     // disable table columns reordering (hacky and ugly)
-    this.memTable
-        .getColumns()
-        .addListener(
-            new ListChangeListener() {
-              @Override
-              public void onChanged(Change change) {
-                change.next();
-                if (change.wasReplaced()) {
-                  memTable.getColumns().clear();
-                  memTable
-                      .getColumns()
-                      .addAll(memAddress, memOffset0, memOffset1, memOffset2, memOffset3);
-                }
-              }
-            });
+    this.memTable.getColumns().addListener(new ListChangeListener() {
+
+      @Override
+      public void onChanged(Change change) {
+        change.next();
+        if (change.wasReplaced()) {
+          memTable.getColumns().clear();
+          memTable.getColumns().addAll(memAddress, memOffset0, memOffset1, memOffset2, memOffset3);
+        }
+      }
+    });
   }
 
   /** This method initializes RVI and RVF tables. */
   @SuppressWarnings("unchecked")
   private void initRegFiles() {
     // cell factory
-    Callback<TableColumn<Register, String>, TableCell<Register, String>> cellFactory =
-        (TableColumn<Register, String> p) -> new RegisterEditingCell();
+    Callback<TableColumn<Register, String>, TableCell<Register, String>> cellFactory = (
+        TableColumn<Register, String> p) -> new RegisterEditingCell();
     // RVI table
     this.rviMnemonic.setCellValueFactory(new PropertyValueFactory<Register, String>("mnemonic"));
     this.rviMnemonic.getStyleClass().add("editable-cell");
@@ -707,36 +718,35 @@ public class SimulatorController {
     // apply style to modified rvi register
     ObservableList<Register> rviList = Globals.regfile.getRVI();
     for (Register reg : rviList) {
-      reg.setOnSetValueListener(
-          number -> {
-            lastReg = reg;
-            if (!Status.RUNNING.get()) {
-              Platform.runLater(
-                  () -> {
-                    hardware.getSelectionModel().select(rviTab);
-                    int first = rviVFlow.getFirstVisibleCell().getIndex();
-                    int last = rviVFlow.getLastVisibleCell().getIndex();
-                    if (number >= last || number <= first) rviTable.scrollTo(number);
-                    rviTable.refresh();
-                  });
-            }
+      reg.setOnSetValueListener(number -> {
+        lastReg = reg;
+        if (!Status.RUNNING.get()) {
+          Platform.runLater(() -> {
+            hardware.getSelectionModel().select(rviTab);
+            int first = rviVFlow.getFirstVisibleCell().getIndex();
+            int last = rviVFlow.getLastVisibleCell().getIndex();
+            if (number >= last || number <= first)
+              rviTable.scrollTo(number);
+            rviTable.refresh();
           });
+        }
+      });
     }
     PseudoClass changed = PseudoClass.getPseudoClass("changed");
-    this.rviTable.setRowFactory(
-        e -> {
-          return new TableRow<Register>() {
-            @Override
-            public void updateItem(Register reg, boolean isEmpty) {
-              super.updateItem(reg, isEmpty);
-              if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
-                this.pseudoClassStateChanged(changed, false);
-                return;
-              }
-              this.pseudoClassStateChanged(changed, reg == lastReg);
-            }
-          };
-        });
+    this.rviTable.setRowFactory(e -> {
+      return new TableRow<Register>() {
+
+        @Override
+        public void updateItem(Register reg, boolean isEmpty) {
+          super.updateItem(reg, isEmpty);
+          if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
+            this.pseudoClassStateChanged(changed, false);
+            return;
+          }
+          this.pseudoClassStateChanged(changed, reg == lastReg);
+        }
+      };
+    });
     this.rviTable.setItems(rviList);
     // RVF table
     this.rvfMnemonic.setCellValueFactory(new PropertyValueFactory<Register, String>("mnemonic"));
@@ -750,35 +760,34 @@ public class SimulatorController {
     // apply style to modified rvf register
     ObservableList<Register> rvfList = Globals.fregfile.getRVF();
     for (Register reg : rvfList) {
-      reg.setOnSetValueListener(
-          number -> {
-            lastReg = reg;
-            if (!Status.RUNNING.get()) {
-              Platform.runLater(
-                  () -> {
-                    hardware.getSelectionModel().select(rvfTab);
-                    int first = rvfVFlow.getFirstVisibleCell().getIndex();
-                    int last = rvfVFlow.getLastVisibleCell().getIndex();
-                    if (number >= last || number <= first) rvfTable.scrollTo(number);
-                    rvfTable.refresh();
-                  });
-            }
+      reg.setOnSetValueListener(number -> {
+        lastReg = reg;
+        if (!Status.RUNNING.get()) {
+          Platform.runLater(() -> {
+            hardware.getSelectionModel().select(rvfTab);
+            int first = rvfVFlow.getFirstVisibleCell().getIndex();
+            int last = rvfVFlow.getLastVisibleCell().getIndex();
+            if (number >= last || number <= first)
+              rvfTable.scrollTo(number);
+            rvfTable.refresh();
           });
+        }
+      });
     }
-    this.rvfTable.setRowFactory(
-        e -> {
-          return new TableRow<Register>() {
-            @Override
-            public void updateItem(Register reg, boolean isEmpty) {
-              super.updateItem(reg, isEmpty);
-              if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
-                this.pseudoClassStateChanged(changed, false);
-                return;
-              }
-              this.pseudoClassStateChanged(changed, reg == lastReg);
-            }
-          };
-        });
+    this.rvfTable.setRowFactory(e -> {
+      return new TableRow<Register>() {
+
+        @Override
+        public void updateItem(Register reg, boolean isEmpty) {
+          super.updateItem(reg, isEmpty);
+          if (isEmpty || reg == null || lastReg == null || Status.RUNNING.get()) {
+            this.pseudoClassStateChanged(changed, false);
+            return;
+          }
+          this.pseudoClassStateChanged(changed, reg == lastReg);
+        }
+      };
+    });
     this.rvfTable.setItems(rvfList);
     // set rvi table context menu
     MenuItem hex = new MenuItem("Hex Display Mode");
@@ -804,48 +813,42 @@ public class SimulatorController {
     menu.getItems().addAll(hex, dfloat);
     this.rvfTable.setContextMenu(menu);
     /*
-      Align table columns
-
-      Ref:
-      https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-scrollbar
-    */
-    Platform.runLater(
-        () -> {
-          this.rviTable.refresh();
-          this.rvfTable.refresh();
-          // get virtual flows
-          this.rviVFlow =
-              (VirtualFlow<?>) ((TableViewSkin<?>) this.rviTable.getSkin()).getChildren().get(1);
-          this.rvfVFlow =
-              (VirtualFlow<?>) ((TableViewSkin<?>) this.rvfTable.getSkin()).getChildren().get(1);
-        });
+     * Align table columns
+     *
+     * Ref:
+     * https://stackoverflow.com/questions/37423748/javafx-tablecolumns-headers-not-aligned-with-cells-due-to-vertical-
+     * scrollbar
+     */
+    Platform.runLater(() -> {
+      this.rviTable.refresh();
+      this.rvfTable.refresh();
+      // get virtual flows
+      this.rviVFlow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rviTable.getSkin()).getChildren().get(1);
+      this.rvfVFlow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rvfTable.getSkin()).getChildren().get(1);
+    });
     // disable table columns reordering (hacky and ugly)
-    this.rviTable
-        .getColumns()
-        .addListener(
-            new ListChangeListener() {
-              @Override
-              public void onChanged(Change change) {
-                change.next();
-                if (change.wasReplaced()) {
-                  rviTable.getColumns().clear();
-                  rviTable.getColumns().addAll(rviMnemonic, rviNumber, rviValue);
-                }
-              }
-            });
-    this.rvfTable
-        .getColumns()
-        .addListener(
-            new ListChangeListener() {
-              @Override
-              public void onChanged(Change change) {
-                change.next();
-                if (change.wasReplaced()) {
-                  rvfTable.getColumns().clear();
-                  rvfTable.getColumns().addAll(rvfMnemonic, rvfNumber, rvfValue);
-                }
-              }
-            });
+    this.rviTable.getColumns().addListener(new ListChangeListener() {
+
+      @Override
+      public void onChanged(Change change) {
+        change.next();
+        if (change.wasReplaced()) {
+          rviTable.getColumns().clear();
+          rviTable.getColumns().addAll(rviMnemonic, rviNumber, rviValue);
+        }
+      }
+    });
+    this.rvfTable.getColumns().addListener(new ListChangeListener() {
+
+      @Override
+      public void onChanged(Change change) {
+        change.next();
+        if (change.wasReplaced()) {
+          rvfTable.getColumns().clear();
+          rvfTable.getColumns().addAll(rvfMnemonic, rvfNumber, rvfValue);
+        }
+      }
+    });
   }
 
   /** This method initializes ST table. */
@@ -853,35 +856,37 @@ public class SimulatorController {
     this.stSymbol.setCellValueFactory(new PropertyValueFactory<SymbolInfo, String>("name"));
     this.stAddress.setCellValueFactory(new PropertyValueFactory<SymbolInfo, String>("address"));
     PseudoClass symFile = PseudoClass.getPseudoClass("symFile");
-    this.stSymbol.setCellFactory(
-        tc -> {
-          return new TableCell<SymbolInfo, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-              super.updateItem(item, empty);
-              SymbolInfo sym = (SymbolInfo) this.getTableRow().getItem();
-              if (item != null && !empty && sym != null) {
-                if (!sym.isFile()) this.setText(item);
-                else {
-                  this.setText(new File(item).getName());
-                  this.pseudoClassStateChanged(symFile, true);
-                }
-                this.setTooltip(new Tooltip(item));
-              }
+    this.stSymbol.setCellFactory(tc -> {
+      return new TableCell<SymbolInfo, String>() {
+
+        @Override
+        protected void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          SymbolInfo sym = (SymbolInfo) this.getTableRow().getItem();
+          if (item != null && !empty && sym != null) {
+            if (!sym.isFile())
+              this.setText(item);
+            else {
+              this.setText(new File(item).getName());
+              this.pseudoClassStateChanged(symFile, true);
             }
-          };
-        });
-    this.stAddress.setCellFactory(
-        tc -> {
-          return new TableCell<SymbolInfo, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-              super.updateItem(item, empty);
-              SymbolInfo sym = (SymbolInfo) this.getTableRow().getItem();
-              if (item != null && !empty && sym != null && !sym.isFile()) this.setText(item);
-            }
-          };
-        });
+            this.setTooltip(new Tooltip(item));
+          }
+        }
+      };
+    });
+    this.stAddress.setCellFactory(tc -> {
+      return new TableCell<SymbolInfo, String>() {
+
+        @Override
+        protected void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          SymbolInfo sym = (SymbolInfo) this.getTableRow().getItem();
+          if (item != null && !empty && sym != null && !sym.isFile())
+            this.setText(item);
+        }
+      };
+    });
     this.showST();
   }
 }

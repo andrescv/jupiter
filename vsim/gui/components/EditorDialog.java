@@ -1,11 +1,22 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.components;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXColorPicker;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXRadioButton;
-import com.jfoenix.controls.JFXSlider;
 import java.io.IOException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -20,9 +31,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXColorPicker;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXSlider;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import vsim.Settings;
 import vsim.gui.utils.Icons;
+
 
 /** This class is used for change and save editor settings. */
 public final class EditorDialog {
@@ -31,28 +49,9 @@ public final class EditorDialog {
   private static String NL = System.getProperty("line.separator");
 
   /** Sample text editor code */
-  private static String SAMPLE_CODE =
-      "; Meaningless Code Example :)"
-          + NL
-          + ".data"
-          + NL
-          + "%sstr: .asciiz \"hello world\\n\""
-          + NL
-          + "%snum: .word 2 + 2"
-          + NL
-          + ".text"
-          + NL
-          + "main:"
-          + NL
-          + "%stail exit"
-          + NL
-          + "exit:"
-          + NL
-          + "%sli a0, 10"
-          + NL
-          + "%secall"
-          + NL
-          + "{}!; forced errors";
+  private static String SAMPLE_CODE = "; Meaningless Code Example :)" + NL + ".data" + NL
+      + "%sstr: .asciiz \"hello world\\n\"" + NL + "%snum: .word 2 + 2" + NL + ".text" + NL + "main:" + NL
+      + "%stail exit" + NL + "exit:" + NL + "%sli a0, 10" + NL + "%secall" + NL + "{}!; forced errors";
 
   /** Dialog stage */
   private Stage stage;
@@ -127,8 +126,7 @@ public final class EditorDialog {
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.setResizable(false);
       this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader =
-          new FXMLLoader(getClass().getResource("/resources/fxml/EditorDialog.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditorDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       this.editor = new Editor();
@@ -142,9 +140,8 @@ public final class EditorDialog {
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
       decorator.setGraphic(Icons.getImage("logo"));
       Scene scene = new Scene(decorator, 704, 638);
-      scene
-          .getStylesheets()
-          .add(getClass().getResource("/resources/css/style.css").toExternalForm());
+      scene.getStylesheets().addAll(getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+          getClass().getResource("/css/vsim.css").toExternalForm());
       this.stage.setScene(scene);
       // enable color pickers only if custom option is selected
       this.syntax.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
@@ -166,8 +163,7 @@ public final class EditorDialog {
       this.caret.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
       this.highlight.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
       // populate combo boxes
-      this.fontstyle.setItems(
-          FXCollections.observableArrayList("Bold", "Bold Italic", "Italic", "Regular"));
+      this.fontstyle.setItems(FXCollections.observableArrayList("Bold", "Bold Italic", "Italic", "Regular"));
       this.fontfamily.setItems(FXCollections.observableArrayList(Font.getFamilies()));
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -192,11 +188,16 @@ public final class EditorDialog {
   @FXML
   private void save(ActionEvent e) {
     // save syntax theme setting
-    if (this.eclipse.isSelected()) Settings.setCodeAreaSyntaxTheme("eclipse");
-    if (this.material.isSelected()) Settings.setCodeAreaSyntaxTheme("material");
-    if (this.monokai.isSelected()) Settings.setCodeAreaSyntaxTheme("monokai");
-    if (this.onelight.isSelected()) Settings.setCodeAreaSyntaxTheme("onelight");
-    if (this.custom.isSelected()) Settings.setCodeAreaSyntaxTheme("custom");
+    if (this.eclipse.isSelected())
+      Settings.setCodeAreaSyntaxTheme("eclipse");
+    if (this.material.isSelected())
+      Settings.setCodeAreaSyntaxTheme("material");
+    if (this.monokai.isSelected())
+      Settings.setCodeAreaSyntaxTheme("monokai");
+    if (this.onelight.isSelected())
+      Settings.setCodeAreaSyntaxTheme("onelight");
+    if (this.custom.isSelected())
+      Settings.setCodeAreaSyntaxTheme("custom");
     String weight = "normal";
     String style = "normal";
     // update font weight and style
@@ -284,31 +285,16 @@ public final class EditorDialog {
     String tab = this.getTab();
     this.editor.setEditorText(String.format(EditorDialog.SAMPLE_CODE, tab, tab, tab, tab, tab));
     // update editor colors
-    this.editor.setStyle(
-        String.format(
-            Editor.STYLE,
-            this.toRgba(this.syntax.getValue()),
-            this.toRgba(this.operator.getValue()),
-            this.toRgba(this.directive.getValue()),
-            this.toRgba(this.keyword.getValue()),
-            this.toRgba(this.label.getValue()),
-            this.toRgba(this.identifier.getValue()),
-            this.toRgba(this.register.getValue()),
-            this.toRgba(this.number.getValue()),
-            this.toRgba(this.comment.getValue()),
-            this.toRgba(this.string.getValue()),
-            this.toRgba(this.backslash.getValue()),
-            this.toRgba(this.error.getValue()),
-            this.toRgba(this.background.getValue()),
-            this.toRgba(this.selection.getValue()),
-            this.toRgba(this.lineno.getValue()),
-            this.toRgba(this.linenobg.getValue()),
-            this.toRgba(this.caret.getValue()),
-            this.toRgba(this.highlight.getValue()),
-            weight,
-            style,
-            this.fontfamily.getValue(),
-            Math.round(this.fontsize.getValue())));
+    this.editor.setStyle(String.format(Editor.STYLE, this.toRgba(this.syntax.getValue()),
+        this.toRgba(this.operator.getValue()), this.toRgba(this.directive.getValue()),
+        this.toRgba(this.keyword.getValue()), this.toRgba(this.label.getValue()),
+        this.toRgba(this.identifier.getValue()), this.toRgba(this.register.getValue()),
+        this.toRgba(this.number.getValue()), this.toRgba(this.comment.getValue()), this.toRgba(this.string.getValue()),
+        this.toRgba(this.backslash.getValue()), this.toRgba(this.error.getValue()),
+        this.toRgba(this.background.getValue()), this.toRgba(this.selection.getValue()),
+        this.toRgba(this.lineno.getValue()), this.toRgba(this.linenobg.getValue()), this.toRgba(this.caret.getValue()),
+        this.toRgba(this.highlight.getValue()), weight, style, this.fontfamily.getValue(),
+        Math.round(this.fontsize.getValue())));
     // update auto-indent
     this.editor.setAutoIndent(this.autoIndent.isSelected());
     // update tab size
@@ -322,12 +308,8 @@ public final class EditorDialog {
    * @return rgba web string
    */
   private String toRgba(Color color) {
-    return String.format(
-        "rgba(%d, %d, %d, %.2f)",
-        (int) (color.getRed() * 255),
-        (int) (color.getGreen() * 255),
-        (int) (color.getBlue() * 255),
-        color.getOpacity());
+    return String.format("rgba(%d, %d, %d, %.2f)", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
+        (int) (color.getBlue() * 255), color.getOpacity());
   }
 
   /** Sets eclipse syntax theme. */
@@ -477,16 +459,14 @@ public final class EditorDialog {
     // load auto-indent settings
     this.autoIndent.setSelected(Settings.CODE_AREA_AUTO_INDENT);
     // load font settings
-    if (Settings.CODE_AREA_FONT_STYLE.equals("normal")
-        && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
+    if (Settings.CODE_AREA_FONT_STYLE.equals("normal") && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
       this.fontstyle.getSelectionModel().select("Regular");
-    else if (Settings.CODE_AREA_FONT_STYLE.equals("italic")
-        && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
+    else if (Settings.CODE_AREA_FONT_STYLE.equals("italic") && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
       this.fontstyle.getSelectionModel().select("Italic");
-    else if (Settings.CODE_AREA_FONT_STYLE.equals("normal")
-        && Settings.CODE_AREA_FONT_WEIGHT.equals("bold"))
+    else if (Settings.CODE_AREA_FONT_STYLE.equals("normal") && Settings.CODE_AREA_FONT_WEIGHT.equals("bold"))
       this.fontstyle.getSelectionModel().select("Bold");
-    else this.fontstyle.getSelectionModel().select("Bold Italic");
+    else
+      this.fontstyle.getSelectionModel().select("Bold Italic");
     this.fontfamily.getSelectionModel().select(Settings.CODE_AREA_FONT_FAMILY);
     this.fontsize.setValue(Settings.CODE_AREA_FONT_SIZE);
     // load tab size
@@ -503,27 +483,28 @@ public final class EditorDialog {
     // load settings
     this.loadSettings();
     // add listeners
-    ChangeListener<Boolean> themeChange =
-        (obs, oldVal, newVal) -> {
-          if (newVal) {
-            if (obs == eclipse.selectedProperty()) this.loadEclipse();
-            else if (obs == material.selectedProperty()) this.loadMaterial();
-            else if (obs == monokai.selectedProperty()) this.loadMonokai();
-            else this.loadOnelight();
-          }
-        };
+    ChangeListener<Boolean> themeChange = (obs, oldVal, newVal) -> {
+      if (newVal) {
+        if (obs == eclipse.selectedProperty())
+          this.loadEclipse();
+        else if (obs == material.selectedProperty())
+          this.loadMaterial();
+        else if (obs == monokai.selectedProperty())
+          this.loadMonokai();
+        else
+          this.loadOnelight();
+      }
+    };
     ChangeListener<Boolean> autoIndentChange = (obs, oldVal, newVal) -> this.update();
     ChangeListener<String> comboChange = (obs, oldVal, newVal) -> this.update();
-    ChangeListener<Number> fontSizeChange =
-        (e, oldVal, newVal) -> {
-          this.fontsize.setValue(Math.round(newVal.doubleValue()));
-          this.update();
-        };
-    ChangeListener<Number> tabSizeChange =
-        (e, oldVal, newVal) -> {
-          this.tabsize.setValue(Math.round(newVal.doubleValue()));
-          this.update();
-        };
+    ChangeListener<Number> fontSizeChange = (e, oldVal, newVal) -> {
+      this.fontsize.setValue(Math.round(newVal.doubleValue()));
+      this.update();
+    };
+    ChangeListener<Number> tabSizeChange = (e, oldVal, newVal) -> {
+      this.tabsize.setValue(Math.round(newVal.doubleValue()));
+      this.update();
+    };
     this.fontsize.valueProperty().addListener(fontSizeChange);
     this.tabsize.valueProperty().addListener(tabSizeChange);
     this.fontstyle.valueProperty().addListener(comboChange);

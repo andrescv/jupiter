@@ -1,9 +1,25 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.components;
 
 import javafx.css.PseudoClass;
-import vsim.linker.InfoStatement;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import vsim.linker.InfoStatement;
 
 
 /**
@@ -22,7 +38,7 @@ public final class BooleanCell extends CheckBoxTableCell<InfoStatement, Boolean>
         this.setEditable(false);
         this.pseudoClassStateChanged(nonEditable, true);
       } else {
-        InfoStatement stmt = (InfoStatement)this.getTableRow().getItem();
+        InfoStatement stmt = (InfoStatement) this.getTableRow().getItem();
         if (stmt == null) {
           this.setEditable(false);
           this.pseudoClassStateChanged(nonEditable, true);

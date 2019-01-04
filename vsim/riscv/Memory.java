@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-import vsim.Settings;
-import vsim.utils.IO;
-import vsim.utils.Data;
 import java.util.HashMap;
-import vsim.utils.Message;
-import vsim.utils.Colorize;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import vsim.Settings;
+import vsim.utils.Colorize;
+import vsim.utils.Data;
+import vsim.utils.IO;
+import vsim.utils.Message;
 
 
 /**
@@ -85,7 +85,7 @@ public final class Memory {
     MemorySegments.HEAP_SEGMENT = this.heapSnap;
     // refresh memory cells
     if (Settings.GUI) {
-      for (MemoryCell cell: this.cells)
+      for (MemoryCell cell : this.cells)
         cell.update();
     }
   }
@@ -95,7 +95,7 @@ public final class Memory {
    */
   @SuppressWarnings("unchecked")
   public void snapshot() {
-    this.snap = (HashMap<Integer, Byte>)this.memory.clone();
+    this.snap = (HashMap<Integer, Byte>) this.memory.clone();
     this.heapSnap = MemorySegments.HEAP_SEGMENT;
   }
 
@@ -111,16 +111,16 @@ public final class Memory {
     String header = "Value (+0) Value (+4) Value (+8) Value (+c)";
     String out = "             " + Colorize.red(header + newline);
     for (int i = 0; i < Data.WORD_LENGTH * rows; i++) {
-        int address = from + i * Data.WORD_LENGTH;
-        // include address
-        if (i % Data.WORD_LENGTH == 0)
-            out += String.format("[0x%08x]", address);
-        // word content at this address
-        String data = String.format("0x%08x", this.loadWord(address));
-        out += " " + Colorize.blue(data);
-        // next 4 words in other row
-        if ((i + 1) % Data.WORD_LENGTH == 0)
-            out += newline;
+      int address = from + i * Data.WORD_LENGTH;
+      // include address
+      if (i % Data.WORD_LENGTH == 0)
+        out += String.format("[0x%08x]", address);
+      // word content at this address
+      String data = String.format("0x%08x", this.loadWord(address));
+      out += " " + Colorize.blue(data);
+      // next 4 words in other row
+      if ((i + 1) % Data.WORD_LENGTH == 0)
+        out += newline;
     }
     // right strip whitespace
     IO.stdout.println(out.replaceAll("\\s+$", ""));
@@ -135,13 +135,13 @@ public final class Memory {
   public void storeByte(int address, int value) {
     if (Memory.checkStore(address)) {
       if (value != 0)
-        this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+        this.memory.put(address, (byte) (value & Data.BYTE_MASK));
       else
         this.memory.remove(address);
     }
     // refresh memory cells
     if (Settings.GUI) {
-      for (MemoryCell cell: this.cells)
+      for (MemoryCell cell : this.cells)
         cell.update();
     }
   }
@@ -154,12 +154,12 @@ public final class Memory {
    */
   private void privStoreByte(int address, int value) {
     if (value != 0)
-      this.memory.put(address, (byte)(value & Data.BYTE_MASK));
+      this.memory.put(address, (byte) (value & Data.BYTE_MASK));
     else
       this.memory.remove(address);
     // refresh memory cells
     if (Settings.GUI) {
-      for (MemoryCell cell: this.cells)
+      for (MemoryCell cell : this.cells)
         cell.update();
     }
   }
@@ -191,25 +191,23 @@ public final class Memory {
   }
 
   /**
-   * This method stores a word at the given address. This method
-   * should only be used in the linking process.
+   * This method stores a word at the given address. This method should only be used in the linking process.
    *
    * @param address address where to store the word value
    * @param value the word to store
    */
   public void privStoreWord(int address, int value) {
     for (int i = 0; i < Data.WORD_LENGTH; i++)
-      this.memory.put(address++, (byte)((value >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
+      this.memory.put(address++, (byte) ((value >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
     // refresh memory cells
     if (Settings.GUI) {
-      for (MemoryCell cell: this.cells)
+      for (MemoryCell cell : this.cells)
         cell.update();
     }
   }
 
   /**
-   * This method allocates bytes from heap and returns the next available
-   * address.
+   * This method allocates bytes from heap and returns the next available address.
    *
    * @param bytes number of bytes to allocate
    * @return the nex available heap address or -1 if no more space.
@@ -239,7 +237,7 @@ public final class Memory {
     if (Memory.checkLoad(address)) {
       if (!this.memory.containsKey(address))
         return 0x0;
-      return ((int)this.memory.get(address)) & Data.BYTE_MASK;
+      return ((int) this.memory.get(address)) & Data.BYTE_MASK;
     }
     return 0x0;
   }
@@ -253,7 +251,7 @@ public final class Memory {
   public int privLoadByteUnsigned(int address) {
     if (!this.memory.containsKey(address))
       return 0x0;
-    return ((int)this.memory.get(address)) & Data.BYTE_MASK;
+    return ((int) this.memory.get(address)) & Data.BYTE_MASK;
   }
 
   /**
@@ -376,7 +374,7 @@ public final class Memory {
   }
 
   /**
-   *  This method returns the current heap address.
+   * This method returns the current heap address.
    *
    * @return current heap address
    */
@@ -410,7 +408,7 @@ public final class Memory {
    * @param diff diff between states of the main memory
    */
   public void restore(HashMap<Integer, Byte> diff) {
-    for (Integer key: diff.keySet())
+    for (Integer key : diff.keySet())
       this.privStoreByte(key, diff.get(key));
   }
 
@@ -422,31 +420,31 @@ public final class Memory {
    */
   public static boolean checkAddress(int address) {
     // reserved memory ?
-    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END) ||
-        Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END))
+    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
+        || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END))
       return false;
     // text segment ?
     if (Data.inRange(address, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END))
       return false;
     // read only segment ?
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END &&
-        Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END))
+    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
+        && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END))
       return false;
     // otherwise
     return true;
   }
 
   /**
-   * This method checks if the address given is a valid store address and displays a warning
-   * message if the address is invalid.
+   * This method checks if the address given is a valid store address and displays a warning message if the address is
+   * invalid.
    *
    * @param address the address to check
    * @return true if the address is valid, false otherwise.
    */
   public static boolean checkStore(int address) {
     // reserved memory ?
-    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END) ||
-        Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
+    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
+        || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
       if (!Settings.QUIET)
         Message.warning("runtime: trying to store a value in reserved memory (ignoring)");
       return false;
@@ -458,8 +456,8 @@ public final class Memory {
       return false;
     }
     // read only segment ?
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END &&
-        Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END)) {
+    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
+        && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END)) {
       if (!Settings.QUIET)
         Message.warning("runtime: trying to store a value in read only segment (ignoring)");
       return false;
@@ -476,8 +474,8 @@ public final class Memory {
    */
   public static boolean checkLoad(int address) {
     // reserved memory ?
-    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END) ||
-        Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
+    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
+        || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
       if (!Settings.QUIET)
         Message.warning("runtime: trying to load a value from reserved memory");
       return false;

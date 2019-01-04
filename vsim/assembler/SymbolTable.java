@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
-import vsim.utils.IO;
-import java.util.Set;
 import java.util.HashMap;
+import java.util.Set;
 import vsim.utils.Colorize;
+import vsim.utils.IO;
 
 
 /**
@@ -50,15 +50,14 @@ public final class SymbolTable {
    * This method pretty prints the complete symbol table.
    */
   public void print() {
-    for (String label: this.table.keySet()) {
+    for (String label : this.table.keySet()) {
       IO.stdout.print(Colorize.green(label) + " ");
       this.table.get(label).print();
     }
   }
 
   /**
-   * This method tries to return the address of a symbol given
-   * a label name.
+   * This method tries to return the address of a symbol given a label name.
    *
    * @param label the label name
    * @return the address of this symbol or null if the label does not exists
@@ -112,8 +111,7 @@ public final class SymbolTable {
   }
 
   /**
-   * This method tries to add a new label of a segment to the symbol table
-   * creating a newly Sym object.
+   * This method tries to add a new label of a segment to the symbol table creating a newly Sym object.
    *
    * @param label the label name of this symbol
    * @param segment the segment this label belongs

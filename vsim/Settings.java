@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package vsim;
 import java.io.File;
 import java.util.prefs.Preferences;
 
+
 /** The Settings class contains the V-Sim simulator settings. */
 public final class Settings {
 
@@ -29,7 +30,7 @@ public final class Settings {
   /** Preferences object */
   private static final Preferences prefs = Preferences.userRoot().node("vsim");
 
-  // GUI AND CLI SETTINGS
+// GUI AND CLI SETTINGS
 
   /** installation path */
   public static File ROOT = null;
@@ -55,7 +56,7 @@ public final class Settings {
   /** extrict mode assembler warnings are consider errors */
   public static boolean EXTRICT = false;
 
-  // CLI ONLY SETTINGS
+// CLI ONLY SETTINGS
 
   /** debugging mode, set with -debug flag or ebreak instruction */
   public static boolean DEBUG = false;
@@ -69,7 +70,7 @@ public final class Settings {
   /** colorize output, disable with -nocolor flag */
   public static boolean COLORIZE = false;
 
-  // GUI ONLY SETTINGS
+// GUI ONLY SETTINGS
 
   /** if running in GUI mode */
   public static boolean GUI = false;
@@ -219,9 +220,7 @@ public final class Settings {
    * @return true if success, false if not
    */
   public static boolean setStart(String start) {
-    if (start != null
-        && start.length() > 0
-        && start.trim().matches("[a-zA-Z_]([a-zA-Z0-9_]*(\".\"[a-zA-Z0-9_]+)?)")) {
+    if (start != null && start.length() > 0 && start.trim().matches("[a-zA-Z_]([a-zA-Z0-9_]*(\".\"[a-zA-Z0-9_]+)?)")) {
       Settings.prefs.put("START", start.trim());
       Settings.START = start.trim();
       return true;

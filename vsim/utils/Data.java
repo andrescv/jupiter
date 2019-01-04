@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,10 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
-
 /**
- * The class Data contains useful methods, constants and masks for
- * data manipulation in VSim.
+ * The class Data contains useful methods, constants and masks for data manipulation in VSim.
  */
 public final class Data {
 
@@ -54,7 +52,7 @@ public final class Data {
   /** half max value (32767) */
   public static final int HALF_MAX_VALUE = 32767;
 
-  /** floating point fraction/mantissa integer mask (0x007fffff)*/
+  /** floating point fraction/mantissa integer mask (0x007fffff) */
   public static final int FRACTION_MASK = 0x007fffff;
   /** floating point exponent integer mask (0x7f800000) */
   public static final int EXPONENT_MASK = 0x7f800000;
@@ -144,8 +142,8 @@ public final class Data {
 
   /**
    *
-   * This method verifies if a value is a valid half value,
-   * i.e is in the range [{@link Data#HALF_MIN_VALUE}, {@link Data#HALF_MAX_VALUE}]
+   * This method verifies if a value is a valid half value, i.e is in the range [{@link Data#HALF_MIN_VALUE},
+   * {@link Data#HALF_MAX_VALUE}]
    *
    * @param value the value to verify
    * @see vsim.utils.Data#inRange
@@ -158,8 +156,8 @@ public final class Data {
   }
 
   /**
-   * This method verifies if a value is a valid byte value, i.e
-   * is in the range [{@link Data#BYTE_MIN_VALUE}, {@link Data#BYTE_MAX_VALUE}].
+   * This method verifies if a value is a valid byte value, i.e is in the range [{@link Data#BYTE_MIN_VALUE},
+   * {@link Data#BYTE_MAX_VALUE}].
    *
    * @param value the value to verify
    * @see vsim.utils.Data#inRange

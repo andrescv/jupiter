@@ -1,23 +1,9 @@
 # Build directory
 build/
-
-# Distribution directory
-dist/
-
-# Doc directory
-javadoc/
+bin/
 
 # Docs build site
 docs/site
-
-# ant targets
-.ant-targets-build.xml
-
-# Lexer and Parser classes
-vsim/assembler/Lexer.java
-vsim/assembler/Parser.java
-vsim/assembler/Token.java
-vsim/gui/syntax/Lexer.java
 
 # Java compiled files
 *.class
@@ -32,6 +18,7 @@ vsim/gui/syntax/Lexer.java
 .mtj.tmp/
 
 # Package Files #
+*.jar
 *.war
 *.nar
 *.ear
@@ -39,5 +26,19 @@ vsim/gui/syntax/Lexer.java
 *.tar.gz
 *.rar
 
+# avoid ignoring project dependencies
+!java-cup-11b.jar
+!jflex-1.7.0.jar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# gradle
+.gradle
+gradle-app.setting
+
+# avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache

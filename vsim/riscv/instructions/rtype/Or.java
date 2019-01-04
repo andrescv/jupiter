@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.rtype;
 
-
 /**
  * The Or class represents a or instruction.
  */
@@ -29,11 +28,7 @@ public final class Or extends RType {
    * @see vsim.riscv.instructions.rtype.RType
    */
   public Or() {
-    super(
-      "or",
-      "or rd, rs1, rs2",
-      "set x[rd] = x[rs1] | x[rs2], bitwise or"
-    );
+    super("or", "or rd, rs1, rs2", "set x[rd] = x[rs1] | x[rs2], bitwise or");
   }
 
   @Override

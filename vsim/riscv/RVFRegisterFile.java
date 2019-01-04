@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-import vsim.utils.IO;
 import java.util.HashMap;
-import vsim.utils.Colorize;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import vsim.utils.Colorize;
+import vsim.utils.IO;
 
 
 /**
@@ -30,16 +30,9 @@ import javafx.collections.ObservableList;
 public final class RVFRegisterFile {
 
   /** RVF register ABI names */
-  private static final String[] MNEMONICS = {
-    "ft0", "ft1", "ft2", "ft3",
-    "ft4", "ft5", "ft6", "ft7",
-    "fs0", "fs1", "fa0", "fa1",
-    "fa2", "fa3", "fa4", "fa5",
-    "fa6", "fa7", "fs2", "fs3",
-    "fs4", "fs5", "fs6", "fs7",
-    "fs8", "fs9", "fs10", "fs11",
-    "ft8", "ft9", "ft10", "ft11"
-  };
+  private static final String[] MNEMONICS = { "ft0", "ft1", "ft2", "ft3", "ft4", "ft5", "ft6", "ft7", "fs0", "fs1",
+      "fa0", "fa1", "fa2", "fa3", "fa4", "fa5", "fa6", "fa7", "fs2", "fs3", "fs4", "fs5", "fs6", "fs7", "fs8", "fs9",
+      "fs10", "fs11", "ft8", "ft9", "ft10", "ft11" };
 
   /** the only available instance of the RVFRegisterFile class */
   public static final RVFRegisterFile regfile = new RVFRegisterFile();
@@ -215,17 +208,9 @@ public final class RVFRegisterFile {
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
       Register reg = this.rf.get("f" + i);
-      IO.stdout.println(
-        String.format(
-          regfmt,
-          Colorize.green("f" + i),
-          (i >= 10) ? "" : " ",
-          reg.toString(),
-          Colorize.purple(MNEMONICS[i]),
-          (MNEMONICS[i].length() < 4) ? "  " : " ",
-          Float.intBitsToFloat(reg.getValue())
-        )
-      );
+      IO.stdout.println(String.format(regfmt, Colorize.green("f" + i), (i >= 10) ? "" : " ", reg.toString(),
+          Colorize.purple(MNEMONICS[i]), (MNEMONICS[i].length() < 4) ? "  " : " ",
+          Float.intBitsToFloat(reg.getValue())));
     }
   }
 
@@ -238,15 +223,8 @@ public final class RVFRegisterFile {
     Register reg = this.rf.get(name);
     if (reg != null) {
       int i = reg.getNumber();
-      IO.stdout.println(
-        String.format(
-          "%s [%s] (%s) {~= %.4f}",
-          Colorize.green("f" + i),
-          reg.toString(),
-          Colorize.purple(MNEMONICS[i]),
-          Float.intBitsToFloat(reg.getValue())
-        )
-      );
+      IO.stdout.println(String.format("%s [%s] (%s) {~= %.4f}", Colorize.green("f" + i), reg.toString(),
+          Colorize.purple(MNEMONICS[i]), Float.intBitsToFloat(reg.getValue())));
     }
   }
 
@@ -267,7 +245,7 @@ public final class RVFRegisterFile {
    * @param diff diff between states of the rvf register file
    */
   public void restore(HashMap<String, Integer> diff) {
-    for (String key: diff.keySet())
+    for (String key : diff.keySet())
       this.rf.get(key).setValue(diff.get(key));
   }
 

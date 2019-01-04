@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package vsim.assembler.statements;
 import vsim.Globals;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
 
 
@@ -45,8 +44,7 @@ public final class FRType extends Statement {
    * @param rs1 register source 1
    * @param rs2 register source 2
    */
-  public FRType(String mnemonic, DebugInfo debug,
-               String rd, String rs1, String rs2) {
+  public FRType(String mnemonic, DebugInfo debug, String rd, String rs1, String rs2) {
     super(mnemonic, debug);
     this.rd = rd;
     this.rs1 = rs1;
@@ -61,14 +59,14 @@ public final class FRType extends Statement {
   @Override
   public void build(int pc) {
     Instruction inst = Globals.iset.get(this.mnemonic);
-    int rd  = Globals.fregfile.getRegisterNumber(this.rd);
+    int rd = Globals.fregfile.getRegisterNumber(this.rd);
     int rs1 = Globals.fregfile.getRegisterNumber(this.rs1);
     int rs2 = Globals.fregfile.getRegisterNumber(this.rs2);
     int opcode = inst.getOpCode();
     int funct7 = inst.getFunct7();
     int funct3 = inst.getFunct3();
     this.code.set(InstructionField.FUNCT7, funct7);
-    this.code.set(InstructionField.RD,  rd);
+    this.code.set(InstructionField.RD, rd);
     this.code.set(InstructionField.RS1, rs1);
     this.code.set(InstructionField.RS2, rs2);
     this.code.set(InstructionField.FUNCT3, funct3);

@@ -1,22 +1,38 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.utils;
 
-import java.io.File;
-import vsim.Settings;
-import java.util.HashMap;
-import java.nio.file.Path;
-import java.nio.file.Files;
-import java.io.IOException;
-import javafx.concurrent.Task;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchEvent;
-import java.nio.file.LinkOption;
-import java.nio.file.FileSystems;
-import java.nio.file.WatchService;
-import javafx.application.Platform;
-import vsim.gui.components.TreePath;
-import javafx.scene.control.TreeView;
-import vsim.gui.controllers.EditorController;
 import static java.nio.file.StandardWatchEventKinds.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.HashMap;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import vsim.Settings;
+import vsim.gui.components.TreePath;
+import vsim.gui.controllers.EditorController;
 
 
 /**
@@ -34,7 +50,7 @@ public final class DirWatcher extends Task<Void> {
   /** Java watch service utility */
   private final WatchService watcher;
   /** Map of watched keys */
-  private final HashMap<WatchKey,Path> keys;
+  private final HashMap<WatchKey, Path> keys;
 
   /**
    * Creates a new directory watcher that will refresh a TreeView object.
@@ -86,14 +102,14 @@ public final class DirWatcher extends Task<Void> {
       if (dir == null)
         continue;
       // get all events
-      for (WatchEvent<?> event: key.pollEvents()) {
+      for (WatchEvent<?> event : key.pollEvents()) {
         WatchEvent.Kind kind = event.kind();
         // how OVERFLOW event is handled
         if (kind == OVERFLOW)
           continue;
         // Context for directory entry event is the file name of entry
         @SuppressWarnings("unchecked")
-        WatchEvent<Path> ev = (WatchEvent<Path>)event;
+        WatchEvent<Path> ev = (WatchEvent<Path>) event;
         Path name = ev.context();
         Path child = dir.resolve(name);
         // update tree view
@@ -108,7 +124,7 @@ public final class DirWatcher extends Task<Void> {
           Platform.runLater(() -> this.controller.checkExternalDelete());
           Object[] fileKeys = DirWatcher.expanded.keySet().toArray();
           for (int i = 0; i < fileKeys.length; i++) {
-            File k = (File)fileKeys[i];
+            File k = (File) fileKeys[i];
             if (!k.exists())
               DirWatcher.expanded.remove(k);
           }
@@ -148,7 +164,7 @@ public final class DirWatcher extends Task<Void> {
         File[] files = root.listFiles();
         if (files != null) {
           // walk directory tree
-          for (File f: files)
+          for (File f : files)
             this.registerAll(f);
         }
       } catch (IOException e) {

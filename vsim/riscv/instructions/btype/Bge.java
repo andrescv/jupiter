@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.btype;
 
-
 /**
  * The Bge class represents a bge instruction.
  */
@@ -29,11 +28,7 @@ public final class Bge extends BType {
    * @see vsim.riscv.instructions.btype.BType
    */
   public Bge() {
-    super(
-      "bge",
-      "bge rs1, rs2, offset",
-      "set pc = pc + sext(offset), if x[rs1] >= x[rs2], signed comparison"
-    );
+    super("bge", "bge rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] >= x[rs2], signed comparison");
   }
 
   @Override

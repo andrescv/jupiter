@@ -1,17 +1,33 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.utils;
 
-import java.io.InputStream;
-import vsim.simulator.Status;
-import javafx.event.EventType;
-import javafx.event.EventHandler;
+import java.util.concurrent.ArrayBlockingQueue;
 import javafx.application.Platform;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseButton;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import java.util.concurrent.ArrayBlockingQueue;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import vsim.simulator.Status;
 
 
 /**
@@ -46,6 +62,7 @@ public class ConsoleInput {
     this.area.setEditable(false);
     this.queue = new ArrayBlockingQueue<String>(1);
     this.listener = new EventHandler<KeyEvent>() {
+
       @Override
       public void handle(KeyEvent e) {
         switch (e.getCode()) {
@@ -87,6 +104,7 @@ public class ConsoleInput {
       }
     };
     this.mouseListener = new EventHandler<MouseEvent>() {
+
       @Override
       public void handle(MouseEvent e) {
         EventType<? extends MouseEvent> type = e.getEventType();
@@ -104,6 +122,7 @@ public class ConsoleInput {
       }
     };
     this.stopListener = new ChangeListener<Boolean>() {
+
       @Override
       public void changed(ObservableValue obs, Boolean oldValue, Boolean newValue) {
         if (newValue == true)
@@ -149,8 +168,7 @@ public class ConsoleInput {
   }
 
   /**
-   * Waits for user input.
-   * This method will block current thread until a user input is enqueue.
+   * Waits for user input. This method will block current thread until a user input is enqueue.
    */
   private void waitForResponse() {
     // this is called once

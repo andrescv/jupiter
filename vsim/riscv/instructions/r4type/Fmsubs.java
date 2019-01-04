@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.r4type;
 
-
 /**
  * The Fmsubs class represents a {@code fmsub.s} instruction.
  */
@@ -29,11 +28,7 @@ public final class Fmsubs extends FR4Type {
    * @see vsim.riscv.instructions.r4type.FR4Type
    */
   public Fmsubs() {
-    super(
-      "fmsub.s",
-      "fmsub.s rd, rs1, rs2, rs3",
-      "set f[rd] = f[rs1] * f[rs2] - f[rs3]"
-    );
+    super("fmsub.s", "fmsub.s rd, rs1, rs2, rs3", "set f[rd] = f[rs1] * f[rs2] - f[rs3]");
   }
 
   @Override

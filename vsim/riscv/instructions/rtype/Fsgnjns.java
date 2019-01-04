@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Fsgnjns extends FRType {
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsgnjns() {
-    super(
-      "fsgnjn.s",
-      "fsgnjn.s rd, rs1, rs2",
-      "set f[rd] = {~f[rs2][31], f[rs1][30:0]}"
-    );
+    super("fsgnjn.s", "fsgnjn.s rd, rs1, rs2", "set f[rd] = {~f[rs2][31], f[rs1][30:0]}");
   }
 
   @Override

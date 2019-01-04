@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-
 /**
  * The Srli class represents a srli instruction.
  */
@@ -29,11 +28,7 @@ public final class Srli extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Srli() {
-    super(
-      "srli",
-      "srli rd, rs1, shamt",
-      "set x[rd] = x[rs1] >>> shamt, logical shift right"
-    );
+    super("srli", "srli rd, rs1, shamt", "set x[rd] = x[rs1] >>> shamt, logical shift right");
   }
 
   @Override

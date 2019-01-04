@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -36,12 +36,7 @@ public final class Fmvxw extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Fmvxw() {
-    super(
-      Format.R,
-      "fmv.x.w",
-      "fmv.x.w rd, rs1",
-      "set x[rd] = f[rs1][31:0]"
-    );
+    super(Format.R, "fmv.x.w", "fmv.x.w rd, rs1", "set x[rd] = f[rs1][31:0]");
   }
 
   @Override
@@ -56,10 +51,8 @@ public final class Fmvxw extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
-    Globals.regfile.setRegister(
-      code.get(InstructionField.RD),
-      Globals.fregfile.getRegisterInt(code.get(InstructionField.RS1))
-    );
+    Globals.regfile.setRegister(code.get(InstructionField.RD),
+        Globals.fregfile.getRegisterInt(code.get(InstructionField.RS1)));
     Globals.regfile.incProgramCounter();
   }
 

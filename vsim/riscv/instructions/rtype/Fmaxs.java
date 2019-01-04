@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Fmaxs extends FRType {
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fmaxs() {
-    super(
-      "fmax.s",
-      "fmax.s rd, rs1, rs2",
-      "set f[rd] = max(f[rs1], f[rs2])"
-    );
+    super("fmax.s", "fmax.s rd, rs1, rs2", "set f[rd] = max(f[rs1], f[rs2])");
   }
 
   @Override
