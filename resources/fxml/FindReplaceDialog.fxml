@@ -12,11 +12,11 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="475.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <JFXTextField fx:id="findText" focusColor="#fe315c" layoutX="16.0" layoutY="14.0" prefHeight="30.0" prefWidth="449.0" promptText="Find in current buffer" unFocusColor="#fe315c">
+      <JFXTextField fx:id="findText" focusColor="#fe315c" layoutX="16.0" layoutY="14.0" prefHeight="30.0" prefWidth="449.0" promptText="Find in current buffer" style="-fx-text-fill: #eeeeee; -fx-prompt-text-fill: #bbb;" unFocusColor="#fe315c">
          <font>
             <Font name="Roboto Regular" size="14.0" />
          </font></JFXTextField>
-      <JFXTextField fx:id="replaceText" focusColor="#fe315c" layoutX="16.0" layoutY="65.0" prefHeight="30.0" prefWidth="449.0" promptText="Replace in current buffer" unFocusColor="#fe315c">
+      <JFXTextField fx:id="replaceText" focusColor="#fe315c" layoutX="16.0" layoutY="65.0" prefHeight="30.0" prefWidth="449.0" promptText="Replace in current buffer" style="-fx-text-fill: #eeeeee; -fx-prompt-text-fill: #bbb;" unFocusColor="#fe315c">
          <font>
             <Font name="Roboto Regular" size="14.0" />
          </font></JFXTextField>

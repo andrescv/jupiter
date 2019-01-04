@@ -1,29 +1,24 @@
 package vsim.gui.controllers;
 
-import vsim.Globals;
-import vsim.Settings;
-import vsim.utils.IO;
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
+import com.jfoenix.controls.JFXProgressBar;
+import com.jfoenix.controls.JFXTabPane;
 import java.io.PrintStream;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+import vsim.gui.components.InputDialog;
+import vsim.gui.utils.ConsoleInput;
+import vsim.gui.utils.CustomOutputStream;
 import vsim.gui.utils.Icons;
 import vsim.simulator.Status;
-import javafx.scene.control.Tab;
-import vsim.gui.utils.ConsoleInput;
-import javafx.application.Platform;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.beans.binding.Bindings;
-import com.jfoenix.controls.JFXTabPane;
-import javafx.scene.control.ContextMenu;
-import vsim.gui.utils.CustomOutputStream;
-import com.jfoenix.controls.JFXProgressBar;
+import vsim.utils.IO;
 
-
-/**
- * Main controller class.
- */
+/** Main controller class. */
 public class MainController {
 
   /** Main tab pane */
@@ -61,25 +56,24 @@ public class MainController {
     // disable simulation tab if project is not ready
     this.simTab.disableProperty().bind(Bindings.not(Status.READY));
     // set ready to false whenever the tab being selected is the editor tab
-    this.main.getSelectionModel().selectedItemProperty().addListener((e, oldTab, newTab) -> {
-      if (newTab == this.editorTab)
-        Status.READY.set(false);
-    });
+    this.main
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            (e, oldTab, newTab) -> {
+              if (newTab == this.editorTab) Status.READY.set(false);
+            });
     this.editorController.initialize(this);
     this.menuBarController.initialize(this);
     this.simulatorController.initialize(this);
   }
 
-  /**
-   * Selects editor tab.
-   */
+  /** Selects editor tab. */
   protected void selectEditorTab() {
     this.main.getSelectionModel().select(this.editorTab);
   }
 
-  /**
-   * Selects simulator tab.
-   */
+  /** Selects simulator tab. */
   protected void selectSimulatorTab() {
     this.main.getSelectionModel().select(this.simTab);
   }
@@ -90,23 +84,22 @@ public class MainController {
    * @param isLoading if currently in loading mode
    */
   protected void loading(boolean isLoading) {
-    Platform.runLater(() -> {
-      if (isLoading)
-        this.progress.setProgress(-1.0f);
-      else
-        this.progress.setProgress(0.0f);
-    });
+    Platform.runLater(
+        () -> {
+          if (isLoading) this.progress.setProgress(-1.0f);
+          else this.progress.setProgress(0.0f);
+        });
   }
 
-  /**
-   * Initialize V-Sim console text area.
-   */
+  /** Initialize V-Sim console text area. */
   private void initConsole() {
     // assign the new gui "standard input"
     IO.guistdin = new ConsoleInput(this.console);
     // redirect stdout and stderr
     IO.stdout = new PrintStream(new CustomOutputStream(this.console));
     IO.stderr = IO.stdout;
+    // input dialog
+    IO.dialog = new InputDialog();
     // clear option
     MenuItem clear = new MenuItem("clear");
     clear.setOnAction(e -> this.console.setText(""));
@@ -124,5 +117,4 @@ public class MainController {
     menu.getItems().addAll(clear, copy, selectAll);
     this.console.setContextMenu(menu);
   }
-
 }

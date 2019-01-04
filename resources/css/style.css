@@ -110,6 +110,12 @@
   -fx-cursor: DEFAULT;
 }
 
+.context-menu .menu-item:focused {
+  -fx-background-color: -fx-secondary;
+  -fx-text-fill: #ffffff;
+}
+
+
 /*
   MenuBar Styles
 */
@@ -152,7 +158,7 @@
   -fx-text-fill: #fff;
 }
 
-.menu-item:focused {
+.menu .menu-item:focused {
    -fx-background-color: #ccc;
 }
 

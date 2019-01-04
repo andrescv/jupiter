@@ -30,6 +30,7 @@ public final class Gui extends Application {
     MainController controller = (MainController) loader.getController();
     controller.initialize(stage);
     JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
+    decorator.setGraphic(Icons.getImage("logo"));
     decorator.setCustomMaximize(true);
     // create scene
     Scene scene = new Scene(decorator, 1024, 800);
