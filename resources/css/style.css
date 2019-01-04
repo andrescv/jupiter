@@ -535,9 +535,9 @@
   -fx-background-color: #ffffff;
 }
 
-.table-view .table-row-cell .text,
-.table-view .table-row-cell:selected .text {
-  -fx-fill: #303030;
+.table-view .table-row-cell:selected .table-cell,
+.table-view:focused .table-row-cell:selected .table-cell {
+  -fx-text-fill: #333333 !important;
 }
 
 .table-view .table-row-cell:filled,
@@ -602,8 +602,8 @@
   -fx-font-size: 15px;
 }
 
-.table-view .table-cell:symFile {
-  -fx-text-fill: #01579b;
+.table-view .table-cell:symFile .text {
+  -fx-fill: #01579b !important;
 }
 
 .table-view .table-cell.editable-cell {
