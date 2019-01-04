@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-
 /**
  * The class MemorySegments contains useful memory segment constants
  */
@@ -25,25 +24,12 @@ public final class MemorySegments {
 
   /*
    *
-   *                       +------------------+
-   *                       |     reserved     |
-   *       SP 0x7ffffffc -:+------------------+:- 0x7ffffffc
-   *                       |      stack       |
-   *                       |        |         |
-   *                       |        -         |
-   *                       ********************
-   *                       |        -         |
-   *                       |        |         |
-   *                       |       heap       |
-   *                       +------------------+
-   *                       |   static data    |
-   *       GP 0x10000000 -:+------------------+:- 0x10000000
-   *                       |       text       |
-   *       PC 0x00010000 -:+------------------+:- 0x00010000
-   *                       |     reserved     |
-   *                       +------------------+:- 0x00000000
+   * +------------------+ | reserved | SP 0x7ffffffc -:+------------------+:- 0x7ffffffc | stack | | | | | - |
+   * ******************** | - | | | | | heap | +------------------+ | static data | GP 0x10000000
+   * -:+------------------+:- 0x10000000 | text | PC 0x00010000 -:+------------------+:- 0x00010000 | reserved |
+   * +------------------+:- 0x00000000
    *
-   *                       |------XLENGTH-----|
+   * |------XLENGTH-----|
    */
 
   /** memory address where the high reserved memory starts */

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,12 +19,10 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
 
 
 /**
@@ -53,8 +51,7 @@ public final class Shift extends Statement {
    * @param rs1 register source 1
    * @param shamt shift amount
    */
-  public Shift(String mnemonic, DebugInfo debug,
-               String rd, String rs1, int shamt) {
+  public Shift(String mnemonic, DebugInfo debug, String rd, String rs1, int shamt) {
     super(mnemonic, debug);
     this.rd = rd;
     this.rs1 = rs1;
@@ -71,23 +68,19 @@ public final class Shift extends Statement {
     // check range
     if (Data.inRange(this.shamt, Shift.MIN_VAL, Shift.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
-      int rd  = Globals.regfile.getRegisterNumber(this.rd);
+      int rd = Globals.regfile.getRegisterNumber(this.rd);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
       int opcode = inst.getOpCode();
       int funct3 = inst.getFunct3();
       int funct7 = inst.getFunct7();
-      this.code.set(InstructionField.RD,  rd);
+      this.code.set(InstructionField.RD, rd);
       this.code.set(InstructionField.RS1, rs1);
       this.code.set(InstructionField.SHAMT, this.shamt);
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
       this.code.set(InstructionField.FUNCT7, funct7);
     } else
-      Errors.add(
-        this.debug,
-        "assembler",
-        "shift amount '" + this.shamt + "' out of range should be between 0 and 31"
-      );
+      Errors.add(this.debug, "assembler", "shift amount '" + this.shamt + "' out of range should be between 0 and 31");
   }
 
 }

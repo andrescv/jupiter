@@ -1,7 +1,23 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.components;
 
 import static java.nio.file.StandardOpenOption.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,6 +27,7 @@ import java.util.HashSet;
 import javafx.scene.control.Tab;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import vsim.gui.utils.Icons;
+
 
 /** This class is used as a editor tab for the editor tab pane. */
 public final class EditorTab extends Tab {
@@ -124,7 +141,8 @@ public final class EditorTab extends Tab {
    */
   public void setPath(File path) {
     // remove untitled number
-    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1)
+      EditorTab.UNTITLED.remove(this.untitled);
     // update tab state
     this.untitled = -1;
     this.path = path;
@@ -141,7 +159,8 @@ public final class EditorTab extends Tab {
    */
   public void setPathAndOpen(File path) throws IOException {
     // remove untitled number
-    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1)
+      EditorTab.UNTITLED.remove(this.untitled);
     // update tab state
     this.untitled = -1;
     this.path = path;
@@ -165,9 +184,10 @@ public final class EditorTab extends Tab {
   public void save() throws IOException {
     if (this.path != null) {
       // create new file if necessary
-      if (!this.path.exists()) this.path.createNewFile();
+      if (!this.path.exists())
+        this.path.createNewFile();
       // truncate existing file
-      StandardOpenOption[] opts = new StandardOpenOption[] {WRITE, TRUNCATE_EXISTING};
+      StandardOpenOption[] opts = new StandardOpenOption[] { WRITE, TRUNCATE_EXISTING };
       Files.write(this.path.toPath(), this.editor.getText().getBytes(), opts);
       // update editor state
       this.hasChanged = false;
@@ -180,7 +200,8 @@ public final class EditorTab extends Tab {
   /** Close tab and unsubscribe syntax highlighting. */
   public void close() {
     // remove untitled number
-    if (this.untitled != -1) EditorTab.UNTITLED.remove(this.untitled);
+    if (this.untitled != -1)
+      EditorTab.UNTITLED.remove(this.untitled);
     this.untitled = -1;
     this.editor.unsubscribe();
     this.closed = true;
@@ -217,12 +238,14 @@ public final class EditorTab extends Tab {
 
   /** Uses the editor undo manager to make an undo. */
   public void undo() {
-    if (this.editor.isUndoAvailable()) this.editor.undo();
+    if (this.editor.isUndoAvailable())
+      this.editor.undo();
   }
 
   /** Uses the editor undo manager to make a redo. */
   public void redo() {
-    if (this.editor.isRedoAvailable()) this.editor.redo();
+    if (this.editor.isRedoAvailable())
+      this.editor.redo();
   }
 
   /** Uses the editor clipboard actions to make a cut of selected text. */
@@ -265,7 +288,8 @@ public final class EditorTab extends Tab {
    * @param text replacement text
    */
   public void replace(String text) {
-    if (this.isEditorTextSelected()) this.editor.replaceSelection(text);
+    if (this.isEditorTextSelected())
+      this.editor.replaceSelection(text);
   }
 
   /**
@@ -275,7 +299,8 @@ public final class EditorTab extends Tab {
    */
   public void replace(int start, int end, String text) {
     this.select(start, end);
-    if (this.isEditorTextSelected()) this.editor.replaceSelection(text);
+    if (this.isEditorTextSelected())
+      this.editor.replaceSelection(text);
   }
 
   /**
@@ -325,7 +350,8 @@ public final class EditorTab extends Tab {
   private void updateIcon() {
     if (this.hasChanged && this.getGraphic() == null) {
       this.setGraphic(Icons.getImage("dot", 12, 12));
-    } else if (!this.hasChanged) this.setGraphic(null);
+    } else if (!this.hasChanged)
+      this.setGraphic(null);
   }
 
   /**

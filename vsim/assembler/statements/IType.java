@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.linker.Relocation;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
+import vsim.linker.Relocation;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
 
 
 /**
@@ -54,8 +52,7 @@ public class IType extends Statement {
    * @param rs1 register source 1
    * @param imm immediate value or relocation
    */
-  public IType(String mnemonic, DebugInfo debug,
-               String rd, String rs1, Object imm) {
+  public IType(String mnemonic, DebugInfo debug, String rd, String rs1, Object imm) {
     super(mnemonic, debug);
     this.rd = rd;
     this.rs1 = rs1;
@@ -79,21 +76,17 @@ public class IType extends Statement {
     // check range
     if (Data.inRange(imm, IType.MIN_VAL, IType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
-      int rd  = Globals.regfile.getRegisterNumber(this.rd);
+      int rd = Globals.regfile.getRegisterNumber(this.rd);
       int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
       int opcode = inst.getOpCode();
       int funct3 = inst.getFunct3();
-      this.code.set(InstructionField.RD,  rd);
+      this.code.set(InstructionField.RD, rd);
       this.code.set(InstructionField.RS1, rs1);
       this.code.set(InstructionField.IMM_11_0, imm);
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
-      Errors.add(
-        this.debug,
-        "assembler",
-        "immediate '" + imm + "' out of range should be between -2048 and 2047"
-      );
+      Errors.add(this.debug, "assembler", "immediate '" + imm + "' out of range should be between -2048 and 2047");
   }
 
 }

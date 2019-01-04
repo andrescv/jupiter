@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions;
 
 import vsim.utils.Data;
-import vsim.utils.Colorize;
 
 
 /**
@@ -61,8 +60,7 @@ public abstract class Instruction {
   public abstract void execute(MachineCode code);
 
   /**
-   * This method returns the disassembled String representation
-   * of the code.
+   * This method returns the disassembled String representation of the code.
    *
    * @param code machine code to disassemble
    * @return a String with the disassembled representation

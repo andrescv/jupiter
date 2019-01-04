@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Mulhu extends RType {
    * @see vsim.riscv.instructions.rtype.RType
    */
   public Mulhu() {
-    super(
-      "mulhu",
-      "mulhu rd, rs1, rs2",
-      "set x[rd] = (unsigned(x[rs1]) * unsigned(x[rs2])) >>> XLEN"
-    );
+    super("mulhu", "mulhu rd, rs1, rs2", "set x[rd] = (unsigned(x[rs1]) * unsigned(x[rs2])) >>> XLEN");
   }
 
   @Override
@@ -51,7 +47,7 @@ public final class Mulhu extends RType {
   @Override
   protected int compute(int rs1, int rs2) {
     long result = Integer.toUnsignedLong(rs1) * Integer.toUnsignedLong(rs2);
-    return (int)(result >>> Data.WORD_LENGTH_BITS);
+    return (int) (result >>> Data.WORD_LENGTH_BITS);
   }
 
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.rtype;
 
-
 /**
  * The Sll class represents a sll instruction.
  */
@@ -29,11 +28,7 @@ public final class Sll extends RType {
    * @see vsim.riscv.instructions.rtype.RType
    */
   public Sll() {
-    super(
-      "sll",
-      "sll rd, rs1, rs2",
-      "set x[rd] = x[rs1] << x[rs2][4:0], logical shift left"
-    );
+    super("sll", "sll rd, rs1, rs2", "set x[rd] = x[rs1] << x[rs2][4:0], logical shift left");
   }
 
   @Override

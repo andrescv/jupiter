@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.btype;
 
-
 /**
  * The Bltu class represents a bltu instruction.
  */
@@ -29,11 +28,7 @@ public final class Bltu extends BType {
    * @see vsim.riscv.instructions.btype.BType
    */
   public Bltu() {
-    super(
-      "bltu",
-      "bltu rs1, rs2, offset",
-      "set pc = pc + sext(offset), if x[rs1] < x[rs2], unsigned comparison"
-    );
+    super("bltu", "bltu rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] < x[rs2], unsigned comparison");
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,16 +17,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
-import vsim.Errors;
 import java.io.File;
-import vsim.Globals;
-import vsim.utils.Message;
 import java.util.ArrayList;
+import vsim.Errors;
+import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.utils.Message;
 
 
 /**
- * The Assembler class  assembles RISC-V source files.
+ * The Assembler class assembles RISC-V source files.
  */
 public final class Assembler {
 
@@ -40,8 +40,7 @@ public final class Assembler {
   public static String filename = null;
 
   /**
-   * This method is used to assemble all the RISC-V files and it is
-   * called before the linkage process.
+   * This method is used to assemble all the RISC-V files and it is called before the linkage process.
    *
    * @param files the RISC-V files to assemble
    * @see vsim.assembler.Program
@@ -51,7 +50,7 @@ public final class Assembler {
     ArrayList<Program> programs = new ArrayList<Program>();
     // assemble all files
     if (files.size() > 0) {
-      for (File file: files) {
+      for (File file : files) {
         // current filename
         Assembler.filename = file.getAbsolutePath();
         // start in text segment
@@ -74,25 +73,25 @@ public final class Assembler {
       }
     }
     // do first pass
-    for (Program program: programs) {
+    for (Program program : programs) {
       // add program ST to Globals.local
       SymbolTable table = program.getST();
       String filename = program.getFilename();
       Globals.local.put(filename, table);
       // check globals of program
-      for (String global: program.getGlobals()) {
+      for (String global : program.getGlobals()) {
         Symbol sym = table.getSymbol(global);
         DebugInfo debug = program.getGlobalDebug(global);
         if (sym != null) {
-          if(!Globals.globl.add(global, sym))
+          if (!Globals.globl.add(global, sym))
             Errors.add(debug, "assembler", "'" + global + "' already defined as global in a different file");
         } else
           Errors.add(debug, "assembler", "'" + global + "' declared global label but not defined");
       }
     }
     // try to resolve all statements and collect errors if any
-    for (Program program: programs) {
-      for (Statement stmt: program.getStatements())
+    for (Program program : programs) {
+      for (Statement stmt : program.getStatements())
         stmt.resolve();
     }
     // no unlinked programs ?

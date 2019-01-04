@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-
 /**
  * The Ori class represents an ori instruction.
  */
@@ -29,11 +28,7 @@ public final class Ori extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Ori() {
-    super(
-      "ori",
-      "ori rd, rs1, imm",
-      "set x[rd] = x[rs1] | sext(imm), bitwise or"
-    );
+    super("ori", "ori rd, rs1, imm", "set x[rd] = x[rs1] | sext(imm), bitwise or");
   }
 
   @Override

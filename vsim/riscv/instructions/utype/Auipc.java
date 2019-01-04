@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Auipc extends UType {
    * @see vsim.riscv.instructions.utype.UType
    */
   public Auipc() {
-    super(
-      "auipc",
-      "auipc rd, imm",
-      "set x[rd] = imm << 12 + pc"
-    );
+    super("auipc", "auipc rd, imm", "set x[rd] = imm << 12 + pc");
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-import vsim.utils.IO;
+import static vsim.riscv.instructions.Instruction.LENGTH;
 import java.util.HashMap;
-import vsim.utils.Colorize;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.beans.property.SimpleIntegerProperty;
-import static vsim.riscv.instructions.Instruction.LENGTH;
+import vsim.utils.Colorize;
+import vsim.utils.IO;
 
 
 /**
@@ -32,16 +32,9 @@ import static vsim.riscv.instructions.Instruction.LENGTH;
 public final class RVIRegisterFile {
 
   /** RVI register ABI names */
-  private static final String[] MNEMONICS = {
-    "zero", "ra", "sp", "gp",
-    "tp", "t0", "t1", "t2",
-    "s0/fp", "s1", "a0", "a1",
-    "a2", "a3", "a4", "a5",
-    "a6", "a7", "s2", "s3",
-    "s4", "s5", "s6", "s7",
-    "s8", "s9", "s10", "s11",
-    "t3", "t4", "t5", "t6"
-  };
+  private static final String[] MNEMONICS = { "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "s0/fp", "s1", "a0",
+      "a1", "a2", "a3", "a4", "a5", "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "t3",
+      "t4", "t5", "t6" };
 
   /** the only available instance of the RVIRegisterFile class */
   public static final RVIRegisterFile regfile = new RVIRegisterFile();
@@ -191,8 +184,7 @@ public final class RVIRegisterFile {
   }
 
   /**
-   * This method increments the program counter by
-   * {@link vsim.riscv.instructions.Instruction#LENGTH}.
+   * This method increments the program counter by {@link vsim.riscv.instructions.Instruction#LENGTH}.
    */
   public void incProgramCounter() {
     this.pc.setValue(this.pc.getValue() + LENGTH);
@@ -223,28 +215,14 @@ public final class RVIRegisterFile {
     // include all registers in out string
     for (int i = 0; i < MNEMONICS.length; i++) {
       Register reg = this.rf.get("x" + i);
-      IO.stdout.println(
-        String.format(
-          regfmt,
-          Colorize.green("x" + i),
-          (i >= 10) ? "" : " ",
-          reg.toString(),
-          Colorize.purple(MNEMONICS[i]),
-          (MNEMONICS[i].length() == 5) ?
-            " " : (MNEMONICS[i].length() == 2) ?
-            "    " : (MNEMONICS[i].length() == 3) ?
-            "   " : "  ",
-          reg.getValue()
-        )
-      );
+      IO.stdout.println(String
+          .format(regfmt, Colorize.green("x" + i), (i >= 10) ? "" : " ", reg.toString(), Colorize.purple(MNEMONICS[i]),
+              (MNEMONICS[i].length() == 5) ? " "
+                  : (MNEMONICS[i].length() == 2) ? "    " : (MNEMONICS[i].length() == 3) ? "   " : "  ",
+              reg.getValue()));
     }
     // and pc
-    IO.stdout.println(
-      System.getProperty("line.separator") + String.format(
-        "PC  [%s]",
-        this.pc.toString()
-      )
-    );
+    IO.stdout.println(System.getProperty("line.separator") + String.format("PC  [%s]", this.pc.toString()));
   }
 
   /**
@@ -256,22 +234,10 @@ public final class RVIRegisterFile {
     Register reg = this.rf.get(name);
     if (reg != null) {
       int i = reg.getNumber();
-      IO.stdout.println(
-        String.format(
-          "%s [%s] (%s) {= %d}",
-          Colorize.green("x" + i),
-          reg.toString(),
-          Colorize.purple(MNEMONICS[i]),
-          reg.getValue()
-        )
-      );
+      IO.stdout.println(String.format("%s [%s] (%s) {= %d}", Colorize.green("x" + i), reg.toString(),
+          Colorize.purple(MNEMONICS[i]), reg.getValue()));
     } else if (name.equals("pc"))
-      IO.stdout.println(
-        String.format(
-          "PC  [%s]",
-          this.pc.toString()
-        )
-      );
+      IO.stdout.println(String.format("PC  [%s]", this.pc.toString()));
   }
 
   /**
@@ -291,7 +257,7 @@ public final class RVIRegisterFile {
    * @param diff diff between states of the rvf register file
    */
   public void restore(HashMap<String, Integer> diff) {
-    for (String key: diff.keySet())
+    for (String key : diff.keySet())
       this.rf.get(key).setValue(diff.get(key));
   }
 

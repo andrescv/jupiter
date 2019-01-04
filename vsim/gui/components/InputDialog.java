@@ -1,8 +1,22 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.components;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import javafx.application.Platform;
@@ -15,7 +29,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXTextField;
 import vsim.gui.utils.Icons;
+
 
 /** This class represents a text input dialog. */
 public final class InputDialog {
@@ -48,8 +66,7 @@ public final class InputDialog {
       this.queue = new ArrayBlockingQueue<String>(1);
       this.stage.initModality(Modality.APPLICATION_MODAL);
       this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader =
-          new FXMLLoader(getClass().getResource("/resources/fxml/InputDialog.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InputDialog.fxml"));
       loader.setController(this);
       Parent root = loader.load();
       JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
@@ -59,20 +76,19 @@ public final class InputDialog {
       this.stage.setScene(new Scene(decorator, 304, 150));
       // enter actions
       this.enter.setOnAction(e -> this.enter());
-      this.enter.setOnKeyPressed(
-          e -> {
-            if (InputDialog.ENTER.match(e)) this.enter();
-          });
-      this.text.setOnKeyPressed(
-          e -> {
-            if (InputDialog.ENTER.match(e)) this.enter();
-          });
+      this.enter.setOnKeyPressed(e -> {
+        if (InputDialog.ENTER.match(e))
+          this.enter();
+      });
+      this.text.setOnKeyPressed(e -> {
+        if (InputDialog.ENTER.match(e))
+          this.enter();
+      });
       // stage actions
-      this.stage.addEventHandler(
-          KeyEvent.KEY_RELEASED,
-          e -> {
-            if (InputDialog.ESCAPE.match(e)) this.cancel();
-          });
+      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+        if (InputDialog.ESCAPE.match(e))
+          this.cancel();
+      });
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -96,18 +112,19 @@ public final class InputDialog {
    * @return user input text
    */
   public String getInput(String title) {
-    Platform.runLater(
-        () -> {
-          // clean text field
-          this.text.setText("");
-          this.enterPressed = false;
-          // request input focus
-          this.stage.setTitle(title);
-          this.text.requestFocus();
-          this.stage.showAndWait();
-          if (this.enterPressed) this.queue.offer(this.text.getText());
-          else this.queue.offer("");
-        });
+    Platform.runLater(() -> {
+      // clean text field
+      this.text.setText("");
+      this.enterPressed = false;
+      // request input focus
+      this.stage.setTitle(title);
+      this.text.requestFocus();
+      this.stage.showAndWait();
+      if (this.enterPressed)
+        this.queue.offer(this.text.getText());
+      else
+        this.queue.offer("");
+    });
     try {
       return this.queue.take();
     } catch (InterruptedException e) {
@@ -129,7 +146,8 @@ public final class InputDialog {
     // request input focus
     this.text.requestFocus();
     this.stage.showAndWait();
-    if (this.enterPressed) data = this.text.getText();
+    if (this.enterPressed)
+      data = this.text.getText();
     this.text.setText("");
     this.enterPressed = false;
     return data;

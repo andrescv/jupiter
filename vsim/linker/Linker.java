@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,25 +17,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
-import vsim.Errors;
+import java.io.BufferedWriter;
 import java.io.File;
-import vsim.Globals;
-import vsim.Settings;
-import vsim.utils.Data;
-import java.util.HashMap;
-import vsim.utils.Message;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.io.BufferedWriter;
+import java.util.HashMap;
+import vsim.Errors;
+import vsim.Globals;
+import vsim.Settings;
+import vsim.assembler.DebugInfo;
 import vsim.assembler.Program;
 import vsim.assembler.Segment;
-import vsim.assembler.DebugInfo;
-import vsim.riscv.MemorySegments;
-import vsim.assembler.statements.UType;
 import vsim.assembler.statements.IType;
 import vsim.assembler.statements.Statement;
+import vsim.assembler.statements.UType;
+import vsim.riscv.MemorySegments;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
+import vsim.utils.Message;
 
 
 /**
@@ -49,8 +49,8 @@ public final class Linker {
   private static int textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
 
   /**
-   * This method takes an array of RISC-V programs and stores
-   * all the read-only segment data of these programs in memory.
+   * This method takes an array of RISC-V programs and stores all the read-only segment data of these programs in
+   * memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
@@ -59,10 +59,10 @@ public final class Linker {
     int startAddress = Linker.dataAddress;
     MemorySegments.RODATA_SEGMENT_BEGIN = Linker.dataAddress;
     MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
-    for (Program program: programs) {
+    for (Program program : programs) {
       program.setRodataStart(Linker.dataAddress);
       // store every byte of rodata of the current program
-      for (Byte b: program.getRodata())
+      for (Byte b : program.getRodata())
         Globals.memory.storeByte(Linker.dataAddress++, b);
       // align to a word boundary for next program if necessary
       if (Linker.dataAddress != startAddress) {
@@ -81,17 +81,16 @@ public final class Linker {
   }
 
   /**
-   * This method takes an array of RISC-V programs and stores
-   * all the bss segment data of these programs in memory.
+   * This method takes an array of RISC-V programs and stores all the bss segment data of these programs in memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
   private static void linkBss(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
-    for (Program program: programs) {
+    for (Program program : programs) {
       program.setBssStart(Linker.dataAddress);
-      for (Byte b: program.getBss())
+      for (Byte b : program.getBss())
         Globals.memory.storeByte(Linker.dataAddress++, b);
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
@@ -101,17 +100,16 @@ public final class Linker {
   }
 
   /**
-   * This method takes an array of RISC-V programs and stores
-   * all the data segment data of these programs in memory.
+   * This method takes an array of RISC-V programs and stores all the data segment data of these programs in memory.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
    */
   private static void linkData(ArrayList<Program> programs) {
     int startAddress = Linker.dataAddress;
-    for (Program program: programs) {
+    for (Program program : programs) {
       program.setDataStart(Linker.dataAddress);
-      for (Byte b: program.getData())
+      for (Byte b : program.getData())
         Globals.memory.storeByte(Linker.dataAddress++, b);
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
@@ -130,20 +128,19 @@ public final class Linker {
    */
   private static void linkSymbols(ArrayList<Program> programs) {
     // first relocate symbols
-    for (Program program: programs) {
+    for (Program program : programs) {
       program.setTextStart(Linker.textAddress);
       program.relocateSymbols();
       Linker.textAddress += program.getTextSize();
     }
     // then store references to this symbols
-    for (Program program: programs) {
+    for (Program program : programs) {
       program.storeRefs();
     }
   }
 
   /**
-   * This method tries to build all statements of all programs,
-   * i.e generates machine code.
+   * This method tries to build all statements of all programs, i.e generates machine code.
    *
    * @param programs an array of programs
    * @see vsim.assembler.Program
@@ -153,8 +150,8 @@ public final class Linker {
     // set start of text segment
     Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
     HashMap<Integer, Statement> all = new HashMap<Integer, Statement>();
-    if (Globals.globl.get(Settings.START) != null &&
-        Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
+    if (Globals.globl.get(Settings.START) != null
+        && Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
       // far call to start label always the first (two) statements
       DebugInfo debug = new DebugInfo(0, "call " + Settings.START, "start");
       // utype statement (CALL start)
@@ -171,8 +168,8 @@ public final class Linker {
       all.put(Linker.textAddress, i);
       // next word align address
       Linker.textAddress += Instruction.LENGTH;
-      for (Program program: programs) {
-        for (Statement stmt: program.getStatements()) {
+      for (Program program : programs) {
+        for (Statement stmt : program.getStatements()) {
           // build machine code
           stmt.build(Linker.textAddress);
           // store result in text segment
@@ -192,8 +189,7 @@ public final class Linker {
   }
 
   /**
-   * This method tries to link all programs, handling all data, relocating
-   * all symbols and reporting errors if any.
+   * This method tries to link all programs, handling all data, relocating all symbols and reporting errors if any.
    *
    * @param programs an array of programs
    * @see vsim.linker.LinkedProgram
@@ -220,9 +216,9 @@ public final class Linker {
           File f = new File(Settings.DUMP);
           try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-            for (Program p: programs) {
+            for (Program p : programs) {
               boolean filename = true;
-              for (Statement stmt: p.getStatements()) {
+              for (Statement stmt : p.getStatements()) {
                 // write filename
                 if (filename && (programs.size() > 1)) {
                   bw.write(stmt.getDebugInfo().getFilename() + ":");

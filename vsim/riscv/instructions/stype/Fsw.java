@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.stype;
 
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
+import vsim.utils.Data;
 
 
 /**
@@ -37,12 +37,7 @@ public final class Fsw extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Fsw() {
-    super(
-      Format.S,
-      "fsw",
-      "fsw rs2, offset(rs1)",
-      "set memory[x[rs1] + sext(offset)] = f[rd][31:0]"
-    );
+    super(Format.S, "fsw", "fsw rs2, offset(rs1)", "set memory[x[rs1] + sext(offset)] = f[rd][31:0]");
   }
 
   @Override

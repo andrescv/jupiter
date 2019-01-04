@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Settings;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -33,11 +33,7 @@ public final class Ebreak extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Ebreak() {
-    super(
-      "ebreak",
-      "ebreak",
-      "used by debuggers to cause control to be transferred back to a debugging environment"
-    );
+    super("ebreak", "ebreak", "used by debuggers to cause control to be transferred back to a debugging environment");
   }
 
   @Override

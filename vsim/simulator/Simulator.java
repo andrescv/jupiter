@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.simulator;
 
 import java.io.File;
+import java.util.ArrayList;
 import vsim.Globals;
 import vsim.Settings;
-import vsim.utils.Message;
-import vsim.linker.Linker;
-import java.util.ArrayList;
 import vsim.assembler.Assembler;
-import vsim.linker.LinkedProgram;
 import vsim.assembler.statements.Statement;
+import vsim.linker.LinkedProgram;
+import vsim.linker.Linker;
+import vsim.utils.Message;
 
 
 /**
@@ -34,9 +34,8 @@ import vsim.assembler.statements.Statement;
 public final class Simulator {
 
   /**
-   * This method takes an ArrayList of assembler filenames, then calls the assemble
-   * and link methods with this to generate a RISC-V linked program and finally
-   * simulates that generated linked program.
+   * This method takes an ArrayList of assembler filenames, then calls the assemble and link methods with this to
+   * generate a RISC-V linked program and finally simulates that generated linked program.
    *
    * @param files an array of assembler filenames
    * @see vsim.assembler.Assembler#assemble
@@ -81,9 +80,8 @@ public final class Simulator {
   }
 
   /**
-   * This method takes an ArrayList of assembler filenames, then calls the assemble
-   * and link methods with this to generate a RISC-V linked program and finally
-   * calls {@link vsim.simulator.Simulator#debug} to create a Debugger.
+   * This method takes an ArrayList of assembler filenames, then calls the assemble and link methods with this to
+   * generate a RISC-V linked program and finally calls {@link vsim.simulator.Simulator#debug} to create a Debugger.
    *
    * @param files an array of assembler filenames
    * @see vsim.simulator.Simulator#debug

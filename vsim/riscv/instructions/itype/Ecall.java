@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-import vsim.utils.Colorize;
 import static vsim.riscv.Ecall.handler;
 import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -33,11 +33,7 @@ public final class Ecall extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Ecall() {
-    super(
-      "ecall",
-      "ecall",
-      "makes a request to the supporting execution environment"
-    );
+    super("ecall", "ecall", "makes a request to the supporting execution environment");
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -59,10 +59,7 @@ abstract class RType extends Instruction {
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));
-    Globals.regfile.setRegister(
-      code.get(InstructionField.RD),
-      this.compute(rs1, rs2)
-    );
+    Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, rs2));
     Globals.regfile.incProgramCounter();
   }
 

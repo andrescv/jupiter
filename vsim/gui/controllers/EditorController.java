@@ -1,6 +1,22 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.controllers;
 
-import com.jfoenix.controls.JFXTabPane;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +29,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import com.jfoenix.controls.JFXTabPane;
 import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
@@ -24,6 +41,7 @@ import vsim.gui.components.TreePath;
 import vsim.gui.utils.DirWatcher;
 import vsim.gui.utils.Icons;
 import vsim.utils.Message;
+
 
 /** Editor controller class. */
 public class EditorController {
@@ -116,11 +134,10 @@ public class EditorController {
   protected void addNewUntitledTab() {
     this.mainController.selectEditorTab();
     final EditorTab tab = new EditorTab();
-    tab.setOnCloseRequest(
-        e -> {
-          e.consume();
-          this.closeTabSafetly(tab);
-        });
+    tab.setOnCloseRequest(e -> {
+      e.consume();
+      this.closeTabSafetly(tab);
+    });
     this.editor.getTabs().add(tab);
     this.editor.getSelectionModel().select(tab);
   }
@@ -172,7 +189,8 @@ public class EditorController {
         tab.save();
       } catch (IOException e) {
         // revert file path if something goes wrong...
-        if (old != null) tab.setPath(old);
+        if (old != null)
+          tab.setPath(old);
         Message.warning("Could not save file: " + file);
       }
     }
@@ -189,7 +207,8 @@ public class EditorController {
   /** Closes current selected tab. */
   protected void closeTab() {
     EditorTab tab = this.getSelectedTab();
-    if (tab != null) this.closeTabSafetly(tab);
+    if (tab != null)
+      this.closeTabSafetly(tab);
   }
 
   /** Closes all tabs. */
@@ -198,7 +217,8 @@ public class EditorController {
     for (Tab openTab : tabs) {
       EditorTab tab = (EditorTab) openTab;
       this.closeTabSafetly(tab);
-      if (!tab.isClosed()) break;
+      if (!tab.isClosed())
+        break;
     }
   }
 
@@ -206,7 +226,8 @@ public class EditorController {
   protected void quit() {
     this.mainController.selectEditorTab();
     boolean save = false;
-    for (Tab openTab : this.editor.getTabs()) save |= ((EditorTab) openTab).hasChanged();
+    for (Tab openTab : this.editor.getTabs())
+      save |= ((EditorTab) openTab).hasChanged();
     if (save) {
       CloseDialog dialog = new CloseDialog();
       switch (dialog.showAndWait()) {
@@ -218,13 +239,15 @@ public class EditorController {
           for (Tab openTab : tabs) {
             EditorTab tab = (EditorTab) openTab;
             this.saveTab(tab, true);
-            if (!tab.isClosed()) break;
+            if (!tab.isClosed())
+              break;
           }
           break;
         default:
           break;
       }
-    } else this.closeAllTabs();
+    } else
+      this.closeAllTabs();
   }
 
   /** Undo editor action. */
@@ -259,12 +282,14 @@ public class EditorController {
 
   /** Shows find/replace in buffer dialog. */
   protected void findReplaceInBuffer() {
-    if (!this.findReplaceDialog.isShowing()) this.findReplaceDialog.show();
+    if (!this.findReplaceDialog.isShowing())
+      this.findReplaceDialog.show();
   }
 
   /** Updates all tabs with saved settings. */
   protected void updateSettings() {
-    for (Tab tab : this.editor.getTabs()) ((EditorTab) tab).updateSettings();
+    for (Tab tab : this.editor.getTabs())
+      ((EditorTab) tab).updateSettings();
   }
 
   /**
@@ -275,7 +300,8 @@ public class EditorController {
   protected boolean allSaved() {
     for (Tab tab : this.editor.getTabs()) {
       EditorTab t = (EditorTab) tab;
-      if (t.isUntitled() || t.hasChanged() || !t.getPath().exists()) return false;
+      if (t.isUntitled() || t.hasChanged() || !t.getPath().exists())
+        return false;
     }
     return true;
   }
@@ -289,7 +315,8 @@ public class EditorController {
     ArrayList<File> files = new ArrayList<File>();
     for (Tab tab : this.editor.getTabs()) {
       EditorTab t = (EditorTab) tab;
-      if (!t.isUntitled() && !t.hasChanged() && t.getPath().exists()) files.add(t.getPath());
+      if (!t.isUntitled() && !t.hasChanged() && t.getPath().exists())
+        files.add(t.getPath());
     }
     files.trimToSize();
     return files;
@@ -307,8 +334,10 @@ public class EditorController {
    * @param y mouse y position
    */
   private void openContextMenu(TreePath item, double x, double y) {
-    if (item.getPath().isFile()) this.fileContext.show(this.tree, x, y);
-    else this.dirContext.show(this.tree, x, y);
+    if (item.getPath().isFile())
+      this.fileContext.show(this.tree, x, y);
+    else
+      this.dirContext.show(this.tree, x, y);
   }
 
   /**
@@ -330,7 +359,8 @@ public class EditorController {
             break;
           }
           // reuse some untitled tab with no changes
-          else if (t.isUntitled() && !t.hasChanged() && reuse == null) reuse = t;
+          else if (t.isUntitled() && !t.hasChanged() && reuse == null)
+            reuse = t;
         }
         // if tab was not already open
         if (tab == null) {
@@ -341,11 +371,10 @@ public class EditorController {
           } else {
             final EditorTab newTab = new EditorTab(file);
             tab = newTab;
-            tab.setOnCloseRequest(
-                e -> {
-                  e.consume();
-                  this.closeTabSafetly(newTab);
-                });
+            tab.setOnCloseRequest(e -> {
+              e.consume();
+              this.closeTabSafetly(newTab);
+            });
             this.editor.getTabs().add(tab);
           }
         }
@@ -372,14 +401,17 @@ public class EditorController {
         chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
         File newFile = chooser.showSaveDialog(this.mainController.stage);
         // set new file path
-        if (newFile != null) tab.setPath(newFile);
+        if (newFile != null)
+          tab.setPath(newFile);
         // dont continue if cancel button was clicked
-        else return;
+        else
+          return;
       }
       // save tab
       tab.save();
       // close tab ?
-      if (close) this.closeTab(tab);
+      if (close)
+        this.closeTab(tab);
     } catch (IOException e) {
       Message.warning("Could not save file: " + tab.getPath());
     }
@@ -394,20 +426,21 @@ public class EditorController {
     if (tab.hasChanged()) {
       SaveDialog dialog = new SaveDialog();
       switch (dialog.showAndWait(tab.getName())) {
-          // dont save
+        // dont save
         case 0:
           this.closeTab(tab);
           break;
-          // save
+        // save
         case 1:
           // save as ?
           this.saveTab(tab, true);
           break;
-          // cancel
+        // cancel
         default:
           break;
       }
-    } else this.closeTab(tab);
+    } else
+      this.closeTab(tab);
   }
 
   /**
@@ -432,7 +465,8 @@ public class EditorController {
       boolean deleted = true;
       File[] files = dir.listFiles();
       if (files != null) {
-        for (File f : files) deleted &= this.deleteDir(f);
+        for (File f : files)
+          deleted &= this.deleteDir(f);
       }
       // only if all sub-directories and files were deleted
       // we can delete the parent directory
@@ -455,14 +489,15 @@ public class EditorController {
       }
       boolean deleted = dir.delete();
       // close the open tab only if we actually delete the file
-      if (tab != null && deleted) this.closeTab(tab);
+      if (tab != null && deleted)
+        this.closeTab(tab);
       return deleted;
     }
   }
 
   /**
-   * Renames old open tabs that have an absolute path with a prefix equal to the old path passed as
-   * argument, and prepends the new path prefix.
+   * Renames old open tabs that have an absolute path with a prefix equal to the old path passed as argument, and
+   * prepends the new path prefix.
    *
    * @param oldPath old path prefix
    * @param newPath new path prefix
@@ -493,7 +528,8 @@ public class EditorController {
       if (filename.endsWith(".s") || filename.endsWith(".asm")) {
         // create a new path
         File path = new File(item.getPath() + File.separator + filename);
-        if (path.exists()) Message.warning(String.format("file %s already exists", filename));
+        if (path.exists())
+          Message.warning(String.format("file %s already exists", filename));
         else {
           try {
             // create all necessary folders
@@ -502,12 +538,14 @@ public class EditorController {
             if (path.createNewFile())
               // add titled tab with the new file
               this.addTitledTab(path);
-            else Message.warning("could not create file: " + path);
+            else
+              Message.warning("could not create file: " + path);
           } catch (IOException e) {
             Message.warning("Could not create file: " + path);
           }
         }
-      } else Message.warning("invalid file name: " + filename);
+      } else
+        Message.warning("invalid file name: " + filename);
     }
   }
 
@@ -522,11 +560,14 @@ public class EditorController {
     if (dirname.length() > 0) {
       // create new path
       File path = new File(item.getPath() + File.separator + dirname);
-      if (path.exists()) Message.warning(String.format("directory %s already exists", dirname));
+      if (path.exists())
+        Message.warning(String.format("directory %s already exists", dirname));
       else {
         // create all necessary folders
-        if (path.mkdirs()) DirWatcher.open(path);
-        else Message.warning("could not create folder: " + path);
+        if (path.mkdirs())
+          DirWatcher.open(path);
+        else
+          Message.warning("could not create folder: " + path);
       }
     }
   }
@@ -547,12 +588,11 @@ public class EditorController {
           this.renameOpenedTabsWith(oldPath, newPath);
           DirWatcher.rename(oldPath, newPath);
         } else
-          Message.warning(
-              String.format(
-                  "could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
+          Message.warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
       }
       // dont do anything if the user uses the same path
-      else if (oldPath.equals(newPath)) return;
+      else if (oldPath.equals(newPath))
+        return;
       else if (newPath.exists())
         Message.warning(String.format("directory %s already exists", newPath.getName()));
     }
@@ -593,14 +633,15 @@ public class EditorController {
           }
         }
         // try to rename path
-        if (item.getPath().renameTo(newPath)) tab.setPath(newPath);
+        if (item.getPath().renameTo(newPath))
+          tab.setPath(newPath);
         else
-          Message.warning(
-              String.format(
-                  "could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
+          Message
+              .warning(String.format("could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
       }
       // dont do anything if the user uses the same path
-      else if (oldPath.equals(newPath)) return;
+      else if (oldPath.equals(newPath))
+        return;
       else if (newPath.exists())
         Message.warning(String.format("file %s already exists", newPath.getName()));
     }
@@ -625,9 +666,11 @@ public class EditorController {
       }
       // delete file
       boolean deleted = item.getPath().delete();
-      if (!deleted) Message.warning("could not delete file: " + item.getPath());
+      if (!deleted)
+        Message.warning("could not delete file: " + item.getPath());
       // only if file really was deleted
-      if (tab != null && deleted) this.closeTab(tab);
+      if (tab != null && deleted)
+        this.closeTab(tab);
     }
   }
 
@@ -662,17 +705,16 @@ public class EditorController {
     this.fileContext = new ContextMenu();
     this.fileContext.getItems().addAll(renameFile, deleteFile);
     // add click action to tree
-    this.tree.setOnMouseClicked(
-        e -> {
-          this.dirContext.hide();
-          this.fileContext.hide();
-          TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-          if (item != null) {
-            if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
-              this.addTitledTab(item.getPath());
-            else if (e.getButton() == MouseButton.SECONDARY)
-              this.openContextMenu(item, e.getScreenX(), e.getScreenY());
-          }
-        });
+    this.tree.setOnMouseClicked(e -> {
+      this.dirContext.hide();
+      this.fileContext.hide();
+      TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
+      if (item != null) {
+        if (e.getButton() == MouseButton.PRIMARY && item.getPath().isFile())
+          this.addTitledTab(item.getPath());
+        else if (e.getButton() == MouseButton.SECONDARY)
+          this.openContextMenu(item, e.getScreenX(), e.getScreenY());
+      }
+    });
   }
 }

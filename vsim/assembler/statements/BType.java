@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.linker.Relocation;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
+import vsim.linker.Relocation;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
 
 
 /**
@@ -56,8 +54,7 @@ public final class BType extends Statement {
    * @param rs2 register source 2
    * @param offset target offset (label)
    */
-  public BType(String mnemonic, DebugInfo debug,
-               String rs1, String rs2, String offset) {
+  public BType(String mnemonic, DebugInfo debug, String rs1, String rs2, String offset) {
     super(mnemonic, debug);
     this.rs1 = rs1;
     this.rs2 = rs2;
@@ -75,7 +72,7 @@ public final class BType extends Statement {
     int imm = this.offset.resolve(pc);
     if (Data.inRange(imm, BType.MIN_VAL, BType.MAX_VAL)) {
       Instruction inst = Globals.iset.get(this.mnemonic);
-      int rs1  = Globals.regfile.getRegisterNumber(this.rs1);
+      int rs1 = Globals.regfile.getRegisterNumber(this.rs1);
       int rs2 = Globals.regfile.getRegisterNumber(this.rs2);
       int opcode = inst.getOpCode();
       int funct3 = inst.getFunct3();
@@ -88,11 +85,7 @@ public final class BType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.FUNCT3, funct3);
     } else
-      Errors.add(
-        this.debug,
-        "assembler",
-        "branch to '" + this.label + "' too far"
-      );
+      Errors.add(this.debug, "assembler", "branch to '" + this.label + "' too far");
   }
 
 }

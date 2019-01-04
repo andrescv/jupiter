@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,16 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
-import vsim.Globals;
-import vsim.Settings;
-import java.util.HashMap;
+import static vsim.riscv.MemorySegments.TEXT_SEGMENT_BEGIN;
+import static vsim.riscv.instructions.Instruction.LENGTH;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import vsim.Globals;
 import vsim.assembler.statements.Statement;
-import static vsim.riscv.instructions.Instruction.LENGTH;
-import static vsim.riscv.MemorySegments.TEXT_SEGMENT_BEGIN;
 
 
 /**
@@ -60,8 +59,7 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method resets the program, setting the program counter
-   * equal to the beginning of the text segment.
+   * This method resets the program, setting the program counter equal to the beginning of the text segment.
    */
   public void reset() {
     Globals.regfile.setProgramCounter(TEXT_SEGMENT_BEGIN);
@@ -88,14 +86,14 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method returns an array of breakpoint addresses, i.g if
-   * a program contains ebreak statements these count as breakpoints.
+   * This method returns an array of breakpoint addresses, i.g if a program contains ebreak statements these count as
+   * breakpoints.
    *
    * @return an array of breakpoint addresses
    */
   public ArrayList<Integer> getBreakpoints() {
     ArrayList<Integer> breakpoints = new ArrayList<Integer>();
-    for(Integer address: this.program.keySet()) {
+    for (Integer address : this.program.keySet()) {
       if (this.program.get(address).getMnemonic().equals("ebreak"))
         breakpoints.add(address);
     }

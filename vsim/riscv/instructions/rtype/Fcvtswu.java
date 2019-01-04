@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -36,12 +36,7 @@ public final class Fcvtswu extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Fcvtswu() {
-    super(
-      Format.R,
-      "fcvt.s.wu",
-      "fcvt.s.wu rd, rs1",
-      "set f[rd] = (float)(unsigned(x[rs1]))"
-    );
+    super(Format.R, "fcvt.s.wu", "fcvt.s.wu rd, rs1", "set f[rd] = (float)(unsigned(x[rs1]))");
   }
 
   @Override
@@ -62,10 +57,7 @@ public final class Fcvtswu extends Instruction {
   @Override
   public void execute(MachineCode code) {
     int value = Globals.regfile.getRegister(code.get(InstructionField.RS1));
-    Globals.fregfile.setRegister(
-      code.get(InstructionField.RD),
-      ((Long) Integer.toUnsignedLong(value)).floatValue()
-    );
+    Globals.fregfile.setRegister(code.get(InstructionField.RD), ((Long) Integer.toUnsignedLong(value)).floatValue());
     Globals.regfile.incProgramCounter();
   }
 

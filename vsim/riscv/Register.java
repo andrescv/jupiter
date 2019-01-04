@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,10 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import vsim.Settings;
 import vsim.utils.Colorize;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+
 
 /**
  * The Register class represents a "hardware" register.
@@ -199,6 +200,7 @@ public abstract class Register {
    * Inner interface for on value set listening.
    */
   public interface OnSetValueListener {
+
     /**
      * Called when setValue method of register is called.
      *

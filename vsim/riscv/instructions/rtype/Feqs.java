@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -36,12 +36,7 @@ public final class Feqs extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Feqs() {
-    super(
-      Format.R,
-      "feq.s",
-      "feq.s rd, rs1, rs2",
-      "set x[rd] = 1 if f[rs1] == f[rs2] else 0"
-    );
+    super(Format.R, "feq.s", "feq.s rd, rs1, rs2", "set x[rd] = 1 if f[rs1] == f[rs2] else 0");
   }
 
   @Override
@@ -64,10 +59,7 @@ public final class Feqs extends Instruction {
     float rs1 = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
     float rs2 = Globals.fregfile.getRegister(code.get(InstructionField.RS2));
     int result = (rs1 == rs2) ? 1 : 0;
-    Globals.regfile.setRegister(
-      code.get(InstructionField.RD),
-      result
-    );
+    Globals.regfile.setRegister(code.get(InstructionField.RD), result);
     Globals.regfile.incProgramCounter();
   }
 

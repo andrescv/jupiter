@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Jal extends JType {
    * @see vsim.riscv.instructions.jtype.JType
    */
   public Jal() {
-    super(
-      "jal",
-      "jal rd, offset",
-      "set x[rd] = pc + 4 and pc = pc + sext(offset)"
-    );
+    super("jal", "jal rd, offset", "set x[rd] = pc + 4 and pc = pc + sext(offset)");
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.utils;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeMap;
 
 
 /**
@@ -49,8 +49,7 @@ public final class ArgumentParser {
   private ArrayList<String> errors;
 
   /**
-   * Constructor that initializes a newly ArgumentParser object with
-   * a usage message.
+   * Constructor that initializes a newly ArgumentParser object with a usage message.
    *
    * @param usage the usage message
    */
@@ -88,8 +87,7 @@ public final class ArgumentParser {
   }
 
   /**
-   * This method adds a new option that does not requires a value to
-   * the valid option list.
+   * This method adds a new option that does not requires a value to the valid option list.
    *
    * @param option the option that starts with -
    * @param help help information attached to this option
@@ -99,8 +97,7 @@ public final class ArgumentParser {
   }
 
   /**
-   * This method parses all command line arguments, verifies errors
-   * (if any) and stores all useful information.
+   * This method parses all command line arguments, verifies errors (if any) and stores all useful information.
    *
    * @param args command line arguments
    */
@@ -128,7 +125,7 @@ public final class ArgumentParser {
         this.values.put(i, args[i]);
     }
     // verify values
-    for (String flag: this.flags.keySet()) {
+    for (String flag : this.flags.keySet()) {
       int position = this.flags.get(flag);
       // no value is present if needed?
       String value = this.values.get(position + 1);
@@ -157,7 +154,7 @@ public final class ArgumentParser {
         this.targets.add(new File(this.values.get(i)));
     } else {
       // targets = all values
-      for (int pos: this.values.keySet())
+      for (int pos : this.values.keySet())
         this.targets.add(new File(this.values.get(pos)));
     }
   }
@@ -169,7 +166,7 @@ public final class ArgumentParser {
     String newline = System.getProperty("line.separator");
     String out = "usage: " + this.usage + newline + newline;
     out += "available options:" + newline;
-    for (String option: this.options.keySet()) {
+    for (String option : this.options.keySet()) {
       out += "  " + option;
       int length = option.length() + 1;
       if (this.aliases.get(option) != null) {

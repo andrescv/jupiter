@@ -1,6 +1,22 @@
+/*
+Copyright (C) 2018-2019 Andres Castellanos
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*/
+
 package vsim.gui.controllers;
 
-import com.jfoenix.controls.JFXCheckBox;
 import java.io.File;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -12,13 +28,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import com.jfoenix.controls.JFXCheckBox;
 import vsim.Settings;
 import vsim.gui.components.AboutDialog;
 import vsim.gui.components.EditorDialog;
 import vsim.gui.components.InputDialog;
 import vsim.simulator.Status;
 
-/** Menubar controller class. */
+
+/**
+ * Menubar controller class.
+ */
 public class MenuBarController {
 
   /** File menu new file option */
@@ -121,8 +141,7 @@ public class MenuBarController {
     // handle close request
     this.mainController.stage.setOnCloseRequest(this::quit);
     // disable some file menu items if there are no tabs open
-    BooleanBinding isEmpty =
-        Bindings.isEmpty(this.mainController.editorController.editor.getTabs());
+    BooleanBinding isEmpty = Bindings.isEmpty(this.mainController.editorController.editor.getTabs());
     BooleanBinding fileCond = Bindings.or(isEmpty, this.mainController.simTab.selectedProperty());
     this.save.disableProperty().bind(fileCond);
     this.saveAs.disableProperty().bind(fileCond);
@@ -140,21 +159,11 @@ public class MenuBarController {
     this.assemble.disableProperty().bind(Status.READY);
     // disable sim flow control if the editor tab is selected
     ReadOnlyBooleanProperty editorSelected = this.mainController.editorTab.selectedProperty();
-    this.go
-        .disableProperty()
-        .bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
-    this.step
-        .disableProperty()
-        .bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
-    this.backstep
-        .disableProperty()
-        .bind(
-            Bindings.or(
-                Status.EMPTY,
-                Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
-    this.reset
-        .disableProperty()
-        .bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, editorSelected)));
+    this.go.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    this.step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    this.backstep.disableProperty()
+        .bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
+    this.reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, editorSelected)));
     this.clearBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
     // reflect settings
     this.showLabelsBox.setSelected(Settings.SHOW_LABELS);
@@ -217,9 +226,11 @@ public class MenuBarController {
   private void quit(Event event) {
     this.mainController.editorController.quit();
     // only
-    if (!this.mainController.editorController.editor.getTabs().isEmpty()) event.consume();
+    if (!this.mainController.editorController.editor.getTabs().isEmpty())
+      event.consume();
     else {
-      if (event instanceof ActionEvent) this.mainController.stage.close();
+      if (event instanceof ActionEvent)
+        this.mainController.stage.close();
       Platform.exit();
     }
   }
@@ -338,7 +349,8 @@ public class MenuBarController {
 
   @FXML
   private void editor(ActionEvent e) {
-    if (this.editorDialog == null) this.editorDialog = new EditorDialog();
+    if (this.editorDialog == null)
+      this.editorDialog = new EditorDialog();
     this.editorDialog.showAndWait();
     this.mainController.editorController.updateSettings();
   }
@@ -349,11 +361,14 @@ public class MenuBarController {
     chooser.setTitle("Load RISC-V Trap Handler");
     if (Settings.TRAP != null && Settings.TRAP.exists())
       chooser.setInitialDirectory(new File(Settings.TRAP.getParent()));
-    else chooser.setInitialDirectory(Settings.DIR);
+    else
+      chooser.setInitialDirectory(Settings.DIR);
     chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
     File file = chooser.showOpenDialog(this.mainController.stage);
-    if (file != null && file.exists()) Settings.TRAP = file;
-    else ; // TODO
+    if (file != null && file.exists())
+      Settings.TRAP = file;
+    else
+      ; // TODO
   }
 
   /*-------------------------------------------------------*
@@ -367,7 +382,9 @@ public class MenuBarController {
 
   @FXML
   private void about(ActionEvent e) {
-    if (this.aboutDialog == null) this.aboutDialog = new AboutDialog();
+    if (this.aboutDialog == null)
+      this.aboutDialog = new AboutDialog();
     this.aboutDialog.show();
   }
+
 }

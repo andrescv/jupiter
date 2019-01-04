@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-
 /**
  * The Slti class represents a slti instruction.
  */
@@ -29,11 +28,7 @@ public final class Slti extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Slti() {
-    super(
-      "slti",
-      "slti rd, rs1, imm",
-      "set x[rd] = 1 if x[rs1] < sext(imm) else 0, signed comparison"
-    );
+    super("slti", "slti rd, rs1, imm", "set x[rd] = 1 if x[rs1] < sext(imm) else 0, signed comparison");
   }
 
   @Override

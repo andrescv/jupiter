@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,14 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
-import com.sun.javafx.application.LauncherImpl;
 import java.io.File;
 import java.util.ArrayList;
+import com.sun.javafx.application.LauncherImpl;
 import vsim.gui.Gui;
 import vsim.gui.Preloader;
 import vsim.simulator.Simulator;
 import vsim.utils.Cmd;
 import vsim.utils.Message;
+
 
 /** The VSim class contains the main method of V-Sim simulator AKA Launcher. */
 public final class VSim {
@@ -46,11 +47,15 @@ public final class VSim {
       // only if files are provided
       if (files.size() > 0) {
         // add trap handler if any
-        if (Settings.TRAP != null) files.add(0, Settings.TRAP);
+        if (Settings.TRAP != null)
+          files.add(0, Settings.TRAP);
         // simulate/debug program
-        if (!Settings.DEBUG) Simulator.simulate(files);
-        else Simulator.debug(files);
-      } else Message.panic("no input files");
+        if (!Settings.DEBUG)
+          Simulator.simulate(files);
+        else
+          Simulator.debug(files);
+      } else
+        Message.panic("no input files");
     } else {
       Settings.GUI = true;
       System.setProperty("prism.lcdtext", "false");

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.linker.Relocation;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
+import vsim.linker.Relocation;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
 
 
 /**
@@ -80,11 +78,7 @@ public final class UType extends Statement {
       this.code.set(InstructionField.OPCODE, opcode);
       this.code.set(InstructionField.IMM_31_12, imm);
     } else
-      Errors.add(
-        this.debug,
-        "assembler",
-        "immediate '" + imm + "' out of range should be between 0 and 1048575"
-      );
+      Errors.add(this.debug, "assembler", "immediate '" + imm + "' out of range should be between 0 and 1048575");
   }
 
 }

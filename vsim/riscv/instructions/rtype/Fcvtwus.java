@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
 
 
 /**
@@ -36,12 +36,7 @@ public final class Fcvtwus extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Fcvtwus() {
-    super(
-      Format.R,
-      "fcvt.wu.s",
-      "fcvt.wu.s rd, rs1",
-      "set x[rd] = (int)(unsigned(f[rs1]))"
-    );
+    super(Format.R, "fcvt.wu.s", "fcvt.wu.s rd, rs1", "set x[rd] = (int)(unsigned(f[rs1]))");
   }
 
   @Override
@@ -69,10 +64,7 @@ public final class Fcvtwus extends Instruction {
       result = Integer.MAX_VALUE;
     else
       result = Math.round(value);
-    Globals.regfile.setRegister(
-      code.get(InstructionField.RD),
-      result
-    );
+    Globals.regfile.setRegister(code.get(InstructionField.RD), result);
     Globals.regfile.incProgramCounter();
   }
 

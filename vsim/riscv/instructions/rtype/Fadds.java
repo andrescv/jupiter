@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.rtype;
 
-
 /**
  * The Fadds class represents a {@code fadd.s} instruction.
  */
@@ -29,11 +28,7 @@ public final class Fadds extends FRType {
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fadds() {
-    super(
-      "fadd.s",
-      "fadd.s rd, rs1, rs2",
-      "set f[rd] = f[rs1] + f[rs2]"
-    );
+    super("fadd.s", "fadd.s rd, rs1, rs2", "set f[rd] = f[rs1] + f[rs2]");
   }
 
   @Override

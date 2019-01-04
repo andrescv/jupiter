@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv;
 
-import vsim.utils.IO;
-import java.util.HashMap;
-import vsim.utils.Message;
-import vsim.utils.Colorize;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
+import vsim.utils.Colorize;
+import vsim.utils.IO;
+import vsim.utils.Message;
 
 
 /**
@@ -32,74 +32,44 @@ import vsim.riscv.instructions.Instruction;
 public final class InstructionSet {
 
   /** r-type instructions package */
-  private static final String RTYPE  = "vsim.riscv.instructions.rtype";
+  private static final String RTYPE = "vsim.riscv.instructions.rtype";
   /** i-type instructions package */
-  private static final String ITYPE  = "vsim.riscv.instructions.itype";
+  private static final String ITYPE = "vsim.riscv.instructions.itype";
   /** s-type instructions package */
-  private static final String STYPE  = "vsim.riscv.instructions.stype";
+  private static final String STYPE = "vsim.riscv.instructions.stype";
   /** b-type instructions package */
-  private static final String BTYPE  = "vsim.riscv.instructions.btype";
+  private static final String BTYPE = "vsim.riscv.instructions.btype";
   /** u-type instructions package */
-  private static final String UTYPE  = "vsim.riscv.instructions.utype";
+  private static final String UTYPE = "vsim.riscv.instructions.utype";
   /** j-type instructions package */
-  private static final String JTYPE  = "vsim.riscv.instructions.jtype";
+  private static final String JTYPE = "vsim.riscv.instructions.jtype";
   /** r4-type instructions package */
   private static final String R4TYPE = "vsim.riscv.instructions.r4type";
 
   /** current classes in rtype package */
-  private static final String[] RClasses = {
-    "Add", "Sub", "Sll",
-    "Slt", "Sltu", "Xor",
-    "Srl", "Sra", "Or",
-    "And", "Div", "Divu",
-    "Mul", "Mulh", "Mulhu",
-    "Mulhsu", "Rem", "Remu",
-    "Fmvwx", "Fmvxw", "Fcvtsw",
-    "Fcvtswu", "Fcvtws", "Fcvtwus",
-    "Fadds", "Fsubs", "Fmuls",
-    "Fdivs", "Fsqrts", "Fsgnjs",
-    "Fsgnjns", "Fsgnjxs", "Feqs",
-    "Flts", "Fles", "Fclasss",
-    "Fmins", "Fmaxs"
-  };
+  private static final String[] RClasses = { "Add", "Sub", "Sll", "Slt", "Sltu", "Xor", "Srl", "Sra", "Or", "And",
+      "Div", "Divu", "Mul", "Mulh", "Mulhu", "Mulhsu", "Rem", "Remu", "Fmvwx", "Fmvxw", "Fcvtsw", "Fcvtswu", "Fcvtws",
+      "Fcvtwus", "Fadds", "Fsubs", "Fmuls", "Fdivs", "Fsqrts", "Fsgnjs", "Fsgnjns", "Fsgnjxs", "Feqs", "Flts", "Fles",
+      "Fclasss", "Fmins", "Fmaxs" };
 
   /** current classes in itype package */
-  private static final String[] IClasses = {
-    "Jalr", "Lb", "Lh",
-    "Lw", "Lbu", "Lhu",
-    "Addi", "Slti", "Sltiu",
-    "Xori", "Ori", "Andi",
-    "Slli", "Srli", "Srai",
-    "Ecall", "Flw", "Ebreak"
-  };
+  private static final String[] IClasses = { "Jalr", "Lb", "Lh", "Lw", "Lbu", "Lhu", "Addi", "Slti", "Sltiu", "Xori",
+      "Ori", "Andi", "Slli", "Srli", "Srai", "Ecall", "Flw", "Ebreak" };
 
   /** current classes in stype package */
-  private static final String[] SClasses = {
-    "Sb", "Sh", "Sw",
-    "Fsw"
-  };
+  private static final String[] SClasses = { "Sb", "Sh", "Sw", "Fsw" };
 
   /** current classes in btype package */
-  private static final String[] BClasses = {
-    "Beq", "Bge", "Bgeu",
-    "Blt", "Bltu", "Bne"
-  };
+  private static final String[] BClasses = { "Beq", "Bge", "Bgeu", "Blt", "Bltu", "Bne" };
 
   /** current classes in utype package */
-  private static final String[] UClasses = {
-    "Auipc", "Lui"
-  };
+  private static final String[] UClasses = { "Auipc", "Lui" };
 
   /** current classes in jtype package */
-  private static final String[] JClasses = {
-    "Jal"
-  };
+  private static final String[] JClasses = { "Jal" };
 
   /** current classes in r4type package */
-  private static final String[] R4Classes = {
-    "Fmadds", "Fmsubs",
-    "Fnmadds", "Fnmsubs"
-  };
+  private static final String[] R4Classes = { "Fmadds", "Fmsubs", "Fnmadds", "Fnmsubs" };
 
   /** the only available instance of the InstructionSet class */
   public static final InstructionSet insts = new InstructionSet();
@@ -125,17 +95,16 @@ public final class InstructionSet {
    * @see vsim.riscv.instructions.Instruction
    */
   private void add(String[] classes, String pkg) {
-    for(String className: classes) {
+    for (String className : classes) {
       String classPath = pkg + "." + className;
       try {
         Class<?> cls = Class.forName(classPath);
         // only final classes
-        if (!Instruction.class.isAssignableFrom(cls) ||
-          Modifier.isAbstract(cls.getModifiers()) ||
-          Modifier.isInterface(cls.getModifiers()))
+        if (!Instruction.class.isAssignableFrom(cls) || Modifier.isAbstract(cls.getModifiers())
+            || Modifier.isInterface(cls.getModifiers()))
           continue;
         // add this new instruction to isa
-        Instruction inst = (Instruction)(cls.getConstructor().newInstance());
+        Instruction inst = (Instruction) (cls.getConstructor().newInstance());
         String mnemonic = inst.getMnemonic();
         if (this.instructions.containsKey(mnemonic))
           Message.warning("duplicated instruction name: '" + mnemonic + "', skip this");
@@ -148,8 +117,7 @@ public final class InstructionSet {
   }
 
   /**
-   * This method populates the instruction set instance with all
-   * the instructions available.
+   * This method populates the instruction set instance with all the instructions available.
    *
    * @see vsim.riscv.instructions.Instruction
    */
@@ -185,14 +153,8 @@ public final class InstructionSet {
     if (inst != null) {
       IO.stdout.println("Instruction:");
       IO.stdout.println();
-      IO.stdout.println(
-        String.format(
-          "[%s] (%s) example: %s",
-          Colorize.red(inst.getFormat().toString()),
-          Colorize.green(mnemonic),
-          Colorize.cyan(inst.getUsage())
-        )
-      );
+      IO.stdout.println(String.format("[%s] (%s) example: %s", Colorize.red(inst.getFormat().toString()),
+          Colorize.green(mnemonic), Colorize.cyan(inst.getUsage())));
       IO.stdout.println();
       IO.stdout.println("Description:");
       IO.stdout.println();
@@ -207,23 +169,19 @@ public final class InstructionSet {
   public void print() {
     // number of instructions
     IO.stdout.println(
-      String.format(
-        "Number of Instructions: %s",
-        Colorize.green(String.format("%03d", this.instructions.size()))
-      )
-    );
+        String.format("Number of Instructions: %s", Colorize.green(String.format("%03d", this.instructions.size()))));
     IO.stdout.println();
     IO.stdout.println(Colorize.purple("FORMAT   MNEMONIC                USAGE"));
     IO.stdout.println();
     int maxLength = -1;
     // get mnemonic max instruction length for pretty printer
-    for (String mnemonic: this.instructions.keySet())
+    for (String mnemonic : this.instructions.keySet())
       maxLength = Math.max(maxLength, mnemonic.length());
     // get all formats
     Format[] formats = Format.values();
     // overhead here but necessary to print instructions in order
     for (int i = 0; i < formats.length; i++) {
-      for (String mnemonic: this.instructions.keySet()) {
+      for (String mnemonic : this.instructions.keySet()) {
         Instruction inst = this.instructions.get(mnemonic);
         Format format = inst.getFormat();
         String usage = inst.getUsage();
@@ -231,16 +189,8 @@ public final class InstructionSet {
         for (int j = 0; j < (maxLength - mnemonic.length()); j++)
           space += " ";
         if (format == formats[i]) {
-          IO.stdout.println(
-            String.format(
-              " [%s]%s  (%s)%s example: %s",
-              Colorize.red(format.toString()),
-              (format.toString().length() == 2) ? " " : "  ",
-              Colorize.green(mnemonic),
-              space,
-              Colorize.cyan(usage)
-            )
-          );
+          IO.stdout.println(String.format(" [%s]%s  (%s)%s example: %s", Colorize.red(format.toString()),
+              (format.toString().length() == 2) ? " " : "  ", Colorize.green(mnemonic), space, Colorize.cyan(usage)));
         }
       }
     }
