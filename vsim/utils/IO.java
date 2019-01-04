@@ -17,18 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
-import vsim.Settings;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import vsim.gui.utils.ConsoleInput;
+import java.io.PrintStream;
+import vsim.Settings;
 import vsim.gui.components.InputDialog;
+import vsim.gui.utils.ConsoleInput;
 
-
-/**
- * The class IO represents the standard I/O of the simulator.
- */
+/** The class IO represents the standard I/O of the simulator. */
 public final class IO {
 
   /** CLI standard input */
@@ -47,51 +44,47 @@ public final class IO {
   public static InputDialog dialog = null;
 
   /**
-   * Reads an integer value from current standard input.
-   * Client is responsible for catching NumberFormatException.
+   * Reads an integer value from current standard input. Client is responsible for catching
+   * NumberFormatException.
    *
    * @return int value corresponding to user input
    */
   public static int readInt() {
     String input = "0";
     if (Settings.GUI) {
-        if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
-          input = IO.guistdin.readString(-1);
-        else
-          input = IO.getDialog().getInput("Enter an integer value");
+      if (!Settings.POPUP_ECALL_INPUT && guistdin != null) input = IO.guistdin.readString(-1);
+      else input = IO.dialog.getInput("Enter an integer value");
     } else {
       try {
         input = IO.stdin.readLine();
-      } catch (IOException e) { }
+      } catch (IOException e) {
+      }
     }
     // handle CTRL + D
-    if (input == null)
-      input = "0";
+    if (input == null) input = "0";
     // client is responsible for catching NumberFormatException
     return Integer.parseInt(input.trim());
   }
 
   /**
-   * Reads a float value from current standard input.
-   * Client is responsible for catching NumberFormatException.
+   * Reads a float value from current standard input. Client is responsible for catching
+   * NumberFormatException.
    *
    * @return float value corresponding to user input
    */
   public static float readFloat() {
     String input = "0.0";
     if (Settings.GUI) {
-        if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
-          input = IO.guistdin.readString(-1);
-        else
-          input = IO.getDialog().getInput("Enter a float value");
+      if (!Settings.POPUP_ECALL_INPUT && guistdin != null) input = IO.guistdin.readString(-1);
+      else input = IO.dialog.getInput("Enter a float value");
     } else {
       try {
         input = IO.stdin.readLine();
-      } catch (IOException e) { }
+      } catch (IOException e) {
+      }
     }
     // handle CTRL + D
-    if (input == null)
-      input = "0.0";
+    if (input == null) input = "0.0";
     // client is responsible for catching NumberFormatException
     return Float.parseFloat(input.trim());
   }
@@ -107,19 +100,17 @@ public final class IO {
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(maxLength);
-      else
-        input = IO.getDialog().getInput("Enter a string");
+      else input = IO.dialog.getInput("Enter a string");
     } else {
       try {
         input = IO.stdin.readLine();
-      } catch (IOException e) {}
+      } catch (IOException e) {
+      }
     }
     // handle CTRL + D
-    if (input == null)
-      input = "";
+    if (input == null) input = "";
     // ensure maxLength
-    if (input.length() > maxLength)
-      input = (maxLength <= 0) ? "" : input.substring(0, maxLength);
+    if (input.length() > maxLength) input = (maxLength <= 0) ? "" : input.substring(0, maxLength);
     return input;
   }
 
@@ -131,28 +122,16 @@ public final class IO {
   public static int readChar() {
     String input = "0";
     if (Settings.GUI) {
-      if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
-        input = IO.guistdin.readString(1);
-      else
-        input = IO.getDialog().getInput("Enter a character value");
+      if (!Settings.POPUP_ECALL_INPUT && guistdin != null) input = IO.guistdin.readString(1);
+      else input = IO.dialog.getInput("Enter a character value");
     } else {
       try {
         input = IO.stdin.readLine();
-      } catch (IOException e) {}
+      } catch (IOException e) {
+      }
     }
     // handle CTRL + D
-    if (input == null)
-      input = "0";
-    return (int)input.charAt(0);
+    if (input == null) input = "0";
+    return (int) input.charAt(0);
   }
-
-  /**
-   * Gets the GUI input dialog.
-   */
-  private static InputDialog getDialog() {
-    if (IO.dialog == null)
-      IO.dialog = new InputDialog();
-    return IO.dialog;
-  }
-
- }
+}
