@@ -138,7 +138,10 @@ public final class Editor extends CodeArea {
             InputMap.consume(
                 EventPattern.keyPressed(KeyCode.ENTER),
                 e -> {
-                  this.appendText(System.getProperty("line.separator"));
+                  this.insertText(
+                      this.getCurrentParagraph(),
+                      this.getCaretColumn(),
+                      System.getProperty("line.separator"));
                   if (this.autoIndent) {
                     String line = this.getParagraph(this.getCurrentParagraph() - 1).getText();
                     String spaces = "";
@@ -146,7 +149,7 @@ public final class Editor extends CodeArea {
                       if (line.charAt(i) == ' ') spaces += " ";
                       else break;
                     }
-                    this.appendText(spaces);
+                    this.insertText(this.getCurrentParagraph(), this.getCaretColumn(), spaces);
                   }
                 }),
             // backspace
