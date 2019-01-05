@@ -37,13 +37,16 @@ sourceSets {
   }
   test {
     java {
-      srcDirs = ['test/vsim']
+      srcDirs = [Paths.get("test", "vsim")]
     }
     resources {
-      srcDirs = ['test/resources']
+      srcDirs = [Paths.get("test", "resources")]
     }
   }
 }
+
+// Java target version
+sourceCompatibility = 1.8
 
 // jar distribution file
 version = '1.1.0'
@@ -67,6 +70,7 @@ jar {
 // test config
 test {
   useJUnitPlatform()
+  dependsOn 'cleanTest'
   testLogging {
     events "passed", "skipped", "failed"
   }
