@@ -17,16 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions;
 
-import vsim.utils.Data;
-
-
 /**
  * The class Instruction represents an abstract instruction implementation.
  */
 public abstract class Instruction {
-
-  /** instruction length in bytes */
-  public static final int LENGTH = Data.WORD_LENGTH;
 
   /** instruction format */
   private Format format;

@@ -20,9 +20,9 @@ package vsim;
 import java.util.Hashtable;
 import vsim.assembler.SymbolTable;
 import vsim.riscv.InstructionSet;
-import vsim.riscv.Memory;
-import vsim.riscv.RVFRegisterFile;
-import vsim.riscv.RVIRegisterFile;
+import vsim.riscv.hardware.Memory;
+import vsim.riscv.hardware.RVFRegisterFile;
+import vsim.riscv.hardware.RVIRegisterFile;
 
 
 /**

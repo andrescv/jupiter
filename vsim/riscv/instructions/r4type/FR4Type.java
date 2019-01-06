@@ -53,9 +53,9 @@ abstract class FR4Type extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
-    float rs1 = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
-    float rs2 = Globals.fregfile.getRegister(code.get(InstructionField.RS2));
-    float rs3 = Globals.fregfile.getRegister(code.get(InstructionField.RS3));
+    float rs1 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
+    float rs2 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS2));
+    float rs3 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS3));
     Globals.fregfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, rs2, rs3));
     Globals.regfile.incProgramCounter();
   }

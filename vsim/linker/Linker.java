@@ -32,7 +32,6 @@ import vsim.assembler.statements.IType;
 import vsim.assembler.statements.Statement;
 import vsim.assembler.statements.UType;
 import vsim.riscv.MemorySegments;
-import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.utils.Data;
 import vsim.utils.Message;
@@ -160,14 +159,14 @@ public final class Linker {
       Globals.memory.privStoreWord(Linker.textAddress, u.result().get(InstructionField.ALL));
       all.put(Linker.textAddress, u);
       // next word align address
-      Linker.textAddress += Instruction.LENGTH;
+      Linker.textAddress += Data.WORD_LENGTH;
       // itype statement (CALL start)
       IType i = new IType("jalr", debug, "x1", "x6", new Relocation(Relocation.PCRELLO, Settings.START, debug));
       i.build(Linker.textAddress);
       Globals.memory.privStoreWord(Linker.textAddress, i.result().get(InstructionField.ALL));
       all.put(Linker.textAddress, i);
       // next word align address
-      Linker.textAddress += Instruction.LENGTH;
+      Linker.textAddress += Data.WORD_LENGTH;
       for (Program program : programs) {
         for (Statement stmt : program.getStatements()) {
           // build machine code
@@ -178,7 +177,7 @@ public final class Linker {
           // add this statement
           all.put(Linker.textAddress, stmt);
           // next word align address
-          Linker.textAddress += Instruction.LENGTH;
+          Linker.textAddress += Data.WORD_LENGTH;
           if (Linker.textAddress > MemorySegments.TEXT_SEGMENT_END)
             Errors.add("linker: program to large > ~256MiB");
         }
@@ -201,7 +200,7 @@ public final class Linker {
       // reset this
       Linker.dataAddress = MemorySegments.STATIC_SEGMENT;
       // 2 words added because of the two initial statements representing the far call to START label
-      Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN + 2 * Instruction.LENGTH;
+      Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN + 2 * Data.WORD_LENGTH;
       // handle static data
       Linker.linkRodata(programs);
       Linker.linkBss(programs);

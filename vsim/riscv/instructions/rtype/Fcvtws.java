@@ -56,7 +56,7 @@ public final class Fcvtws extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
-    float value = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    float value = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
     int result;
     if (Float.isNaN(value))
       result = Integer.MAX_VALUE;

@@ -23,7 +23,6 @@ import java.util.Set;
 import vsim.Globals;
 import vsim.assembler.statements.Statement;
 import vsim.linker.Relocation;
-import vsim.riscv.instructions.Instruction;
 import vsim.utils.Data;
 
 
@@ -199,7 +198,7 @@ public final class Program {
    */
   public void add(Statement stmt) {
     this.stmts.add(stmt);
-    this.textIndex += Instruction.LENGTH;
+    this.textIndex += Data.WORD_LENGTH;
   }
 
   /**
@@ -431,7 +430,7 @@ public final class Program {
    * @return the text segment size in bytes
    */
   public int getTextSize() {
-    return this.stmts.size() * Instruction.LENGTH;
+    return this.stmts.size() * Data.WORD_LENGTH;
   }
 
   /**

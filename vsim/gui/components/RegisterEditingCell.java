@@ -22,7 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
-import vsim.riscv.Register;
+import vsim.riscv.hardware.Register;
 
 
 /**

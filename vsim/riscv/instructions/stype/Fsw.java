@@ -66,7 +66,7 @@ public final class Fsw extends Instruction {
   @Override
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
-    int rs2 = Globals.fregfile.getRegisterInt(code.get(InstructionField.RS2));
+    int rs2 = Globals.fregfile.getRegister(code.get(InstructionField.RS2));
     Globals.memory.storeWord(rs1 + this.getImm(code), rs2);
     Globals.regfile.incProgramCounter();
   }

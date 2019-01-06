@@ -54,7 +54,7 @@ public final class Flw extends Instruction {
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int imm = code.get(InstructionField.IMM_11_0);
-    Globals.fregfile.setRegisterInt(code.get(InstructionField.RD),
+    Globals.fregfile.setRegister(code.get(InstructionField.RD),
         Globals.memory.loadWord(rs1 + Data.signExtend(imm, 12)));
     Globals.regfile.incProgramCounter();
   }

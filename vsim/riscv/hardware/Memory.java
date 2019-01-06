@@ -15,12 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv;
+package vsim.riscv.hardware;
 
 import java.util.HashMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import vsim.Settings;
+import vsim.riscv.MemorySegments;
 import vsim.utils.Colorize;
 import vsim.utils.Data;
 import vsim.utils.IO;
