@@ -52,7 +52,7 @@ public final class Fmvxw extends Instruction {
   @Override
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(code.get(InstructionField.RD),
-        Globals.fregfile.getRegisterInt(code.get(InstructionField.RS1)));
+        Globals.fregfile.getRegister(code.get(InstructionField.RS1)));
     Globals.regfile.incProgramCounter();
   }
 

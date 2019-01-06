@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv;
+package vsim.riscv.hardware;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,14 +34,12 @@ public abstract class Register {
   private final SimpleStringProperty mnemonic;
   /** register current string value */
   protected final SimpleStringProperty strValue;
-
   /** register current value */
   protected final SimpleIntegerProperty value;
   /** register default value */
   private final int resetValue;
   /** if the register is editable or not */
   private final boolean editable;
-
   /** on value set listenet */
   private OnSetValueListener listener;
 
@@ -193,7 +191,7 @@ public abstract class Register {
    */
   @Override
   public String toString() {
-    return Colorize.blue(String.format("0x%08x", this.value));
+    return Colorize.blue(String.format("0x%08x", this.value.get()));
   }
 
   /**

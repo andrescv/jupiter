@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.linker;
 
 import static vsim.riscv.MemorySegments.TEXT_SEGMENT_BEGIN;
-import static vsim.riscv.instructions.Instruction.LENGTH;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.utils.Data;
 
 
 /**
@@ -115,7 +115,7 @@ public final class LinkedProgram {
         break;
       else
         stmts.add(new InfoStatement(pc, stmt));
-      pc += LENGTH;
+      pc += Data.WORD_LENGTH;
     }
     return stmts;
   }

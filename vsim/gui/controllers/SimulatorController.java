@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
-import static vsim.riscv.instructions.Instruction.LENGTH;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -61,12 +60,13 @@ import vsim.gui.utils.SymbolInfo;
 import vsim.linker.InfoStatement;
 import vsim.linker.LinkedProgram;
 import vsim.linker.Linker;
-import vsim.riscv.MemoryCell;
 import vsim.riscv.MemorySegments;
-import vsim.riscv.Register;
+import vsim.riscv.hardware.MemoryCell;
+import vsim.riscv.hardware.Register;
 import vsim.simulator.Debugger;
 import vsim.simulator.Status;
 import vsim.utils.Cmd;
+import vsim.utils.Data;
 import vsim.utils.Message;
 
 
@@ -576,7 +576,7 @@ public class SimulatorController {
         Platform.runLater(() -> {
           // refresh table to fire updateItem in table row
           this.textTable.refresh();
-          int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / LENGTH;
+          int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / Data.WORD_LENGTH;
           int row = Math.min(pc, this.textTable.getItems().size() - 1);
           int first = this.vflow.getFirstVisibleCell().getIndex();
           int last = this.vflow.getLastVisibleCell().getIndex();
@@ -716,7 +716,7 @@ public class SimulatorController {
     this.rviValue.setCellFactory(cellFactory);
     this.rviValue.setOnEditCommit(e -> this.updateRVIRegister(e));
     // apply style to modified rvi register
-    ObservableList<Register> rviList = Globals.regfile.getRVI();
+    ObservableList<Register> rviList = Globals.regfile.getRF();
     for (Register reg : rviList) {
       reg.setOnSetValueListener(number -> {
         lastReg = reg;
@@ -758,7 +758,7 @@ public class SimulatorController {
     this.rvfValue.setCellFactory(cellFactory);
     this.rvfValue.setOnEditCommit(e -> this.updateRVFRegister(e));
     // apply style to modified rvf register
-    ObservableList<Register> rvfList = Globals.fregfile.getRVF();
+    ObservableList<Register> rvfList = Globals.fregfile.getRF();
     for (Register reg : rvfList) {
       reg.setOnSetValueListener(number -> {
         lastReg = reg;

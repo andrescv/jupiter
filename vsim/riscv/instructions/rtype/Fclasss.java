@@ -59,7 +59,7 @@ public final class Fclasss extends Instruction {
   @Override
   public void execute(MachineCode code) {
     int out = 0;
-    float f = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    float f = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
     int bits = Float.floatToRawIntBits(f);
     // set flags
     boolean infOrNaN = Float.isNaN(f) || Float.isInfinite(f);

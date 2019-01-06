@@ -56,7 +56,7 @@ public final class Fcvtwus extends Instruction {
 
   @Override
   public void execute(MachineCode code) {
-    float value = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    float value = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
     int result;
     if (value < Integer.MIN_VALUE)
       result = 0;

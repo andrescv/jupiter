@@ -23,7 +23,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import vsim.Globals;
-import vsim.riscv.MemoryCell;
+import vsim.riscv.hardware.MemoryCell;
 
 
 /**
