@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
+import vsim.utils.Data;
 
 
 /**
@@ -37,12 +37,7 @@ public final class Flw extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Flw() {
-    super(
-      Format.I,
-      "flw",
-      "flw rd, offset(rs1)",
-      "set f[rd] = memory[x[rs1] + sext(offset)][31:0]"
-    );
+    super(Format.I, "flw", "flw rd, offset(rs1)", "set f[rd] = memory[x[rs1] + sext(offset)][31:0]");
   }
 
   @Override
@@ -59,10 +54,8 @@ public final class Flw extends Instruction {
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int imm = code.get(InstructionField.IMM_11_0);
-    Globals.fregfile.setRegisterInt(
-      code.get(InstructionField.RD),
-      Globals.memory.loadWord(rs1 + Data.signExtend(imm, 12))
-    );
+    Globals.fregfile.setRegister(code.get(InstructionField.RD),
+        Globals.memory.loadWord(rs1 + Data.signExtend(imm, 12)));
     Globals.regfile.incProgramCounter();
   }
 

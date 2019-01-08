@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Lb extends IType {
    * @see vsim.riscv.instructions.itype.IType
    */
   public Lb() {
-    super(
-      "lb",
-      "lb rd, offset(rs1)",
-      "set x[rd] = sext(memory[x[rs1] + sext(offset)][7:0])"
-    );
+    super("lb", "lb rd, offset(rs1)", "set x[rd] = sext(memory[x[rs1] + sext(offset)][7:0])");
   }
 
   @Override

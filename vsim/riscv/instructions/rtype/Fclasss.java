@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.rtype;
 
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.utils.Colorize;
 import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Colorize;
+import vsim.utils.Data;
 
 
 /**
@@ -37,12 +37,8 @@ public final class Fclasss extends Instruction {
    * @see vsim.riscv.instructions.Instruction
    */
   public Fclasss() {
-    super(
-      Format.R,
-      "fclass.s",
-      "fclass.s rd, rs1",
-      "set x[rd] = 10-bit mask that indicates the class of the floating-point register f[rs1]"
-    );
+    super(Format.R, "fclass.s", "fclass.s rd, rs1",
+        "set x[rd] = 10-bit mask that indicates the class of the floating-point register f[rs1]");
   }
 
   @Override
@@ -63,7 +59,7 @@ public final class Fclasss extends Instruction {
   @Override
   public void execute(MachineCode code) {
     int out = 0;
-    float f = Globals.fregfile.getRegister(code.get(InstructionField.RS1));
+    float f = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
     int bits = Float.floatToRawIntBits(f);
     // set flags
     boolean infOrNaN = Float.isNaN(f) || Float.isInfinite(f);
@@ -89,14 +85,11 @@ public final class Fclasss extends Instruction {
       out |= 1 << 5;
     if (!sign && subnormalOrZero && fracZero)
       out |= 1 << 4;
-    if (isNaN &&  isSNaN)
+    if (isNaN && isSNaN)
       out |= 1 << 8;
     if (isNaN && !isSNaN)
       out |= 1 << 9;
-    Globals.regfile.setRegister(
-      code.get(InstructionField.RD),
-      out
-    );
+    Globals.regfile.setRegister(code.get(InstructionField.RD), out);
     Globals.regfile.incProgramCounter();
   }
 

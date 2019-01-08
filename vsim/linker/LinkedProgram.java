@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,12 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
-import vsim.Globals;
-import vsim.Settings;
-import java.util.HashMap;
+import static vsim.riscv.MemorySegments.TEXT_SEGMENT_BEGIN;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.utils.Data;
 
 
 /**
@@ -56,14 +59,20 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method resets the program, localizes the global start address
-   * that is set in VSim settings and makes the program counter point
-   * to this address.
+   * This method resets the program, setting the program counter equal to the beginning of the text segment.
    */
   public void reset() {
-    // set PC to global start label (simulate far-away call)
-    int startAddress = Globals.globl.get(Settings.START);
-    Globals.regfile.setProgramCounter(startAddress);
+    Globals.regfile.setProgramCounter(TEXT_SEGMENT_BEGIN);
+  }
+
+  /**
+   * This method returns the statement at the given address.
+   *
+   * @param address address of the statement
+   * @return statement at the given address or null if no statement at that address
+   */
+  public Statement getStatement(int address) {
+    return this.program.get(address);
   }
 
   /**
@@ -77,19 +86,38 @@ public final class LinkedProgram {
   }
 
   /**
-   * This method returns an array of breakpoint addresses, i.g if
-   * a program contains ebreak statements these count as breakpoints.
+   * This method returns an array of breakpoint addresses, i.g if a program contains ebreak statements these count as
+   * breakpoints.
    *
    * @return an array of breakpoint addresses
    */
   public ArrayList<Integer> getBreakpoints() {
     ArrayList<Integer> breakpoints = new ArrayList<Integer>();
-    for(Integer address: this.program.keySet()) {
+    for (Integer address : this.program.keySet()) {
       if (this.program.get(address).getMnemonic().equals("ebreak"))
         breakpoints.add(address);
     }
     breakpoints.trimToSize();
     return breakpoints;
+  }
+
+  /**
+   * Gets observable list of info statements.
+   *
+   * @return observable list of info statements
+   */
+  public ObservableList<InfoStatement> getInfoStatements() {
+    ObservableList<InfoStatement> stmts = FXCollections.observableArrayList();
+    int pc = TEXT_SEGMENT_BEGIN;
+    while (true) {
+      Statement stmt = this.program.get(pc);
+      if (stmt == null)
+        break;
+      else
+        stmts.add(new InfoStatement(pc, stmt));
+      pc += Data.WORD_LENGTH;
+    }
+    return stmts;
   }
 
 }

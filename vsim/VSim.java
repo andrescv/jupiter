@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,32 +18,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim;
 
 import java.io.File;
+import java.util.ArrayList;
+import com.sun.javafx.application.LauncherImpl;
+import vsim.gui.Gui;
+import vsim.gui.Preloader;
+import vsim.simulator.Simulator;
 import vsim.utils.Cmd;
 import vsim.utils.Message;
-import java.util.ArrayList;
-import vsim.simulator.Simulator;
 
 
-/**
- * The VSim class contains the main method of V-Sim simulator.
- */
+/** The VSim class contains the main method of V-Sim simulator AKA Launcher. */
 public final class VSim {
-
-  /**
-   * This method returns the root absolute path
-   *
-   * @return root absolute path
-   */
-  private static String getRootPath() {
-    try {
-      File f = new File(VSim.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-      String path = f.getAbsolutePath();
-      path = path.substring(0, path.lastIndexOf('/') + 1);
-      return path;
-    } catch (Exception e) {
-      return null;
-    }
-  }
 
   /**
    * This method is used to launch the V-Sim simulator.
@@ -51,12 +36,12 @@ public final class VSim {
    * @param args command line arguments
    */
   public static void main(String[] args) {
+    // set ROOT path
+    Settings.setRootPath();
     // run this only if some argument(s) is/are passed
     if (args.length > 0) {
-      // set ROOT path
-      Settings.ROOT = VSim.getRootPath();
       // parse arguments
-      ArrayList<String> files = Cmd.parse(args);
+      ArrayList<File> files = Cmd.parse(args);
       // simulate or debug
       Cmd.title();
       // only if files are provided
@@ -71,7 +56,11 @@ public final class VSim {
           Simulator.debug(files);
       } else
         Message.panic("no input files");
+    } else {
+      Settings.GUI = true;
+      System.setProperty("prism.lcdtext", "false");
+      Settings.load();
+      LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
     }
   }
-
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@ package vsim.assembler.statements;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.linker.Relocation;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
+import vsim.linker.Relocation;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.MachineCode;
 import vsim.riscv.instructions.InstructionField;
+import vsim.utils.Data;
 
 
 /**
@@ -54,8 +52,7 @@ public final class SType extends Statement {
    * @param rs2 register source 2
    * @param imm immediate value or relocation
    */
-  public SType(String mnemonic, DebugInfo debug,
-               String rs1, String rs2, Object imm) {
+  public SType(String mnemonic, DebugInfo debug, String rs1, String rs2, Object imm) {
     super(mnemonic, debug);
     this.rs1 = rs1;
     this.rs2 = rs2;
@@ -88,11 +85,7 @@ public final class SType extends Statement {
       this.code.set(InstructionField.IMM_4_0, imm);
       this.code.set(InstructionField.IMM_11_5, imm >>> 5);
     } else
-      Errors.add(
-        this.debug,
-        "assembler",
-        "immediate '" + imm + "' out of range should be between -2048 and 2047"
-      );
+      Errors.add(this.debug, "assembler", "immediate '" + imm + "' out of range should be between -2048 and 2047");
   }
 
 }
