@@ -50,6 +50,7 @@ public final class Gui extends Application {
     JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
     decorator.setGraphic(Icons.getImage("logo"));
     decorator.setCustomMaximize(true);
+    decorator.setMaximized(true);
     // create scene
     Scene scene = new Scene(decorator, 1024, 800);
     // add styles
@@ -58,5 +59,6 @@ public final class Gui extends Application {
         getClass().getResource("/css/vsim.css").toExternalForm());
     stage.setScene(scene);
     stage.show();
+    stage.toFront();
   }
 }
