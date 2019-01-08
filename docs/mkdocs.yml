@@ -1,19 +1,49 @@
+# Project Information
 site_name: V-Sim Documentation
-site_description: 'V-Sim: RISC-V Assembler and Runtime Simulator'
-site_author: 'Inés Ramirez & Andrés Castellanos'
-copyright: '© Copyright 2018, Andrés Castellanos'
+site_description: 'RISC-V Assembler and Runtime Simulator'
+site_author: 'Andrés Castellanos &amp; Inés Ramirez'
+site_url: https://riscvsim.com/
 
+# Repository
+edit_uri: edit/master/docs/docs
+repo_name: andrescv/V-Sim
+repo_url: https://github.com/andrescv/V-Sim/
+
+# Copyright
+copyright: 'Copyright &copy; 2018-2019, Andrés Castellanos &amp; Inés Ramirez'
+
+# Theme Configuration
 theme:
-  name: readthedocs
-  custom_dir: theme
+  name: material
+  language: en
+  custom_dir: assets
+  favicon: 'images/icon.png'
+  logo: 'images/icon.png'
+  palette:
+    primary: grey
+    accent: red
 
-extra_javascript:
-  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML
+# Customization
+extra:
+  social:
+    - type: github
+      link: https://github.com/andrescv/V-Sim/
 
-site_url: https://github.com/andrescv/V-Sim
-repo_url: https://github.com/andrescv/V-Sim
+# Google Analytics
+google_analytics:
+  - 'UA-131956264-1'
+  - 'auto'
 
-pages:
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+
+# Navigation
+nav:
   - Home: index.md
   - User Guide:
     - Using V-Sim: usage.md

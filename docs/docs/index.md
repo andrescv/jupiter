@@ -1,7 +1,7 @@
 # V-Sim
 
 <p align="center">
-  <img src="./img/vsim-logo.png" alt="V-Sim" width="500"><br>
+  <img src="images/logo.png" alt="V-Sim" width="400"><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
   </a>
@@ -26,7 +26,7 @@ V-Sim requires Java **8** SE (or later) SDK installed on your computer.
 
 <p align="center">
   <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
-    <img src="./img/button.png" alt="Download Java">
+    <img src="/images/download.png" alt="Download Java">
   </a>
 </p>
 
