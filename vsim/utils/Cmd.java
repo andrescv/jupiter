@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,11 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.utils;
 
 import java.io.File;
-import vsim.Globals;
-import vsim.Settings;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import vsim.Globals;
+import vsim.Settings;
 
 
 /**
@@ -31,55 +32,49 @@ import java.util.ArrayList;
 public final class Cmd {
 
   /**
-   * This method parses the command line arguments and returns
-   * the source filenames passed.
+   * This method parses the command line arguments and returns the source filenames passed.
    *
    * @param args arguments to parse
    * @see vsim.utils.ArgumentParser
    * @return an array of RISC-V assembler filenames to simulate (if any)
    */
-  public static ArrayList<String> parse(String[] args) {
+  public static ArrayList<File> parse(String[] args) {
     ArgumentParser parser = new ArgumentParser("vsim [options] <files>");
     // simulator available options
-    parser.add("-help",    "show this help message and exit");
-    parser.add("-all",     "assemble all files in directory");
-    parser.add("-bare",    "bare machine (no pseudo-ops)");
-    parser.add("-quiet",   "do not print warnings");
+    parser.add("-help", "show this help message and exit");
+    parser.add("-all", "assemble all files in directory");
+    parser.add("-bare", "bare machine (no pseudo-ops)");
+    parser.add("-quiet", "do not print warnings");
+    parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-nocolor", "do not colorize output");
-    parser.add("-usage",   "print usage of an instruction and exit", "<mnemonic>");
+    parser.add("-usage", "print usage of an instruction and exit", "<mnemonic>");
     parser.add("-notitle", "do not print V-Sim title");
-    parser.add("-dump",    "dump machine code to a file", "<file>");
-    parser.add("-start",   "start program at global label (default: main)", "<label>");
-    parser.add("-debug",   "start the debugger");
+    parser.add("-dump", "dump machine code to a file", "<file>");
+    parser.add("-start", "start program at global label (default: main)", "<label>");
+    parser.add("-debug", "start the debugger");
     parser.add("-version", "show the simulator version and exit");
     parser.add("-license", "show license and copyright notice and exit");
-    parser.add("-iset",    "print available RISC-V instructions and exit");
+    parser.add("-iset", "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
     // display usage if errors
     if (parser.hasErrors()) {
       Cmd.title();
-      for (String error: parser.getErrors())
+      for (String error : parser.getErrors())
         Message.warning(error);
       IO.stdout.println();
       parser.print();
       System.exit(1);
     }
     // override default Settings
-    if (parser.hasFlag("-bare"))
-      Settings.BARE = true;
-    if (parser.hasFlag("-quiet"))
-      Settings.QUIET = true;
-    if (parser.hasFlag("-nocolor"))
-      Settings.COLORIZE = false;
-    if (parser.hasFlag("-notitle"))
-      Settings.TITLE = false;
-    if (parser.hasFlag("-dump"))
-      Settings.DUMP = parser.value("-dump");
-    if (parser.hasFlag("-start"))
-      Settings.START = parser.value("-start");
-    if (parser.hasFlag("-debug"))
-      Settings.DEBUG = true;
+    Settings.BARE = parser.hasFlag("-bare");
+    Settings.QUIET = parser.hasFlag("-quiet");
+    Settings.EXTRICT = parser.hasFlag("-extrict");
+    Settings.COLORIZE = !parser.hasFlag("-nocolor");
+    Settings.TITLE = !parser.hasFlag("-notitle");
+    Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;
+    Settings.START = parser.hasFlag("-start") ? parser.value("-start") : "main";
+    Settings.DEBUG = parser.hasFlag("-debug");
     // check -help flag
     if (parser.hasFlag("-help")) {
       Cmd.title();
@@ -110,21 +105,31 @@ public final class Cmd {
       System.exit(0);
     }
     // get files
-    ArrayList<String> files = parser.targets();
+    ArrayList<File> files = parser.targets();
     // find trap handler
     if (Settings.ROOT != null) {
       File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
       if (trapfile.exists()) {
-        Settings.TRAP = trapfile.getAbsolutePath();
+        Settings.TRAP = trapfile;
       }
     }
-    // check project mode
-    if (parser.hasFlag("-all")) {
-      try {
-        // recursively find all files in user cwd
-        Files.find(
-          Paths.get(System.getProperty("user.dir")),
-          Integer.MAX_VALUE,
+    // assemble all files in directory
+    if (parser.hasFlag("-all"))
+      Cmd.getFilesInDir(files);
+    files.trimToSize();
+    return files;
+  }
+
+  /**
+   * This method adds all assembler files in current user directory into an array list.
+   *
+   * @param files array list where file paths will be added
+   * @return true if success, false otherwise
+   */
+  public static boolean getFilesInDir(ArrayList<File> files) {
+    try {
+      // recursively find all files in user cwd
+      Files.find(Paths.get(Settings.DIR.toString()), Integer.MAX_VALUE,
           // keep files that ends with .s or .asm extension
           (filePath, fileAttr) -> {
             if (fileAttr.isRegularFile()) {
@@ -133,18 +138,14 @@ public final class Cmd {
                 return true;
             }
             return false;
-          }
-        ).forEach(
-          path ->
-            files.add(path.toString())
-        );
-      } catch (Exception e) {
-        if (!Settings.QUIET)
-          Message.warning("An error occurred while recursively searching the files in directory (aborting...)");
-      }
+          }).forEach(path -> files.add(new File(path.toString())));
+    } catch (IOException e) {
+      Message.error("An error occurred while recursively searching the files in directory (aborting...)");
+      if (!Settings.GUI)
+        System.exit(1);
+      return false;
     }
-    files.trimToSize();
-    return files;
+    return true;
   }
 
   /**

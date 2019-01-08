@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Fmins extends FRType {
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fmins() {
-    super(
-      "fmin.s",
-      "fmin.s rd, rs1, rs2",
-      "set f[rd] = min(f[rs1], f[rs2])"
-    );
+    super("fmin.s", "fmin.s rd, rs1, rs2", "set f[rd] = min(f[rs1], f[rs2])");
   }
 
   @Override

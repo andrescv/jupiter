@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.rtype;
 
-
 /**
  * The Fsqrts class represents a {@code fsqrt.s} instruction.
  */
@@ -29,11 +28,7 @@ public final class Fsqrts extends FRType {
    * @see vsim.riscv.instructions.rtype.FRType
    */
   public Fsqrts() {
-    super(
-      "fsqrt.s",
-      "fsqrt.s rd, rs1",
-      "set f[rd] = sqrt(f[rs1])"
-    );
+    super("fsqrt.s", "fsqrt.s rd, rs1", "set f[rd] = sqrt(f[rs1])");
   }
 
   @Override
@@ -48,7 +43,7 @@ public final class Fsqrts extends FRType {
 
   @Override
   public float compute(float rs1, float rs2) {
-    return (float)Math.sqrt(rs1);
+    return (float) Math.sqrt(rs1);
   }
 
 }

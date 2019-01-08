@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXColorPicker?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane hgap="10.0" layoutX="35.0" layoutY="52.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="383.0" minWidth="10.0" prefWidth="374.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="342.0" minWidth="10.0" prefWidth="296.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Font Family" textFill="#eeeeee">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Font Style" textFill="#eeeeee" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <JFXComboBox fx:id="fontfamily" prefHeight="26.0" prefWidth="542.0" GridPane.rowIndex="1" />
+            <JFXComboBox fx:id="fontstyle" prefHeight="26.0" prefWidth="508.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <GridPane hgap="10.0" layoutX="10.0" layoutY="80.0" prefHeight="90.0" prefWidth="580.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="378.0" minWidth="10.0" prefWidth="373.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="297.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Font Size" textFill="#eeeeee">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Tab Size" textFill="#eeeeee" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <JFXSlider fx:id="fontsize" majorTickUnit="72.0" max="72.0" min="6.0" minorTickCount="0" value="14.0" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXSlider>
+            <JFXSlider fx:id="tabsize" max="32.0" min="1.0" prefHeight="16.0" prefWidth="312.0" value="4.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXSlider>
+         </children>
+      </GridPane>
+      <JFXColorPicker layoutX="-311.0" layoutY="156.0" />
+      <GridPane layoutX="10.0" layoutY="199.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="199.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Operator" textFill="#eeeeee" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Directive" textFill="#eeeeee" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Keyword" textFill="#eeeeee" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <JFXColorPicker fx:id="syntax" onAction="#changeColor" GridPane.columnIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="operator" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="directive" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="keyword" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <Label text="Label" textFill="#eeeeee" GridPane.columnIndex="2">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Identifier" textFill="#eeeeee" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Register" textFill="#eeeeee" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Number" textFill="#eeeeee" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Comment" textFill="#eeeeee" GridPane.columnIndex="4">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="String" textFill="#eeeeee" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Backslash" textFill="#eeeeee" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Error" textFill="#eeeeee" GridPane.columnIndex="4" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <JFXColorPicker fx:id="label" onAction="#changeColor" GridPane.columnIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="identifier" onAction="#changeColor" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="register" onAction="#changeColor" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="number" onAction="#changeColor" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="comment" onAction="#changeColor" GridPane.columnIndex="5">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="string" onAction="#changeColor" GridPane.columnIndex="5" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="backslash" onAction="#changeColor" GridPane.columnIndex="5" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="error" onAction="#changeColor" GridPane.columnIndex="5" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <Label text="Syntax" textFill="#eeeeee">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+         </children>
+      </GridPane>
+      <Label layoutX="299.0" layoutY="158.0" text="Syntax Theme" textFill="#eeeeee" AnchorPane.leftAnchor="299.0" AnchorPane.topAnchor="145.0">
+         <font>
+            <Font name="Roboto Bold" size="16.0" />
+         </font>
+      </Label>
+      <AnchorPane fx:id="anchor" layoutX="233.0" layoutY="351.0" prefHeight="241.0" prefWidth="459.0" style="-fx-border-color: #444;" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+      <Label layoutX="430.0" layoutY="324.0" text="Preview" textFill="#eeeeee">
+         <font>
+            <Font name="Roboto Bold" size="17.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="10.0" layoutY="319.0" AnchorPane.leftAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="164.0" minWidth="72.0" prefWidth="106.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="102.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Background" textFill="#eeeeee">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Selection" textFill="#eeeeee" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Line No. " textFill="#eeeeee" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Line No. Bg" textFill="#eeeeee" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Caret Color" textFill="#eeeeee" GridPane.rowIndex="4">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <Label text="Current Line" textFill="#eeeeee" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></Label>
+            <JFXColorPicker fx:id="background" onAction="#changeColor" GridPane.columnIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="selection" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="lineno" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="linenobg" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="caret" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+            <JFXColorPicker fx:id="highlight" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXColorPicker>
+         </children>
+      </GridPane>
+      <HBox layoutX="129.0" layoutY="172.0" spacing="10.0">
+         <children>
+            <JFXRadioButton fx:id="eclipse" text="Eclipse" textFill="#eeeeee">
+               <toggleGroup>
+                  <ToggleGroup fx:id="theme" />
+               </toggleGroup>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+            </JFXRadioButton>
+            <JFXRadioButton fx:id="material" text="Material" textFill="#eeeeee" toggleGroup="$theme">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></JFXRadioButton>
+            <JFXRadioButton fx:id="monokai" text="Monokai" textFill="#eeeeee" toggleGroup="$theme">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></JFXRadioButton>
+            <JFXRadioButton fx:id="onelight" text="One Light" textFill="#eeeeee" toggleGroup="$theme">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></JFXRadioButton>
+            <JFXRadioButton fx:id="custom" text="Custom" textFill="#eeeeee" toggleGroup="$theme">
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font></JFXRadioButton>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="23.0" layoutY="511.0" spacing="10.0">
+         <children>
+            <JFXButton fx:id="save" onAction="#save" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #388e3c;" text="Save" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/saveBtn.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <JFXButton fx:id="cancel" onAction="#cancel" prefHeight="37.0" prefWidth="93.0" style="-fx-background-color: #0277bd;" text="Cancel" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/cancelBtn.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="Roboto Bold" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+         </children>
+      </HBox>
+      <JFXCheckBox fx:id="autoIndent" layoutX="231.0" layoutY="326.0" styleClass="setting" text="Auto-Indent" textFill="#eeeeee">
+         <font>
+            <Font name="Roboto Bold" size="14.0" />
+         </font></JFXCheckBox>
+      <JFXButton fx:id="saveAndClose" layoutX="23.0" layoutY="553.0" onAction="#saveAndClose" prefHeight="37.0" prefWidth="183.0" style="-fx-background-color: #00897b;" text="Save and Close" textFill="WHITE">
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/icons/saveBtn.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="Roboto Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+   </children>
+</AnchorPane>

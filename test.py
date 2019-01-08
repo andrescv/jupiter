@@ -1,5 +1,5 @@
 '''
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ import subprocess
 from glob import glob
 
 newline = os.linesep
-JAR = os.listdir('dist/')[0]
-CMD = 'java -jar dist/' + JAR + ' -nocolor %s'
+JAR = os.listdir('build/libs/')[0]
+CMD = 'java -jar build/libs/' + JAR + ' -nocolor %s'
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
     nsuccess = 0
     errors = []
     try:
-        for f in sorted(glob('test/*')):
+        for f in sorted(glob('test/riscv-tests/*')):
             # ignore readme and license files
             if not f.endswith('.s'):
                 continue

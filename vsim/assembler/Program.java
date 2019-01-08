@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,15 +17,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
-import vsim.Globals;
-import java.util.Set;
-import vsim.utils.Data;
-import java.util.HashMap;
-import vsim.utils.Message;
 import java.util.ArrayList;
-import vsim.linker.Relocation;
-import vsim.riscv.instructions.Instruction;
+import java.util.HashMap;
+import java.util.Set;
+import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.linker.Relocation;
+import vsim.utils.Data;
 
 
 /**
@@ -38,7 +36,7 @@ public final class Program {
 
   /** current text segment index */
   private int textIndex;
-  /** start of text segment of this program*/
+  /** start of text segment of this program */
   private int textStart;
   /** array of statements of this program */
   private ArrayList<Statement> stmts;
@@ -113,12 +111,11 @@ public final class Program {
   }
 
   /**
-   * This method is used to relocate all local and global symbols
-   * of this program.
+   * This method is used to relocate all local and global symbols of this program.
    */
   public void relocateSymbols() {
     // first locals
-    for (String label: this.table.labels()) {
+    for (String label : this.table.labels()) {
       Symbol sym = this.table.getSymbol(label);
       int offset = sym.getAddress();
       switch (sym.getSegment()) {
@@ -137,22 +134,21 @@ public final class Program {
       }
     }
     // then globals
-    for (String global: this.globals.keySet())
+    for (String global : this.globals.keySet())
       Globals.globl.set(global, this.table.get(global));
   }
-
 
   /**
    * This method stores the references in the specific segments.
    */
   public void storeRefs() {
     // data segment
-    for (Integer index: this.dataAddr.keySet()) {
+    for (Integer index : this.dataAddr.keySet()) {
       Relocation ref = this.dataAddr.get(index);
       Globals.memory.privStoreWord(index + this.dataStart, ref.getTargetAddress());
     }
     // rodata segment
-    for (Integer index: this.rodataAddr.keySet()) {
+    for (Integer index : this.rodataAddr.keySet()) {
       Relocation ref = this.rodataAddr.get(index);
       Globals.memory.privStoreWord(index + this.rodataStart, ref.getTargetAddress());
     }
@@ -202,23 +198,22 @@ public final class Program {
    */
   public void add(Statement stmt) {
     this.stmts.add(stmt);
-    this.textIndex += Instruction.LENGTH;
+    this.textIndex += Data.WORD_LENGTH;
   }
 
   /**
-   * This method is used to indicate that the next datum needs to be
-   * aligned to a {@code Math.pow(2, alignVal)} byte boundary.
+   * This method is used to indicate that the next datum needs to be aligned to a {@code Math.pow(2, alignVal)} byte
+   * boundary.
    *
    * @param alignVal the alignment value
    */
   public void align(int alignVal) {
     this.align = true;
-    this.alignVal = (int)Math.pow(2, alignVal);
+    this.alignVal = (int) Math.pow(2, alignVal);
   }
 
   /**
-   * This method is used to indicate that the next datum needs to be
-   * aligned to a {@code alignVal} byte boundary.
+   * This method is used to indicate that the next datum needs to be aligned to a {@code alignVal} byte boundary.
    *
    * @param alignVal the alignment value
    */
@@ -339,19 +334,19 @@ public final class Program {
         this.dataIndex = this.align(this.dataIndex, this.data);
         this.dataAddr.put(this.dataIndex, ref);
         this.dataIndex += Data.WORD_LENGTH;
-        this.data.add((byte)0);
-        this.data.add((byte)0);
-        this.data.add((byte)0);
-        this.data.add((byte)0);
+        this.data.add((byte) 0);
+        this.data.add((byte) 0);
+        this.data.add((byte) 0);
+        this.data.add((byte) 0);
         break;
       case RODATA:
         this.rodataIndex = this.align(this.rodataIndex, this.rodata);
         this.rodataAddr.put(this.rodataIndex, ref);
         this.rodataIndex += Data.WORD_LENGTH;
-        this.rodata.add((byte)0);
-        this.rodata.add((byte)0);
-        this.rodata.add((byte)0);
-        this.rodata.add((byte)0);
+        this.rodata.add((byte) 0);
+        this.rodata.add((byte) 0);
+        this.rodata.add((byte) 0);
+        this.rodata.add((byte) 0);
         break;
     }
   }
@@ -435,12 +430,11 @@ public final class Program {
    * @return the text segment size in bytes
    */
   public int getTextSize() {
-    return this.stmts.size() * Instruction.LENGTH;
+    return this.stmts.size() * Data.WORD_LENGTH;
   }
 
   /**
-   * This method returns the data segment size in bytes.
-   * This method includes the data, rodata and bss segments.
+   * This method returns the data segment size in bytes. This method includes the data, rodata and bss segments.
    *
    * @return the data segment size in bytes
    */

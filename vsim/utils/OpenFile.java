@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
-import vsim.Globals;
+import java.io.BufferedReader;
 import java.io.File;
-import vsim.Settings;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.io.BufferedReader;
 import java.nio.file.StandardOpenOption;
+import vsim.Globals;
+import vsim.Settings;
 
 
 /**
@@ -80,12 +80,12 @@ public final class OpenFile {
     }
     // set StandardOpenOption flags
     if ((this.write || this.rdwr) && append)
-      this.flags = new StandardOpenOption[]{StandardOpenOption.WRITE, StandardOpenOption.APPEND};
+      this.flags = new StandardOpenOption[] { StandardOpenOption.WRITE, StandardOpenOption.APPEND };
     else if (this.write || this.rdwr)
-      this.flags = new StandardOpenOption[]{StandardOpenOption.WRITE};
+      this.flags = new StandardOpenOption[] { StandardOpenOption.WRITE };
     else
       // just for flags not be null
-      this.flags = new StandardOpenOption[]{StandardOpenOption.APPEND};
+      this.flags = new StandardOpenOption[] { StandardOpenOption.APPEND };
     // try to create file (if create flag)
     if (create && create_new) {
       try {
@@ -124,8 +124,7 @@ public final class OpenFile {
   }
 
   /**
-   * This method indicates if there are any errors when opening and creating
-   * the file.
+   * This method indicates if there are any errors when opening and creating the file.
    *
    * @return true if there are errors, false otherwise
    */
@@ -177,7 +176,7 @@ public final class OpenFile {
       StringBuffer s = new StringBuffer(0);
       int wbytes = 0;
       for (int i = 0; i < nbytes; i++) {
-        char c = (char)Globals.memory.loadByteUnsigned(buffer++);
+        char c = (char) Globals.memory.loadByteUnsigned(buffer++);
         s.append(c);
         wbytes++;
       }

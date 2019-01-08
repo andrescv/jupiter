@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,13 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
-import vsim.riscv.Memory;
 import java.util.Hashtable;
-import java.util.ArrayList;
-import vsim.riscv.InstructionSet;
-import vsim.riscv.RVIRegisterFile;
-import vsim.riscv.RVFRegisterFile;
 import vsim.assembler.SymbolTable;
+import vsim.riscv.InstructionSet;
+import vsim.riscv.hardware.Memory;
+import vsim.riscv.hardware.RVFRegisterFile;
+import vsim.riscv.hardware.RVIRegisterFile;
 
 
 /**
@@ -73,6 +72,7 @@ public final class Globals {
    * This method reset the simulator state and global and local symbol tables
    */
   public static void reset() {
+    Errors.clear();
     Globals.resetST();
     Globals.resetState();
     System.gc();

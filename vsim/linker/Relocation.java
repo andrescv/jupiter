@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,10 +19,9 @@ package vsim.linker;
 
 import vsim.Errors;
 import vsim.Globals;
-import vsim.utils.Data;
-import vsim.assembler.Assembler;
 import vsim.assembler.DebugInfo;
 import vsim.assembler.SymbolTable;
+import vsim.utils.Data;
 
 
 /**
@@ -58,9 +57,8 @@ public final class Relocation {
   }
 
   /**
-   * This method tries to localize the address of the relocation
-   * target in the local symbol table of the program or the global
-   * symbol table or creates an error if it is not found.
+   * This method tries to localize the address of the relocation target in the local symbol table of the program or the
+   * global symbol table or creates an error if it is not found.
    *
    * @return the address of the relocation target
    */

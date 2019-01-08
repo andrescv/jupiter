@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,17 +26,17 @@ import vsim.Settings;
 public final class Colorize {
 
   // enable this only on linux
-  private static final String  OS = System.getProperty("os.name");
+  private static final String OS = System.getProperty("os.name");
   private static final boolean ENABLED = Colorize.OS.startsWith("Linux");
 
   // available ANSI colors
-  private static final String RESET  = "\u001B[0m";
-  private static final String RED    = "\u001B[31m";
-  private static final String GREEN  = "\u001B[32m";
+  private static final String RESET = "\u001B[0m";
+  private static final String RED = "\u001B[31m";
+  private static final String GREEN = "\u001B[32m";
   private static final String YELLOW = "\u001B[33m";
-  private static final String BLUE   = "\u001B[34m";
+  private static final String BLUE = "\u001B[34m";
   private static final String PURPLE = "\u001B[35m";
-  private static final String CYAN   = "\u001B[36m";
+  private static final String CYAN = "\u001B[36m";
 
   /**
    * This method colors a String with the given color

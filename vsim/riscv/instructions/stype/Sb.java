@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Andres Castellanos
+Copyright (C) 2018-2019 Andres Castellanos
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,11 +31,7 @@ public final class Sb extends SType {
    * @see vsim.riscv.instructions.stype.SType
    */
   public Sb() {
-    super(
-      "sb",
-      "sb rs2, offset(rs1)",
-      "set memory[x[rs1] + sext(offset)] = x[rs2][7:0]"
-    );
+    super("sb", "sb rs2, offset(rs1)", "set memory[x[rs1] + sext(offset)] = x[rs2][7:0]");
   }
 
   @Override
