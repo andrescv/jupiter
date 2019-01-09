@@ -24,7 +24,6 @@ import vsim.assembler.statements.Statement;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.MemorySegments;
 import vsim.riscv.exceptions.*;
-import vsim.riscv.hardware.Memory;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Cmd;
 import vsim.utils.Colorize;

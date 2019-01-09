@@ -4284,17 +4284,23 @@ public class Parser extends java_cup.runtime.lr_parser {
             for (int i = 0; i < l.size(); i++) {
               int value = l.get(i);
               // lossy conversion ?
-              if (length == Data.BYTE_LENGTH && !Data.validByte(value) && !Settings.QUIET) {
+              if (length == Data.BYTE_LENGTH && !Data.validByte(value)) {
                 String filename = Assembler.filename;
-                int lineno = -1;
-                Message.warning(filename + ":" + "assembler:" + lineno + ": " + "lossy conversion to byte: '" + value
-                    + "' -> " + (byte) (value & Data.BYTE_MASK));
+                if (!Settings.EXTRICT)
+                  Message.warning(filename + ": assembler: lossy conversion to byte: '" + value + "' -> "
+                      + (byte) (value & Data.BYTE_MASK));
+                else
+                  Errors.add(filename + ": assembler: lossy conversion to byte: '" + value + "' -> "
+                      + (byte) (value & Data.BYTE_MASK));
               }
-              if (length == Data.HALF_LENGTH && !Data.validHalf(value) && !Settings.QUIET) {
+              if (length == Data.HALF_LENGTH && !Data.validHalf(value)) {
                 String filename = Assembler.program.getFilename();
-                int lineno = -1;
-                Message.warning(filename + ":" + "assembler:" + lineno + ": " + "lossy conversion to half: '" + value
-                    + "' -> " + (short) (value & Data.HALF_MASK));
+                if (!Settings.EXTRICT)
+                  Message.warning(filename + ": assembler: lossy conversion to half: '" + value + "' -> "
+                      + (short) (value & Data.HALF_MASK));
+                else
+                  Errors.add(filename + ": assembler: lossy conversion to half: '" + value + "' -> "
+                      + (short) (value & Data.HALF_MASK));
               }
               // store byte by byte
               for (int j = 0; j < length; j++) {

@@ -52,7 +52,7 @@ public final class OpenFile {
    * @param pathname pathname attached to this open file
    * @param flags array of open flags
    */
-  public OpenFile(String pathname, int flags) {
+  public OpenFile(String pathname, int flags) throws SimulationException {
     this.pathname = pathname;
     boolean create = false;
     boolean create_new = false;
@@ -76,8 +76,10 @@ public final class OpenFile {
       create_new = true;
     if ((flags & FS.O_MASK) == 0) {
       this.error = true;
-      if (!Settings.QUIET)
+      if (!Settings.EXTRICT)
         Message.warning("file system:  invalid open flags");
+      else
+        throw new SimulationException("file system:  invalid open flags");
     }
     // set StandardOpenOption flags
     if ((this.write || this.rdwr) && append)
