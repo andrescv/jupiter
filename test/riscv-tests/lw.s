@@ -172,7 +172,7 @@ label1_test16:
 test17:
   li a1, 17
   la x5, tdat
-  lw x2, 0(x4)
+  lw x2, 0(x5)
   li x2, 2
   li x29, 0x00000002
   bne x2, x29, fail
