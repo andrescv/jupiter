@@ -15,34 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.instructions.itype;
-
-import vsim.Globals;
-import vsim.riscv.exceptions.SimulationException;
-
+package vsim.riscv.exceptions;
 
 /**
- * The Lb class represents a lb instruction.
+ * Generic simulation exception.
  */
-public final class Lb extends IType {
+public class SimulationException extends Exception {
 
   /**
-   * Unique constructor that initializes a newly Lb instruction.
-   *
-   * @see vsim.riscv.instructions.itype.IType
+   * Creates a new generic simulation exception.
    */
-  public Lb() {
-    super("lb", "lb rd, offset(rs1)", "set x[rd] = sext(memory[x[rs1] + sext(offset)][7:0])");
-  }
-
-  @Override
-  public int getOpCode() {
-    return 0b0000011;
-  }
-
-  @Override
-  protected int compute(int rs1, int imm) throws SimulationException {
-    return Globals.memory.loadByte(rs1 + imm);
+  public SimulationException(String msg) {
+    super(msg);
   }
 
 }

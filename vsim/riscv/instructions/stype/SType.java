@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.stype;
 
 import vsim.Globals;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -54,7 +55,7 @@ abstract class SType extends Instruction {
    * @param rs2 register source 2
    * @param imm immediate offset
    */
-  protected abstract void setMemory(int rs1, int rs2, int imm);
+  protected abstract void setMemory(int rs1, int rs2, int imm) throws SimulationException;
 
   private int getImm(MachineCode code) {
     int imm_11_5 = code.get(InstructionField.IMM_11_5);
@@ -64,7 +65,7 @@ abstract class SType extends Instruction {
   }
 
   @Override
-  public void execute(MachineCode code) {
+  public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));
     this.setMemory(rs1, rs2, this.getImm(code));

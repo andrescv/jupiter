@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Globals;
+import vsim.riscv.exceptions.SimulationException;
 
 
 /**
@@ -45,7 +46,7 @@ public final class Lbu extends IType {
   }
 
   @Override
-  protected int compute(int rs1, int imm) {
+  protected int compute(int rs1, int imm) throws SimulationException {
     return Globals.memory.loadByteUnsigned(rs1 + imm);
   }
 

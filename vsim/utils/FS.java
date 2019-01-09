@@ -20,6 +20,7 @@ package vsim.utils;
 import java.util.HashMap;
 import vsim.Globals;
 import vsim.Settings;
+import vsim.riscv.exceptions.SimulationException;
 
 
 /**
@@ -95,7 +96,7 @@ public final class FS {
    * @param nbytes number of bytes to read before truncating the data
    * @return the number of bytes that were read, -1 if error
    */
-  public static int read(int fd, int buffer, int nbytes) {
+  public static int read(int fd, int buffer, int nbytes) throws SimulationException {
     // only available from stdin
     if (fd == FS.STDIN) {
       int rbytes = 0;
@@ -141,7 +142,7 @@ public final class FS {
    * @param nbytes the number of bytes to write
    * @return the number of bytes that were written, -1 if error
    */
-  public static int write(int fd, int buffer, int nbytes) {
+  public static int write(int fd, int buffer, int nbytes) throws SimulationException {
     // stdin
     if (fd == FS.STDIN) {
       if (!Settings.QUIET)

@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import static vsim.riscv.Ecall.handler;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Colorize;
 
@@ -42,7 +43,7 @@ public final class Ecall extends IType {
   }
 
   @Override
-  protected int compute(int rs1, int imm) {
+  protected int compute(int rs1, int imm) throws SimulationException {
     // call ecall handler
     handler();
     return 0;

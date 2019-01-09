@@ -20,6 +20,7 @@ package vsim.riscv;
 import java.util.Random;
 import vsim.Globals;
 import vsim.Settings;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.simulator.Status;
 import vsim.utils.Data;
 import vsim.utils.FS;
@@ -68,8 +69,10 @@ public final class Ecall {
    * {@link vsim.riscv.instructions.itype.Ecall#compute} to handle the ecall request. First obtains the syscall code
    * from register a0 and then tries to match this code with the available syscalls. If the code does not match an
    * available syscall a warning is generated.
+   *
+   * @throws SimulationException if some exception occur while handling environmental call
    */
-  public static void handler() {
+  public static void handler() throws SimulationException {
     int syscode = Globals.regfile.getRegister("a0");
     // match syscall code
     switch (syscode) {
@@ -176,7 +179,7 @@ public final class Ecall {
    * This method implements the PRINT_STRING syscall, first gets the address of the buffer to print from register a1 and
    * then obtains char by char the null terminated string from memory, then prints it.
    */
-  private static void printString() {
+  private static void printString() throws SimulationException {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer(0);
     char c;
@@ -217,7 +220,7 @@ public final class Ecall {
    * This method implements the READ_STRING syscall, first tries to read a line from stdin, then stores char by char the
    * string in memory starting at address given in register a1 until length given in register a2 is reached.
    */
-  private static void readString() {
+  private static void readString() throws SimulationException {
     int buffer = Globals.regfile.getRegister("a1");
     int length = Math.max(Globals.regfile.getRegister("a2") - 1, 0);
     String s = IO.readString(length);
@@ -278,7 +281,7 @@ public final class Ecall {
    *
    * @see vsim.utils.FS#open
    */
-  private static void open() {
+  private static void open() throws SimulationException {
     int buffer = Globals.regfile.getRegister("a1");
     StringBuffer s = new StringBuffer(0);
     char c;
@@ -294,7 +297,7 @@ public final class Ecall {
    *
    * @see vsim.utils.FS#read
    */
-  private static void read() {
+  private static void read() throws SimulationException {
     if (Globals.regfile.getRegister("a3") > 0) {
       Globals.regfile.setRegister("a0", FS.read(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
           Globals.regfile.getRegister("a3")));
@@ -309,7 +312,7 @@ public final class Ecall {
    *
    * @see vsim.utils.FS#write
    */
-  private static void write() {
+  private static void write() throws SimulationException {
     if (Globals.regfile.getRegister("a3") > 0) {
       Globals.regfile.setRegister("a0", FS.write(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
           Globals.regfile.getRegister("a3")));
@@ -360,7 +363,7 @@ public final class Ecall {
   /**
    * This method implements the PWD syscall.
    */
-  private static void cwd() {
+  private static void cwd() throws SimulationException {
     String path = System.getProperty("user.dir");
     int buffer = Globals.regfile.getRegister("a1");
     for (int i = 0; i < path.length(); i++) {

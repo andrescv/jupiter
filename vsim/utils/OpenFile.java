@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import vsim.Globals;
 import vsim.Settings;
+import vsim.riscv.exceptions.SimulationException;
 
 
 /**
@@ -139,7 +140,7 @@ public final class OpenFile {
    * @param nbytes number of bytes to read before truncating the data
    * @return the number of bytes that were read, -1 if error
    */
-  public int read(int buffer, int nbytes) {
+  public int read(int buffer, int nbytes) throws SimulationException {
     // read permissions ?
     if (this.read || this.rdwr) {
       int rbytes = 0;
@@ -170,7 +171,7 @@ public final class OpenFile {
    * @param nbytes the number of bytes to write
    * @return the number of bytes that were written, -1 if error
    */
-  public int write(int buffer, int nbytes) {
+  public int write(int buffer, int nbytes) throws SimulationException {
     // build string
     if (this.write && !this.rdwr || this.rdwr && !this.write) {
       StringBuffer s = new StringBuffer(0);

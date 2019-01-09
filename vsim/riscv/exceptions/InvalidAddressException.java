@@ -15,34 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.instructions.itype;
+package vsim.riscv.exceptions;
 
-import vsim.Globals;
-import vsim.riscv.exceptions.SimulationException;
-
-
-/**
- * The Lb class represents a lb instruction.
- */
-public final class Lb extends IType {
+/** This exception is throwed when attempting to read or write to an invalid memory address. */
+public final class InvalidAddressException extends SimulationException {
 
   /**
-   * Unique constructor that initializes a newly Lb instruction.
+   * Creates a new invalid address exception.
    *
-   * @see vsim.riscv.instructions.itype.IType
+   * @param address memory address
+   * @param read true if exception occurs while reading or false while writing
    */
-  public Lb() {
-    super("lb", "lb rd, offset(rs1)", "set x[rd] = sext(memory[x[rs1] + sext(offset)][7:0])");
-  }
-
-  @Override
-  public int getOpCode() {
-    return 0b0000011;
-  }
-
-  @Override
-  protected int compute(int rs1, int imm) throws SimulationException {
-    return Globals.memory.loadByte(rs1 + imm);
+  public InvalidAddressException(int address, boolean read) {
+    super(String.format("attempting to %s to an invalid memory address 0x%08x", read ? "read" : "write", address));
   }
 
 }

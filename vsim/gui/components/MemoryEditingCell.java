@@ -41,7 +41,7 @@ public final class MemoryEditingCell extends TableCell<MemoryCell, String> {
   @Override
   public void startEdit() {
     MemoryCell cell = (MemoryCell) this.getTableRow().getItem();
-    if (!this.isEmpty() && Globals.memory.checkAddress(cell.getIntAddress())) {
+    if (!this.isEmpty() && Globals.memory.checkAddress(cell.getIntAddress(), false)) {
       super.startEdit();
       this.createTextField();
       this.setText(null);

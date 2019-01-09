@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Globals;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -51,7 +52,7 @@ public final class Flw extends Instruction {
   }
 
   @Override
-  public void execute(MachineCode code) {
+  public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int imm = code.get(InstructionField.IMM_11_0);
     Globals.fregfile.setRegister(code.get(InstructionField.RD),

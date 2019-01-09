@@ -22,10 +22,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import vsim.Settings;
 import vsim.riscv.MemorySegments;
+import vsim.riscv.exceptions.InvalidAddressException;
 import vsim.utils.Colorize;
 import vsim.utils.Data;
 import vsim.utils.IO;
-import vsim.utils.Message;
 
 
 /**
@@ -73,6 +73,234 @@ public final class Memory {
       this.cells.add(new MemoryCell(i));
   }
 
+  /*
+   * STORES
+   */
+
+  /**
+   * This method stores a byte in memory at address given.
+   *
+   * @param address address where to store the byte
+   * @param value the byte value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public void storeByte(int address, int value) throws InvalidAddressException {
+    try {
+      if (Memory.checkAddress(address, false)) {
+        if (value != 0)
+          this.memory.put(address, (byte) (value & Data.BYTE_MASK));
+        else
+          this.memory.remove(address);
+      } else
+        throw new InvalidAddressException(address, false);
+    } finally {
+      // refresh memory cells
+      if (Settings.GUI) {
+        for (MemoryCell cell : this.cells)
+          cell.update();
+      }
+    }
+  }
+
+  /**
+   * Stores a byte in memory at address given without checking address.
+   *
+   * @param address address where to store the byte
+   * @param value the byte value
+   */
+  public void privStoreByte(int address, int value) {
+    if (value != 0)
+      this.memory.put(address, (byte) (value & Data.BYTE_MASK));
+    else
+      this.memory.remove(address);
+    // refresh memory cells
+    if (Settings.GUI) {
+      for (MemoryCell cell : this.cells)
+        cell.update();
+    }
+  }
+
+  /**
+   * Stores a half in memory at address given.
+   *
+   * @param address address where to store the half
+   * @param value the half value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public void storeHalf(int address, int value) throws InvalidAddressException {
+    this.storeByte(address, value);
+    this.storeByte(address + Data.BYTE_LENGTH, value >> Data.BYTE_LENGTH_BITS);
+  }
+
+  /**
+   * Stores a half in memory at address given without checking address.
+   *
+   * @param address address where the half will be stored.
+   * @param value the half value
+   */
+  public void privStoreHalf(int address, int value) {
+    this.privStoreByte(address, value);
+    this.privStoreByte(address + Data.BYTE_LENGTH, value >> Data.BYTE_LENGTH_BITS);
+  }
+
+  /**
+   * This method stores a word in memory at address given.
+   *
+   * @param address address where to store the word value
+   * @param value the word value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public void storeWord(int address, int value) throws InvalidAddressException {
+    this.storeHalf(address, value);
+    this.storeHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
+  }
+
+  /**
+   * Stores a word at address given without checking address.
+   *
+   * @param address address where to store the word value
+   * @param value the word to store
+   */
+  public void privStoreWord(int address, int value) {
+    this.privStoreHalf(address, value);
+    this.privStoreHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
+  }
+
+  /**
+   * Loads an unsigned byte from memory at address given.
+   *
+   * @param address address where to load the unsigned byte value
+   * @return the unsigned byte value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public int loadByteUnsigned(int address) throws InvalidAddressException {
+    if (Memory.checkAddress(address, true)) {
+      if (!this.memory.containsKey(address))
+        return 0x0;
+      return ((int) this.memory.get(address)) & Data.BYTE_MASK;
+    } else
+      throw new InvalidAddressException(address, true);
+  }
+
+  /**
+   * Loads an unsigned byte from memory at address given without checking address.
+   *
+   * @param address address where to load the unsigned byte value
+   * @return the unsigned byte value
+   */
+  public int privLoadByteUnsigned(int address) {
+    if (!this.memory.containsKey(address))
+      return 0x0;
+    return ((int) this.memory.get(address)) & Data.BYTE_MASK;
+  }
+
+  /**
+   * Loads a byte from memory at address given.
+   *
+   * @param address address where to load the byte value
+   * @return the byte value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public int loadByte(int address) throws InvalidAddressException {
+    return Data.signExtendByte(this.loadByteUnsigned(address));
+  }
+
+  /**
+   * Loads a byte from memory at address given without checking address.
+   *
+   * @param address address where the byte will be loaded.
+   * @return the byte value
+   */
+  public int privLoadByte(int address) {
+    return Data.signExtendByte(this.privLoadByteUnsigned(address));
+  }
+
+  /**
+   * Loads an unsigned half from memory at address given.
+   *
+   * @param address address where to load the unsigned half value
+   * @return the unsigned half value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public int loadHalfUnsigned(int address) throws InvalidAddressException {
+    int loByte = this.loadByteUnsigned(address);
+    int hiByte = this.loadByteUnsigned(address + Data.BYTE_LENGTH);
+    return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
+  }
+
+  /**
+   * Loads an unsigned half from memory at address given without checking address.
+   *
+   * @param address address where to load the unsigned half value
+   * @return the unsigned half value
+   */
+  public int privLoadHalfUnsigned(int address) {
+    int loByte = this.privLoadByteUnsigned(address);
+    int hiByte = this.privLoadByteUnsigned(address + Data.BYTE_LENGTH);
+    return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
+  }
+
+  /**
+   * Loads a half from memory at address given.
+   *
+   * @param address address where to load the half value
+   * @return the half value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public int loadHalf(int address) throws InvalidAddressException {
+    return Data.signExtendHalf(this.loadHalfUnsigned(address));
+  }
+
+  /**
+   * Loads a half from memory at address given without checking address.
+   *
+   * @param address address where to load the half value
+   * @return the half value
+   */
+  public int privLoadHalf(int address) {
+    return Data.signExtendHalf(this.privLoadHalfUnsigned(address));
+  }
+
+  /**
+   * Loads a word from memory at address given.
+   *
+   * @param address address where to load the word value
+   * @return the word value
+   * @throws InvalidAddressException if the address is invalid
+   */
+  public int loadWord(int address) throws InvalidAddressException {
+    int loHalf = this.loadHalfUnsigned(address);
+    int hiHalf = this.loadHalfUnsigned(address + Data.HALF_LENGTH);
+    return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
+  }
+
+  /**
+   * Loads a word from memory at address given without checking address.
+   *
+   * @param address address where to load the word value
+   * @return the word value
+   */
+  public int privLoadWord(int address) {
+    int loHalf = this.privLoadHalfUnsigned(address);
+    int hiHalf = this.privLoadHalfUnsigned(address + Data.HALF_LENGTH);
+    return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
+  }
+
+  /**
+   * This method allocates bytes from heap and returns the next available address.
+   *
+   * @param bytes number of bytes to allocate
+   * @return the nex available heap address or -1 if no more space.
+   */
+  public int allocateBytesFromHeap(int bytes) {
+    int address = MemorySegments.HEAP_SEGMENT;
+    // allocate bytes
+    MemorySegments.HEAP_SEGMENT += bytes;
+    // align to a word boundary (if necessary)
+    MemorySegments.HEAP_SEGMENT = Data.alignToWordBoundary(MemorySegments.HEAP_SEGMENT);
+    return address;
+  }
+
   /**
    * This method clears all the allocated bytes of the memory.
    */
@@ -117,7 +345,7 @@ public final class Memory {
       if (i % Data.WORD_LENGTH == 0)
         out += String.format("[0x%08x]", address);
       // word content at this address
-      String data = String.format("0x%08x", this.loadWord(address));
+      String data = String.format("0x%08x", this.privLoadWord(address));
       out += " " + Colorize.blue(data);
       // next 4 words in other row
       if ((i + 1) % Data.WORD_LENGTH == 0)
@@ -125,188 +353,6 @@ public final class Memory {
     }
     // right strip whitespace
     IO.stdout.println(out.replaceAll("\\s+$", ""));
-  }
-
-  /**
-   * This method stores a byte in memory at address given.
-   *
-   * @param address address where to store the byte
-   * @param value the byte value
-   */
-  public void storeByte(int address, int value) {
-    if (Memory.checkStore(address)) {
-      if (value != 0)
-        this.memory.put(address, (byte) (value & Data.BYTE_MASK));
-      else
-        this.memory.remove(address);
-    }
-    // refresh memory cells
-    if (Settings.GUI) {
-      for (MemoryCell cell : this.cells)
-        cell.update();
-    }
-  }
-
-  /**
-   * This method stores a byte in memory at address given without checks.
-   *
-   * @param address address where to store the byte
-   * @param value the byte value
-   */
-  private void privStoreByte(int address, int value) {
-    if (value != 0)
-      this.memory.put(address, (byte) (value & Data.BYTE_MASK));
-    else
-      this.memory.remove(address);
-    // refresh memory cells
-    if (Settings.GUI) {
-      for (MemoryCell cell : this.cells)
-        cell.update();
-    }
-  }
-
-  /**
-   * This method stores a half in memory at address given.
-   *
-   * @param address address where to store the half
-   * @param value the half value
-   */
-  public void storeHalf(int address, int value) {
-    if (Memory.checkStore(address)) {
-      this.storeByte(address, value);
-      this.storeByte(address + Data.BYTE_LENGTH, value >> Data.BYTE_LENGTH_BITS);
-    }
-  }
-
-  /**
-   * This method stores a word in memory at address given.
-   *
-   * @param address address where to store the word value
-   * @param value the word value
-   */
-  public void storeWord(int address, int value) {
-    if (Memory.checkStore(address)) {
-      this.storeHalf(address, value);
-      this.storeHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
-    }
-  }
-
-  /**
-   * This method stores a word at the given address. This method should only be used in the linking process.
-   *
-   * @param address address where to store the word value
-   * @param value the word to store
-   */
-  public void privStoreWord(int address, int value) {
-    for (int i = 0; i < Data.WORD_LENGTH; i++)
-      this.memory.put(address++, (byte) ((value >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK));
-    // refresh memory cells
-    if (Settings.GUI) {
-      for (MemoryCell cell : this.cells)
-        cell.update();
-    }
-  }
-
-  /**
-   * This method allocates bytes from heap and returns the next available address.
-   *
-   * @param bytes number of bytes to allocate
-   * @return the nex available heap address or -1 if no more space.
-   */
-  public int allocateBytesFromHeap(int bytes) {
-    int address = MemorySegments.HEAP_SEGMENT;
-    // allocate bytes only if possible
-    if ((MemorySegments.HEAP_SEGMENT + bytes) > MemorySegments.STACK_SEGMENT) {
-      if (!Settings.QUIET)
-        Message.warning("runtime: no more heap space");
-      return -1;
-    }
-    // allocate bytes
-    MemorySegments.HEAP_SEGMENT += bytes;
-    // align to a word boundary (if necessary)
-    MemorySegments.HEAP_SEGMENT = Data.alignToWordBoundary(MemorySegments.HEAP_SEGMENT);
-    return address;
-  }
-
-  /**
-   * This method loads a unsigned byte value from memory at address given with verifications.
-   *
-   * @param address address where to load the unsigned byte value
-   * @return the unsigned byte value
-   */
-  public int loadByteUnsigned(int address) {
-    if (Memory.checkLoad(address)) {
-      if (!this.memory.containsKey(address))
-        return 0x0;
-      return ((int) this.memory.get(address)) & Data.BYTE_MASK;
-    }
-    return 0x0;
-  }
-
-  /**
-   * This method loads a unsigned byte value from memory at address given without verifications.
-   *
-   * @param address address where to load the unsigned byte value
-   * @return the unsigned byte value
-   */
-  public int privLoadByteUnsigned(int address) {
-    if (!this.memory.containsKey(address))
-      return 0x0;
-    return ((int) this.memory.get(address)) & Data.BYTE_MASK;
-  }
-
-  /**
-   * This method loads a byte value from memory at address given.
-   *
-   * @param address address where to load the byte value
-   * @return the byte value
-   */
-  public int loadByte(int address) {
-    if (Memory.checkLoad(address))
-      return Data.signExtendByte(this.loadByteUnsigned(address));
-    return 0x0;
-  }
-
-  /**
-   * This method loads a unsigned half value from memory at address given.
-   *
-   * @param address address where to load the unsigned half value
-   * @return the unsigned half value
-   */
-  public int loadHalfUnsigned(int address) {
-    if (Memory.checkLoad(address)) {
-      int loByte = this.loadByteUnsigned(address);
-      int hiByte = this.loadByteUnsigned(address + Data.BYTE_LENGTH);
-      return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
-    }
-    return 0x0;
-  }
-
-  /**
-   * This method loads a half value from memory at address given.
-   *
-   * @param address address where to load the half value
-   * @return the half value
-   */
-  public int loadHalf(int address) {
-    if (Memory.checkLoad(address))
-      return Data.signExtendHalf(this.loadHalfUnsigned(address));
-    return 0x0;
-  }
-
-  /**
-   * This method loads a word value from memory at address given.
-   *
-   * @param address address where to load the word value
-   * @return the word value
-   */
-  public int loadWord(int address) {
-    if (Memory.checkLoad(address)) {
-      int loHalf = this.loadHalfUnsigned(address);
-      int hiHalf = this.loadHalfUnsigned(address + Data.HALF_LENGTH);
-      return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
-    }
-    return 0x0;
   }
 
   /**
@@ -354,7 +400,7 @@ public final class Memory {
    * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
    */
   public void stack() {
-    Memory.START = MemorySegments.STACK_SEGMENT;
+    Memory.START = MemorySegments.STACK_POINTER;
     this.updateMemoryCells();
   }
 
@@ -419,7 +465,7 @@ public final class Memory {
    * @param address the address to check
    * @return true if the address is valid, false otherwise.
    */
-  public static boolean checkAddress(int address) {
+  public static boolean checkAddress(int address, boolean read) {
     // reserved memory ?
     if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
         || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END))
@@ -428,59 +474,9 @@ public final class Memory {
     if (Data.inRange(address, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END))
       return false;
     // read only segment ?
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
+    if (!read && MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
         && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END))
       return false;
-    // otherwise
-    return true;
-  }
-
-  /**
-   * This method checks if the address given is a valid store address and displays a warning message if the address is
-   * invalid.
-   *
-   * @param address the address to check
-   * @return true if the address is valid, false otherwise.
-   */
-  public static boolean checkStore(int address) {
-    // reserved memory ?
-    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
-        || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
-      if (!Settings.QUIET)
-        Message.warning("runtime: trying to store a value in reserved memory (ignoring)");
-      return false;
-    }
-    // text segment ?
-    if (Data.inRange(address, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END)) {
-      if (!Settings.QUIET)
-        Message.warning("runtime: trying to store a value in text segment (ignoring)");
-      return false;
-    }
-    // read only segment ?
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
-        && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END)) {
-      if (!Settings.QUIET)
-        Message.warning("runtime: trying to store a value in read only segment (ignoring)");
-      return false;
-    }
-    // otherwise
-    return true;
-  }
-
-  /**
-   * This method checks if the address given is a valid load address.
-   *
-   * @param address the address to check
-   * @return true if the address is valid, false otherwise.
-   */
-  public static boolean checkLoad(int address) {
-    // reserved memory ?
-    if (Data.inRange(address, MemorySegments.RESERVED_LOW_BEGIN, MemorySegments.RESERVED_LOW_END)
-        || Data.inRange(address, MemorySegments.RESERVED_HIGH_BEGIN, MemorySegments.RESERVED_HIGH_END)) {
-      if (!Settings.QUIET)
-        Message.warning("runtime: trying to load a value from reserved memory");
-      return false;
-    }
     // otherwise
     return true;
   }

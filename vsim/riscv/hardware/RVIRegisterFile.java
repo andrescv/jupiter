@@ -54,7 +54,7 @@ public final class RVIRegisterFile extends RegisterFile {
         resetValue = MemorySegments.STACK_POINTER;
       // default reset value for global pointer
       if (mnemonics[i].equals("gp"))
-        resetValue = MemorySegments.STATIC_SEGMENT;
+        resetValue = MemorySegments.GLOBAL_POINTER;
       // note: only "zero" register is not editable
       Register reg = new RVIRegister(i, mnemonics[i], resetValue, i != 0);
       // point all names to this new register

@@ -17,7 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-import vsim.Settings;
+import vsim.riscv.exceptions.BreakpointException;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Colorize;
 
@@ -42,12 +43,8 @@ public final class Ebreak extends IType {
   }
 
   @Override
-  protected int compute(int rs1, int imm) {
-    // activate debugging
-    // this should raise a BreakPoint exception
-    // but lets keep things simple
-    Settings.DEBUG = true;
-    return 0;
+  protected int compute(int rs1, int imm) throws SimulationException {
+    throw new BreakpointException();
   }
 
   @Override

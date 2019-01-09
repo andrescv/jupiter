@@ -17,6 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions;
 
+import vsim.riscv.exceptions.SimulationException;
+
+
 /**
  * The class Instruction represents an abstract instruction implementation.
  */
@@ -51,7 +54,7 @@ public abstract class Instruction {
    *
    * @param code machine code to execute
    */
-  public abstract void execute(MachineCode code);
+  public abstract void execute(MachineCode code) throws SimulationException;
 
   /**
    * This method returns the disassembled String representation of the code.

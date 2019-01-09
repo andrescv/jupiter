@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.stype;
 
 import vsim.Globals;
+import vsim.riscv.exceptions.SimulationException;
 
 
 /**
@@ -40,7 +41,7 @@ public final class Sh extends SType {
   }
 
   @Override
-  protected void setMemory(int rs1, int rs2, int imm) {
+  protected void setMemory(int rs1, int rs2, int imm) throws SimulationException {
     Globals.memory.storeHalf(rs1 + imm, rs2);
   }
 

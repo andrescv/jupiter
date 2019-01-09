@@ -62,7 +62,7 @@ public final class Linker {
       program.setRodataStart(Linker.dataAddress);
       // store every byte of rodata of the current program
       for (Byte b : program.getRodata())
-        Globals.memory.storeByte(Linker.dataAddress++, b);
+        Globals.memory.privStoreByte(Linker.dataAddress++, b);
       // align to a word boundary for next program if necessary
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
@@ -90,7 +90,7 @@ public final class Linker {
     for (Program program : programs) {
       program.setBssStart(Linker.dataAddress);
       for (Byte b : program.getBss())
-        Globals.memory.storeByte(Linker.dataAddress++, b);
+        Globals.memory.privStoreByte(Linker.dataAddress++, b);
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
         startAddress = Linker.dataAddress;
@@ -109,7 +109,7 @@ public final class Linker {
     for (Program program : programs) {
       program.setDataStart(Linker.dataAddress);
       for (Byte b : program.getData())
-        Globals.memory.storeByte(Linker.dataAddress++, b);
+        Globals.memory.privStoreByte(Linker.dataAddress++, b);
       if (Linker.dataAddress != startAddress) {
         Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
         startAddress = Linker.dataAddress;
