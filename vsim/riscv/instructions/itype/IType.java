@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.Globals;
+import vsim.riscv.exceptions.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
@@ -49,10 +50,10 @@ abstract class IType extends Instruction {
    * @param imm immediate value
    * @return the computed result
    */
-  protected abstract int compute(int rs1, int imm);
+  protected abstract int compute(int rs1, int imm) throws SimulationException;
 
   @Override
-  public void execute(MachineCode code) {
+  public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     int imm = Data.signExtend(code.get(InstructionField.IMM_11_0), 12);
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, imm));

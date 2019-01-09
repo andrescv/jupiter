@@ -25,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.riscv.exceptions.NonInstructionException;
 import vsim.utils.Data;
 
 
@@ -53,9 +54,12 @@ public final class LinkedProgram {
    * @see vsim.assembler.statements.Statement
    * @return the next available statement or null if no more available
    */
-  public Statement next() {
+  public Statement next() throws NonInstructionException {
     int pc = Globals.regfile.getProgramCounter();
-    return this.program.get(pc);
+    Statement stmt = this.program.get(pc);
+    if (stmt == null)
+      throw new NonInstructionException();
+    return stmt;
   }
 
   /**

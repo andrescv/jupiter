@@ -23,6 +23,7 @@ import vsim.Settings;
 import vsim.assembler.statements.Statement;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.MemorySegments;
+import vsim.riscv.exceptions.*;
 import vsim.riscv.hardware.Memory;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Cmd;
@@ -167,7 +168,7 @@ public final class Debugger {
       Message.error("invalid address: " + address);
       return;
     }
-    if (Memory.checkLoad(addr))
+    if (Memory.checkAddress(addr, true))
       Globals.memory.print(addr, n);
     else {
       if (Settings.QUIET)
@@ -204,10 +205,11 @@ public final class Debugger {
    * @return true if could step the program, false otherwise
    */
   public synchronized boolean step(boolean goStep) {
-    Statement stmt = program.next();
-    int pcVal = Globals.regfile.getProgramCounter();
-    String pc = String.format("0x%08x", pcVal);
-    if (stmt != null) {
+    try {
+      Statement stmt = program.next();
+      int pcVal = Globals.regfile.getProgramCounter();
+      String pc = String.format("0x%08x", pcVal);
+      // manage breakpoints
       if (goStep) {
         // breakpoint at this point ?
         if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
@@ -239,14 +241,19 @@ public final class Debugger {
       // reset breakpoint
       if (this.breakpoints.containsKey(pcVal))
         this.breakpoints.put(pcVal, true);
-      return true;
+    } catch (BreakpointException e) {
+      Globals.regfile.incProgramCounter();
+    } catch (NonInstructionException e) {
+      // error if no exit/exit2 ecall
+      if (!Status.EXIT.get())
+        Status.EXIT.set(true);
+      Message.error(e.getMessage());
+      return false;
+    } catch (SimulationException e) {
+      Message.error(e.getMessage());
+      return false;
     }
-    // error if no exit/exit2 ecall
-    if (!Status.EXIT.get()) {
-      Status.EXIT.set(true);
-      Message.error("attempt to execute non-instruction at " + pc);
-    }
-    return false;
+    return true;
   }
 
   /**

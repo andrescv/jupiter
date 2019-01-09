@@ -20,11 +20,11 @@ package vsim.simulator;
 import java.io.File;
 import java.util.ArrayList;
 import vsim.Globals;
-import vsim.Settings;
 import vsim.assembler.Assembler;
 import vsim.assembler.statements.Statement;
 import vsim.linker.LinkedProgram;
 import vsim.linker.Linker;
+import vsim.riscv.exceptions.*;
 import vsim.utils.Message;
 
 
@@ -50,20 +50,19 @@ public final class Simulator {
     // set start address
     program.reset();
     // execute all program
-    Statement stmt;
-    while ((stmt = program.next()) != null) {
-      Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
-      // if debugging is activated
-      if (Settings.DEBUG)
+    while (true) {
+      try {
+        // fetch
+        Statement stmt = program.next();
+        // execute
+        Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
+      } catch (BreakpointException e) {
+        Message.log(e.getMessage());
+        Simulator.debug(program);
         break;
-    }
-    if (!Settings.DEBUG) {
-      // panic if no exit/exit2 ecall
-      String pc = String.format("0x%08x", Globals.regfile.getProgramCounter());
-      Message.panic("attempt to execute non-instruction at " + pc);
-    } else {
-      Message.log("starting debugger...");
-      Simulator.debug(program);
+      } catch (SimulationException e) {
+        Message.panic(e.getMessage());
+      }
     }
   }
 
