@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
 public final class Settings {
 
   /** current version */
-  public static final String VERSION = "v1.1.0";
+  public static final String VERSION = "v2.0.0";
 
   /** Preferences object */
   private static final Preferences prefs = Preferences.userRoot().node("vsim");
