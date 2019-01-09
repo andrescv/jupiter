@@ -21,6 +21,8 @@ import java.io.StringReader;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -31,6 +33,7 @@ import org.fxmisc.wellbehaved.event.InputMap;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.reactfx.Subscription;
 import vsim.Settings;
+import vsim.gui.utils.Icons;
 import vsim.gui.utils.Lexer;
 import vsim.gui.utils.Token;
 
@@ -127,6 +130,39 @@ public final class Editor extends CodeArea {
         InputMap.consume(EventPattern.keyPressed(KeyCode.TAB), e -> this.replaceSelection(this.tabSize))));
     // forget undo history
     this.getUndoManager().forgetHistory();
+    // undo option
+    MenuItem undo = new MenuItem("Undo");
+    undo.setOnAction(e -> {
+      if (this.isUndoAvailable())
+        this.undo();
+    });
+    undo.setGraphic(Icons.getImage("undo"));
+    // redo option
+    MenuItem redo = new MenuItem("Redo");
+    redo.setOnAction(e -> {
+      if (this.isRedoAvailable())
+        this.redo();
+    });
+    redo.setGraphic(Icons.getImage("redo"));
+    // cut
+    MenuItem cut = new MenuItem("Cut");
+    cut.setOnAction(e -> this.cut());
+    cut.setGraphic(Icons.getImage("cut"));
+    // copy
+    MenuItem copy = new MenuItem("Copy");
+    copy.setOnAction(e -> this.copy());
+    copy.setGraphic(Icons.getImage("copy"));
+    // paste
+    MenuItem paste = new MenuItem("Paste");
+    paste.setOnAction(e -> this.paste());
+    paste.setGraphic(Icons.getImage("paste"));
+    // select all
+    MenuItem selectAll = new MenuItem("Select All");
+    selectAll.setOnAction(e -> this.selectAll());
+    selectAll.setGraphic(Icons.getImage("select"));
+    ContextMenu menu = new ContextMenu();
+    menu.getItems().addAll(undo, redo, cut, copy, paste, selectAll);
+    this.setContextMenu(menu);
   }
 
   /** Creates an empty code editor. */

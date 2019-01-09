@@ -88,6 +88,8 @@
 
 .context-menu {
   -fx-cursor: DEFAULT;
+  -fx-font-family: 'Roboto';
+  -fx-font-size: 11pt;
 }
 
 .context-menu .menu-item:focused {
