@@ -317,6 +317,11 @@
                   <JFXCheckBox fx:id="permitBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
+            <MenuItem fx:id="self" mnemonicParsing="false" onAction="#self" text="Self-modifying Code">
+               <graphic>
+                  <JFXCheckBox fx:id="selfBox" styleClass="setting" text=" " />
+               </graphic>
+            </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor">
                <graphic>

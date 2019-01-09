@@ -55,8 +55,9 @@ public final class LinkedProgram {
    * @return the next available statement or null if no more available
    */
   public Statement next() throws NonInstructionException {
-    int pc = Globals.regfile.getProgramCounter();
-    Statement stmt = this.program.get(pc);
+    // fecth next statement
+    Statement stmt = this.program.get(Globals.regfile.getProgramCounter());
+    // non instruction exception
     if (stmt == null)
       throw new NonInstructionException();
     return stmt;

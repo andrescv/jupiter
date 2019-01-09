@@ -20,11 +20,13 @@ package vsim.simulator;
 import java.io.File;
 import java.util.ArrayList;
 import vsim.Globals;
+import vsim.Settings;
 import vsim.assembler.Assembler;
 import vsim.assembler.statements.Statement;
 import vsim.linker.LinkedProgram;
 import vsim.linker.Linker;
 import vsim.riscv.exceptions.*;
+import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Message;
 
 
@@ -58,8 +60,33 @@ public final class Simulator {
         Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       } catch (BreakpointException e) {
         Message.log(e.getMessage());
+        Globals.regfile.incProgramCounter();
         Simulator.debug(program);
         break;
+      } catch (NonInstructionException e) {
+        // if self-modifying code is enabled
+        // search in memory for a machine code
+        if (Settings.SELF_MODIFYING) {
+          try {
+            // grab machine code
+            MachineCode code = new MachineCode(Globals.memory.loadWord(Globals.regfile.getProgramCounter()));
+            // decode instruction mnemonic
+            String mnemonic = Globals.iset.decode(code);
+            // if a valid instruction was found, execute it
+            if (mnemonic != null)
+              Globals.iset.get(mnemonic).execute(code);
+            else
+              Message.panic(e.getMessage());
+          } catch (BreakpointException ex) {
+            Message.log(ex.getMessage());
+            Globals.regfile.incProgramCounter();
+            Simulator.debug(program);
+            break;
+          } catch (SimulationException ex) {
+            Message.panic(ex.getMessage());
+          }
+        } else
+          Message.panic(e.getMessage());
       } catch (SimulationException e) {
         Message.panic(e.getMessage());
       }

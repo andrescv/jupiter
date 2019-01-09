@@ -43,8 +43,6 @@ public final class Debugger {
   private LinkedProgram program;
   /** a history of breakpoints */
   private HashMap<Integer, Boolean> breakpoints;
-  /** calculated space for pretty printed statements */
-  private int space;
   /** previous command */
   private String[] args;
 
@@ -57,10 +55,7 @@ public final class Debugger {
   public Debugger(LinkedProgram program) {
     this.program = program;
     this.breakpoints = new HashMap<Integer, Boolean>();
-    this.space = 1;
     this.args = null;
-    for (Statement stmt : program.getStatements())
-      this.space = Math.max(this.space, stmt.getDebugInfo().getSource().length());
     // set program breakpoints
     for (Integer breakpoint : program.getBreakpoints())
       this.breakpoints.put(breakpoint, true);
@@ -224,16 +219,11 @@ public final class Debugger {
       MachineCode result = stmt.result();
       // display console info (CLI mode only)
       if (!Settings.GUI && !goStep) {
-        // print debugging info
-        String space = "";
         String source = stmt.getDebugInfo().getSource();
-        // calculate space (pretty print)
-        for (int j = 0; j < (this.space - source.length()); j++)
-          space += " ";
         // format all debugging info
         IO.stdout.println(String.format("FROM: %s", Colorize.yellow(stmt.getDebugInfo().getFilename())));
-        IO.stdout.println(String.format("PC [%s] CODE:%s    %s %s» %s", Colorize.cyan(pc), result.toString(),
-            Colorize.purple(source), space, Globals.iset.get(stmt.getMnemonic()).disassemble(result)));
+        IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), result.toString(),
+            Colorize.purple(source), Globals.iset.get(stmt.getMnemonic()).disassemble(result)));
       }
       // save current pc to history
       this.history.pushPCAndHeap();
@@ -247,12 +237,71 @@ public final class Debugger {
     } catch (BreakpointException e) {
       Globals.regfile.incProgramCounter();
     } catch (NonInstructionException e) {
-      // error if no exit/exit2 ecall
-      if (!Status.EXIT.get()) {
-        Status.EXIT.set(true);
+      // if self-modifying code is enabled
+      // search in memory for a machine code
+      if (Settings.SELF_MODIFYING) {
+        try {
+          int pcVal = Globals.regfile.getProgramCounter();
+          String pc = String.format("0x%08x", pcVal);
+          // grab machine code
+          MachineCode code = new MachineCode(Globals.memory.loadWord(pcVal));
+          // decode inst mnemonic
+          String mnemonic = Globals.iset.decode(code);
+          // if a valid inst was found, execute it
+          if (mnemonic != null) {
+            // manage breakpoints
+            if (goStep) {
+              // runtime ebreak
+              if (mnemonic.equals("ebreak") && !this.breakpoints.containsKey(pcVal)) {
+                this.breakpoints.put(pcVal, false);
+                return false;
+              }
+              // breakpoint at this point ?
+              if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
+                this.breakpoints.put(pcVal, false);
+                return false;
+              }
+            }
+            // display console info
+            if (!goStep) {
+              // format all debugging info
+              String source = Globals.iset.get(mnemonic).disassemble(code);
+              IO.stdout.println(String.format("FROM: %s", Colorize.yellow("self-modify code")));
+              IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), code.toString(),
+                  Colorize.purple(source), source));
+            }
+            // save current pc to history
+            this.history.pushPCAndHeap();
+            // execute instruction
+            Globals.iset.get(mnemonic).execute(code);
+            // save diff between prev executed state and current executed states
+            this.history.pushState();
+            // reset breakpoint
+            if (this.breakpoints.containsKey(pcVal))
+              this.breakpoints.put(pcVal, true);
+          } else {
+            // error if no exit/exit2 ecall
+            if (!Status.EXIT.get())
+              Status.EXIT.set(true);
+            Message.error(e.getMessage());
+            return false;
+          }
+        } catch (BreakpointException ex) {
+          Globals.regfile.incProgramCounter();
+        } catch (SimulationException ex) {
+          // error if no exit/exit2 ecall
+          if (!Status.EXIT.get())
+            Status.EXIT.set(true);
+          Message.error(ex.getMessage());
+          return false;
+        }
+      } else {
+        // error if no exit/exit2 ecall
+        if (!Status.EXIT.get())
+          Status.EXIT.set(true);
         Message.error(e.getMessage());
+        return false;
       }
-      return false;
     } catch (SimulationException e) {
       Message.error(e.getMessage());
       return false;

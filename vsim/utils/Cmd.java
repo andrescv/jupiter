@@ -44,6 +44,7 @@ public final class Cmd {
     parser.add("-help", "show this help message and exit");
     parser.add("-all", "assemble all files in directory");
     parser.add("-bare", "bare machine (no pseudo-ops)");
+    parser.add("-self", "enable self-modifying code");
     parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-nocolor", "do not colorize output");
     parser.add("-usage", "print usage of an instruction and exit", "<mnemonic>");
@@ -68,6 +69,7 @@ public final class Cmd {
     // override default Settings
     Settings.BARE = parser.hasFlag("-bare");
     Settings.EXTRICT = parser.hasFlag("-extrict");
+    Settings.SELF_MODIFYING = parser.hasFlag("-self");
     Settings.COLORIZE = !parser.hasFlag("-nocolor");
     Settings.TITLE = !parser.hasFlag("-notitle");
     Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;

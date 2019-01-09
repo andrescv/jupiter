@@ -53,6 +53,9 @@ public final class Settings {
   /** extrict mode assembler warnings are consider errors */
   public static boolean EXTRICT = false;
 
+  /** self-modifying code */
+  public static boolean SELF_MODIFYING = false;
+
 // CLI ONLY SETTINGS
 
   /** debugging mode, set with -debug flag or ebreak instruction */
@@ -170,6 +173,7 @@ public final class Settings {
     Settings.START = Settings.prefs.get("START", "main");
     Settings.BARE = Settings.prefs.getBoolean("BARE", false);
     Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", false);
+    Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", false);
     Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", false);
     Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", false);
     Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", false);
@@ -245,6 +249,17 @@ public final class Settings {
     Settings.prefs.putBoolean("EXTRICT", !Settings.EXTRICT);
     Settings.EXTRICT = !Settings.EXTRICT;
     return Settings.EXTRICT;
+  }
+
+  /**
+   * Toggles self-modifying code setting.
+   *
+   * @return self-modifying code setting value after toggle
+   */
+  public static boolean toggleSelfModifying() {
+    Settings.prefs.putBoolean("SELF_MODIFYING", !Settings.SELF_MODIFYING);
+    Settings.SELF_MODIFYING = !Settings.SELF_MODIFYING;
+    return Settings.SELF_MODIFYING;
   }
 
   /**
