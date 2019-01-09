@@ -214,26 +214,24 @@ public final class Linker {
         // dump statements ?
         if (Settings.DUMP != null) {
           File file = new File(Settings.DUMP);
-          if (file != null) {
+          try {
+            // create file if necessary
+            if (!file.exists())
+              file.createNewFile();
+            // use info statements to dump machine code
             try {
-              if (!file.exists())
-                file.createNewFile();
-              try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-                for (InfoStatement stmt : program.getInfoStatements()) {
-                  bw.write(stmt.getMachineCode());
-                  bw.newLine();
-                }
-                bw.close();
-                Message.log("machine code dumped to: " + file);
-              } catch (IOException e) {
-                Message.error("the file " + file + " could not be written");
-                if (file.exists() && file.length() == 0)
-                  file.delete();
+              BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+              for (InfoStatement stmt : program.getInfoStatements()) {
+                bw.write(stmt.getMachineCode().substring(2));
+                bw.newLine();
               }
+              bw.close();
+              Message.log("machine code dumped to: " + file + System.getProperty("line.separator"));
             } catch (IOException e) {
-              Message.warning("the file " + file + " could not be created");
+              Message.error("the file " + file + " could not be written");
             }
+          } catch (IOException e) {
+            Message.warning("the file " + file + " could not be created");
           }
         }
         // clean all

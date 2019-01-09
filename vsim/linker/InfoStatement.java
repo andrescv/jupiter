@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import vsim.Globals;
 import vsim.assembler.statements.Statement;
+import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -53,7 +54,7 @@ public final class InfoStatement {
     this.ebreak = stmt.getMnemonic().equals("ebreak");
     this.breakpoint = new SimpleBooleanProperty(this.ebreak);
     this.address = new SimpleStringProperty(String.format("0x%08x", address));
-    this.machineCode = new SimpleStringProperty(result.toString());
+    this.machineCode = new SimpleStringProperty(String.format("0x%08x", result.get(InstructionField.ALL)));
     this.sourceCode = new SimpleStringProperty(stmt.getDebugInfo().getSource());
     this.basicCode = new SimpleStringProperty(Globals.iset.get(stmt.getMnemonic()).disassemble(result));
   }

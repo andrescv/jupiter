@@ -343,15 +343,13 @@ public class SimulatorController {
       try {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         for (InfoStatement stmt : this.textTable.getItems()) {
-          bw.write(stmt.getMachineCode());
+          bw.write(stmt.getMachineCode().substring(2));
           bw.newLine();
         }
         bw.close();
         Message.log("machine code dumped to: " + file);
       } catch (IOException e) {
         Message.error("the file " + file + " could not be written");
-        if (file.exists() && file.length() == 0)
-          file.delete();
       }
     }
   }
