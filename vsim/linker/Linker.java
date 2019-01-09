@@ -20,6 +20,7 @@ package vsim.linker;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import vsim.Errors;
@@ -212,29 +213,27 @@ public final class Linker {
       if (!Errors.report()) {
         // dump statements ?
         if (Settings.DUMP != null) {
-          File f = new File(Settings.DUMP);
-          try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-            for (Program p : programs) {
-              boolean filename = true;
-              for (Statement stmt : p.getStatements()) {
-                // write filename
-                if (filename && (programs.size() > 1)) {
-                  bw.write(stmt.getDebugInfo().getFilename() + ":");
+          File file = new File(Settings.DUMP);
+          if (file != null) {
+            try {
+              if (!file.exists())
+                file.createNewFile();
+              try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                for (InfoStatement stmt : program.getInfoStatements()) {
+                  bw.write(stmt.getMachineCode());
                   bw.newLine();
-                  filename = false;
                 }
-                // write result in file
-                int code = stmt.result().get(InstructionField.ALL);
-                String out = String.format("%08x", code);
-                bw.write(out);
-                bw.newLine();
+                bw.close();
+                Message.log("machine code dumped to: " + file);
+              } catch (IOException e) {
+                Message.error("the file " + file + " could not be written");
+                if (file.exists() && file.length() == 0)
+                  file.delete();
               }
+            } catch (IOException e) {
+              Message.warning("the file " + file + " could not be created");
             }
-            bw.close();
-          } catch (Exception e) {
-            if (!Settings.QUIET)
-              Message.warning("the file '" + Settings.DUMP + "' could not be written");
           }
         }
         // clean all

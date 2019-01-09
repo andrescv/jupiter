@@ -50,9 +50,6 @@ public final class Settings {
   /** bare machine mode (no pseudos), set with -bare flag */
   public static boolean BARE = false;
 
-  /** do not show warnings, set with -quiet flag */
-  public static boolean QUIET = false;
-
   /** extrict mode assembler warnings are consider errors */
   public static boolean EXTRICT = false;
 

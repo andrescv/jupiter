@@ -73,9 +73,8 @@ public final class Ecall {
    * @throws SimulationException if some exception occur while handling environmental call
    */
   public static void handler() throws SimulationException {
-    int syscode = Globals.regfile.getRegister("a0");
-    // match syscall code
-    switch (syscode) {
+    // match ecall code
+    switch (Globals.regfile.getRegister("a0")) {
       case PRINT_INT:
         Ecall.printInt();
         break;
@@ -152,8 +151,10 @@ public final class Ecall {
         Ecall.randFloat();
         break;
       default:
-        if (!Settings.QUIET)
-          Message.warning("ecall: invalid syscall code: " + syscode);
+        if (Settings.EXTRICT)
+          throw new SimulationException("ecall: invalid ecall code: " + Globals.regfile.getRegister("a0"));
+        else
+          Message.warning("ecall: invalid ecall code: " + Globals.regfile.getRegister("a0"));
     }
   }
 
@@ -194,12 +195,11 @@ public final class Ecall {
    * This method implements the READ_INT syscall, first tries to get the int value from stdin and then saves it in
    * register a0.
    */
-  private static void readInt() {
+  private static void readInt() throws SimulationException {
     try {
       Globals.regfile.setRegister("a0", IO.readInt());
     } catch (NumberFormatException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: invalid integer number");
+      throw new SimulationException("ecall: invalid integer input");
     }
   }
 
@@ -207,12 +207,11 @@ public final class Ecall {
    * This method implements the READ_FLOAT syscall, first tries to get the float value from stdin and then saves it in
    * register fa0.
    */
-  private static void readFloat() {
+  private static void readFloat() throws SimulationException {
     try {
       Globals.fregfile.setRegister("fa0", IO.readFloat());
     } catch (NumberFormatException e) {
-      if (!Settings.QUIET)
-        Message.warning("ecall: invalid float number");
+      throw new SimulationException("ecall: invalid float input");
     }
   }
 
@@ -237,15 +236,13 @@ public final class Ecall {
    * {@link vsim.riscv.Memory#allocateBytesFromHeap} to obtain the address/pointer to the allocated space then saves the
    * result in register a0.
    */
-  private static void sbrk() {
+  private static void sbrk() throws SimulationException {
     int numBytes = Globals.regfile.getRegister("a1");
     if (numBytes >= 0) {
       int address = Globals.memory.allocateBytesFromHeap(numBytes);
       Globals.regfile.setRegister("a0", address);
-    } else {
-      if (!Settings.QUIET)
-        Message.warning("ecall: number of bytes should be >= 0");
-    }
+    } else
+      throw new SimulationException("ecall: number of bytes should be >= 0");
   }
 
   /**
@@ -301,10 +298,8 @@ public final class Ecall {
     if (Globals.regfile.getRegister("a3") > 0) {
       Globals.regfile.setRegister("a0", FS.read(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
           Globals.regfile.getRegister("a3")));
-    } else {
-      if (!Settings.QUIET)
-        Message.warning("ecall: number of bytes should be > 0");
-    }
+    } else
+      throw new SimulationException("ecall: number of bytes should be > 0");
   }
 
   /**
@@ -316,10 +311,8 @@ public final class Ecall {
     if (Globals.regfile.getRegister("a3") > 0) {
       Globals.regfile.setRegister("a0", FS.write(Globals.regfile.getRegister("a1"), Globals.regfile.getRegister("a2"),
           Globals.regfile.getRegister("a3")));
-    } else {
-      if (!Settings.QUIET)
-        Message.warning("ecall: number of bytes should be > 0");
-    }
+    } else
+      throw new SimulationException("ecall: number of bytes should be > 0");
   }
 
   /**
@@ -327,7 +320,7 @@ public final class Ecall {
    *
    * @see vsim.utils.FS#close
    */
-  private static void close() {
+  private static void close() throws SimulationException {
     Globals.regfile.setRegister("a0", FS.close(Globals.regfile.getRegister("a1")));
   }
 
@@ -347,17 +340,15 @@ public final class Ecall {
   /**
    * This method implements the SLEEP syscall.
    */
-  private static void sleep() {
+  private static void sleep() throws SimulationException {
     int millis = Globals.regfile.getRegister("a1");
     if (millis >= 0) {
       try {
         Thread.sleep(millis);
       } catch (Exception e) {
         /* DO NOTHING */ }
-    } else {
-      if (!Settings.QUIET)
-        Message.warning("ecall: milliseconds should be >= 0");
-    }
+    } else
+      throw new SimulationException("ecall: milliseconds should be >= 0");
   }
 
   /**

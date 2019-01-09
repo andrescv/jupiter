@@ -72,7 +72,7 @@ public final class FS {
    * @param flags open flags
    * @return the file descriptor for the new file
    */
-  public static int open(String pathname, int flags) {
+  public static int open(String pathname, int flags) throws SimulationException {
     if (FS.open.size() < FS.MAX_FILES) {
       int fd = FS.getNextFD();
       FS.open.put(fd, new OpenFile(pathname, flags));
@@ -83,8 +83,10 @@ public final class FS {
       }
       return fd;
     }
-    if (!Settings.QUIET)
+    if (!Settings.EXTRICT)
       Message.warning("file system: maximum number of open files exceeded");
+    else
+      throw new SimulationException("file system: maximum number of open files exceeded");
     return -1;
   }
 
@@ -117,14 +119,18 @@ public final class FS {
     }
     // stdout
     else if (fd == FS.STDOUT) {
-      if (!Settings.QUIET)
+      if (!Settings.EXTRICT)
         Message.warning("file system: reading from stdout not allowed");
+      else
+        throw new SimulationException("file system: reading from stdout not allowed");
       return -1;
     }
     // stderr
     else if (fd == FS.STDERR) {
-      if (!Settings.QUIET)
+      if (!Settings.EXTRICT)
         Message.warning("file system: reading from stderr not allowed");
+      else
+        throw new SimulationException("file system: reading from stderr not allowed");
       return -1;
     }
     // normal file
@@ -145,8 +151,10 @@ public final class FS {
   public static int write(int fd, int buffer, int nbytes) throws SimulationException {
     // stdin
     if (fd == FS.STDIN) {
-      if (!Settings.QUIET)
+      if (!Settings.EXTRICT)
         Message.warning("file system: writing to stdin not allowed");
+      else
+        throw new SimulationException("file system: writing to stdin not allowed");
       return -1;
     }
     // stdout or stderr
@@ -176,11 +184,13 @@ public final class FS {
    * @param fd file descriptor to be closed
    * @return 0 if success, -1 otherwise
    */
-  public static int close(int fd) {
+  public static int close(int fd) throws SimulationException {
     // stdin, stdout or stderr not allowed
     if (fd == FS.STDIN || fd == FS.STDOUT || fd == FS.STDERR) {
-      if (!Settings.QUIET)
+      if (!Settings.EXTRICT)
         Message.warning("file system: can not close stdin/stdout/stderr");
+      else
+        throw new SimulationException("file system: can not close stdin/stdout/stderr");
       return -1;
     }
     // normal file
