@@ -58,8 +58,6 @@ public final class SaveDialog {
 
   /**
    * Creates a save dialog.
-   *
-   * @param filename save dialog title filename
    */
   public SaveDialog() {
     try {
@@ -128,6 +126,7 @@ public final class SaveDialog {
   /**
    * Shows save dialog and returns result code.
    *
+   * @param filename save dialog title filename
    * @return result code
    */
   public int showAndWait(String filename) {

@@ -381,7 +381,7 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#TEXT_SEGMENT_BEGIN}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#TEXT_SEGMENT_BEGIN}.
    */
   public void text() {
     Memory.START = MemorySegments.TEXT_SEGMENT_BEGIN + (Memory.ROWS - 1) * Data.WORD_LENGTH;
@@ -389,7 +389,7 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#STATIC_SEGMENT}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#STATIC_SEGMENT}.
    */
   public void data() {
     Memory.START = MemorySegments.STATIC_SEGMENT + (Memory.ROWS - 1) * Data.WORD_LENGTH;
@@ -397,7 +397,7 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
    */
   public void stack() {
     Memory.START = MemorySegments.STACK_POINTER;
@@ -405,7 +405,7 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#HEAP_SEGMENT}.
    */
   public void heap() {
     Memory.START = MemorySegments.HEAP_SEGMENT + (Memory.ROWS - 1) * Data.WORD_LENGTH;
@@ -413,7 +413,7 @@ public final class Memory {
   }
 
   /**
-   * This method updates all memory cells according to {@link vsim.riscv.Memory#START}.
+   * This method updates all memory cells according to {@link vsim.riscv.hardware.Memory#START}.
    */
   private void updateMemoryCells() {
     for (int i = Memory.START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++)
@@ -463,6 +463,7 @@ public final class Memory {
    * This method checks if the address given is a valid store address.
    *
    * @param address the address to check
+   * @param read true = check for reading, false = check for writing
    * @return true if the address is valid, false otherwise.
    */
   public static boolean checkAddress(int address, boolean read) {

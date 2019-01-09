@@ -57,8 +57,6 @@ public final class InputDialog {
 
   /**
    * Creates an input dialog with a default title.
-   *
-   * @param title dialog title
    */
   public InputDialog() {
     try {
@@ -113,6 +111,7 @@ public final class InputDialog {
   /**
    * Shows input dialog and returns user input text.
    *
+   * @param title stage title
    * @return user input text
    */
   public String getInput(String title) {

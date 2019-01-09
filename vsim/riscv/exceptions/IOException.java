@@ -18,17 +18,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.exceptions;
 
 /**
- * Generic simulation exception.
+ * Breakpoint exception class throwed by ebreak statement.
  */
-public class SimulationException extends Exception {
+public final class IOException extends SimulationException {
 
   /**
-   * Creates a new generic simulation exception.
+   * Creates a new breakpoint exception.
    *
    * @param msg exception message
    */
-  public SimulationException(String msg) {
-    super(msg);
+  public IOException(String msg) {
+    super("I/O exception: " + msg);
   }
 
 }

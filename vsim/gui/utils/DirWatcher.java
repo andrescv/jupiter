@@ -205,7 +205,7 @@ public final class DirWatcher extends Task<Void> {
   /**
    * Starts a new dir watcher task and cancel any previous task if any.
    *
-   * @param tree tree view to update
+   * @param controller editor controller.
    */
   public static void start(EditorController controller) {
     // stop previous task

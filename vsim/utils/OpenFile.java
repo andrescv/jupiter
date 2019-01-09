@@ -24,8 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import vsim.Globals;
-import vsim.Settings;
-import vsim.riscv.exceptions.SimulationException;
+import vsim.riscv.exceptions.*;
 
 
 /**
@@ -41,8 +40,6 @@ public final class OpenFile {
   private boolean write;
   /** indicates if the open file has read and write permissions */
   private boolean rdwr;
-  /** indicates if there are errors when opening and creating the file */
-  private boolean error;
   /** open flags */
   private StandardOpenOption[] flags;
 
@@ -51,6 +48,7 @@ public final class OpenFile {
    *
    * @param pathname pathname attached to this open file
    * @param flags array of open flags
+   * @throws SimulationException if an exception occurs while creating open file
    */
   public OpenFile(String pathname, int flags) throws SimulationException {
     this.pathname = pathname;
@@ -58,7 +56,6 @@ public final class OpenFile {
     boolean create_new = false;
     boolean truncate = false;
     boolean append = false;
-    this.error = false;
     // parse flags
     if ((flags & FS.O_RDONLY) != 0)
       this.read = true;
@@ -74,13 +71,8 @@ public final class OpenFile {
       create = true;
     if ((flags & FS.O_EXCL) != 0)
       create_new = true;
-    if ((flags & FS.O_MASK) == 0) {
-      this.error = true;
-      if (!Settings.EXTRICT)
-        Message.warning("file system:  invalid open flags");
-      else
-        throw new SimulationException("file system:  invalid open flags");
-    }
+    if ((flags & FS.O_MASK) == 0)
+      throw new IOException("file system: invalid open flags");
     // set StandardOpenOption flags
     if ((this.write || this.rdwr) && append)
       this.flags = new StandardOpenOption[] { StandardOpenOption.WRITE, StandardOpenOption.APPEND };
@@ -92,15 +84,16 @@ public final class OpenFile {
     // try to create file (if create flag)
     if (create && create_new) {
       try {
-        this.error = !((new File(this.pathname)).createNewFile());
+        if (!((new File(this.pathname)).createNewFile()))
+          throw new IOException("file system: could not create file: " + this.pathname);
       } catch (Exception e) {
-        this.error = true;
+        throw new IOException("file system: could not create file: " + this.pathname);
       }
     } else if (create) {
       try {
         (new File(this.pathname)).createNewFile();
       } catch (Exception e) {
-        this.error = true;
+        throw new IOException("file system: could not create file: " + this.pathname);
       }
     }
     // truncate the file (if truncate flag and if file exists)
@@ -111,7 +104,7 @@ public final class OpenFile {
           f.delete();
           f.createNewFile();
         } catch (Exception e) {
-          this.error = true;
+          throw new IOException("file system: could not truncate file: " + this.pathname);
         }
       }
     }
@@ -127,20 +120,12 @@ public final class OpenFile {
   }
 
   /**
-   * This method indicates if there are any errors when opening and creating the file.
-   *
-   * @return true if there are errors, false otherwise
-   */
-  public boolean openErrors() {
-    return this.error;
-  }
-
-  /**
    * This method simulates the read syscall from C, is used in FS class.
    *
    * @param buffer pointer where the read content will stored
    * @param nbytes number of bytes to read before truncating the data
    * @return the number of bytes that were read, -1 if error
+   * @throws SimulationException if an exception occurs while reading open file
    */
   public int read(int buffer, int nbytes) throws SimulationException {
     // read permissions ?
@@ -172,6 +157,7 @@ public final class OpenFile {
    * @param buffer pointer to a buffer of at least nbytes bytes
    * @param nbytes the number of bytes to write
    * @return the number of bytes that were written, -1 if error
+   * @throws SimulationException if an exception occurs while writing open file
    */
   public int write(int buffer, int nbytes) throws SimulationException {
     // build string

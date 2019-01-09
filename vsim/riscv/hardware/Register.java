@@ -50,8 +50,8 @@ public abstract class Register {
    * @param mnemonic register mnemonic
    * @param value register initial value
    * @param editable if the register is editable or not
-   * @see vsim.riscv.RVIRegisterFile
-   * @see vsim.riscv.RVFRegisterFile
+   * @see vsim.riscv.hardware.RVIRegisterFile
+   * @see vsim.riscv.hardware.RVFRegisterFile
    */
   public Register(int number, String mnemonic, int value, boolean editable) {
     this.number = new SimpleIntegerProperty(number);

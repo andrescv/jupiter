@@ -30,6 +30,8 @@ public final class MachineCode {
 
   /**
    * Creates a initialized machine code.
+   *
+   * @param code initial machine code
    */
   public MachineCode(int code) {
     this.code = code;

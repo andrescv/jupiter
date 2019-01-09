@@ -54,6 +54,7 @@ abstract class SType extends Instruction {
    * @param rs1 register source 1
    * @param rs2 register source 2
    * @param imm immediate offset
+   * @throws SimulationException if an exception occurs while setting the result in memory
    */
   protected abstract void setMemory(int rs1, int rs2, int imm) throws SimulationException;
 

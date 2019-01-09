@@ -49,6 +49,7 @@ abstract class IType extends Instruction {
    * @param rs1 register source 1
    * @param imm immediate value
    * @return the computed result
+   * @throws SimulationException if an exception occurs while calculating instruction result
    */
   protected abstract int compute(int rs1, int imm) throws SimulationException;
 

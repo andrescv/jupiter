@@ -295,6 +295,8 @@ public final class EditorTab extends Tab {
   /**
    * This method selects and replaces a text in editor if possible.
    *
+   * @param start selection start
+   * @param end selection end
    * @param text replacement text
    */
   public void replace(int start, int end, String text) {

@@ -19,7 +19,6 @@ package vsim.utils;
 
 import java.util.HashMap;
 import vsim.Globals;
-import vsim.Settings;
 import vsim.riscv.exceptions.SimulationException;
 
 
@@ -57,7 +56,13 @@ public final class FS {
   /** max allowed open files */
   public static final int MAX_FILES = 32;
 
+  /**
+   * Gets the next available file descriptor.
+   *
+   * @return next available file descriptor, or -1 if open files = max no. of open files
+   */
   private static int getNextFD() {
+    // start at 3 because 0,1,2 are reserved FDs
     for (int i = 3; i < MAX_FILES + 3; i++) {
       if (!FS.open.containsKey(i))
         return i;
@@ -72,20 +77,18 @@ public final class FS {
    * @param flags open flags
    * @return the file descriptor for the new file
    */
-  public static int open(String pathname, int flags) throws SimulationException {
-    if (FS.open.size() < FS.MAX_FILES) {
-      int fd = FS.getNextFD();
-      FS.open.put(fd, new OpenFile(pathname, flags));
-      if (FS.open.get(fd).openErrors()) {
-        FS.open.remove(fd);
+  public static int open(String pathname, int flags) {
+    int fd = FS.getNextFD();
+    if (fd != -1) {
+      try {
+        FS.open.put(fd, new OpenFile(pathname, flags));
+      } catch (SimulationException e) {
+        Message.warning(e.getMessage());
         return -1;
       }
       return fd;
     }
-    if (!Settings.EXTRICT)
-      Message.warning("file system: maximum number of open files exceeded");
-    else
-      throw new SimulationException("file system: maximum number of open files exceeded");
+    Message.warning("file system: maximum number of open files exceeded");
     return -1;
   }
 
@@ -96,6 +99,7 @@ public final class FS {
    * @param buffer pointer where the read content will stored
    * @param nbytes number of bytes to read before truncating the data
    * @return the number of bytes that were read, -1 if error
+   * @throws SimulationException if an exception occurs while reading open file
    */
   public static int read(int fd, int buffer, int nbytes) throws SimulationException {
     // only available from stdin
@@ -118,18 +122,12 @@ public final class FS {
     }
     // stdout
     else if (fd == FS.STDOUT) {
-      if (!Settings.EXTRICT)
-        Message.warning("file system: reading from stdout not allowed");
-      else
-        throw new SimulationException("file system: reading from stdout not allowed");
+      Message.warning("file system: reading from stdout not allowed");
       return -1;
     }
     // stderr
     else if (fd == FS.STDERR) {
-      if (!Settings.EXTRICT)
-        Message.warning("file system: reading from stderr not allowed");
-      else
-        throw new SimulationException("file system: reading from stderr not allowed");
+      Message.warning("file system: reading from stderr not allowed");
       return -1;
     }
     // normal file
@@ -146,14 +144,12 @@ public final class FS {
    * @param buffer pointer to a buffer of at least nbytes bytes
    * @param nbytes the number of bytes to write
    * @return the number of bytes that were written, -1 if error
+   * @throws SimulationException if an exception occurs while writing to open file
    */
   public static int write(int fd, int buffer, int nbytes) throws SimulationException {
     // stdin
     if (fd == FS.STDIN) {
-      if (!Settings.EXTRICT)
-        Message.warning("file system: writing to stdin not allowed");
-      else
-        throw new SimulationException("file system: writing to stdin not allowed");
+      Message.warning("file system: writing to stdin not allowed");
       return -1;
     }
     // stdout or stderr
@@ -183,13 +179,10 @@ public final class FS {
    * @param fd file descriptor to be closed
    * @return 0 if success, -1 otherwise
    */
-  public static int close(int fd) throws SimulationException {
+  public static int close(int fd) {
     // stdin, stdout or stderr not allowed
     if (fd == FS.STDIN || fd == FS.STDOUT || fd == FS.STDERR) {
-      if (!Settings.EXTRICT)
-        Message.warning("file system: can not close stdin/stdout/stderr");
-      else
-        throw new SimulationException("file system: can not close stdin/stdout/stderr");
+      Message.warning("file system: can not close stdin/stdout/stderr");
       return -1;
     }
     // normal file

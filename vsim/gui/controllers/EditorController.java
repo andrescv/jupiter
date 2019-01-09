@@ -89,7 +89,11 @@ public class EditorController {
     this.tree.setRoot(null);
   }
 
-  /** Sets tree root. */
+  /**
+   * Sets tree root.
+   *
+   * @param root tree root
+   */
   public void setRoot(TreePath root) {
     this.tree.setRoot(root);
   }
