@@ -64,15 +64,12 @@ public final class Linker {
       // store every byte of rodata of the current program
       for (Byte b : program.getRodata())
         Globals.memory.privStoreByte(Linker.dataAddress++, b);
-      // align to a word boundary for next program if necessary
-      if (Linker.dataAddress != startAddress) {
-        Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
-        startAddress = Linker.dataAddress;
-        MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
-      }
+      // align to a word boundary for next program
+      Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
+      MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
     }
     // move next address by 1 word to set a rodata address range properly
-    if (MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END)
+    if (Linker.dataAddress != startAddress)
       Linker.dataAddress += Data.WORD_LENGTH;
     else {
       MemorySegments.RODATA_SEGMENT_BEGIN = -1;
@@ -90,13 +87,15 @@ public final class Linker {
     int startAddress = Linker.dataAddress;
     for (Program program : programs) {
       program.setBssStart(Linker.dataAddress);
+      // store every byte of bss of the current program
       for (Byte b : program.getBss())
         Globals.memory.privStoreByte(Linker.dataAddress++, b);
-      if (Linker.dataAddress != startAddress) {
-        Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
-        startAddress = Linker.dataAddress;
-      }
+      // align to a word boundary for next program
+      Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
     }
+    // move next address by 1 word to set a bss address range properly
+    if (Linker.dataAddress != startAddress)
+      Linker.dataAddress += Data.WORD_LENGTH;
   }
 
   /**
@@ -109,15 +108,17 @@ public final class Linker {
     int startAddress = Linker.dataAddress;
     for (Program program : programs) {
       program.setDataStart(Linker.dataAddress);
+      // store every byte of data of the current program
       for (Byte b : program.getData())
         Globals.memory.privStoreByte(Linker.dataAddress++, b);
-      if (Linker.dataAddress != startAddress) {
-        Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
-        startAddress = Linker.dataAddress;
-      }
+      // align to a word boundary for next program
+      Linker.dataAddress = Data.alignToWordBoundary(Linker.dataAddress);
     }
+    // move next address by 1 word to set a data address range properly
+    if (Linker.dataAddress != startAddress)
+      Linker.dataAddress += Data.WORD_LENGTH;
+    // save heap segment start address
     MemorySegments.HEAP_SEGMENT = Linker.dataAddress;
-    Globals.regfile.setRegister("gp", MemorySegments.HEAP_SEGMENT);
   }
 
   /**
@@ -134,9 +135,8 @@ public final class Linker {
       Linker.textAddress += program.getTextSize();
     }
     // then store references to this symbols
-    for (Program program : programs) {
+    for (Program program : programs)
       program.storeRefs();
-    }
   }
 
   /**
@@ -232,6 +232,8 @@ public final class Linker {
             }
           } catch (IOException e) {
             Message.warning("the file " + file + " could not be created");
+          } finally {
+            Settings.DUMP = null;
           }
         }
         // clean all
