@@ -151,10 +151,7 @@ public final class Ecall {
         Ecall.randFloat();
         break;
       default:
-        if (Settings.EXTRICT)
-          throw new SimulationException("ecall: invalid ecall code: " + Globals.regfile.getRegister("a0"));
-        else
-          Message.warning("ecall: invalid ecall code: " + Globals.regfile.getRegister("a0"));
+        throw new SimulationException("ecall: invalid ecall code: " + Globals.regfile.getRegister("a0"));
     }
   }
 

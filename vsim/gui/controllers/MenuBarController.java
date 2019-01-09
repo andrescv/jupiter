@@ -110,6 +110,10 @@ public class MenuBarController {
   @FXML private MenuItem permit;
   /** Settings menu permit pseudos checkbox */
   @FXML private JFXCheckBox permitBox;
+  /** Settings menu permit pseudos option */
+  @FXML private MenuItem self;
+  /** Settings menu permit pseudos checkbox */
+  @FXML private JFXCheckBox selfBox;
   /** Settings menu editor option */
   @FXML private MenuItem editor;
   /** Settings menu trap handler option */
@@ -171,6 +175,7 @@ public class MenuBarController {
     this.onlyOpenBox.setSelected(Settings.ASSEMBLE_ONLY_OPEN);
     this.warningsBox.setSelected(Settings.EXTRICT);
     this.permitBox.setSelected(!Settings.BARE);
+    this.selfBox.setSelected(Settings.SELF_MODIFYING);
     this.showLabelsBox.setText("");
     this.popupBox.setText("");
     this.onlyOpenBox.setText("");
@@ -345,6 +350,11 @@ public class MenuBarController {
   @FXML
   private void permit(ActionEvent e) {
     this.permitBox.setSelected(!Settings.toggleBare());
+  }
+
+  @FXML
+  private void self(ActionEvent e) {
+    this.selfBox.setSelected(Settings.toggleSelfModifying());
   }
 
   @FXML

@@ -29,10 +29,17 @@ public final class MachineCode {
   private int code;
 
   /**
-   * Unique constructor that initializes a newly and zeroed MachineCode object.
+   * Creates a initialized machine code.
+   */
+  public MachineCode(int code) {
+    this.code = code;
+  }
+
+  /**
+   * Creates a new machine code initialized with {@code 0x00000000}.
    */
   public MachineCode() {
-    this.code = 0x00000000;
+    this(0x0);
   }
 
   /**
