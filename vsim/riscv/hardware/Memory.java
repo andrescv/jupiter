@@ -381,7 +381,8 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#TEXT_SEGMENT_BEGIN}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to
+   * {@link vsim.riscv.MemorySegments#TEXT_SEGMENT_BEGIN}.
    */
   public void text() {
     Memory.START = MemorySegments.TEXT_SEGMENT_BEGIN + (Memory.ROWS - 1) * Data.WORD_LENGTH;
@@ -389,7 +390,8 @@ public final class Memory {
   }
 
   /**
-   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to {@link vsim.riscv.MemorySegments#STATIC_SEGMENT}.
+   * This method sets {@link vsim.riscv.hardware.Memory#START} equal to
+   * {@link vsim.riscv.MemorySegments#STATIC_SEGMENT}.
    */
   public void data() {
     Memory.START = MemorySegments.STATIC_SEGMENT + (Memory.ROWS - 1) * Data.WORD_LENGTH;
