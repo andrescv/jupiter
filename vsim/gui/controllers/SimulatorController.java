@@ -483,12 +483,7 @@ public class SimulatorController {
     String newValue = t.getNewValue().trim();
     // convert input to an integer value
     try {
-      // user enters a hex
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue.substring(2), 16));
-      // user enters a decimal
-      else
-        Globals.memory.storeByte(cell.getIntAddress() + offset, Integer.parseInt(newValue));
+      Globals.memory.storeByte(cell.getIntAddress() + offset, Data.parseInt(newValue));
     } catch (Exception e) {
       Message.warning("invalid memory cell value: " + newValue);
     }
@@ -507,15 +502,7 @@ public class SimulatorController {
     // get user input
     String newValue = t.getNewValue().trim();
     try {
-      // user enters a hex
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        reg.setValue(Integer.parseInt(newValue.substring(2), 16));
-      // user enters a binary
-      else if (newValue.matches("^0[bB][01]+$"))
-        reg.setValue(Integer.parseInt(newValue.substring(2), 2));
-      // user enters a decimal
-      else
-        reg.setValue(Integer.parseInt(newValue));
+      reg.setValue(Data.parseInt(newValue));
     } catch (Exception e) {
       Message.warning("invalid register value: " + newValue);
     }
@@ -534,12 +521,7 @@ public class SimulatorController {
     // get user input
     String newValue = t.getNewValue().trim();
     try {
-      // user enters a hex value
-      if (newValue.matches("^0[xX][0-9a-fA-F]+$"))
-        reg.setValue(Integer.parseInt(newValue));
-      // user enters a float
-      else
-        reg.setValue(Float.floatToIntBits(Float.parseFloat(newValue)));
+      reg.setValue(Float.floatToIntBits(Data.parseFloat(newValue)));
     } catch (Exception e) {
       Message.warning("invalid register value: " + newValue);
     }

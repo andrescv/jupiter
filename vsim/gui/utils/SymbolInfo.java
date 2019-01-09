@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.gui.utils;
 
 import javafx.beans.property.SimpleStringProperty;
+import vsim.utils.Data;
 
 
 /**
@@ -77,8 +78,8 @@ public final class SymbolInfo implements Comparable<SymbolInfo> {
    */
   @Override
   public int compareTo(SymbolInfo other) {
-    long a = Integer.toUnsignedLong(Integer.parseInt(this.getAddress().substring(2), 16));
-    long b = Integer.toUnsignedLong(Integer.parseInt(other.getAddress().substring(2), 16));
+    long a = Integer.toUnsignedLong(Data.parseInt(this.getAddress()));
+    long b = Integer.toUnsignedLong(Data.parseInt(other.getAddress()));
     return Long.compare(a, b);
   }
 

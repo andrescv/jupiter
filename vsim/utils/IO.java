@@ -63,10 +63,12 @@ public final class IO {
       }
     }
     // handle CTRL + D
-    if (input == null)
+    if (input == null) {
+      IO.stdout.println();
       input = "0";
+    }
     // client is responsible for catching NumberFormatException
-    return Integer.parseInt(input.trim());
+    return Data.parseInt(input.trim());
   }
 
   /**
@@ -88,10 +90,12 @@ public final class IO {
       }
     }
     // handle CTRL + D
-    if (input == null)
+    if (input == null) {
+      IO.stdout.println();
       input = "0.0";
+    }
     // client is responsible for catching NumberFormatException
-    return Float.parseFloat(input.trim());
+    return Data.parseFloat(input.trim());
   }
 
   /**

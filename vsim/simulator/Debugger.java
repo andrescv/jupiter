@@ -85,11 +85,12 @@ public final class Debugger {
     // print state
     IO.stdout.println("showx                - print all RVI registers");
     IO.stdout.println("showf                - print all RVF registers");
-    IO.stdout.println("print regname        - print register");
+    IO.stdout.println("printx regname       - print RVI register");
+    IO.stdout.println("printf regname       - print RVF register");
     IO.stdout.println("memory address       - print 12 x 4 cells of memory starting at address");
     IO.stdout.println("memory address rows  - print rows x 4 cells of memory starting at address");
     IO.stdout.println("globals              - print global symbols");
-    IO.stdout.println("locals filename      - print local symbols of a file");
+    IO.stdout.println("locals               - print local symbols of a file");
     // execution and breakpoints
     IO.stdout.println("step/s               - step the program for 1 instruction");
     IO.stdout.println("backstep/b           - backstep the program for 1 instruction");
@@ -121,19 +122,31 @@ public final class Debugger {
   }
 
   /**
-   * This method tries to print a register of the RVI or RVF register file.
+   * This method tries to print a register of the RVI register file.
    *
    * @param reg the register name to print
    * @see vsim.riscv.RVIRegisterFile
+   */
+  private void printx(String reg) {
+    try {
+      Globals.regfile.printReg(reg);
+    } catch (IllegalArgumentException e) {
+      Message.error("invalid register name: " + reg);
+    }
+  }
+
+  /**
+   * This method tries to print a register of the RVF register file.
+   *
+   * @param reg the register name to print
    * @see vsim.riscv.RVFRegisterFile
    */
-  private void print(String reg) {
-    if ((Globals.regfile.getRegisterNumber(reg) != -1) || reg.equals("pc"))
-      Globals.regfile.printReg(reg);
-    else if (Globals.fregfile.getRegisterNumber(reg) != -1)
+  private void printf(String reg) {
+    try {
       Globals.fregfile.printReg(reg);
-    else
+    } catch (IllegalArgumentException e) {
       Message.error("invalid register name: " + reg);
+    }
   }
 
   /**
@@ -148,32 +161,24 @@ public final class Debugger {
     int n = 12;
     if (rows != null) {
       try {
-        n = Integer.parseInt(rows);
+        n = Data.parseInt(rows);
         if (n < 0) {
-          Message.error("number of rows should be > 0");
+          Message.warning("number of rows should be > 0");
           return;
         }
       } catch (Exception e) {
-        Message.error("invalid number of rows: " + rows);
+        Message.warning("invalid number of rows: " + rows);
         return;
       }
     }
     int addr;
     try {
-      if (address.startsWith("0x"))
-        addr = Integer.parseInt(address.substring(2), 16);
-      else
-        addr = Integer.parseInt(address);
+      addr = Data.parseInt(address);
     } catch (Exception e) {
       Message.error("invalid address: " + address);
       return;
     }
-    if (Memory.checkAddress(addr, true))
-      Globals.memory.print(addr, n);
-    else {
-      if (Settings.QUIET)
-        Message.warning("trying to print values from reserved memory (ignoring)");
-    }
+    Globals.memory.print(addr, n);
   }
 
   /**
@@ -186,16 +191,15 @@ public final class Debugger {
   }
 
   /**
-   * This method prints the local symbol table of a file.
+   * This method prints the local symbol table of all files.
    *
-   * @param filename file filename
    * @see vsim.Globals#local
    */
-  private void locals(String filename) {
-    if (Globals.local.containsKey(filename))
+  private void locals() {
+    for (String filename : Globals.local.keySet()) {
+      IO.stdout.println(Colorize.blue(filename));
       Globals.local.get(filename).print();
-    else
-      Message.warning("invalid filename '" + filename + "' (ignoring)");
+    }
   }
 
   /**
@@ -279,11 +283,7 @@ public final class Debugger {
    */
   public void breakpoint(String address) {
     try {
-      int addr;
-      if (address.startsWith("0x"))
-        addr = Integer.parseInt(address.substring(2), 16);
-      else
-        addr = Integer.parseInt(address);
+      int addr = Data.parseInt(address);
       if (Data.isWordAligned(addr)) {
         if (Data.inRange(addr, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END)) {
           if (!this.breakpoints.containsKey(addr))
@@ -315,10 +315,7 @@ public final class Debugger {
   public void delete(String address) {
     int addr;
     try {
-      if (address.startsWith("0x"))
-        addr = Integer.parseInt(address.substring(2), 16);
-      else
-        addr = Integer.parseInt(address);
+      addr = Data.parseInt(address);
     } catch (Exception e) {
       Message.error("invalid address: " + address);
       return;
@@ -394,12 +391,19 @@ public final class Debugger {
         Message.warning("showf command does not expect any argument (ignoring)");
       this.showf();
     }
-    // print
-    else if (args[0].equals("print")) {
+    // printx
+    else if (args[0].equals("printx")) {
       if (args.length == 2)
-        this.print(args[1]);
+        this.printx(args[1]);
       else
-        Message.error("invalid usage of print cmd, valid usage 'print regname'");
+        Message.error("invalid usage of printx cmd, valid usage 'printx regname'");
+    }
+    // printf
+    else if (args[0].equals("printf")) {
+      if (args.length == 2)
+        this.printf(args[1]);
+      else
+        Message.error("invalid usage of printf cmd, valid usage 'printf regname'");
     }
     // memory
     else if (args[0].equals("memory")) {
@@ -418,10 +422,9 @@ public final class Debugger {
     }
     // locals
     else if (args[0].equals("locals")) {
-      if (args.length == 2)
-        this.locals(args[1]);
-      else
-        Message.error("invalid usage of locals cmd, valid usage 'locals filename'");
+      if (args.length != 1)
+        Message.error("locals command does not expect any argument (ignoring)");
+      this.locals();
     }
     // step
     else if (args[0].equals("step") || args[0].equals("s")) {
@@ -484,10 +487,7 @@ public final class Debugger {
       Cmd.prompt();
       // read a line from stdin
       String line = IO.readString(Integer.MAX_VALUE);
-      if (line == null) {
-        IO.stdout.println();
-        continue;
-      }
+      // nothing entered
       if (line.equals(""))
         continue;
       // interpret line
