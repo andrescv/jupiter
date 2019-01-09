@@ -189,4 +189,38 @@ public final class Data {
     return Float.isNaN(f) && ((Float.floatToRawIntBits(f) & 0x00400000) != 0);
   }
 
+  /**
+   * Parses an integer value from a string constant.
+   *
+   * @param number string number in hex, bin or dec
+   * @return parsed int number
+   */
+  public static int parseInt(String number) {
+    if (number.matches("0[xX][0-9a-fA-F]+"))
+      return Integer.parseUnsignedInt(number.substring(2), 16);
+    else if (number.matches("[0-9a-fA-F]+"))
+      return Integer.parseUnsignedInt(number, 16);
+    else if (number.matches("0[bB][01]+"))
+      return Integer.parseUnsignedInt(number.substring(2), 2);
+    else
+      return Integer.parseInt(number);
+  }
+
+  /**
+   * Parses a float value from a string constant.
+   *
+   * @param number string number in hex, bin or float
+   * @return parsed float number
+   */
+  public static float parseFloat(String number) {
+    if (number.matches("0[xX][0-9a-fA-F]+"))
+      return Float.intBitsToFloat(Integer.parseUnsignedInt(number.substring(2), 16));
+    else if (number.matches("[0-9a-fA-F]+"))
+      return Float.intBitsToFloat(Integer.parseUnsignedInt(number, 16));
+    else if (number.matches("0[bB][01]+"))
+      return Float.intBitsToFloat(Integer.parseUnsignedInt(number.substring(2), 2));
+    else
+      return Float.parseFloat(number);
+  }
+
 }
