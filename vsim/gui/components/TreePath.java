@@ -44,6 +44,8 @@ public final class TreePath extends TreeItem<String> {
    * Creates a TreePath given a path.
    *
    * @param path file path
+   * @param isRoot if the tree path item is the root element
+   * @param expanded expanded lookup info
    */
   public TreePath(File path, Boolean isRoot, HashMap<File, Boolean> expanded) {
     super(path.getName());

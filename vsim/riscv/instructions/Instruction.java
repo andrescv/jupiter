@@ -53,6 +53,7 @@ public abstract class Instruction {
    * This method simulates an instruction.
    *
    * @param code machine code to execute
+   * @throws SimulationException if an exception occurs while simulating a RISC-V program
    */
   public abstract void execute(MachineCode code) throws SimulationException;
 

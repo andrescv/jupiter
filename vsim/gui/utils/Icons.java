@@ -70,6 +70,7 @@ public final class Icons {
    * Creates an image view from an image path and default width and height.
    *
    * @param name image name
+   * @return image view of the icon
    */
   public static ImageView getImage(String name) {
     return Icons.getImage(name, Icons.DEFAULT_WIDTH, Icons.DEFAULT_HEIGHT);

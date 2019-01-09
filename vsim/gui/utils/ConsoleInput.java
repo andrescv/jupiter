@@ -53,6 +53,8 @@ public class ConsoleInput {
 
   /**
    * Creates a custom input stream instance with the given text area.
+   *
+   * @param area text area control
    */
   public ConsoleInput(TextArea area) {
     this.area = area;

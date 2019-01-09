@@ -182,7 +182,11 @@ abstract class RegisterFile {
   /** Pretty prints the register file . */
   public abstract void print();
 
-  /** Pretty prints a register */
+  /**
+   * Pretty prints a register
+   *
+   * @param name register ABI name
+   */
   public abstract void printReg(String name);
 
 }

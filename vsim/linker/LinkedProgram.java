@@ -53,6 +53,7 @@ public final class LinkedProgram {
    *
    * @see vsim.assembler.statements.Statement
    * @return the next available statement or null if no more available
+   * @throws NonInstructionException if no more instructions available
    */
   public Statement next() throws NonInstructionException {
     // fecth next statement
