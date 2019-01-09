@@ -114,8 +114,10 @@ public final class IO {
       }
     }
     // handle CTRL + D
-    if (input == null)
+    if (input == null) {
+      IO.stdout.println();
       input = "";
+    }
     // ensure maxLength
     if (input.length() > maxLength)
       input = (maxLength <= 0) ? "" : input.substring(0, maxLength);
