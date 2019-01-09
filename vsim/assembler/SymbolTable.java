@@ -43,7 +43,6 @@ public final class SymbolTable {
    */
   public void reset() {
     this.table.clear();
-    System.gc();
   }
 
   /**

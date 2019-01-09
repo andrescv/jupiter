@@ -103,8 +103,6 @@ public final class Assembler {
       Assembler.program = null;
       Assembler.filename = null;
       Assembler.segment = Segment.TEXT;
-      // no more parsing, we can clean the parser structure
-      System.gc();
       programs.trimToSize();
       // return all processed programs, now linking ?
       return programs;

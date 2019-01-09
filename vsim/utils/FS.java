@@ -78,7 +78,6 @@ public final class FS {
       FS.open.put(fd, new OpenFile(pathname, flags));
       if (FS.open.get(fd).openErrors()) {
         FS.open.remove(fd);
-        System.gc();
         return -1;
       }
       return fd;
@@ -196,7 +195,6 @@ public final class FS {
     // normal file
     else if (FS.open.containsKey(fd)) {
       FS.open.remove(fd);
-      System.gc();
       return 0;
     }
     return -1;

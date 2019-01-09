@@ -107,7 +107,6 @@ public final class ArgumentParser {
     this.values.clear();
     this.targets.clear();
     this.errors.clear();
-    System.gc();
     // examine all arguments
     String lastFlag = null;
     int lastFlagPos = -1;
