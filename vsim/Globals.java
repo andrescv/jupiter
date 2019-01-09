@@ -75,7 +75,6 @@ public final class Globals {
     Errors.clear();
     Globals.resetST();
     Globals.resetState();
-    System.gc();
   }
 
 }

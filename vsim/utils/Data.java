@@ -198,8 +198,6 @@ public final class Data {
   public static int parseInt(String number) {
     if (number.matches("0[xX][0-9a-fA-F]+"))
       return Integer.parseUnsignedInt(number.substring(2), 16);
-    else if (number.matches("[0-9a-fA-F]+"))
-      return Integer.parseUnsignedInt(number, 16);
     else if (number.matches("0[bB][01]+"))
       return Integer.parseUnsignedInt(number.substring(2), 2);
     else
@@ -215,8 +213,6 @@ public final class Data {
   public static float parseFloat(String number) {
     if (number.matches("0[xX][0-9a-fA-F]+"))
       return Float.intBitsToFloat(Integer.parseUnsignedInt(number.substring(2), 16));
-    else if (number.matches("[0-9a-fA-F]+"))
-      return Float.intBitsToFloat(Integer.parseUnsignedInt(number, 16));
     else if (number.matches("0[bB][01]+"))
       return Float.intBitsToFloat(Integer.parseUnsignedInt(number.substring(2), 2));
     else

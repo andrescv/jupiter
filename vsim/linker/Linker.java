@@ -238,7 +238,6 @@ public final class Linker {
         }
         // clean all
         programs = null;
-        System.gc();
         // return linked program, now simulate ?
         return program;
       }
