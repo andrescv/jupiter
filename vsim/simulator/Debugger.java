@@ -245,9 +245,10 @@ public final class Debugger {
       Globals.regfile.incProgramCounter();
     } catch (NonInstructionException e) {
       // error if no exit/exit2 ecall
-      if (!Status.EXIT.get())
+      if (!Status.EXIT.get()) {
         Status.EXIT.set(true);
-      Message.error(e.getMessage());
+        Message.error(e.getMessage());
+      }
       return false;
     } catch (SimulationException e) {
       Message.error(e.getMessage());
