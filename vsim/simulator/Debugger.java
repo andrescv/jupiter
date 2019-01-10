@@ -281,29 +281,43 @@ public final class Debugger {
               this.breakpoints.put(pcVal, true);
           } else {
             // error if no exit/exit2 ecall
-            if (!Status.EXIT.get())
+            if (!Status.EXIT.get()) {
               Status.EXIT.set(true);
-            Message.error(e.getMessage());
+              Message.error(e.getMessage());
+              if (!Settings.GUI)
+                System.exit(1);
+            }
             return false;
           }
         } catch (BreakpointException ex) {
           Globals.regfile.incProgramCounter();
         } catch (SimulationException ex) {
           // error if no exit/exit2 ecall
-          if (!Status.EXIT.get())
+          if (!Status.EXIT.get()) {
             Status.EXIT.set(true);
-          Message.error(ex.getMessage());
+            Message.error(ex.getMessage());
+            if (!Settings.GUI)
+              System.exit(1);
+          }
           return false;
         }
       } else {
         // error if no exit/exit2 ecall
-        if (!Status.EXIT.get())
+        if (!Status.EXIT.get()) {
           Status.EXIT.set(true);
-        Message.error(e.getMessage());
+          Message.error(e.getMessage());
+          if (!Settings.GUI)
+            System.exit(1);
+        }
         return false;
       }
     } catch (SimulationException e) {
-      Message.error(e.getMessage());
+      if (!Status.EXIT.get()) {
+        Status.EXIT.set(true);
+        Message.error(e.getMessage());
+        if (!Settings.GUI)
+          System.exit(1);
+      }
       return false;
     }
     return true;
