@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import vsim.Settings;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
+import vsim.gui.utils.ConsoleOutput;
 
 
 /** The class IO represents the standard I/O of the simulator. */
@@ -40,6 +41,12 @@ public final class IO {
 
   /** GUI standard input */
   public static ConsoleInput guistdin = null;
+
+  /** GUI standard output */
+  public static ConsoleOutput guistdout = null;
+
+  /** GUI standard err */
+  public static ConsoleOutput guistderr = null;
 
   /** GUI input dialog */
   public static InputDialog dialog = null;

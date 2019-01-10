@@ -19,6 +19,7 @@ package vsim.utils;
 
 import java.util.HashMap;
 import vsim.Globals;
+import vsim.Settings;
 import vsim.riscv.exceptions.SimulationException;
 
 
@@ -161,10 +162,17 @@ public final class FS {
         s.append(c);
         wbytes++;
       }
-      if (fd == FS.STDOUT)
-        IO.stdout.print(s.toString());
-      else
-        IO.stderr.print(s.toString());
+      if (fd == FS.STDOUT) {
+        if (Settings.GUI)
+          IO.guistdout.postRunMessage(s.toString());
+        else
+          IO.stdout.print(s.toString());
+      } else {
+        if (Settings.GUI)
+          IO.guistderr.postRunMessage(s.toString());
+        else
+          IO.stderr.print(s.toString());
+      }
       return wbytes;
     }
     // normal file

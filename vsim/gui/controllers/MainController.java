@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
-import java.io.PrintStream;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -30,7 +29,7 @@ import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTabPane;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
-import vsim.gui.utils.CustomOutputStream;
+import vsim.gui.utils.ConsoleOutput;
 import vsim.gui.utils.Icons;
 import vsim.simulator.Status;
 import vsim.utils.IO;
@@ -109,11 +108,10 @@ public class MainController {
 
   /** Initialize V-Sim console text area. */
   private void initConsole() {
-    // assign the new gui "standard input"
+    // assign the new gui "standard" input, output and err
     IO.guistdin = new ConsoleInput(this.console);
-    // redirect stdout and stderr
-    IO.stdout = new PrintStream(new CustomOutputStream(this.console));
-    IO.stderr = IO.stdout;
+    IO.guistdout = new ConsoleOutput(this.console);
+    IO.guistderr = IO.guistdout;
     // input dialog
     IO.dialog = new InputDialog();
     // clear option
