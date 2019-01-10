@@ -30,6 +30,9 @@ import vsim.utils.Message;
  */
 public final class InstructionSet {
 
+  /** newline */
+  private static final String NL = System.getProperty("line.separator");
+
   /** r-type instructions package */
   private static final String RTYPE = "vsim.riscv.instructions.rtype";
   /** i-type instructions package */
@@ -75,6 +78,43 @@ public final class InstructionSet {
 
   /** instructions dictionary */
   private HashMap<String, Instruction> instructions;
+
+  /** pseudo instructions */
+  private static final String[][] pseudos = {
+      { "la", "la rd, symbol",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "addi rd, rd, delta[11:0]" + NL + NL + "where delta = symbol − pc" },
+      { "lb", "lb rd, symbol",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+      { "lh", "lh rd, symbol",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+      { "lw", "lw rd, symbol",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lh rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+      { "sb", "sb rd, symbol, rt",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sb rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+      { "sh", "sh rd, symbol, rt",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sh rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+      { "sw", "sw rd, symbol, rt",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+      { "flw", "flw rd, symbol, rt",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "flw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+      { "fsw", "fsw rd, symbol, rt",
+          "auipc rd, delta[31:12] + delta[11]" + NL + "fsw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+      { "nop", "nop", "addi x0, x0, 0" }, { "li", "li rd, imm", "Myriad sequences" },
+      { "mv", "mv rd, rs", "addi rd, rs, 0" }, { "not", "not rd, rs", "xori rd, rs, -1" },
+      { "neg", "neg rd, rs", "sub rd, x0, rs" }, { "seqz", "seqz rd, rs", "sltiu rd, rs, 1" },
+      { "snez", "snez rd, rs", "sltu rd, x0, rs" }, { "sltz", "sltz rd, rs", "slt rd, rs, x0" },
+      { "sgtz", "sgtz rd, rs", "slt rd, x0, rs" }, { "fmv.s", "fmv.s rd, rs", "fsgnj.s rd, rs, rs" },
+      { "fabs.s", "fabs.s rd, rs", "fsgnjx.s rd, rs, rs" }, { "fneg.s", "fneg.s rd, rs", "fsgnjn.s rd, rs, rs" },
+      { "beqz", "beqz rs, offset", "beq rs, x0, offset" }, { "bnez", "bnez rs, offset", "bne rs, x0, offset" },
+      { "blez", "blez rs, offset", "bge x0, rs, offset" }, { "bgez", "bgez rs, offset", "bge rs, x0, offset" },
+      { "bltz", "bltz rs, offset", "blt rs, x0, offset" }, { "bgtz", "bgtz rs, offset", "blt x0, rs, offset" },
+      { "bgt", "bgt rs, rt, offset", "blt rt, rs, offset" }, { "ble", "ble rs, rt, offset", "bge rt, rs, offset" },
+      { "bgtu", "bgtu rs, rt, offset", "bltu rt, rs, offset" },
+      { "bleu", "bleu rs, rt, offset", "bgeu rt, rs, offset" }, { "j", "j offset", "jal x0, offset" },
+      { "jal", "jal offset", "jal x1, offset" }, { "jr", "jr rs", "jalr x0, 0(rs)" },
+      { "jalr", "jalr rs", "jalr x1, 0(rs)" }, { "ret", "ret", "jalr x0, 0(x1)" },
+      { "call", "call offset", "auipc x1, offset[31:12] + offset[11]" + NL + "jalr x1, offset[11:0](x1)" },
+      { "tail", "tail offset", "auipc x6, offset[31:12] + offset[11]" + NL + "jalr x0, offset[11:0](x6" } };
 
   /**
    * Unique constructor that initializes a newly InstructionSet object.
@@ -406,8 +446,40 @@ public final class InstructionSet {
       IO.stdout.println("Description:");
       IO.stdout.println();
       IO.stdout.println(inst.getDescription());
-    } else
-      Message.warning("Invalid instruction mnemonic: '" + mnemonic + "'");
+      for (int i = 0; i < InstructionSet.pseudos.length; i++) {
+        if (pseudos[i][0].equals(mnemonic)) {
+          IO.stdout.println();
+          IO.stdout.println("Pseudo Instruction:");
+          IO.stdout.println();
+          IO.stdout.println(String.format("(%s) example: %s", Colorize.green(mnemonic), Colorize.cyan(pseudos[i][1])));
+          IO.stdout.println();
+          IO.stdout.println("Base Instruction(s):");
+          IO.stdout.println();
+          IO.stdout.println(pseudos[i][2]);
+          break;
+        }
+      }
+      return;
+    } else {
+      boolean enter = false;
+      for (int i = 0; i < InstructionSet.pseudos.length; i++) {
+        if (pseudos[i][0].equals(mnemonic)) {
+          if (enter)
+            IO.stdout.println();
+          IO.stdout.println("Pseudo Instruction:");
+          IO.stdout.println();
+          IO.stdout.println(String.format("(%s) example: %s", Colorize.green(mnemonic), Colorize.cyan(pseudos[i][1])));
+          IO.stdout.println();
+          IO.stdout.println("Base Instruction(s):");
+          IO.stdout.println();
+          IO.stdout.println(pseudos[i][2]);
+          enter = true;
+        }
+      }
+      if (enter)
+        return;
+    }
+    Message.warning("Invalid instruction mnemonic: '" + mnemonic + "'");
   }
 
   /**
@@ -418,7 +490,7 @@ public final class InstructionSet {
     IO.stdout.println(
         String.format("Number of Instructions: %s", Colorize.green(String.format("%03d", this.instructions.size()))));
     IO.stdout.println();
-    IO.stdout.println(Colorize.purple("FORMAT   MNEMONIC                USAGE"));
+    IO.stdout.println(Colorize.purple("FORMAT   MNEMONIC                      USAGE"));
     IO.stdout.println();
     int maxLength = -1;
     // get mnemonic max instruction length for pretty printer
@@ -440,6 +512,25 @@ public final class InstructionSet {
               (format.toString().length() == 2) ? " " : "  ", Colorize.green(mnemonic), space, Colorize.cyan(usage)));
         }
       }
+    }
+    // print pseudos
+    IO.stdout.println();
+    IO.stdout.println(
+        String.format("Number of Pseudo Instructions: %s", Colorize.green(String.format("%03d", pseudos.length))));
+    IO.stdout.println();
+    IO.stdout.println(Colorize.purple("MNEMONIC              USAGE"));
+    IO.stdout.println();
+    maxLength = -1;
+    // get mnemonic max instruction length for pretty printer
+    for (int i = 0; i < pseudos.length; i++)
+      maxLength = Math.max(maxLength, pseudos[i][0].length());
+    for (int i = 0; i < pseudos.length; i++) {
+      String usage = pseudos[i][1];
+      String space = "";
+      String mnemonic = pseudos[i][0];
+      for (int j = 0; j < (maxLength - mnemonic.length()); j++)
+        space += " ";
+      IO.stdout.println(String.format("(%s)%s example: %s", Colorize.green(mnemonic), space, Colorize.cyan(usage)));
     }
   }
 
