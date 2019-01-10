@@ -465,7 +465,6 @@ public final class InstructionSet {
           IO.stdout.println("Base Instruction(s):");
           IO.stdout.println();
           IO.stdout.println(pseudos[i][2]);
-          break;
         }
       }
       return;
