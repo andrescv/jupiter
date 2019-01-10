@@ -141,7 +141,6 @@ task syntax() {
   dependsOn 'lexer'
   dependsOn 'GUILexer'
   dependsOn 'parser'
-  dependsOn 'spotlessApply'
 }
 
 // create a task for running riscv-tests
@@ -155,3 +154,5 @@ riscv_tests.dependsOn(jar)
 
 // run riscv_tests task after test task
 test.finalizedBy(riscv_tests)
+
+syntax.finalizedBy('spotlessApply')
