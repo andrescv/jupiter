@@ -82,23 +82,32 @@ public final class InstructionSet {
   /** pseudo instructions */
   private static final String[][] pseudos = {
       { "la", "la rd, symbol",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "addi rd, rd, delta[11:0]" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "addi rd, rd, delta[11:0]" + NL + NL
+              + "where delta = symbol − pc" },
       { "lb", "lb rd, symbol",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL
+              + "where delta = symbol − pc" },
       { "lh", "lh rd, symbol",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lb rd, delta[11:0](rd)" + NL + NL
+              + "where delta = symbol − pc" },
       { "lw", "lw rd, symbol",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "lh rd, delta[11:0](rd)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "lh rd, delta[11:0](rd)" + NL + NL
+              + "where delta = symbol − pc" },
       { "sb", "sb rd, symbol, rt",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "sb rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sb rd, delta[11:0](rt)" + NL + NL
+              + "where delta = symbol − pc" },
       { "sh", "sh rd, symbol, rt",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "sh rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sh rd, delta[11:0](rt)" + NL + NL
+              + "where delta = symbol − pc" },
       { "sw", "sw rd, symbol, rt",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "sw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "sw rd, delta[11:0](rt)" + NL + NL
+              + "where delta = symbol − pc" },
       { "flw", "flw rd, symbol, rt",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "flw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "flw rd, delta[11:0](rt)" + NL + NL
+              + "where delta = symbol − pc" },
       { "fsw", "fsw rd, symbol, rt",
-          "auipc rd, delta[31:12] + delta[11]" + NL + "fsw rd, delta[11:0](rt)" + NL + NL + "where delta = symbol − pc" },
+          "auipc rd, delta[31:12] + delta[11]" + NL + "fsw rd, delta[11:0](rt)" + NL + NL
+              + "where delta = symbol − pc" },
       { "nop", "nop", "addi x0, x0, 0" }, { "li", "li rd, imm", "Myriad sequences" },
       { "mv", "mv rd, rs", "addi rd, rs, 0" }, { "not", "not rd, rs", "xori rd, rs, -1" },
       { "neg", "neg rd, rs", "sub rd, x0, rs" }, { "seqz", "seqz rd, rs", "sltiu rd, rs, 1" },
