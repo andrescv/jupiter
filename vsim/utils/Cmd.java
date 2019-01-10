@@ -173,18 +173,16 @@ public final class Cmd {
   public static void titleAndLicense() {
     // print the title and license note if the -notitle flag is not set
     String newline = System.getProperty("line.separator");
-    if (Settings.TITLE) {
-      // cool title :]
-      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
-      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
-      IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
-      IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
-      IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
-      IO.stdout.println("GPL-3.0 License");
-      IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
-      IO.stdout.println("All Rights Reserved");
-      IO.stdout.println("See " + Colorize.green("https://git.io/fpcYS") + " for a full copyright notice");
-    }
+    // cool title :]
+    IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
+    IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
+    IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
+    IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
+    IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
+    IO.stdout.println("GPL-3.0 License");
+    IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
+    IO.stdout.println("All Rights Reserved");
+    IO.stdout.println("See " + Colorize.green("https://git.io/fpcYS") + " for a full copyright notice");
   }
 
   /**
