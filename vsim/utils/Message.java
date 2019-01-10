@@ -17,6 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import vsim.Settings;
+
+
 /**
  * The Message class contains useful methods for printing to stdout and stderr with a predefined format.
  */
@@ -28,7 +31,10 @@ public final class Message {
    * @param msg the log message
    */
   public static void log(String msg) {
-    IO.stdout.println(Colorize.cyan("vsim: " + msg));
+    if (Settings.GUI)
+      IO.guistdout.postMessage("vsim: " + msg + System.getProperty("line.separator"));
+    else
+      IO.stdout.println(Colorize.cyan("vsim: " + msg));
   }
 
   /**
@@ -37,7 +43,10 @@ public final class Message {
    * @param msg the warning message
    */
   public static void warning(String msg) {
-    IO.stdout.println(Colorize.yellow("vsim: (warning) " + msg));
+    if (Settings.GUI)
+      IO.guistdout.postMessage("vsim: (warning) " + msg + System.getProperty("line.separator"));
+    else
+      IO.stdout.println(Colorize.yellow("vsim: (warning) " + msg));
   }
 
   /**
@@ -46,7 +55,22 @@ public final class Message {
    * @param msg the error message
    */
   public static void error(String msg) {
-    IO.stderr.println(Colorize.red("vsim: (error) " + msg));
+    if (Settings.GUI)
+      IO.guistderr.postMessage("vsim: (error) " + msg + System.getProperty("line.separator"));
+    else
+      IO.stderr.println(Colorize.red("vsim: (error) " + msg));
+  }
+
+  /**
+   * This method prints to stderr an error message with the format {@code "vsim: (error) msg"}.
+   *
+   * @param msg the error message
+   */
+  public static void runError(String msg) {
+    if (Settings.GUI)
+      IO.guistderr.postRunMessage("vsim: (error) " + msg + System.getProperty("line.separator"));
+    else
+      Message.error(msg);
   }
 
   /**
@@ -56,8 +80,12 @@ public final class Message {
    * @param msg the error message
    */
   public static void panic(String msg) {
-    IO.stderr.println(Colorize.red("vsim: (fatal error) " + msg));
-    System.exit(1);
+    if (Settings.GUI)
+      IO.guistderr.postMessage("vsim: (fatal error) " + msg + System.getProperty("line.separator"));
+    else {
+      IO.stderr.println(Colorize.red("vsim: (fatal error) " + msg));
+      System.exit(1);
+    }
   }
 
 }

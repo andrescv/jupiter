@@ -81,8 +81,12 @@ public final class Errors {
       for (String msg : Errors.errors)
         Message.error(msg + System.getProperty("line.separator"));
       // report how many errors ocurred
-      IO.stderr.println(Errors.errors.size() + " errors(s)");
-      IO.stderr.flush();
+      if (Settings.GUI)
+        IO.guistderr.postMessage(Errors.errors.size() + " errors(s)" + System.getProperty("line.separator"));
+      else {
+        IO.stderr.println(Errors.errors.size() + " errors(s)");
+        IO.stderr.flush();
+      }
       // clear messages
       Errors.errors.clear();
       // exit only in CLI mode

@@ -266,9 +266,16 @@ public final class Debugger {
             if (!goStep) {
               // format all debugging info
               String source = Globals.iset.get(mnemonic).disassemble(code);
-              IO.stdout.println(String.format("FROM: %s", Colorize.yellow("self-modify code")));
-              IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), code.toString(),
-                  Colorize.purple(source), source));
+              if (Settings.GUI) {
+                IO.guistdout.postRunMessage("FROM: self-modify code" + System.getProperty("line.separator"));
+                IO.guistdout
+                    .postRunMessage(String.format("PC [%s] CODE:%s    %s » %s", pc, code.toString(), source, source)
+                        + System.getProperty("line.separator"));
+              } else {
+                IO.stdout.println(String.format("FROM: %s", Colorize.yellow("self-modify code")));
+                IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), code.toString(),
+                    Colorize.purple(source), source));
+              }
             }
             // save current pc to history
             this.history.pushPCAndHeap();
@@ -283,7 +290,7 @@ public final class Debugger {
             // error if no exit/exit2 ecall
             if (!Status.EXIT.get()) {
               Status.EXIT.set(true);
-              Message.error(e.getMessage());
+              Message.runError(e.getMessage());
               if (!Settings.GUI)
                 System.exit(1);
             }
@@ -295,7 +302,7 @@ public final class Debugger {
           // error if no exit/exit2 ecall
           if (!Status.EXIT.get()) {
             Status.EXIT.set(true);
-            Message.error(ex.getMessage());
+            Message.runError(ex.getMessage());
             if (!Settings.GUI)
               System.exit(1);
           }
@@ -305,7 +312,7 @@ public final class Debugger {
         // error if no exit/exit2 ecall
         if (!Status.EXIT.get()) {
           Status.EXIT.set(true);
-          Message.error(e.getMessage());
+          Message.runError(e.getMessage());
           if (!Settings.GUI)
             System.exit(1);
         }
@@ -314,7 +321,7 @@ public final class Debugger {
     } catch (SimulationException e) {
       if (!Status.EXIT.get()) {
         Status.EXIT.set(true);
-        Message.error(e.getMessage());
+        Message.runError(e.getMessage());
         if (!Settings.GUI)
           System.exit(1);
       }
