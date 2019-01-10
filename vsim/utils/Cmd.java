@@ -47,7 +47,7 @@ public final class Cmd {
     parser.add("-self", "enable self-modifying code");
     parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-nocolor", "do not colorize output");
-    parser.add("-usage", "print usage of an instruction and exit", "<mnemonic>");
+    parser.add("-info", "print info of an instruction and exit", "<mnemonic>");
     parser.add("-notitle", "do not print V-Sim title");
     parser.add("-dump", "dump machine code to a file", "<file>");
     parser.add("-start", "start program at global label (default: main)", "<label>");
@@ -57,6 +57,7 @@ public final class Cmd {
     parser.add("-iset", "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
+    Settings.COLORIZE = true;
     // display usage if errors
     if (parser.hasErrors()) {
       Cmd.title();
@@ -98,10 +99,10 @@ public final class Cmd {
       Globals.iset.print();
       System.exit(0);
     }
-    // check -usage flag
-    if (parser.hasFlag("-usage")) {
+    // check -info flag
+    if (parser.hasFlag("-info")) {
       Cmd.title();
-      Globals.iset.print(parser.value("-usage"));
+      Globals.iset.print(parser.value("-info"));
       System.exit(0);
     }
     // get files
