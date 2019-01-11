@@ -212,7 +212,8 @@ public class SimulatorController {
       }
       if (files != null && files.size() > 0) {
         String assembling = files.toString();
-        Message.log("assemble: assembling " + assembling.substring(1, assembling.length() - 1) + System.getProperty("line.separator"));
+        Message.log("assemble: assembling " + assembling.substring(1, assembling.length() - 1)
+            + System.getProperty("line.separator"));
         LinkedProgram program = Linker.link(Assembler.assemble(files));
         Message.log("assemble: operation completed successfully" + System.getProperty("line.separator"));
         if (program != null) {

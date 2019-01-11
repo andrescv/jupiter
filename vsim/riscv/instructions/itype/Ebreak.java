@@ -19,8 +19,6 @@ package vsim.riscv.instructions.itype;
 
 import vsim.riscv.exceptions.BreakpointException;
 import vsim.riscv.exceptions.SimulationException;
-import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Colorize;
 
 
 /**
@@ -45,11 +43,6 @@ public final class Ebreak extends IType {
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     throw new BreakpointException();
-  }
-
-  @Override
-  public String disassemble(MachineCode code) {
-    return Colorize.cyan("ebreak");
   }
 
 }

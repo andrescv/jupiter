@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.hardware;
 
-import vsim.utils.Colorize;
 import vsim.utils.IO;
 
 
@@ -117,11 +116,11 @@ public final class RVFRegisterFile extends RegisterFile {
     // include all registers in out string
     for (int i = 0; i < size; i++) {
       Register reg = rf.get(prefix + i);
-      String number = Colorize.green(prefix + i);
+      String number = prefix + i;
       String space1 = (i >= 10) ? "" : " ";
       int length = reg.getMnemonic().length();
       String space2 = (length == 4) ? " " : ((length == 3) ? "  " : "   ");
-      String mnemonic = Colorize.purple(reg.getMnemonic());
+      String mnemonic = reg.getMnemonic();
       float value = Float.intBitsToFloat(reg.getValue());
       IO.stdout.println(String.format(fmt, number, space1, mnemonic, space2, reg.toString(), value));
     }
@@ -137,8 +136,8 @@ public final class RVFRegisterFile extends RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("Invalid Register: " + name);
     String fmt = "%s (%s) [%s] {~= %.6f}";
-    String number = Colorize.green(prefix + reg.getNumber());
-    String mnemonic = Colorize.purple(reg.getMnemonic());
+    String number = prefix + reg.getNumber();
+    String mnemonic = reg.getMnemonic();
     float value = Float.intBitsToFloat(reg.getValue());
     IO.stdout.println(String.format(fmt, number, mnemonic, reg.toString(), value));
   }

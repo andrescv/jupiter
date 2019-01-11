@@ -17,9 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions;
 
-import vsim.utils.Colorize;
-
-
 /**
  * The class MachineCode represents the machine code of an instruction.
  */
@@ -71,7 +68,7 @@ public final class MachineCode {
    */
   @Override
   public String toString() {
-    return Colorize.green(String.format("0x%08x", this.code));
+    return String.format("0x%08x", this.code);
   }
 
 }

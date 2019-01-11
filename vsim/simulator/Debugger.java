@@ -26,7 +26,6 @@ import vsim.riscv.MemorySegments;
 import vsim.riscv.exceptions.*;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Cmd;
-import vsim.utils.Colorize;
 import vsim.utils.Data;
 import vsim.utils.IO;
 import vsim.utils.Message;
@@ -191,7 +190,7 @@ public final class Debugger {
    */
   private void locals() {
     for (String filename : Globals.local.keySet()) {
-      IO.stdout.println(Colorize.blue(filename));
+      IO.stdout.println(filename);
       Globals.local.get(filename).print();
     }
   }
@@ -221,9 +220,9 @@ public final class Debugger {
       if (!Settings.GUI && !goStep) {
         String source = stmt.getDebugInfo().getSource();
         // format all debugging info
-        IO.stdout.println(String.format("FROM: %s", Colorize.yellow(stmt.getDebugInfo().getFilename())));
-        IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), result.toString(),
-            Colorize.purple(source), Globals.iset.get(stmt.getMnemonic()).disassemble(result)));
+        IO.stdout.println(String.format("FROM: %s", stmt.getDebugInfo().getFilename()));
+        IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", pc, result.toString(), source,
+            Globals.iset.get(stmt.getMnemonic()).disassemble(result)));
       }
       // save current pc to history
       this.history.pushPCAndHeap();
@@ -272,9 +271,8 @@ public final class Debugger {
                     .postRunMessage(String.format("PC [%s] CODE:%s    %s » %s", pc, code.toString(), source, source)
                         + System.getProperty("line.separator"));
               } else {
-                IO.stdout.println(String.format("FROM: %s", Colorize.yellow("self-modify code")));
-                IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", Colorize.cyan(pc), code.toString(),
-                    Colorize.purple(source), source));
+                IO.stdout.println(String.format("FROM: %s", "self-modify code"));
+                IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", pc, code.toString(), source, source));
               }
             }
             // save current pc to history
@@ -405,7 +403,7 @@ public final class Debugger {
     if (this.breakpoints.size() > 0) {
       IO.stdout.println("Breakpoints: " + System.getProperty("line.separator"));
       for (Integer address : this.breakpoints.keySet())
-        IO.stdout.println(Colorize.purple(String.format("    0x%08x", address)));
+        IO.stdout.println(String.format("    0x%08x", address));
     } else
       Message.log("no breakpoints yet");
   }

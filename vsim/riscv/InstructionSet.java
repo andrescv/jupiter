@@ -20,7 +20,6 @@ package vsim.riscv;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import vsim.riscv.instructions.*;
-import vsim.utils.Colorize;
 import vsim.utils.IO;
 import vsim.utils.Message;
 
@@ -449,8 +448,7 @@ public final class InstructionSet {
     if (inst != null) {
       IO.stdout.println("Instruction:");
       IO.stdout.println();
-      IO.stdout.println(String.format("[%s] (%s) example: %s", Colorize.red(inst.getFormat().toString()),
-          Colorize.green(mnemonic), Colorize.cyan(inst.getUsage())));
+      IO.stdout.println(String.format("[%s] (%s) example: %s", inst.getFormat().toString(), mnemonic, inst.getUsage()));
       IO.stdout.println();
       IO.stdout.println("Description:");
       IO.stdout.println();
@@ -460,7 +458,7 @@ public final class InstructionSet {
           IO.stdout.println();
           IO.stdout.println("Pseudo Instruction:");
           IO.stdout.println();
-          IO.stdout.println(String.format("(%s) example: %s", Colorize.green(mnemonic), Colorize.cyan(pseudos[i][1])));
+          IO.stdout.println(String.format("(%s) example: %s", mnemonic, pseudos[i][1]));
           IO.stdout.println();
           IO.stdout.println("Base Instruction(s):");
           IO.stdout.println();
@@ -476,7 +474,7 @@ public final class InstructionSet {
             IO.stdout.println();
           IO.stdout.println("Pseudo Instruction:");
           IO.stdout.println();
-          IO.stdout.println(String.format("(%s) example: %s", Colorize.green(mnemonic), Colorize.cyan(pseudos[i][1])));
+          IO.stdout.println(String.format("(%s) example: %s", mnemonic, pseudos[i][1]));
           IO.stdout.println();
           IO.stdout.println("Base Instruction(s):");
           IO.stdout.println();
@@ -495,10 +493,9 @@ public final class InstructionSet {
    */
   public void print() {
     // number of instructions
-    IO.stdout.println(
-        String.format("Number of Instructions: %s", Colorize.green(String.format("%03d", this.instructions.size()))));
+    IO.stdout.println(String.format("Number of Instructions: %s", String.format("%03d", this.instructions.size())));
     IO.stdout.println();
-    IO.stdout.println(Colorize.purple("FORMAT   MNEMONIC                      USAGE"));
+    IO.stdout.println("FORMAT   MNEMONIC                      USAGE");
     IO.stdout.println();
     int maxLength = -1;
     // get mnemonic max instruction length for pretty printer
@@ -516,17 +513,16 @@ public final class InstructionSet {
         for (int j = 0; j < (maxLength - mnemonic.length()); j++)
           space += " ";
         if (format == formats[i]) {
-          IO.stdout.println(String.format(" [%s]%s  (%s)%s example: %s", Colorize.red(format.toString()),
-              (format.toString().length() == 2) ? " " : "  ", Colorize.green(mnemonic), space, Colorize.cyan(usage)));
+          IO.stdout.println(String.format(" [%s]%s  (%s)%s example: %s", format.toString(),
+              (format.toString().length() == 2) ? " " : "  ", mnemonic, space, usage));
         }
       }
     }
     // print pseudos
     IO.stdout.println();
-    IO.stdout.println(
-        String.format("Number of Pseudo Instructions: %s", Colorize.green(String.format("%03d", pseudos.length))));
+    IO.stdout.println(String.format("Number of Pseudo Instructions: %s", String.format("%03d", pseudos.length)));
     IO.stdout.println();
-    IO.stdout.println(Colorize.purple("MNEMONIC              USAGE"));
+    IO.stdout.println("MNEMONIC              USAGE");
     IO.stdout.println();
     maxLength = -1;
     // get mnemonic max instruction length for pretty printer
@@ -538,7 +534,7 @@ public final class InstructionSet {
       String mnemonic = pseudos[i][0];
       for (int j = 0; j < (maxLength - mnemonic.length()); j++)
         space += " ";
-      IO.stdout.println(String.format("(%s)%s example: %s", Colorize.green(mnemonic), space, Colorize.cyan(usage)));
+      IO.stdout.println(String.format("(%s)%s example: %s", mnemonic, space, usage));
     }
   }
 

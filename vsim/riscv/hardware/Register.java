@@ -20,7 +20,6 @@ package vsim.riscv.hardware;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import vsim.Settings;
-import vsim.utils.Colorize;
 
 
 /**
@@ -191,7 +190,7 @@ public abstract class Register {
    */
   @Override
   public String toString() {
-    return Colorize.blue(String.format("0x%08x", this.value.get()));
+    return String.format("0x%08x", this.value.get());
   }
 
   /**

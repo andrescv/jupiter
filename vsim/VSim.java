@@ -24,7 +24,6 @@ import vsim.gui.Gui;
 import vsim.gui.Preloader;
 import vsim.simulator.Simulator;
 import vsim.utils.Cmd;
-import vsim.utils.Message;
 
 
 /** The VSim class contains the main method of V-Sim simulator AKA Launcher. */
@@ -38,7 +37,7 @@ public final class VSim {
   public static void main(String[] args) {
     // set ROOT path
     Settings.setRootPath();
-    // run this only if some argument(s) is/are passed
+    // run CLI only if some arguments are passed
     if (args.length > 0) {
       // parse arguments
       ArrayList<File> files = Cmd.parse(args);
@@ -46,17 +45,16 @@ public final class VSim {
       Cmd.title();
       // only if files are provided
       if (files.size() > 0) {
-        // add trap handler if any
-        if (Settings.TRAP != null)
-          files.add(0, Settings.TRAP);
         // simulate/debug program
         if (!Settings.DEBUG)
           Simulator.simulate(files);
         else
           Simulator.debug(files);
-      } else
-        Message.panic("no input files");
-    } else {
+      }
+    }
+    // run GUI
+    else {
+      Cmd.titleAndLicense();
       Settings.GUI = true;
       System.setProperty("prism.lcdtext", "false");
       Settings.load();

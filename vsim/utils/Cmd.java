@@ -46,7 +46,6 @@ public final class Cmd {
     parser.add("-bare", "bare machine (no pseudo-ops)");
     parser.add("-self", "enable self-modifying code");
     parser.add("-extrict", "assembler warnings are consider errors");
-    parser.add("-nocolor", "do not colorize output");
     parser.add("-info", "print info of an instruction and exit", "<mnemonic>");
     parser.add("-notitle", "do not print V-Sim title");
     parser.add("-dump", "dump machine code to a file", "<file>");
@@ -57,7 +56,6 @@ public final class Cmd {
     parser.add("-iset", "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
-    Settings.COLORIZE = true;
     // display usage if errors
     if (parser.hasErrors()) {
       Cmd.title();
@@ -71,11 +69,17 @@ public final class Cmd {
     Settings.BARE = parser.hasFlag("-bare");
     Settings.EXTRICT = parser.hasFlag("-extrict");
     Settings.SELF_MODIFYING = parser.hasFlag("-self");
-    Settings.COLORIZE = !parser.hasFlag("-nocolor");
     Settings.TITLE = !parser.hasFlag("-notitle");
     Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;
-    Settings.START = parser.hasFlag("-start") ? parser.value("-start") : "main";
     Settings.DEBUG = parser.hasFlag("-debug");
+    // try to set start label
+    if (parser.hasFlag("-start")) {
+      if (!Settings.setStart(parser.value("-start"))) {
+        Cmd.title();
+        Message.error("invalid start label: " + parser.value("-start"));
+        System.exit(1);
+      }
+    }
     // check -help flag
     if (parser.hasFlag("-help")) {
       Cmd.title();
@@ -107,16 +111,21 @@ public final class Cmd {
     }
     // get files
     ArrayList<File> files = parser.targets();
-    // find trap handler
-    if (Settings.ROOT != null) {
-      File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
-      if (trapfile.exists()) {
-        Settings.TRAP = trapfile;
-      }
-    }
     // assemble all files in directory
     if (parser.hasFlag("-all"))
       Cmd.getFilesInDir(files);
+    if (files.size() > 0) {
+      if (Settings.ROOT != null) {
+        File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
+        if (trapfile.exists()) {
+          files.add(0, Settings.TRAP);
+          Settings.TRAP = trapfile;
+        }
+      }
+    } else {
+      Cmd.title();
+      Message.panic("no input files");
+    }
     files.trimToSize();
     return files;
   }
@@ -157,14 +166,20 @@ public final class Cmd {
     String newline = System.getProperty("line.separator");
     if (Settings.TITLE) {
       // cool title :]
-      IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
-      IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
-      IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
-      IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
-      IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
+      IO.stdout.println();
+      IO.stdout.println(" ██╗   ██╗      ███████╗██╗███╗   ███╗");
+      IO.stdout.println(" ██║   ██║      ██╔════╝██║████╗ ████║");
+      IO.stdout.println(" ██║   ██║█████╗███████╗██║██╔████╔██║");
+      IO.stdout.println(" ╚██╗ ██╔╝╚════╝╚════██║██║██║╚██╔╝██║");
+      IO.stdout.println("  ╚████╔╝       ███████║██║██║ ╚═╝ ██║");
+      IO.stdout.println("   ╚═══╝        ╚══════╝╚═╝╚═╝     ╚═╝");
+      IO.stdout.println();
+      IO.stdout.println(" RISC-V Assembler & Runtime Simulator");
+      IO.stdout.println();
     }
     if (Settings.TRAP != null) {
-      IO.stdout.println("loaded: " + Colorize.green("traphandler.s") + newline);
+      IO.stdout.println("loaded: " + Settings.TRAP.toString());
+      IO.stdout.println();
     }
   }
 
@@ -172,27 +187,28 @@ public final class Cmd {
    * This method prints the title and license of the V-Sim simulator.
    */
   public static void titleAndLicense() {
-    // print the title and license note if the -notitle flag is not set
-    String newline = System.getProperty("line.separator");
     // cool title :]
-    IO.stdout.println(Colorize.yellow(" _   __") + Colorize.blue("    _____"));
-    IO.stdout.println(Colorize.yellow("| | / /") + "___" + Colorize.blue("/ __(_)_ _"));
-    IO.stdout.println(Colorize.yellow("| |/ /") + "___" + Colorize.blue("/\\ \\/ /  ' \\"));
-    IO.stdout.println(Colorize.yellow("|___/") + Colorize.blue("   /___/_/_/_/_/") + newline);
-    IO.stdout.println(Colorize.cyan("RISC-V Assembler & Runtime Simulator" + newline));
+    IO.stdout.println();
+    IO.stdout.println(" ██╗   ██╗      ███████╗██╗███╗   ███╗");
+    IO.stdout.println(" ██║   ██║      ██╔════╝██║████╗ ████║");
+    IO.stdout.println(" ██║   ██║█████╗███████╗██║██╔████╔██║");
+    IO.stdout.println(" ╚██╗ ██╔╝╚════╝╚════██║██║██║╚██╔╝██║");
+    IO.stdout.println("  ╚████╔╝       ███████║██║██║ ╚═╝ ██║");
+    IO.stdout.println("   ╚═══╝        ╚══════╝╚═╝╚═╝     ╚═╝");
+    IO.stdout.println();
+    IO.stdout.println(" RISC-V Assembler & Runtime Simulator");
+    IO.stdout.println();
     IO.stdout.println("GPL-3.0 License");
-    IO.stdout.println("Copyright (c) 2018 Andres Castellanos");
+    IO.stdout.println(Settings.COPYRIGHT);
     IO.stdout.println("All Rights Reserved");
-    IO.stdout.println("See " + Colorize.green("https://git.io/fpcYS") + " for a full copyright notice");
+    IO.stdout.println("See https://git.io/fpcYS for a full copyright notice");
   }
 
   /**
    * This method prints the prompt of the V-Sim simulator.
    */
   public static void prompt() {
-    IO.stdout.print(Colorize.yellow(">"));
-    IO.stdout.print(Colorize.blue(">"));
-    IO.stdout.print(Colorize.yellow(">") + " ");
+    IO.stdout.print(">>> ");
   }
 
 }
