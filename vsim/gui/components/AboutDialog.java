@@ -62,6 +62,7 @@ public final class AboutDialog {
           getClass().getResource("/css/vsim-fonts.css").toExternalForm());
       this.stage.setScene(scene);
       this.version.setText(Settings.VERSION);
+      this.copyright.setText(Settings.COPYRIGHT);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

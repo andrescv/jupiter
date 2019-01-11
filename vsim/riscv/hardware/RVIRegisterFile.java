@@ -19,7 +19,6 @@ package vsim.riscv.hardware;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import vsim.riscv.MemorySegments;
-import vsim.utils.Colorize;
 import vsim.utils.Data;
 import vsim.utils.IO;
 
@@ -111,11 +110,11 @@ public final class RVIRegisterFile extends RegisterFile {
     // include all registers in out string
     for (int i = 0; i < size; i++) {
       Register reg = rf.get(prefix + i);
-      String number = Colorize.green(prefix + i);
+      String number = prefix + i;
       String space1 = (i >= 10) ? "" : " ";
       int length = reg.getMnemonic().length();
       String space2 = (length == 4) ? " " : ((length == 3) ? "  " : "   ");
-      String mnemonic = Colorize.purple(reg.getMnemonic());
+      String mnemonic = reg.getMnemonic();
       IO.stdout.println(String.format(fmt, number, space1, mnemonic, space2, reg.toString(), reg.getValue()));
     }
     // and pc
@@ -138,8 +137,8 @@ public final class RVIRegisterFile extends RegisterFile {
     // print regular register
     if (reg != pc) {
       String fmt = "%s (%s) [%s] {= %d}";
-      String number = Colorize.green(prefix + reg.getNumber());
-      String mnemonic = Colorize.purple(reg.getMnemonic());
+      String number = prefix + reg.getNumber();
+      String mnemonic = reg.getMnemonic();
       IO.stdout.println(String.format(fmt, number, mnemonic, reg.toString(), reg.getValue()));
     } else
       IO.stdout.println(String.format("PC [%s]", reg.toString()));

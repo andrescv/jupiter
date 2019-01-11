@@ -22,7 +22,6 @@ import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Colorize;
 
 
 /**
@@ -69,7 +68,7 @@ public final class Feqs extends Instruction {
     int rd = code.get(InstructionField.RD);
     int rs1 = code.get(InstructionField.RS1);
     int rs2 = code.get(InstructionField.RS2);
-    return Colorize.cyan(String.format("%s x%d, f%d, f%d", op, rd, rs1, rs2));
+    return String.format("%s x%d, f%d, f%d", op, rd, rs1, rs2);
   }
 
 }

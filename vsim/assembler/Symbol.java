@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
-import vsim.utils.Colorize;
 import vsim.utils.IO;
 
 
@@ -47,8 +46,8 @@ public final class Symbol {
    * This method pretty prints the symbol.
    */
   public void print() {
-    IO.stdout.println(String.format("[%s] @ %s", Colorize.green(this.segment.toString().toLowerCase()),
-        Colorize.blue(String.format("0x%08x", this.address))));
+    IO.stdout.println(
+        String.format("[%s] @ %s", this.segment.toString().toLowerCase(), String.format("0x%08x", this.address)));
   }
 
   /**

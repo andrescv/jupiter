@@ -23,7 +23,6 @@ import javafx.collections.ObservableList;
 import vsim.Settings;
 import vsim.riscv.MemorySegments;
 import vsim.riscv.exceptions.InvalidAddressException;
-import vsim.utils.Colorize;
 import vsim.utils.Data;
 import vsim.utils.IO;
 
@@ -338,7 +337,7 @@ public final class Memory {
     // n rows of 4 words
     String newline = System.getProperty("line.separator");
     String header = "Value (+0) Value (+4) Value (+8) Value (+c)";
-    String out = "             " + Colorize.red(header + newline);
+    String out = "             " + header + newline;
     for (int i = 0; i < Data.WORD_LENGTH * rows; i++) {
       int address = from + i * Data.WORD_LENGTH;
       // include address
@@ -346,7 +345,7 @@ public final class Memory {
         out += String.format("[0x%08x]", address);
       // word content at this address
       String data = String.format("0x%08x", this.privLoadWord(address));
-      out += " " + Colorize.blue(data);
+      out += " " + data;
       // next 4 words in other row
       if ((i + 1) % Data.WORD_LENGTH == 0)
         out += newline;

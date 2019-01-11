@@ -23,7 +23,6 @@ import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Colorize;
 import vsim.utils.Data;
 
 
@@ -78,7 +77,7 @@ public final class Fsw extends Instruction {
     int rs1 = code.get(InstructionField.RS1);
     int rs2 = code.get(InstructionField.RS2);
     int imm = this.getImm(code);
-    return Colorize.cyan(String.format("%s x%d, f%d, %d", op, rs1, rs2, imm));
+    return String.format("%s x%d, f%d, %d", op, rs1, rs2, imm);
   }
 
 }

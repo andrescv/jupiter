@@ -19,8 +19,6 @@ package vsim.riscv.instructions.itype;
 
 import static vsim.riscv.Ecall.handler;
 import vsim.riscv.exceptions.SimulationException;
-import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Colorize;
 
 
 /**
@@ -47,11 +45,6 @@ public final class Ecall extends IType {
     // call ecall handler
     handler();
     return 0;
-  }
-
-  @Override
-  public String disassemble(MachineCode code) {
-    return Colorize.cyan("ecall");
   }
 
 }

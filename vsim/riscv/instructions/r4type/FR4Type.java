@@ -22,7 +22,6 @@ import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Colorize;
 
 
 /**
@@ -67,7 +66,7 @@ abstract class FR4Type extends Instruction {
     int rs1 = code.get(InstructionField.RS1);
     int rs2 = code.get(InstructionField.RS2);
     int rs3 = code.get(InstructionField.RS3);
-    return Colorize.cyan(String.format("%s f%d, f%d, f%d, f%d", op, rd, rs1, rs2, rs3));
+    return String.format("%s f%d, f%d, f%d, f%d", op, rd, rs1, rs2, rs3);
   }
 
 }

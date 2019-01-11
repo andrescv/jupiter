@@ -34,7 +34,7 @@ public final class Message {
     if (Settings.GUI)
       IO.guistdout.postMessage("vsim: " + msg + System.getProperty("line.separator"));
     else
-      IO.stdout.println(Colorize.cyan("vsim: " + msg));
+      IO.stdout.println("vsim: " + msg);
   }
 
   /**
@@ -46,7 +46,7 @@ public final class Message {
     if (Settings.GUI)
       IO.guistdout.postMessage("vsim: (warning) " + msg + System.getProperty("line.separator"));
     else
-      IO.stdout.println(Colorize.yellow("vsim: (warning) " + msg));
+      IO.stdout.println("vsim: (warning) " + msg);
   }
 
   /**
@@ -58,7 +58,7 @@ public final class Message {
     if (Settings.GUI)
       IO.guistderr.postMessage("vsim: (error) " + msg + System.getProperty("line.separator"));
     else
-      IO.stderr.println(Colorize.red("vsim: (error) " + msg));
+      IO.stderr.println("vsim: (error) " + msg);
   }
 
   /**
@@ -83,7 +83,7 @@ public final class Message {
     if (Settings.GUI)
       IO.guistderr.postMessage("vsim: (fatal error) " + msg + System.getProperty("line.separator"));
     else {
-      IO.stderr.println(Colorize.red("vsim: (fatal error) " + msg));
+      IO.stderr.println("vsim: (fatal error) " + msg);
       System.exit(1);
     }
   }

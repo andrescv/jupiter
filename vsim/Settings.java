@@ -27,6 +27,9 @@ public final class Settings {
   /** current version */
   public static final String VERSION = "v2.0.0";
 
+  /** Copyright */
+  public static final String COPYRIGHT = "Copyright (c) 2018-2019 Andres Castellanos";
+
   /** Preferences object */
   private static final Preferences prefs = Preferences.userRoot().node("vsim");
 
@@ -66,9 +69,6 @@ public final class Settings {
 
   /** dump machine code to a file, set with -dump flag */
   public static String DUMP = null;
-
-  /** colorize output, disable with -nocolor flag */
-  public static boolean COLORIZE = false;
 
 // GUI ONLY SETTINGS
 

@@ -19,7 +19,6 @@ package vsim.assembler;
 
 import java.util.HashMap;
 import java.util.Set;
-import vsim.utils.Colorize;
 import vsim.utils.IO;
 
 
@@ -50,7 +49,7 @@ public final class SymbolTable {
    */
   public void print() {
     for (String label : this.table.keySet()) {
-      IO.stdout.print(Colorize.green(label) + " ");
+      IO.stdout.print(label + " ");
       this.table.get(label).print();
     }
   }
