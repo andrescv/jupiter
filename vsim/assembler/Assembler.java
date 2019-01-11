@@ -62,14 +62,8 @@ public final class Assembler {
         // parse line by line all file
         Parser.parse(file);
         // add this processed program only if it has statements
-        if (program.getTextSize() > 0 || ((files.size() > 1) && (program.getDataSize() > 0)))
+        if (program.getTextSize() > 0 || program.getDataSize() > 0)
           programs.add(program);
-        else {
-          if (files.size() == 1)
-            Errors.add("assembler: file '" + file + "' does not have any valid instruction");
-          else
-            Message.warning("assembler: file '" + file + "' does not have any valid instruction or data (ignoring)");
-        }
       }
     }
     // do first pass
