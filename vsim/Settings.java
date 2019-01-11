@@ -221,7 +221,7 @@ public final class Settings {
    * @return true if success, false if not
    */
   public static boolean setStart(String start) {
-    if (start != null && start.length() > 0 && start.trim().matches("[a-zA-Z_]([a-zA-Z0-9_]*(\".\"[a-zA-Z0-9_]+)?)")) {
+    if (start != null && start.length() > 0 && start.trim().matches("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?)")) {
       Settings.prefs.put("START", start.trim());
       Settings.START = start.trim();
       return true;
