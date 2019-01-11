@@ -22,7 +22,7 @@ from glob import glob
 
 newline = os.linesep
 JAR = os.listdir('build/libs/')[0]
-CMD = 'java -jar build/libs/' + JAR + ' -nocolor %s'
+CMD = 'java -jar build/libs/' + JAR + ' -extrict -notitle %s'
 
 
 def main():
