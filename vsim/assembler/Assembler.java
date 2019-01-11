@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import vsim.Errors;
 import vsim.Globals;
 import vsim.assembler.statements.Statement;
-import vsim.utils.Message;
 
 
 /**
