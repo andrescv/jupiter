@@ -54,8 +54,17 @@ public final class Errors {
     String source = debug.getSource();
     int lineno = debug.getLineNumber();
     int column = debug.getColumnNumber();
-    Errors.add(filename + ":" + phase + ":" + lineno + ":" + column + ": " + msg + newline + "    |" + newline
-        + "    └─ (source line) " + source);
+    if (column < source.length() && !Settings.GUI) {
+      // column pointer
+      String pointer = "                    ";
+      for (int i = 0; i < column - 1; i++)
+        pointer += " ";
+      pointer += "^";
+      Errors.add(filename + ":" + phase + ":" + lineno + ":" + column + ": " + msg + newline + newline
+          + "      (source line) " + source + newline + pointer);
+    } else
+      Errors.add(filename + ":" + phase + ":" + lineno + ":" + column + ": " + msg + newline + newline
+          + "      (source line) " + source);
   }
 
   /**
