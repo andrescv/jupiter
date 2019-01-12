@@ -74,7 +74,7 @@ public final class Cmd {
     Settings.DEBUG = parser.hasFlag("-debug");
     // try to set start label
     if (parser.hasFlag("-start")) {
-      if (!Settings.setStart(parser.value("-start"))) {
+      if (!Settings.setStart(parser.value("-start"), false)) {
         Cmd.title();
         Message.error("invalid start label: " + parser.value("-start"));
         System.exit(1);
@@ -94,7 +94,7 @@ public final class Cmd {
     // check -version flag
     if (parser.hasFlag("-version")) {
       Cmd.title();
-      IO.stdout.println("Version: " + Settings.VERSION);
+      IO.stdout.println("Version: " + Globals.VERSION);
       System.exit(0);
     }
     // check -iset flag
@@ -199,7 +199,7 @@ public final class Cmd {
     IO.stdout.println(" RISC-V Assembler & Runtime Simulator");
     IO.stdout.println();
     IO.stdout.println("GPL-3.0 License");
-    IO.stdout.println(Settings.COPYRIGHT);
+    IO.stdout.println(Globals.COPYRIGHT);
     IO.stdout.println("All Rights Reserved");
     IO.stdout.println("See https://git.io/fpcYS for a full copyright notice");
   }
