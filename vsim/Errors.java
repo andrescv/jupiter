@@ -53,7 +53,8 @@ public final class Errors {
     String newline = System.getProperty("line.separator");
     String source = debug.getSource();
     int lineno = debug.getLineNumber();
-    Errors.add(filename + ":" + phase + ":" + lineno + ": " + msg + newline + "    |" + newline
+    int column = debug.getColumnNumber();
+    Errors.add(filename + ":" + phase + ":" + lineno + ":" + column + ": " + msg + newline + "    |" + newline
         + "    └─ (source line) " + source);
   }
 

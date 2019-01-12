@@ -54,20 +54,6 @@ COMMA = ","
 LPAREN = "("
 RPAREN = ")"
 
-// operators
-TIMES = "*"
-DIVIDE = "/"
-MOD = "%"
-PLUS = "+"
-MINUS = "-"
-SLL = "<<"
-SRL = ">>>"
-SRA = ">>"
-AND = "&"
-OR = "|"
-XOR = "^"
-NEG = "~"
-
 // strings and chars
 STRSTART = \"
 BACKSLASH = "\\"
@@ -279,55 +265,6 @@ ERROR = .
 
   {RPAREN} {
     return symbol("syntax");
-  }
-
-  // operators
-  {TIMES} {
-    return symbol("operator");
-  }
-
-  {DIVIDE} {
-    return symbol("operator");
-  }
-
-  {MOD} {
-    return symbol("operator");
-  }
-
-  {PLUS} {
-    return symbol("operator");
-  }
-
-  {MINUS} {
-    return symbol("operator");
-  }
-
-  {SLL} {
-    return symbol("operator");
-  }
-
-  {SRL} {
-    return symbol("operator");
-  }
-
-  {SRA} {
-    return symbol("operator");
-  }
-
-  {AND} {
-    return symbol("operator");
-  }
-
-  {OR} {
-    return symbol("operator");
-  }
-
-  {XOR} {
-    return symbol("operator");
-  }
-
-  {NEG} {
-    return symbol("operator");
   }
 
   // strings

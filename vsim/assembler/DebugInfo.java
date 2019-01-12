@@ -24,6 +24,8 @@ public final class DebugInfo {
 
   /** the line number */
   private int lineno;
+  /** the column number */
+  private int column;
   /** the source line */
   private String source;
   /** the filename attached to this debug info */
@@ -36,8 +38,9 @@ public final class DebugInfo {
    * @param source the source line of this debug information
    * @param filename the filename of this debug information
    */
-  public DebugInfo(int lineno, String source, String filename) {
+  public DebugInfo(int lineno, int column, String source, String filename) {
     this.lineno = lineno;
+    this.column = column;
     this.source = source;
     this.filename = filename;
   }
@@ -49,6 +52,15 @@ public final class DebugInfo {
    */
   public int getLineNumber() {
     return this.lineno;
+  }
+
+  /**
+   * Gets the column number of the debug information.
+   *
+   * @return column number
+   */
+  public int getColumnNumber() {
+    return this.column;
   }
 
   /**

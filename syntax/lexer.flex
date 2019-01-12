@@ -70,20 +70,6 @@ COMMA = ","
 LPAREN = "("
 RPAREN = ")"
 
-// operators
-TIMES = "*"
-DIVIDE = "/"
-MOD = "%"
-PLUS = "+"
-MINUS = "-"
-SLL = "<<"
-SRL = ">>>"
-SRA = ">>"
-AND = "&"
-OR = "|"
-XOR = "^"
-NEG = "~"
-
 // strings and chars
 STRSTART = \"
 BACKSLASH = "\\"
@@ -294,55 +280,6 @@ ERROR = .
 
   {RPAREN} {
     return symbol(Token.RPAREN);
-  }
-
-  // operators
-  {TIMES} {
-    return symbol(Token.TIMES);
-  }
-
-  {DIVIDE} {
-    return symbol(Token.DIVIDE);
-  }
-
-  {MOD} {
-    return symbol(Token.MOD);
-  }
-
-  {PLUS} {
-    return symbol(Token.PLUS);
-  }
-
-  {MINUS} {
-    return symbol(Token.MINUS);
-  }
-
-  {SLL} {
-    return symbol(Token.SLL);
-  }
-
-  {SRL} {
-    return symbol(Token.SRL);
-  }
-
-  {SRA} {
-    return symbol(Token.SRA);
-  }
-
-  {AND} {
-    return symbol(Token.AND);
-  }
-
-  {OR} {
-    return symbol(Token.OR);
-  }
-
-  {XOR} {
-    return symbol(Token.XOR);
-  }
-
-  {NEG} {
-    return symbol(Token.NEG);
   }
 
   // strings

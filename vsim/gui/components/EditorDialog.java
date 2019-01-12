@@ -50,7 +50,7 @@ public final class EditorDialog {
 
   /** Sample text editor code */
   private static String SAMPLE_CODE = "; Meaningless Code Example :)" + NL + ".data" + NL
-      + "%sstr: .asciiz \"hello world\\n\"" + NL + "%snum: .word 2 + 2" + NL + ".text" + NL + "main:" + NL
+      + "%sstr: .asciiz \"hello world\\n\"" + NL + "%snum: .word 0xcafe" + NL + ".text" + NL + "main:" + NL
       + "%stail exit" + NL + "exit:" + NL + "%sli a0, 10" + NL + "%secall" + NL + "{}!; forced errors";
 
   /** Dialog stage */
@@ -81,8 +81,6 @@ public final class EditorDialog {
   @FXML private AnchorPane anchor;
   /** Syntax color picker */
   @FXML private JFXColorPicker syntax;
-  /** Operator color picker */
-  @FXML private JFXColorPicker operator;
   /** Directive color picker */
   @FXML private JFXColorPicker directive;
   /** keyword color picker */
@@ -146,7 +144,6 @@ public final class EditorDialog {
       this.stage.setScene(scene);
       // enable color pickers only if custom option is selected
       this.syntax.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.operator.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
       this.directive.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
       this.keyword.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
       this.label.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
@@ -229,7 +226,6 @@ public final class EditorDialog {
     Settings.setCodeAreaCaretColor(this.toRgba(this.caret.getValue()));
     Settings.setCodeAreaLineHighlight(this.toRgba(this.highlight.getValue()));
     Settings.setCodeAreaSyntaxColor(this.toRgba(this.syntax.getValue()));
-    Settings.setCodeAreaOperatorColor(this.toRgba(this.operator.getValue()));
     Settings.setCodeAreaDirectiveColor(this.toRgba(this.directive.getValue()));
     Settings.setCodeAreaKeywordColor(this.toRgba(this.keyword.getValue()));
     Settings.setCodeAreaLabelColor(this.toRgba(this.label.getValue()));
@@ -287,10 +283,10 @@ public final class EditorDialog {
     this.editor.setEditorText(String.format(EditorDialog.SAMPLE_CODE, tab, tab, tab, tab, tab));
     // update editor colors
     this.editor.setStyle(String.format(Editor.STYLE, this.toRgba(this.syntax.getValue()),
-        this.toRgba(this.operator.getValue()), this.toRgba(this.directive.getValue()),
-        this.toRgba(this.keyword.getValue()), this.toRgba(this.label.getValue()),
-        this.toRgba(this.identifier.getValue()), this.toRgba(this.register.getValue()),
-        this.toRgba(this.number.getValue()), this.toRgba(this.comment.getValue()), this.toRgba(this.string.getValue()),
+        this.toRgba(this.directive.getValue()), this.toRgba(this.keyword.getValue()),
+        this.toRgba(this.label.getValue()), this.toRgba(this.identifier.getValue()),
+        this.toRgba(this.register.getValue()), this.toRgba(this.number.getValue()),
+        this.toRgba(this.comment.getValue()), this.toRgba(this.string.getValue()),
         this.toRgba(this.backslash.getValue()), this.toRgba(this.error.getValue()),
         this.toRgba(this.background.getValue()), this.toRgba(this.selection.getValue()),
         this.toRgba(this.lineno.getValue()), this.toRgba(this.linenobg.getValue()), this.toRgba(this.caret.getValue()),
@@ -316,7 +312,6 @@ public final class EditorDialog {
   /** Sets eclipse syntax theme. */
   private void loadEclipse() {
     this.syntax.setValue(Color.web("#000000"));
-    this.operator.setValue(Color.web("#000000"));
     this.directive.setValue(Color.web("#000099"));
     this.keyword.setValue(Color.web("#7f0055"));
     this.label.setValue(Color.web("#7f0055"));
@@ -339,7 +334,6 @@ public final class EditorDialog {
   /** Sets material syntax theme. */
   private void loadMaterial() {
     this.syntax.setValue(Color.web("#B2CCD6"));
-    this.operator.setValue(Color.web("#89DDF3"));
     this.directive.setValue(Color.web("#82AAFF"));
     this.keyword.setValue(Color.web("#C792EA"));
     this.label.setValue(Color.web("#F78C6A"));
@@ -362,7 +356,6 @@ public final class EditorDialog {
   /** Sets monokai syntax theme. */
   private void loadMonokai() {
     this.syntax.setValue(Color.web("#abb3ba"));
-    this.operator.setValue(Color.web("#f92672"));
     this.directive.setValue(Color.web("#66d9ef"));
     this.keyword.setValue(Color.web("#f92672"));
     this.label.setValue(Color.web("#fc9867"));
@@ -385,7 +378,6 @@ public final class EditorDialog {
   /** Sets one light syntax theme. */
   private void loadOnelight() {
     this.syntax.setValue(Color.web("#383a42"));
-    this.operator.setValue(Color.web("#a626a4"));
     this.directive.setValue(Color.web("#66d9ef"));
     this.keyword.setValue(Color.web("#a626a4"));
     this.label.setValue(Color.web("#ff6188"));
@@ -422,7 +414,6 @@ public final class EditorDialog {
   private void loadSettings() {
     // load syntax colors
     this.syntax.setValue(Color.web(Settings.CODE_AREA_SYNTAX));
-    this.operator.setValue(Color.web(Settings.CODE_AREA_OPERATOR));
     this.directive.setValue(Color.web(Settings.CODE_AREA_DIRECTIVE));
     this.keyword.setValue(Color.web(Settings.CODE_AREA_KEYWORD));
     this.label.setValue(Color.web(Settings.CODE_AREA_LABEL));

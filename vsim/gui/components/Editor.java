@@ -45,12 +45,12 @@ public final class Editor extends CodeArea {
   private static final String NL = System.getProperty("line.separator");
 
   /** Color lookups and Font styles */
-  public static final String STYLE = "-fx-syntax: %s;" + NL + "-fx-operator: %s;" + NL + "-fx-directive: %s;" + NL
-      + "-fx-keyword: %s;" + NL + "-fx-label: %s;" + NL + "-fx-identifier: %s;" + NL + "-fx-register: %s;" + NL
-      + "-fx-number: %s;" + NL + "-fx-comment: %s;" + NL + "-fx-string: %s;" + NL + "-fx-stringb: %s;" + NL
-      + "-fx-error: %s;" + NL + "-fx-code-area-bg: %s;" + NL + "-fx-selection: %s;" + NL + "-fx-lineno-text: %s;" + NL
-      + "-fx-lineno-bg: %s;" + NL + "-fx-caret: %s;" + NL + "-fx-caret-bg: %s;" + NL + "-fx-font-weight: %s;" + NL
-      + "-fx-font-style: %s;" + NL + "-fx-font-family: '%s';" + NL + "-fx-font-size: %dpt;";
+  public static final String STYLE = "-fx-syntax: %s;" + NL + "-fx-directive: %s;" + NL + "-fx-keyword: %s;" + NL
+      + "-fx-label: %s;" + NL + "-fx-identifier: %s;" + NL + "-fx-register: %s;" + NL + "-fx-number: %s;" + NL
+      + "-fx-comment: %s;" + NL + "-fx-string: %s;" + NL + "-fx-stringb: %s;" + NL + "-fx-error: %s;" + NL
+      + "-fx-code-area-bg: %s;" + NL + "-fx-selection: %s;" + NL + "-fx-lineno-text: %s;" + NL + "-fx-lineno-bg: %s;"
+      + NL + "-fx-caret: %s;" + NL + "-fx-caret-bg: %s;" + NL + "-fx-font-weight: %s;" + NL + "-fx-font-style: %s;" + NL
+      + "-fx-font-family: '%s';" + NL + "-fx-font-size: %dpt;";
 
   /** Last editor text */
   private String lastText;
@@ -219,14 +219,13 @@ public final class Editor extends CodeArea {
   }
 
   private void updateStyle() {
-    String style = String.format(Editor.STYLE, Settings.CODE_AREA_SYNTAX, Settings.CODE_AREA_OPERATOR,
-        Settings.CODE_AREA_DIRECTIVE, Settings.CODE_AREA_KEYWORD, Settings.CODE_AREA_LABEL,
-        Settings.CODE_AREA_IDENTIFIER, Settings.CODE_AREA_REGISTER, Settings.CODE_AREA_NUMBER,
-        Settings.CODE_AREA_COMMENT, Settings.CODE_AREA_STRING, Settings.CODE_AREA_BACKSLASH, Settings.CODE_AREA_ERROR,
-        Settings.CODE_AREA_BG, Settings.CODE_AREA_SELECTION, Settings.CODE_AREA_LINENO_COLOR,
-        Settings.CODE_AREA_LINENO_BG, Settings.CODE_AREA_CARET_COLOR, Settings.CODE_AREA_LINE_HIGHLIGHT,
-        Settings.CODE_AREA_FONT_WEIGHT, Settings.CODE_AREA_FONT_STYLE, Settings.CODE_AREA_FONT_FAMILY,
-        Settings.CODE_AREA_FONT_SIZE);
+    String style = String.format(Editor.STYLE, Settings.CODE_AREA_SYNTAX, Settings.CODE_AREA_DIRECTIVE,
+        Settings.CODE_AREA_KEYWORD, Settings.CODE_AREA_LABEL, Settings.CODE_AREA_IDENTIFIER,
+        Settings.CODE_AREA_REGISTER, Settings.CODE_AREA_NUMBER, Settings.CODE_AREA_COMMENT, Settings.CODE_AREA_STRING,
+        Settings.CODE_AREA_BACKSLASH, Settings.CODE_AREA_ERROR, Settings.CODE_AREA_BG, Settings.CODE_AREA_SELECTION,
+        Settings.CODE_AREA_LINENO_COLOR, Settings.CODE_AREA_LINENO_BG, Settings.CODE_AREA_CARET_COLOR,
+        Settings.CODE_AREA_LINE_HIGHLIGHT, Settings.CODE_AREA_FONT_WEIGHT, Settings.CODE_AREA_FONT_STYLE,
+        Settings.CODE_AREA_FONT_FAMILY, Settings.CODE_AREA_FONT_SIZE);
     this.setStyle(style);
   }
 

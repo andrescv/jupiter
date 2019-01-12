@@ -155,4 +155,8 @@ riscv_tests.dependsOn(jar)
 // run riscv_tests task after test task
 test.finalizedBy(riscv_tests)
 
+// apply spotless after syntax task
 syntax.finalizedBy('spotlessApply')
+
+// compile java source code in UTF-8
+compileJava.options.encoding = 'UTF-8'

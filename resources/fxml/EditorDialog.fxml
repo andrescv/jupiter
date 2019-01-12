@@ -89,15 +89,11 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Operator" textFill="#eeeeee" GridPane.rowIndex="1">
+            <Label text="Directive" textFill="#eeeeee" GridPane.rowIndex="1">
                <font>
                   <Font name="Roboto Bold" size="14.0" />
                </font></Label>
-            <Label text="Directive" textFill="#eeeeee" GridPane.rowIndex="2">
-               <font>
-                  <Font name="Roboto Bold" size="14.0" />
-               </font></Label>
-            <Label text="Keyword" textFill="#eeeeee" GridPane.rowIndex="3">
+            <Label text="Keyword" textFill="#eeeeee" GridPane.rowIndex="2">
                <font>
                   <Font name="Roboto Bold" size="14.0" />
                </font></Label>
@@ -105,15 +101,11 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></JFXColorPicker>
-            <JFXColorPicker fx:id="operator" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <JFXColorPicker fx:id="directive" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></JFXColorPicker>
-            <JFXColorPicker fx:id="directive" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></JFXColorPicker>
-            <JFXColorPicker fx:id="keyword" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <JFXColorPicker fx:id="keyword" onAction="#changeColor" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></JFXColorPicker>
@@ -198,10 +190,10 @@
             <Font name="Roboto Bold" size="17.0" />
          </font>
       </Label>
-      <GridPane layoutX="10.0" layoutY="319.0" AnchorPane.leftAnchor="10.0">
+      <GridPane layoutX="10.0" layoutY="289.0" AnchorPane.leftAnchor="10.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="164.0" minWidth="72.0" prefWidth="106.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="102.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="164.0" minWidth="72.0" prefWidth="107.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="101.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -216,7 +208,8 @@
             <Label text="Background" textFill="#eeeeee">
                <font>
                   <Font name="Roboto Bold" size="14.0" />
-               </font></Label>
+               </font>
+            </Label>
             <Label text="Selection" textFill="#eeeeee" GridPane.rowIndex="1">
                <font>
                   <Font name="Roboto Bold" size="14.0" />
@@ -291,7 +284,7 @@
                </font></JFXRadioButton>
          </children>
       </HBox>
-      <HBox alignment="CENTER" layoutX="23.0" layoutY="511.0" spacing="10.0">
+      <HBox alignment="CENTER" layoutX="23.0" layoutY="499.0" spacing="10.0">
          <children>
             <JFXButton fx:id="save" onAction="#save" prefHeight="37.0" prefWidth="80.0" style="-fx-background-color: #388e3c;" text="Save" textFill="WHITE">
                <graphic>
@@ -329,7 +322,7 @@
          <font>
             <Font name="Roboto Bold" size="14.0" />
          </font></JFXCheckBox>
-      <JFXButton fx:id="saveAndClose" layoutX="23.0" layoutY="553.0" onAction="#saveAndClose" prefHeight="37.0" prefWidth="183.0" style="-fx-background-color: #00897b;" text="Save and Close" textFill="WHITE">
+      <JFXButton fx:id="saveAndClose" layoutX="23.0" layoutY="539.0" onAction="#saveAndClose" prefHeight="37.0" prefWidth="183.0" style="-fx-background-color: #00897b;" text="Save and Close" textFill="WHITE">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
