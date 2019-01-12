@@ -17,6 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.assembler;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+
 /**
  * The class DebugInfo encapsulates useful debug information.
  */
@@ -69,7 +74,17 @@ public final class DebugInfo {
    * @return the source line
    */
   public String getSource() {
-    return this.source;
+    try {
+      // try to get original source line always
+      // this is only because inside parser some grammar derivations
+      // could not construct properly the original source line
+      Stream<String> lines = Files.lines(Paths.get(filename));
+      return lines.skip(lineno - 1).findFirst().get();
+    } catch (Exception e) {
+      // if some exception happens, use the
+      // constructed source line in the parser
+      return this.source;
+    }
   }
 
   /**

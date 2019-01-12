@@ -215,8 +215,8 @@ public class SimulatorController {
         Message.log("assemble: assembling " + assembling.substring(1, assembling.length() - 1)
             + System.getProperty("line.separator"));
         LinkedProgram program = Linker.link(Assembler.assemble(files));
-        Message.log("assemble: operation completed successfully" + System.getProperty("line.separator"));
         if (program != null) {
+          Message.log("assemble: operation completed successfully" + System.getProperty("line.separator"));
           program.reset();
           this.debugger = new Debugger(program);
           ObservableList<InfoStatement> stmts = program.getInfoStatements();
