@@ -109,7 +109,7 @@ public final class Settings {
   public static String CODE_AREA_FONT_FAMILY = "Envy Code R";
 
   /** code area font size */
-  public static int CODE_AREA_FONT_SIZE = 14;
+  public static int CODE_AREA_FONT_SIZE = 11;
 
   /** code area selection color */
   public static String CODE_AREA_SELECTION = "#3b3b3b";
@@ -128,9 +128,6 @@ public final class Settings {
 
   /** code area synxtax color */
   public static String CODE_AREA_SYNTAX = "#b2ccd6";
-
-  /** code area operators color */
-  public static String CODE_AREA_OPERATOR = "#89ddf3";
 
   /** code area directive color */
   public static String CODE_AREA_DIRECTIVE = "#82aaff";
@@ -178,14 +175,13 @@ public final class Settings {
     Settings.CODE_AREA_FONT_WEIGHT = Settings.prefs.get("CODE_AREA_FONT_WEIGHT", "normal");
     Settings.CODE_AREA_FONT_STYLE = Settings.prefs.get("CODE_AREA_FONT_STYLE", "normal");
     Settings.CODE_AREA_FONT_FAMILY = Settings.prefs.get("CODE_AREA_FONT_FAMILY", "Envy Code R");
-    Settings.CODE_AREA_FONT_SIZE = Settings.prefs.getInt("CODE_AREA_FONT_SIZE", 14);
+    Settings.CODE_AREA_FONT_SIZE = Settings.prefs.getInt("CODE_AREA_FONT_SIZE", 11);
     Settings.CODE_AREA_SELECTION = Settings.prefs.get("CODE_AREA_SELECTION", "#3b3b3b");
     Settings.CODE_AREA_LINENO_COLOR = Settings.prefs.get("CODE_AREA_LINENO_COLOR", "#b2ccd6");
     Settings.CODE_AREA_LINENO_BG = Settings.prefs.get("CODE_AREA_LINENO_BG", "#212121");
     Settings.CODE_AREA_CARET_COLOR = Settings.prefs.get("CODE_AREA_CARET_COLOR", "#009688");
     Settings.CODE_AREA_LINE_HIGHLIGHT = Settings.prefs.get("CODE_AREA_LINE_HIGHLIGHT", "#1b1b1b");
     Settings.CODE_AREA_SYNTAX = Settings.prefs.get("CODE_AREA_SYNTAX", "#b2ccd6");
-    Settings.CODE_AREA_OPERATOR = Settings.prefs.get("CODE_AREA_OPERATOR", "#89ddf3");
     Settings.CODE_AREA_DIRECTIVE = Settings.prefs.get("CODE_AREA_DIRECTIVE", "#82aaff");
     Settings.CODE_AREA_KEYWORD = Settings.prefs.get("CODE_AREA_KEYWORD", "#c792eA");
     Settings.CODE_AREA_LABEL = Settings.prefs.get("CODE_AREA_LABEL", "#f78c6a");
@@ -429,16 +425,6 @@ public final class Settings {
   public static void setCodeAreaSyntaxColor(String color) {
     Settings.prefs.put("CODE_AREA_SYNTAX", color);
     Settings.CODE_AREA_SYNTAX = color;
-  }
-
-  /**
-   * Changes code area operator color.
-   *
-   * @param color operator color
-   */
-  public static void setCodeAreaOperatorColor(String color) {
-    Settings.prefs.put("CODE_AREA_OPERATOR", color);
-    Settings.CODE_AREA_OPERATOR = color;
   }
 
   /**

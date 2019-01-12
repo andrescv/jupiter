@@ -346,7 +346,6 @@
 
 .root {
   -fx-syntax: #B2CCD6;
-  -fx-operator: #89DDF3;
   -fx-directive: #82AAFF;
   -fx-keyword: #C792EA;
   -fx-label: #F78C6A;
@@ -396,10 +395,6 @@
 
 .code-area .syntax {
   -fx-fill: -fx-syntax;
-}
-
-.code-area .operator {
-  -fx-fill: -fx-operator;
 }
 
 .code-area .directive {

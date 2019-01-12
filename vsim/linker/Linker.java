@@ -153,7 +153,7 @@ public final class Linker {
     if (Globals.globl.get(Settings.START) != null
         && Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
       // far call to start label always the first (two) statements
-      DebugInfo debug = new DebugInfo(0, "call " + Settings.START, "start");
+      DebugInfo debug = new DebugInfo(0, 0, "call " + Settings.START, "start");
       // utype statement (CALL start)
       UType u = new UType("auipc", debug, "x6", new Relocation(Relocation.PCRELHI, Settings.START, debug));
       u.build(Linker.textAddress);
