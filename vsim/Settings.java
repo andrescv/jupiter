@@ -24,12 +24,6 @@ import java.util.prefs.Preferences;
 /** The Settings class contains the V-Sim simulator settings. */
 public final class Settings {
 
-  /** current version */
-  public static final String VERSION = "v2.0.0";
-
-  /** Copyright */
-  public static final String COPYRIGHT = "Copyright (c) 2018-2019 Andres Castellanos";
-
   /** Preferences object */
   private static final Preferences prefs = Preferences.userRoot().node("vsim");
 
@@ -218,12 +212,14 @@ public final class Settings {
    * Sets global start label.
    *
    * @param start global label name
+   * @param save if save this setting in user prefs
    * @return true if success, false if not
    */
-  public static boolean setStart(String start) {
+  public static boolean setStart(String start, boolean save) {
     if (start != null && start.length() > 0 && start.trim().matches("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?)")) {
-      Settings.prefs.put("START", start.trim());
-      Settings.START = start.trim();
+      if (save)
+        Settings.prefs.put("START", start);
+      Settings.START = start;
       return true;
     }
     return false;

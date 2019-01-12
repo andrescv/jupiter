@@ -26,7 +26,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import com.jfoenix.controls.JFXDecorator;
-import vsim.Settings;
+import vsim.Globals;
 import vsim.gui.utils.Icons;
 
 
@@ -61,8 +61,8 @@ public final class AboutDialog {
       scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
           getClass().getResource("/css/vsim-fonts.css").toExternalForm());
       this.stage.setScene(scene);
-      this.version.setText(Settings.VERSION);
-      this.copyright.setText(Settings.COPYRIGHT);
+      this.version.setText(Globals.VERSION);
+      this.copyright.setText(Globals.COPYRIGHT);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -34,6 +34,7 @@ import vsim.gui.components.AboutDialog;
 import vsim.gui.components.EditorDialog;
 import vsim.gui.components.InputDialog;
 import vsim.simulator.Status;
+import vsim.utils.Message;
 
 
 /**
@@ -343,7 +344,8 @@ public class MenuBarController {
     InputDialog dialog = new InputDialog();
     String start = dialog.showAndWait("Enter new global start label");
     if (start.length() > 0) {
-      Settings.setStart(start);
+      if (!Settings.setStart(start, true))
+        Message.warning(String.format("invalid start label '%s'", start));
     }
   }
 
@@ -377,8 +379,6 @@ public class MenuBarController {
     File file = chooser.showOpenDialog(this.mainController.stage);
     if (file != null && file.exists())
       Settings.TRAP = file;
-    else
-      ; // TODO
   }
 
   /*-------------------------------------------------------*

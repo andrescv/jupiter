@@ -27,7 +27,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import vsim.Settings;
+import vsim.Globals;
 import vsim.gui.utils.Icons;
 
 
@@ -44,6 +44,9 @@ public final class Preloader extends javafx.application.Preloader {
   /** version label */
   @FXML private Label version;
 
+  /** copyright label */
+  @FXML private Label copyright;
+
   /** preloader main stage */
   private Stage stage;
 
@@ -55,7 +58,8 @@ public final class Preloader extends javafx.application.Preloader {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Preloader.fxml"));
     loader.setController(this);
     Parent root = loader.load();
-    this.version.setText(Settings.VERSION);
+    this.version.setText(Globals.VERSION);
+    this.copyright.setText(Globals.COPYRIGHT);
     // save primary stage
     this.stage = stage;
     stage.setResizable(false);
