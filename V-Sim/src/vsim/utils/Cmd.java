@@ -17,11 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 import vsim.Globals;
 import vsim.Settings;
 
@@ -42,6 +46,7 @@ public final class Cmd {
     ArgumentParser parser = new ArgumentParser("vsim [options] <files>");
     // simulator available options
     parser.add("-help", "show this help message and exit");
+    parser.add("-docs", "open online V-Sim docs");
     parser.add("-all", "assemble all files in directory");
     parser.add("-bare", "bare machine (no pseudo-ops)");
     parser.add("-self", "enable self-modifying code");
@@ -102,6 +107,28 @@ public final class Cmd {
       Cmd.title();
       parser.print();
       System.exit(0);
+    }
+    // check -docs flag
+    if (parser.hasFlag("-docs")) {
+      String url;
+      try {
+        url = new Scanner(new URL("https://git.io/fhnDr").openStream(), "UTF-8").useDelimiter("\\A").next().trim();
+      } catch (Exception e) {
+        url = null;
+      }
+      if (url == null) {
+        Cmd.title();
+        Message.error("could not get docs page url");
+        System.exit(1);
+      }
+      try {
+        Desktop.getDesktop().browse(new URI(url));
+        System.exit(0);
+      } catch (Exception ex) {
+        Cmd.title();
+        Message.error("could not open online docs, go to: " + url);
+        System.exit(1);
+      }
     }
     // check -license flag
     if (parser.hasFlag("-license")) {

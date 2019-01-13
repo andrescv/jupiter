@@ -17,11 +17,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.Scanner;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -396,7 +401,30 @@ public class MenuBarController {
 
   @FXML
   private void help(ActionEvent e) {
-    // TODO
+    Task<Void> showHelp = new Task<Void>() {
+
+      @Override
+      protected Void call() {
+        String url;
+        try {
+          url = new Scanner(new URL("https://git.io/fhnDr").openStream(), "UTF-8").useDelimiter("\\A").next().trim();
+        } catch (Exception e) {
+          url = null;
+        }
+        if (url == null)
+          Platform.runLater(() -> Message.warning("could not get docs page url, try again later"));
+        try {
+          Desktop.getDesktop().browse(new URI(url));
+        } catch (Exception ex) {
+          final String msgURL = url;
+          Platform.runLater(() -> Message.error("could not open online docs, try again later or go to: " + msgURL));
+        }
+        return null;
+      }
+    };
+    Thread t = new Thread(showHelp);
+    t.setDaemon(true);
+    t.start();
   }
 
   @FXML
