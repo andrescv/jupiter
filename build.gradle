@@ -29,18 +29,18 @@ dependencies {
 sourceSets {
   main {
     java {
-      srcDirs = ['vsim']
+      srcDirs = [Paths.get('V-Sim', 'src')]
     }
     resources {
-      srcDirs = ['resources']
+      srcDirs = [Paths.get('V-Sim', 'resources')]
     }
   }
   test {
     java {
-      srcDirs = [Paths.get("test", "vsim")]
+      srcDirs = [Paths.get("V-Sim", "test")]
     }
     resources {
-      srcDirs = [Paths.get("test", "resources")]
+      srcDirs = [Paths.get("V-Sim", "test", "resources")]
     }
   }
 }
@@ -89,7 +89,7 @@ spotless {
 
 // delete previous lexer class
 task deleteLexer(type: Delete) {
-  delete Paths.get("vsim", "assembler", "Lexer.java")
+  delete Paths.get("V-Sim", "src", "vsim", "assembler", "Lexer.java")
 }
 
 // create main lexer class
@@ -97,13 +97,13 @@ task lexer(type: Exec) {
   dependsOn 'deleteLexer'
   commandLine([
     'java', '-jar', Paths.get("lib", "jflex-1.7.0.jar"),
-    Paths.get("syntax", "lexer.flex"), "-d", Paths.get("vsim", "assembler")
+    Paths.get("V-Sim", "src", "syntax", "lexer.flex"), "-d", Paths.get("V-Sim", "src", "vsim", "assembler")
   ])
 }
 
 // delete previous GUI lexer class
 task deleteGUILexer(type: Delete) {
-  delete Paths.get("vsim", "gui", "utils", "Lexer.java")
+  delete Paths.get("V-Sim", "src", "vsim", "gui", "utils", "Lexer.java")
 }
 
 // create GUI lexer class
@@ -111,18 +111,18 @@ task GUILexer(type: Exec) {
   dependsOn 'deleteGUILexer'
   commandLine([
     'java', '-jar', Paths.get("lib", "jflex-1.7.0.jar"),
-    Paths.get("syntax", "guilexer.flex"), "-d", Paths.get("vsim", "gui", "utils")
+    Paths.get("V-Sim", "src", "syntax", "guilexer.flex"), "-d", Paths.get("V-Sim", "src", "vsim", "gui", "utils")
   ])
 }
 
 // delete main parser class
 task deleteParser(type: Delete) {
-  delete Paths.get("vsim", "assembler", "Parser.java")
+  delete Paths.get("V-Sim", "src", "vsim", "assembler", "Parser.java")
 }
 
 // delete main parser symbols class
 task deleteToken(type: Delete) {
-  delete Paths.get("vsim", "assembler", "Token.java")
+  delete Paths.get("V-Sim", "src", "vsim", "assembler", "Token.java")
 }
 
 // create main parser and symbols class
@@ -132,7 +132,7 @@ task parser(type: Exec) {
   commandLine([
     'java', '-jar', Paths.get("lib", "java-cup-11b.jar"),
     "-parser", "Parser", "-symbols", "Token", "-destdir",
-    Paths.get("vsim", "assembler"), Paths.get("syntax", "parser.cup")
+    Paths.get("V-Sim", "src", "vsim", "assembler"), Paths.get("V-Sim", "src", "syntax", "parser.cup")
   ])
 }
 

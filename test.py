@@ -33,7 +33,7 @@ def main():
     nsuccess = 0
     errors = []
     try:
-        for f in sorted(glob('test/riscv-tests/*')):
+        for f in sorted(glob('riscv-tests/*')):
             # ignore readme and license files
             if not f.endswith('.s'):
                 continue
