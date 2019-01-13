@@ -53,6 +53,7 @@ public final class Cmd {
     parser.add("-debug", "start the debugger");
     parser.add("-version", "show the simulator version and exit");
     parser.add("-license", "show license and copyright notice and exit");
+    parser.add("-trap", "load a trap handler file", "<traphandler>");
     parser.add("-iset", "print available RISC-V instructions and exit");
     // parse args
     parser.parse(args);
@@ -77,6 +78,22 @@ public final class Cmd {
       if (!Settings.setStart(parser.value("-start"), false)) {
         Cmd.title();
         Message.error("invalid start label: " + parser.value("-start"));
+        System.exit(1);
+      }
+    }
+    // try to set trap handler
+    if (parser.hasFlag("-trap")) {
+      String traphandler = parser.value("-trap");
+      if (!(traphandler.endsWith(".s") || traphandler.endsWith(".asm"))) {
+        Cmd.title();
+        Message.error("invalid trap handler extension expected .s or .asm (input: " + traphandler + ")");
+        System.exit(1);
+      }
+      Settings.TRAP = new File(traphandler);
+      if (!Settings.TRAP.exists()) {
+        Settings.TRAP = null;
+        Cmd.title();
+        Message.error("invalid trap handler '" + traphandler + "' file does not exists");
         System.exit(1);
       }
     }
@@ -111,23 +128,55 @@ public final class Cmd {
     }
     // get files
     ArrayList<File> files = parser.targets();
+    // check files
+    for (File f : files) {
+      if (!f.exists()) {
+        Cmd.title();
+        Message.error("file '" + f + "' does not exists");
+        System.exit(1);
+      }
+      if (!(f.getName().endsWith(".s") || f.getName().endsWith(".asm"))) {
+        Cmd.title();
+        Message.error("invalid file extension expected .s or .asm (cause: " + f + ")");
+        System.exit(1);
+      }
+    }
     // assemble all files in directory
     if (parser.hasFlag("-all"))
       Cmd.getFilesInDir(files);
-    if (files.size() > 0) {
-      if (Settings.ROOT != null) {
-        File trapfile = new File(Settings.ROOT + File.separator + "traphandler.s");
-        if (trapfile.exists()) {
-          files.add(0, Settings.TRAP);
-          Settings.TRAP = trapfile;
-        }
-      }
-    } else {
+    // add traphandler
+    Cmd.addTrapHandler(files);
+    // check if no files passed
+    if (files.isEmpty()) {
       Cmd.title();
-      Message.panic("no input files");
+      Message.panic("no RISC-V files passed");
     }
     files.trimToSize();
     return files;
+  }
+
+  /**
+   * Adds trap handler to file list.
+   *
+   * @param files array list where trap handler file will be added
+   */
+  public static void addTrapHandler(ArrayList<File> files) {
+    if (files.size() > 0) {
+      // load traphandler from V-Sim install dir
+      if (Settings.TRAP == null) {
+        try {
+          String root = new File(Cmd.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+          File trapfile = new File(root + File.separator + "traphandler.s");
+          if (trapfile.exists())
+            Settings.TRAP = trapfile;
+        } catch (Exception e) {
+          /* NOTHING */
+        }
+      }
+      // add trap handler at the head of the list
+      if (Settings.TRAP != null)
+        files.add(0, Settings.TRAP);
+    }
   }
 
   /**
@@ -148,7 +197,12 @@ public final class Cmd {
                 return true;
             }
             return false;
-          }).forEach(path -> files.add(new File(path.toString())));
+          }).forEach(path -> {
+            File f = new File(path.toString());
+            // avoid duplicated files
+            if (!files.contains(f))
+              files.add(f);
+          });
     } catch (IOException e) {
       Message.error("An error occurred while recursively searching the files in directory (aborting...)");
       if (!Settings.GUI)

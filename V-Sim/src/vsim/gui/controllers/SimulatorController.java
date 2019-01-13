@@ -205,18 +205,24 @@ public class SimulatorController {
     if (this.mainController.editorController.allSaved()) {
       ArrayList<File> files;
       if (Settings.ASSEMBLE_ONLY_OPEN)
-        files = this.mainController.editorController.getSavedPaths();
+        files = this.mainController.editorController.getSavedOpenPaths();
       else {
         files = new ArrayList<File>();
-        Cmd.getFilesInDir(files);
+        if (!Cmd.getFilesInDir(files)) {
+          Message.warning(
+              "assemble: operation cancelled, could not get files in dir" + System.getProperty("line.separator"));
+          this.mainController.loading(false);
+          return;
+        }
       }
+      // load trap handler
+      Cmd.addTrapHandler(files);
       if (files != null && files.size() > 0) {
         String assembling = files.toString();
         Message.log("assemble: assembling " + assembling.substring(1, assembling.length() - 1)
             + System.getProperty("line.separator"));
         LinkedProgram program = Linker.link(Assembler.assemble(files));
         if (program != null) {
-          Message.log("assemble: operation completed successfully" + System.getProperty("line.separator"));
           program.reset();
           this.debugger = new Debugger(program);
           ObservableList<InfoStatement> stmts = program.getInfoStatements();
@@ -261,8 +267,10 @@ public class SimulatorController {
           this.mainController.loading(false);
       } else
         this.mainController.loading(false);
-    } else
+    } else {
+      Message.warning("assemble: operation cancelled, save all open tabs first" + System.getProperty("line.separator"));
       this.mainController.loading(false);
+    }
   }
 
   /** Go simulator control, runs all the program. */

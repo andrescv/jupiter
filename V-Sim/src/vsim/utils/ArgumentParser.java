@@ -149,12 +149,22 @@ public final class ArgumentParser {
       else
         offset += 1;
       // add targets starting at this offset
-      for (int i = offset; this.values.get(i) != null; i++)
-        this.targets.add(new File(this.values.get(i)));
+      for (int i = offset; this.values.get(i) != null; i++) {
+        File f = new File(this.values.get(i));
+        if (!this.targets.contains(f))
+          this.targets.add(f);
+        else
+          Message.warning("duplicated files: " + f + " (ignoring)");
+      }
     } else {
       // targets = all values
-      for (int pos : this.values.keySet())
-        this.targets.add(new File(this.values.get(pos)));
+      for (int pos : this.values.keySet()) {
+        File f = new File(this.values.get(pos));
+        if (!this.targets.contains(f))
+          this.targets.add(f);
+        else
+          Message.warning("duplicated files: " + f + " (ignoring)");
+      }
     }
   }
 

@@ -30,9 +30,6 @@ public final class Settings {
 
 // GUI AND CLI SETTINGS
 
-  /** installation path */
-  public static File ROOT = null;
-
   /** trap handler path */
   public static File TRAP = null;
 
@@ -166,6 +163,21 @@ public final class Settings {
   /** Loads all saved preferences in GUI mode. */
   public static void load() {
     Settings.START = Settings.prefs.get("START", "main");
+    try {
+      String trap = Settings.prefs.get("TRAP", null);
+      if (trap != null)
+        Settings.TRAP = new File(trap);
+      else {
+        String root = new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+        File trapfile = new File(root + File.separator + "traphandler.s");
+        if (trapfile.exists())
+          Settings.TRAP = trapfile;
+      }
+    } catch (Exception e) {
+
+    }
+    if (Settings.TRAP != null && !Settings.TRAP.exists())
+      Settings.TRAP = null;
     Settings.BARE = Settings.prefs.getBoolean("BARE", false);
     Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", false);
     Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", false);
@@ -199,16 +211,6 @@ public final class Settings {
     Settings.CODE_AREA_ERROR = Settings.prefs.get("CODE_AREA_ERROR", "#ef4d13");
   }
 
-  /** This method sets the root path, i.e V-Sim source code path. */
-  public static void setRootPath() {
-    try {
-      File f = new File(VSim.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-      Settings.ROOT = new File(f.getParent());
-    } catch (Exception e) {
-      /* NOTHING */
-    }
-  }
-
   /**
    * Sets global start label.
    *
@@ -224,6 +226,31 @@ public final class Settings {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Sets trap handler.
+   *
+   * @param trap new trap handler file
+   * @return true if success, false if not
+   */
+  public static boolean setTrap(File trap) {
+    if (trap != null && trap.exists()) {
+      if (Settings.TRAP == null || Settings.TRAP != null && !trap.equals(Settings.TRAP)) {
+        Settings.prefs.put("TRAP", trap.getAbsolutePath());
+        Settings.TRAP = trap;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Clears saved trap handler.
+   */
+  public static void clearTrap() {
+    Settings.prefs.remove("TRAP");
+    Settings.TRAP = null;
   }
 
   /**

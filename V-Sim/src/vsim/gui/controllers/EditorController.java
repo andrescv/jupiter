@@ -319,7 +319,7 @@ public class EditorController {
    *
    * @return array list of open and saved paths
    */
-  protected ArrayList<File> getSavedPaths() {
+  protected ArrayList<File> getSavedOpenPaths() {
     ArrayList<File> files = new ArrayList<File>();
     for (Tab tab : this.editor.getTabs()) {
       EditorTab t = (EditorTab) tab;
@@ -510,7 +510,7 @@ public class EditorController {
    * @param oldPath old path prefix
    * @param newPath new path prefix
    */
-  private void renameOpenedTabsWith(File oldPath, File newPath) {
+  private void renameOpenTabsWith(File oldPath, File newPath) {
     for (Tab openTab : this.editor.getTabs()) {
       EditorTab tab = (EditorTab) openTab;
       if (tab.getPath() != null) {
@@ -593,7 +593,7 @@ public class EditorController {
       if (!oldPath.equals(newPath) && !newPath.exists()) {
         newPath.mkdirs();
         if (item.getPath().renameTo(newPath)) {
-          this.renameOpenedTabsWith(oldPath, newPath);
+          this.renameOpenTabsWith(oldPath, newPath);
           DirWatcher.rename(oldPath, newPath);
         } else
           Message.warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
@@ -641,9 +641,10 @@ public class EditorController {
           }
         }
         // try to rename path
-        if (item.getPath().renameTo(newPath))
-          tab.setPath(newPath);
-        else
+        if (item.getPath().renameTo(newPath)) {
+          if (tab != null)
+            tab.setPath(newPath);
+        } else
           Message
               .warning(String.format("could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
       }
