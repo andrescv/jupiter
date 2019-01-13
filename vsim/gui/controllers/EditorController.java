@@ -78,6 +78,10 @@ public class EditorController {
     this.initTree();
     // start directory watcher
     DirWatcher.start(this);
+    // add font size listener
+    Settings.CODE_AREA_FONT_SIZE.addListener((obs, oldVal, newVal) -> {
+      this.updateSettings();
+    });
   }
 
   /*-------------------------------------------------------*

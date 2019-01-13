@@ -23,10 +23,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import org.fxmisc.richtext.InlineCssTextArea;
 import vsim.simulator.Status;
 
 
@@ -41,7 +41,7 @@ public class ConsoleInput {
   /** user response */
   private String inputText;
   /** text input control */
-  private final TextArea area;
+  private final InlineCssTextArea area;
   /** key event filter */
   private final EventHandler<KeyEvent> listener;
   /** mouse event filter */
@@ -56,7 +56,7 @@ public class ConsoleInput {
    *
    * @param area text area control
    */
-  public ConsoleInput(TextArea area) {
+  public ConsoleInput(InlineCssTextArea area) {
     this.area = area;
     this.initialPos = -1;
     this.inputText = null;
@@ -71,13 +71,13 @@ public class ConsoleInput {
           case UP:
           case KP_UP:
           case PAGE_UP:
-            area.positionCaret(initialPos);
+            area.moveTo(initialPos);
             e.consume();
             break;
           case DOWN:
           case KP_DOWN:
           case PAGE_DOWN:
-            area.positionCaret(area.getLength());
+            area.moveTo(area.getLength());
             e.consume();
             break;
           // ensure always that caret position is >= initialPos
@@ -101,6 +101,9 @@ public class ConsoleInput {
                 area.appendText(System.getProperty("line.separator"));
               }
             }
+            // change area input color
+            if (initialPos < area.getLength())
+              area.setStyle(initialPos, area.getLength(), "-fx-fill: #4a148c;");
             break;
         }
       }
@@ -116,8 +119,11 @@ public class ConsoleInput {
         // control caret position
         if (type == MouseEvent.MOUSE_CLICKED || type == MouseEvent.MOUSE_RELEASED || type == MouseEvent.MOUSE_PRESSED) {
           if (e.getClickCount() == 1 && e.getButton() == MouseButton.PRIMARY) {
-            if (area.getCaretPosition() < initialPos)
-              area.positionCaret(initialPos);
+            if (area.getCaretPosition() < initialPos) {
+              area.setDisable(true);
+              area.moveTo(initialPos);
+              area.setDisable(false);
+            }
           } else
             e.consume();
         }
@@ -139,7 +145,7 @@ public class ConsoleInput {
   private void prepare() {
     Platform.runLater(() -> {
       this.initialPos = this.area.getLength();
-      this.area.positionCaret(this.initialPos);
+      this.area.moveTo(this.initialPos);
       this.area.addEventFilter(KeyEvent.ANY, this.listener);
       this.area.addEventFilter(MouseEvent.ANY, this.mouseListener);
       Status.STOPPED.addListener(this.stopListener);

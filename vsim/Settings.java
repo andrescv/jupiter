@@ -19,6 +19,7 @@ package vsim;
 
 import java.io.File;
 import java.util.prefs.Preferences;
+import javafx.beans.property.SimpleIntegerProperty;
 
 
 /** The Settings class contains the V-Sim simulator settings. */
@@ -109,7 +110,10 @@ public final class Settings {
   public static String CODE_AREA_FONT_FAMILY = "Envy Code R";
 
   /** code area font size */
-  public static int CODE_AREA_FONT_SIZE = 11;
+  public static final SimpleIntegerProperty CODE_AREA_FONT_SIZE = new SimpleIntegerProperty(11);
+
+  /** console font size */
+  public static int CONSOLE_FONT_SIZE = 11;
 
   /** code area selection color */
   public static String CODE_AREA_SELECTION = "#3b3b3b";
@@ -168,6 +172,7 @@ public final class Settings {
     Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", false);
     Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", false);
     Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", false);
+    Settings.CONSOLE_FONT_SIZE = Settings.prefs.getInt("CONSOLE_FONT_SIZE", 11);
     Settings.CODE_AREA_TAB_SIZE = Settings.prefs.getInt("CODE_AREA_TAB_SIZE", 4);
     Settings.CODE_AREA_AUTO_INDENT = Settings.prefs.getBoolean("CODE_AREA_AUTO_INDENT", true);
     Settings.CODE_AREA_SYNTAX_THEME = Settings.prefs.get("CODE_AREA_SYNTAX_THEME", "material");
@@ -175,7 +180,7 @@ public final class Settings {
     Settings.CODE_AREA_FONT_WEIGHT = Settings.prefs.get("CODE_AREA_FONT_WEIGHT", "normal");
     Settings.CODE_AREA_FONT_STYLE = Settings.prefs.get("CODE_AREA_FONT_STYLE", "normal");
     Settings.CODE_AREA_FONT_FAMILY = Settings.prefs.get("CODE_AREA_FONT_FAMILY", "Envy Code R");
-    Settings.CODE_AREA_FONT_SIZE = Settings.prefs.getInt("CODE_AREA_FONT_SIZE", 11);
+    Settings.CODE_AREA_FONT_SIZE.set(Settings.prefs.getInt("CODE_AREA_FONT_SIZE", 11));
     Settings.CODE_AREA_SELECTION = Settings.prefs.get("CODE_AREA_SELECTION", "#3b3b3b");
     Settings.CODE_AREA_LINENO_COLOR = Settings.prefs.get("CODE_AREA_LINENO_COLOR", "#b2ccd6");
     Settings.CODE_AREA_LINENO_BG = Settings.prefs.get("CODE_AREA_LINENO_BG", "#212121");
@@ -288,6 +293,24 @@ public final class Settings {
   }
 
   /**
+   * Increments console font size.
+   */
+  public static void incConsoleFontSize() {
+    int size = Math.min(Settings.CONSOLE_FONT_SIZE + 1, 72);
+    Settings.prefs.putInt("CONSOLE_FONT_SIZE", size);
+    Settings.CONSOLE_FONT_SIZE = size;
+  }
+
+  /**
+   * Decrements console font size.
+   */
+  public static void decConsoleFontSize() {
+    int size = Math.max(Settings.CONSOLE_FONT_SIZE - 1, 6);
+    Settings.prefs.putInt("CONSOLE_FONT_SIZE", size);
+    Settings.CONSOLE_FONT_SIZE = size;
+  }
+
+  /**
    * Sets code area syntax theme.
    *
    * @param theme theme name
@@ -358,13 +381,27 @@ public final class Settings {
   }
 
   /**
+   * Increments code area font size.
+   */
+  public static void incCodeAreaFontSize() {
+    Settings.setCodeAreaFontSize(Math.min(Settings.CODE_AREA_FONT_SIZE.get() + 1, 72));
+  }
+
+  /**
+   * Decrements code area font size.
+   */
+  public static void decCodeAreaFontSize() {
+    Settings.setCodeAreaFontSize(Math.max(Settings.CODE_AREA_FONT_SIZE.get() - 1, 6));
+  }
+
+  /**
    * Changes code area font size .
    *
    * @param size font size
    */
   public static void setCodeAreaFontSize(int size) {
     Settings.prefs.putInt("CODE_AREA_FONT_SIZE", size);
-    Settings.CODE_AREA_FONT_SIZE = size;
+    Settings.CODE_AREA_FONT_SIZE.set(size);
   }
 
   /**

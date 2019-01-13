@@ -54,7 +54,7 @@ public final class Errors {
     String source = debug.getSource();
     int lineno = debug.getLineNumber();
     int column = debug.getColumnNumber();
-    if (column < source.length() && !Settings.GUI) {
+    if (column < source.length()) {
       // column pointer
       String pointer = "                    ";
       for (int i = 0; i < column - 1; i++)
@@ -92,7 +92,7 @@ public final class Errors {
         Message.error(msg + System.getProperty("line.separator"));
       // report how many errors ocurred
       if (Settings.GUI)
-        IO.guistderr.postMessage(Errors.errors.size() + " errors(s)" + System.getProperty("line.separator"));
+        IO.guistderr.postError(Errors.errors.size() + " errors(s)" + System.getProperty("line.separator"));
       else {
         IO.stderr.println(Errors.errors.size() + " errors(s)");
         IO.stderr.flush();

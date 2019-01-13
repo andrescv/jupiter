@@ -162,7 +162,7 @@ public final class Ecall {
   private static void printInt() {
     int num = Globals.regfile.getRegister("a1");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(Integer.toString(num));
+      IO.guistdout.postRunMessage(Integer.toString(num), "#b71c1c");
     else
       IO.stdout.print(Integer.toString(num));
   }
@@ -174,7 +174,7 @@ public final class Ecall {
   private static void printFloat() {
     float num = Globals.fregfile.getRegister("fa0");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(Float.toString(num));
+      IO.guistdout.postRunMessage(Float.toString(num), "#b71c1c");
     else
       IO.stdout.print(Float.toString(num));
   }
@@ -192,7 +192,7 @@ public final class Ecall {
       buffer++;
     }
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(s.toString());
+      IO.guistdout.postRunMessage(s.toString(), "#1b5e20");
     else
       IO.stdout.print(s.toString());
   }
@@ -257,7 +257,9 @@ public final class Ecall {
   private static void exit() {
     if (Settings.GUI) {
       IO.guistdout.postRunMessage(System.getProperty("line.separator"));
-      IO.guistdout.postRunMessage("vsim: " + "exit(0)" + System.getProperty("line.separator"));
+      IO.guistdout.postRunMessage("vsim: " + "exit(", "#01579b");
+      IO.guistdout.postRunMessage("0", "#b71c1c");
+      IO.guistdout.postRunMessage(")" + System.getProperty("line.separator"), "#01579b");
     } else {
       IO.stdout.println();
       Message.log("exit(0)");
@@ -274,7 +276,7 @@ public final class Ecall {
   private static void printChar() {
     char c = (char) Globals.regfile.getRegister("a1");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(c + "");
+      IO.guistdout.postRunMessage(c + "", "#004d40");
     else
       IO.stdout.print(c + "");
   }
@@ -347,7 +349,9 @@ public final class Ecall {
     Status.EXIT.set(true);
     if (Settings.GUI) {
       IO.guistdout.postRunMessage(System.getProperty("line.separator"));
-      IO.guistdout.postRunMessage("vsim: " + "exit(" + status + ")" + System.getProperty("line.separator"));
+      IO.guistdout.postRunMessage("vsim: " + "exit(", "#01579b");
+      IO.guistdout.postRunMessage(status + "", "#b71c1c");
+      IO.guistdout.postRunMessage(")" + System.getProperty("line.separator"), "#01579b");
     } else {
       IO.stdout.println();
       Message.log("exit(" + status + ")");
@@ -397,7 +401,7 @@ public final class Ecall {
   private static void printHex() {
     int value = Globals.regfile.getRegister("a1");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(String.format("0x%08x", value));
+      IO.guistdout.postRunMessage(String.format("0x%08x", value), "#b71c1c");
     else
       IO.stdout.print(String.format("0x%08x", value));
   }
@@ -408,7 +412,7 @@ public final class Ecall {
   private static void printBin() {
     int value = Globals.regfile.getRegister("a1");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(String.format("0b%32s", Integer.toBinaryString(value)).replace(' ', '0'));
+      IO.guistdout.postRunMessage(String.format("0b%32s", Integer.toBinaryString(value)).replace(' ', '0'), "#b71c1c");
     else
       IO.stdout.print(String.format("0b%32s", Integer.toBinaryString(value)).replace(' ', '0'));
   }
@@ -419,7 +423,7 @@ public final class Ecall {
   private static void printUsgn() {
     int value = Globals.regfile.getRegister("a1");
     if (Settings.GUI)
-      IO.guistdout.postRunMessage(Long.toString(Integer.toUnsignedLong(value)));
+      IO.guistdout.postRunMessage(Long.toString(Integer.toUnsignedLong(value)), "#b71c1c");
     else
       IO.stdout.print(Long.toString(Integer.toUnsignedLong(value)));
   }

@@ -23,10 +23,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
+import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTabPane;
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.InlineCssTextArea;
+import vsim.Settings;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
 import vsim.gui.utils.ConsoleOutput;
@@ -44,12 +47,11 @@ public class MainController {
   @FXML protected Tab editorTab;
   /** Main tab pane simulator tab */
   @FXML protected Tab simTab;
+  /** Console tab */
+  @FXML protected Tab consoleTab;
 
   /** Simulator progress */
   @FXML protected JFXProgressBar progress;
-
-  /** Console text area */
-  @FXML protected TextArea console;
 
   /** Reference to editor controller */
   @FXML protected EditorController editorController;
@@ -108,27 +110,41 @@ public class MainController {
 
   /** Initialize V-Sim console text area. */
   private void initConsole() {
+    InlineCssTextArea console = new InlineCssTextArea();
+    console.setId("console");
     // assign the new gui "standard" input, output and err
-    IO.guistdin = new ConsoleInput(this.console);
-    IO.guistdout = new ConsoleOutput(this.console);
+    IO.guistdin = new ConsoleInput(console);
+    IO.guistdout = new ConsoleOutput(console);
     IO.guistderr = IO.guistdout;
     // input dialog
     IO.dialog = new InputDialog();
     // clear option
     MenuItem clear = new MenuItem("clear");
-    clear.setOnAction(e -> this.console.setText(""));
+    clear.setOnAction(e -> console.replaceText(0, console.getLength(), ""));
     clear.setGraphic(Icons.getImage("clear"));
     // copy option
     MenuItem copy = new MenuItem("copy");
-    copy.setOnAction(e -> this.console.copy());
+    copy.setOnAction(e -> console.copy());
     copy.setGraphic(Icons.getImage("copy"));
     // select all option
     MenuItem selectAll = new MenuItem("select all");
-    selectAll.setOnAction(e -> this.console.selectAll());
+    selectAll.setOnAction(e -> console.selectAll());
     selectAll.setGraphic(Icons.getImage("select"));
     // set context menu with this options
     ContextMenu menu = new ContextMenu();
     menu.getItems().addAll(clear, copy, selectAll);
-    this.console.setContextMenu(menu);
+    console.setContextMenu(menu);
+    console.addEventFilter(ScrollEvent.SCROLL, e -> {
+      if (e.isControlDown()) {
+        if (e.getDeltaY() > 0)
+          Settings.incConsoleFontSize();
+        else if (e.getDeltaY() < 0)
+          Settings.decConsoleFontSize();
+        console.setStyle(String.format("-fx-font-size: %dpt;", Settings.CONSOLE_FONT_SIZE));
+        e.consume();
+      }
+    });
+    console.setStyle(String.format("-fx-font-size: %dpt;", Settings.CONSOLE_FONT_SIZE));
+    this.consoleTab.setContent(new VirtualizedScrollPane<>(console));
   }
 }

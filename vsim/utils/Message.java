@@ -44,7 +44,7 @@ public final class Message {
    */
   public static void warning(String msg) {
     if (Settings.GUI)
-      IO.guistdout.postMessage("vsim: (warning) " + msg + System.getProperty("line.separator"));
+      IO.guistdout.postWarning("vsim: (warning) " + msg + System.getProperty("line.separator"));
     else
       IO.stdout.println("vsim: (warning) " + msg);
   }
@@ -56,7 +56,7 @@ public final class Message {
    */
   public static void error(String msg) {
     if (Settings.GUI)
-      IO.guistderr.postMessage("vsim: (error) " + msg + System.getProperty("line.separator"));
+      IO.guistderr.postError("vsim: (error) " + msg + System.getProperty("line.separator"));
     else
       IO.stderr.println("vsim: (error) " + msg);
   }
@@ -68,7 +68,7 @@ public final class Message {
    */
   public static void runError(String msg) {
     if (Settings.GUI)
-      IO.guistderr.postRunMessage("vsim: (error) " + msg + System.getProperty("line.separator"));
+      IO.guistderr.postRunError("vsim: (error) " + msg + System.getProperty("line.separator"));
     else
       Message.error(msg);
   }
@@ -81,7 +81,7 @@ public final class Message {
    */
   public static void panic(String msg) {
     if (Settings.GUI)
-      IO.guistderr.postMessage("vsim: (fatal error) " + msg + System.getProperty("line.separator"));
+      IO.guistderr.postError("vsim: (fatal error) " + msg + System.getProperty("line.separator"));
     else {
       IO.stderr.println("vsim: (fatal error) " + msg);
       System.exit(1);
