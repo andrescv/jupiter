@@ -460,7 +460,7 @@ public final class EditorDialog {
     else
       this.fontstyle.getSelectionModel().select("Bold Italic");
     this.fontfamily.getSelectionModel().select(Settings.CODE_AREA_FONT_FAMILY);
-    this.fontsize.setValue(Settings.CODE_AREA_FONT_SIZE);
+    this.fontsize.setValue(Settings.CODE_AREA_FONT_SIZE.get());
     // load tab size
     this.tabsize.setValue(Settings.CODE_AREA_TAB_SIZE);
     // change preview editor text based on settings

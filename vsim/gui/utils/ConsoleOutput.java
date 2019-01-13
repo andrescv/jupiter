@@ -18,24 +18,54 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.gui.utils;
 
 import javafx.application.Platform;
-import javafx.scene.control.TextArea;
+import org.fxmisc.richtext.InlineCssTextArea;
 
 
 public final class ConsoleOutput {
 
-  public static final String NL = System.getProperty("line.separator");
-  private final TextArea area;
+  private final InlineCssTextArea area;
 
-  public ConsoleOutput(TextArea area) {
+  public ConsoleOutput(InlineCssTextArea area) {
     this.area = area;
   }
 
+  private void appendText(String msg, String color) {
+    this.area.moveTo(this.area.getLength());
+    int pos = this.area.getLength();
+    this.area.appendText(msg);
+    this.area.setStyle(pos, this.area.getLength(), String.format("-fx-fill: %s ;", color));
+  }
+
+  public void postRunMessage(String msg, String color) {
+    Platform.runLater(() -> appendText(msg, color));
+  }
+
+  public void postMessage(String msg, String color) {
+    appendText(msg, color);
+  }
+
   public void postRunMessage(String msg) {
-    Platform.runLater(() -> this.area.appendText(msg));
+    Platform.runLater(() -> appendText(msg, "#1c1c1c"));
   }
 
   public void postMessage(String msg) {
-    this.area.appendText(msg);
+    appendText(msg, "#1c1c1c");
+  }
+
+  public void postRunWarning(String msg) {
+    Platform.runLater(() -> appendText(msg, "#f57f17"));
+  }
+
+  public void postWarning(String msg) {
+    appendText(msg, "#f57f17");
+  }
+
+  public void postRunError(String msg) {
+    Platform.runLater(() -> appendText(msg, "#b71c1c"));
+  }
+
+  public void postError(String msg) {
+    appendText(msg, "#b71c1c");
   }
 
 }

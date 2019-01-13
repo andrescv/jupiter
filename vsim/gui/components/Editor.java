@@ -24,6 +24,7 @@ import java.util.Collections;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.ScrollEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -128,6 +129,16 @@ public final class Editor extends CodeArea {
         }),
         // tab for tabsize
         InputMap.consume(EventPattern.keyPressed(KeyCode.TAB), e -> this.replaceSelection(this.tabSize))));
+    // zoom in and out
+    this.addEventFilter(ScrollEvent.SCROLL, e -> {
+      if (e.isControlDown()) {
+        if (e.getDeltaY() > 0)
+          Settings.incCodeAreaFontSize();
+        else if (e.getDeltaY() < 0)
+          Settings.decCodeAreaFontSize();
+        e.consume();
+      }
+    });
     // forget undo history
     this.getUndoManager().forgetHistory();
     // undo option
@@ -225,7 +236,7 @@ public final class Editor extends CodeArea {
         Settings.CODE_AREA_BACKSLASH, Settings.CODE_AREA_ERROR, Settings.CODE_AREA_BG, Settings.CODE_AREA_SELECTION,
         Settings.CODE_AREA_LINENO_COLOR, Settings.CODE_AREA_LINENO_BG, Settings.CODE_AREA_CARET_COLOR,
         Settings.CODE_AREA_LINE_HIGHLIGHT, Settings.CODE_AREA_FONT_WEIGHT, Settings.CODE_AREA_FONT_STYLE,
-        Settings.CODE_AREA_FONT_FAMILY, Settings.CODE_AREA_FONT_SIZE);
+        Settings.CODE_AREA_FONT_FAMILY, Settings.CODE_AREA_FONT_SIZE.get());
     this.setStyle(style);
   }
 

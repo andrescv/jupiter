@@ -442,34 +442,17 @@
 }
 
 /*
-  TextArea Styles
+  Console Styles
 */
 
-.text-area {
-  -fx-background-insets: 0;
-  -fx-background-radius: 0;
-  -fx-border-width: 0;
-  -fx-background-color: transparent, white, transparent, white;
-  -fx-text-box-border: white;
+#console {
+  -fx-font-family: 'Envy Code R';
+  -fx-font-size: 11pt;
+  -fx-padding: 2;
 }
 
-.text-area .content {
-  -fx-background-radius: 0;
-  -fx-background-color: transparent, white, transparent, white;
-}
-
-.text-area:focused .content {
-  -fx-background-color: transparent, white, transparent, white;
-}
-
-.text-area:focused {
-  -fx-highlight-fill: #7ecfff;
-}
-
-.text-area .content {
-  -fx-padding: 10px;
-  -fx-text-fill: gray;
-  -fx-highlight-fill: #7ecfff;
+#console .selection {
+  -fx-fill: rgba(183, 227, 255, 0.6);
 }
 
 /*
@@ -579,7 +562,7 @@
   -fx-font-size: 15px;
 }
 
-.table-view .table-cell:symFile .text {
+.table-view .table-cell:symFile > .text {
   -fx-fill: #01579b !important;
 }
 
