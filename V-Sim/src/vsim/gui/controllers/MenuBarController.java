@@ -20,8 +20,6 @@ package vsim.gui.controllers;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
-import java.util.Scanner;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -405,19 +403,11 @@ public class MenuBarController {
 
       @Override
       protected Void call() {
-        String url;
-        try {
-          url = new Scanner(new URL("https://git.io/fhnDr").openStream(), "UTF-8").useDelimiter("\\A").next().trim();
-        } catch (Exception e) {
-          url = null;
-        }
-        if (url == null)
-          Platform.runLater(() -> Message.warning("could not get docs page url, try again later"));
+        final String url = "https://git.io/fhnyL";
         try {
           Desktop.getDesktop().browse(new URI(url));
         } catch (Exception ex) {
-          final String msgURL = url;
-          Platform.runLater(() -> Message.error("could not open online docs, try again later or go to: " + msgURL));
+          Platform.runLater(() -> Message.error("could not open online docs, try again later or go to: " + url));
         }
         return null;
       }
