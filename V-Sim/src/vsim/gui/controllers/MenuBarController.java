@@ -119,6 +119,8 @@ public class MenuBarController {
   @FXML private MenuItem editor;
   /** Settings menu trap handler option */
   @FXML private MenuItem trap;
+  /** Settings menu clear trap handler option */
+  @FXML private MenuItem clearTrap;
 
   /** Help menu help option */
   @FXML private MenuItem help;
@@ -346,6 +348,8 @@ public class MenuBarController {
     if (start.length() > 0) {
       if (!Settings.setStart(start, true))
         Message.warning(String.format("invalid start label '%s'", start));
+      else
+        Message.log(String.format("new start label '%s' saved", start));
     }
   }
 
@@ -377,8 +381,13 @@ public class MenuBarController {
       chooser.setInitialDirectory(Settings.DIR);
     chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
     File file = chooser.showOpenDialog(this.mainController.stage);
-    if (file != null && file.exists())
-      Settings.TRAP = file;
+    if (Settings.setTrap(file))
+      Message.log(String.format("new trap handler '%s' saved", file));
+  }
+
+  @FXML
+  private void clearTrap(ActionEvent e) {
+    Settings.clearTrap();
   }
 
   /*-------------------------------------------------------*

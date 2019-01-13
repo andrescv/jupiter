@@ -35,8 +35,6 @@ public final class VSim {
    * @param args command line arguments
    */
   public static void main(String[] args) {
-    // set ROOT path
-    Settings.setRootPath();
     // run CLI only if some arguments are passed
     if (args.length > 0) {
       // parse arguments

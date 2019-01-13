@@ -50,6 +50,9 @@ public final class Assembler {
     // assemble all files
     if (files.size() > 0) {
       for (File file : files) {
+        // ignore empty files
+        if (file.length() == 0)
+          continue;
         // current filename
         Assembler.filename = file.getAbsolutePath();
         // start in text segment

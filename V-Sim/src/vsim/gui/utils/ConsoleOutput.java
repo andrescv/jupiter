@@ -53,11 +53,11 @@ public final class ConsoleOutput {
   }
 
   public void postRunWarning(String msg) {
-    Platform.runLater(() -> appendText(msg, "#f57f17"));
+    Platform.runLater(() -> appendText(msg, "#e65100"));
   }
 
   public void postWarning(String msg) {
-    appendText(msg, "#f57f17");
+    appendText(msg, "#e65100");
   }
 
   public void postRunError(String msg) {

@@ -4134,7 +4134,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                 else {
                   String list = l.toString();
                   list = list.substring(1, list.length() - 1);
-                  Errors.add(info(moderight, modeleft, mode + " " + list, Assembler.filename), "assembler",
+                  Errors.add(info(modeleft, moderight, mode + " " + list, Assembler.filename), "assembler",
                       "lossy conversion to byte: '" + value + "' -> " + (byte) (value & Data.BYTE_MASK));
                 }
               }

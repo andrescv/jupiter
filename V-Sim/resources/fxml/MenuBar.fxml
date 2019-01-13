@@ -344,6 +344,15 @@
                   </ImageView>
                </graphic>
             </MenuItem>
+            <MenuItem fx:id="clearTrap" mnemonicParsing="false" onAction="#clearTrap" text="Clear Trap Handler">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/trash.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
             <MenuItem fx:id="start" mnemonicParsing="false" onAction="#start" text="Change Start Label">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">

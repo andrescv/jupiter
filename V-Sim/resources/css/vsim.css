@@ -650,6 +650,10 @@
   -fx-cursor: HAND;
 }
 
+.jfx-check-box.setting {
+  -fx-label-padding: 0;
+}
+
 .jfx-check-box:selected .box {
   -fx-border-color: -fx-secondary !important;
   -fx-background-color: -fx-secondary !important;
@@ -658,7 +662,6 @@
 .jfx-check-box.setting:selected .box {
   -fx-border-color: #0F9D58 !important;
   -fx-background-color: #0F9D58 !important;
-  -fx-label-padding: 0;
 }
 
 .check-box {
