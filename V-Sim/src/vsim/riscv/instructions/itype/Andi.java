@@ -31,16 +31,25 @@ public final class Andi extends IType {
     super("andi", "andi rd, rs1, imm", "set x[rd] = x[rs1] & sext(imm), bitwise and");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return rs1 & imm;

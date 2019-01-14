@@ -35,11 +35,17 @@ public final class Ecall extends IType {
     super("ecall", "ecall", "makes a request to the supporting execution environment");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1110011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     // call ecall handler

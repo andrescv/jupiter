@@ -31,11 +31,17 @@ public final class Bgeu extends BType {
     super("bgeu", "bgeu rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] >= x[rs2], unsigned comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean comparison(int rs1, int rs2) {
     int cmp = Integer.compareUnsigned(rs1, rs2);

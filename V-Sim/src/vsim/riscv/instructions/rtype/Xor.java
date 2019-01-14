@@ -31,11 +31,17 @@ public final class Xor extends RType {
     super("xor", "xor rd, rs1, rs2", "set x[rd] = x[rs1] ^ x[rs2], bitwise xor");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b100;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 ^ rs2;

@@ -51,11 +51,17 @@ public final class FRType extends Statement {
     this.rs2 = rs2;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     /* DO NOTHING */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     Instruction inst = Globals.iset.get(this.mnemonic);

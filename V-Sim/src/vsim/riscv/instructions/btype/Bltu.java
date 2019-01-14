@@ -31,11 +31,17 @@ public final class Bltu extends BType {
     super("bltu", "bltu rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] < x[rs2], unsigned comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b110;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean comparison(int rs1, int rs2) {
     return Integer.compareUnsigned(rs1, rs2) < 0;

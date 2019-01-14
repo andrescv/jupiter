@@ -34,16 +34,25 @@ public final class Mulh extends RType {
     super("mulh", "mulh rd, rs1, rs2", "set x[rd] = (x[rs1] * x[rs2]) >> XLEN");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0000001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     long result = ((long) rs1) * ((long) rs2);

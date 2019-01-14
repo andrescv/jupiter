@@ -31,11 +31,17 @@ public final class Srl extends RType {
     super("srl", "srl rd, rs1, rs2", "set x[rd] = x[rs1] >>> x[rs2][4:0], logical shift right");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b101;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 >>> (rs2 & 0x1f);

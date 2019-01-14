@@ -34,16 +34,25 @@ public final class Fsgnjns extends FRType {
     super("fsgnjn.s", "fsgnjn.s rd, rs1, rs2", "set f[rd] = {~f[rs2][31], f[rs1][30:0]}");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0010000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     int ax = Float.floatToIntBits(rs1) & (Data.EXPONENT_MASK | Data.FRACTION_MASK);

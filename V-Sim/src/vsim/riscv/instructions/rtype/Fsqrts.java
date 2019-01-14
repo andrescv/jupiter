@@ -31,16 +31,25 @@ public final class Fsqrts extends FRType {
     super("fsqrt.s", "fsqrt.s rd, rs1", "set f[rd] = sqrt(f[rs1])");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0101100;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     return (float) Math.sqrt(rs1);

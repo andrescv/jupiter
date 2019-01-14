@@ -35,11 +35,17 @@ public final class Sw extends SType {
     super("sw", "sw rs2, offset(rs1)", "set memory[x[rs1] + sext(offset)] = x[rs2][31:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void setMemory(int rs1, int rs2, int imm) throws SimulationException {
     Globals.memory.storeWord(rs1 + imm, rs2);

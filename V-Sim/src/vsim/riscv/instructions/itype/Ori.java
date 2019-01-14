@@ -31,16 +31,25 @@ public final class Ori extends IType {
     super("ori", "ori rd, rs1, imm", "set x[rd] = x[rs1] | sext(imm), bitwise or");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b110;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return rs1 | imm;

@@ -35,16 +35,25 @@ public final class Lw extends IType {
     super("lw", "lw rd, offset(rs1)", "set x[rd] = sext(memory[x[rs1] + sext(offset)][31:0])");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0000011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     return Globals.memory.loadWord(rs1 + imm);

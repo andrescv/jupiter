@@ -35,16 +35,25 @@ public final class Lbu extends IType {
     super("lbu", "lbu rd, offset(rs1)", "set x[rd] = memory[x[rs1] + sext(offset)][7:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0000011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b100;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     return Globals.memory.loadByteUnsigned(rs1 + imm);

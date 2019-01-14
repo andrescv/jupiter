@@ -31,16 +31,25 @@ public final class Sltiu extends IType {
     super("sltiu", "sltiu rd, rs1, imm", "set x[rd] = 1 if x[rs1] < sext(imm) else 0, unsigned comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return (Integer.compareUnsigned(rs1, imm) < 0) ? 1 : 0;

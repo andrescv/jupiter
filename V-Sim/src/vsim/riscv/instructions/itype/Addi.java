@@ -31,11 +31,17 @@ public final class Addi extends IType {
     super("addi", "addi rd, rs1, imm", "set x[rd] = x[rs1] + sext(imm), overflow is ignored");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return rs1 + imm;

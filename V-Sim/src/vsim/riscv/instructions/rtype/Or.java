@@ -31,11 +31,17 @@ public final class Or extends RType {
     super("or", "or rd, rs1, rs2", "set x[rd] = x[rs1] | x[rs2], bitwise or");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b110;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 | rs2;

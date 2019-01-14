@@ -31,16 +31,25 @@ public final class Slti extends IType {
     super("slti", "slti rd, rs1, imm", "set x[rd] = 1 if x[rs1] < sext(imm) else 0, signed comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return (rs1 < imm) ? 1 : 0;

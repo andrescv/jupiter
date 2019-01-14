@@ -34,16 +34,25 @@ public final class Fsgnjxs extends FRType {
     super("fsgnjx.s", "fsgnjx.s rd, rs1, rs2", "set f[rd] = {f[rs1][31] ^ f[rs2][31], f[rs1][30:0]}");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0010000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     int ax = Float.floatToIntBits(rs1);

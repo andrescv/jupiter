@@ -35,11 +35,17 @@ public final class Ebreak extends IType {
     super("ebreak", "ebreak", "used by debuggers to cause control to be transferred back to a debugging environment");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1110011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     throw new BreakpointException();

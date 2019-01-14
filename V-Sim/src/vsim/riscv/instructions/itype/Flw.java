@@ -40,16 +40,25 @@ public final class Flw extends Instruction {
     super(Format.I, "flw", "flw rd, offset(rs1)", "set f[rd] = memory[x[rs1] + sext(offset)][31:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0000111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
@@ -59,6 +68,9 @@ public final class Flw extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

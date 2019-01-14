@@ -42,6 +42,9 @@ abstract class SType extends Instruction {
     super(Format.S, mnemonic, usage, description);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0100011;
@@ -57,6 +60,12 @@ abstract class SType extends Instruction {
    */
   protected abstract void setMemory(int rs1, int rs2, int imm) throws SimulationException;
 
+  /**
+   * Gets immediate offset of an S-Type instruction.
+   *
+   * @param code machine code
+   * @return immediate offset
+   */
   private int getImm(MachineCode code) {
     int imm_11_5 = code.get(InstructionField.IMM_11_5);
     int imm_4_0 = code.get(InstructionField.IMM_4_0);
@@ -64,6 +73,9 @@ abstract class SType extends Instruction {
     return Data.signExtend(imm, 12);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
@@ -72,6 +84,9 @@ abstract class SType extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

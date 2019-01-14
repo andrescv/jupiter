@@ -55,11 +55,17 @@ public final class R4Type extends Statement {
     this.rs3 = rs3;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     /* DO NOTHING */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     Instruction inst = Globals.iset.get(this.mnemonic);

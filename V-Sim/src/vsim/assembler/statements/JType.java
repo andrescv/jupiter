@@ -58,11 +58,17 @@ public final class JType extends Statement {
     this.target = new Relocation(Relocation.DEFAULT, target, debug);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     this.target.resolve(0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     int imm = this.target.resolve(pc);

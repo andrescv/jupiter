@@ -31,11 +31,17 @@ public final class Fnmadds extends FR4Type {
     super("fnmadd.s", "fnmadd.s rd, rs1, rs2, rs3", "set f[rd] = -f[rs1] * f[rs2] - f[rs3]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1001111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2, float rs3) {
     return -((rs1 * rs2) + rs3);

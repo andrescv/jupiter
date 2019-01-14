@@ -64,11 +64,17 @@ abstract class JType extends Instruction {
     return Data.signExtend(imm, 21);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(this.getImm(code)));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

@@ -31,11 +31,17 @@ public final class Bge extends BType {
     super("bge", "bge rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] >= x[rs2], signed comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b101;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean comparison(int rs1, int rs2) {
     return rs1 >= rs2;

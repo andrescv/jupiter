@@ -17,20 +17,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.utils;
 
+/** The Token class is used only in the GUI lexer for style spans. */
 public final class Token {
 
+  /** class/style name */
   private String style;
+  /** style span length */
   private int length;
 
+  /**
+   * Creates a new Token given a class/style name and the length of this token.
+   *
+   * @param style class/style name
+   * @param length token length
+   */
   public Token(String style, int length) {
     this.style = style;
     this.length = length;
   }
 
+  /**
+   * Gets the token style/class.
+   *
+   * @return token style/class
+   */
   public String getStyle() {
     return this.style;
   }
 
+  /**
+   * Gets the token length.
+   *
+   * @return token length
+   */
   public int getLength() {
     return this.length;
   }

@@ -52,6 +52,9 @@ abstract class IType extends Instruction {
    */
   protected abstract int compute(int rs1, int imm) throws SimulationException;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) throws SimulationException {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
@@ -61,6 +64,9 @@ abstract class IType extends Instruction {
       Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

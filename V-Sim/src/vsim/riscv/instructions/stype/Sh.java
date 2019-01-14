@@ -35,11 +35,17 @@ public final class Sh extends SType {
     super("sh", "sh rs2, offset(rs1)", "set memory[x[rs1] + sext(offset)] = x[rs2][15:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void setMemory(int rs1, int rs2, int imm) throws SimulationException {
     Globals.memory.storeHalf(rs1 + imm, rs2);

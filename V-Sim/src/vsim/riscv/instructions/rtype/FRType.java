@@ -49,11 +49,17 @@ abstract class FRType extends Instruction {
    */
   protected abstract float compute(float rs1, float rs2);
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     float rs1 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
@@ -62,6 +68,9 @@ abstract class FRType extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();
