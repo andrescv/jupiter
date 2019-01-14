@@ -301,7 +301,7 @@
   -fx-spacing: 5;
 }
 
-#goBtn, #stopBtn, #stepBtn, #backstepBtn, #resetBtn, #dumpBtn, #downBtn, #upBtn {
+#goBtn, #stopBtn, #stepBtn, #backstepBtn, #resetBtn, #dumpCodeBtn, #dumpDataBtn, #downBtn, #upBtn {
   -fx-cursor: hand;
   -fx-font-family: 'Roboto';
   -fx-font-weight: bold;
@@ -328,8 +328,12 @@
   -fx-background-color: #ffa000;
 }
 
-#dumpBtn {
+#dumpCodeBtn {
   -fx-background-color: #7b1fa2;
+}
+
+#dumpDataBtn {
+  -fx-background-color: #3949ab;
 }
 
 #upBtn {

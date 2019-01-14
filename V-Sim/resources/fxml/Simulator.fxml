@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.62" prefHeight="553.0" prefWidth="837.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
+<SplitPane dividerPositions="0.62" prefHeight="624.0" prefWidth="966.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
    <items>
       <VBox alignment="CENTER" minWidth="520.0" prefHeight="263.0" prefWidth="520.0">
          <children>
@@ -62,11 +62,20 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton id="dumpBtn" fx:id="dumpBtn" text="Dump">
+                  <JFXButton id="dumpCodeBtn" fx:id="dumpCodeBtn" text="Dump Code">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../img/icons/dumpBtn.png" />
+                              <Image url="@../img/icons/code.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton id="dumpDataBtn" fx:id="dumpDataBtn" layoutX="491.0" layoutY="10.0" text="Dump Data">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/icons/data.png" />
                            </image>
                         </ImageView>
                      </graphic>

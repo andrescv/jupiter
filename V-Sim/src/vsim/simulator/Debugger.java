@@ -547,6 +547,15 @@ public final class Debugger {
   }
 
   /**
+   * Gets linked program.
+   *
+   * @return linked program
+   */
+  public LinkedProgram getProgram() {
+    return this.program;
+  }
+
+  /**
    * This method creates a command line interface that the user can use to interact with the debugger.
    */
   public void run() {
