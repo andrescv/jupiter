@@ -31,11 +31,17 @@ public final class Slt extends RType {
     super("slt", "slt rd, rs1, rs2", "set x[rd] = 1 if x[rs1] < x[rs2] else 0, signed comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return (rs1 < rs2) ? 1 : 0;

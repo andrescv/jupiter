@@ -31,11 +31,17 @@ public final class Fadds extends FRType {
     super("fadd.s", "fadd.s rd, rs1, rs2", "set f[rd] = f[rs1] + f[rs2]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     return rs1 + rs2;

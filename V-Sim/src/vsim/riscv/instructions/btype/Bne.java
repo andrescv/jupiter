@@ -31,11 +31,17 @@ public final class Bne extends BType {
     super("bne", "bne rs1, rs2, offset", "set pc = pc + sext(offset), if x[rs1] != x[rs2]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean comparison(int rs1, int rs2) {
     return rs1 != rs2;

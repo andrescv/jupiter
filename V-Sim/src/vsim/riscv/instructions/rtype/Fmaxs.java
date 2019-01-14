@@ -34,16 +34,25 @@ public final class Fmaxs extends FRType {
     super("fmax.s", "fmax.s rd, rs1, rs2", "set f[rd] = max(f[rs1], f[rs2])");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0010100;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     // if at least one input is a signaling NaN, return canonical NaN

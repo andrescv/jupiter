@@ -34,16 +34,25 @@ public final class Mulhsu extends RType {
     super("mulhsu", "mulhsu rd, rs1, rs2", "set x[rd] = (x[rs1] * unsigned(x[rs2])) >> XLEN");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b010;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0000001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     long result = ((long) rs1) * Integer.toUnsignedLong(rs2);

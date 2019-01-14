@@ -34,11 +34,17 @@ public final class Jal extends JType {
     super("jal", "jal rd, offset", "set x[rd] = pc + 4 and pc = pc + sext(offset)");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1101111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int imm) {
     int pc = Globals.regfile.getProgramCounter();

@@ -31,11 +31,17 @@ public final class Lui extends UType {
     super("lui", "lui rd, imm", "set x[rd] = imm << 12");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0110111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int imm) {
     return imm << 12;

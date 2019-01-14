@@ -31,11 +31,17 @@ public final class Sltu extends RType {
     super("sltu", "sltu rd, rs1, rs2", "set x[rd] = 1 if x[rs1] < x[rs2] else 0, unsigned comparison");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return (Integer.compareUnsigned(rs1, rs2) < 0) ? 1 : 0;

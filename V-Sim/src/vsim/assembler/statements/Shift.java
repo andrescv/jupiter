@@ -58,11 +58,17 @@ public final class Shift extends Statement {
     this.shamt = shamt;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     /* DO NOTHING */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     // check range

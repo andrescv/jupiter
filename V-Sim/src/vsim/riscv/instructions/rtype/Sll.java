@@ -31,11 +31,17 @@ public final class Sll extends RType {
     super("sll", "sll rd, rs1, rs2", "set x[rd] = x[rs1] << x[rs2][4:0], logical shift left");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 << (rs2 & 0x1f);

@@ -70,6 +70,9 @@ abstract class BType extends Instruction {
     return Data.signExtend(imm, 13);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     int rs1 = Globals.regfile.getRegister(code.get(InstructionField.RS1));
@@ -82,6 +85,9 @@ abstract class BType extends Instruction {
       Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

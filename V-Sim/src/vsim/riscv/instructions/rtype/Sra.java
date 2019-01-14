@@ -31,16 +31,25 @@ public final class Sra extends RType {
     super("sra", "sra rd, rs1, rs2", "set x[rd] = x[rs1] >> x[rs2][4:0], arithmetic shift right");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b101;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0100000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 >> (rs2 & 0x1f);

@@ -40,6 +40,7 @@ public final class DebugInfo {
    * Unique constructor that initializes a new debug information.
    *
    * @param lineno the line number of this debug information
+   * @param column the column number of this debug information
    * @param source the source line of this debug information
    * @param filename the filename of this debug information
    */

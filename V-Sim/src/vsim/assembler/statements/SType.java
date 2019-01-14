@@ -59,12 +59,18 @@ public final class SType extends Statement {
     this.imm = imm;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     if (this.imm instanceof Relocation)
       ((Relocation) this.imm).resolve(0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     int imm;

@@ -38,21 +38,33 @@ public final class Fcvtswu extends Instruction {
     super(Format.R, "fcvt.s.wu", "fcvt.s.wu rd, rs1", "set f[rd] = (float)(unsigned(x[rs1]))");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b1101000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     int value = Globals.regfile.getRegister(code.get(InstructionField.RS1));
@@ -60,6 +72,9 @@ public final class Fcvtswu extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

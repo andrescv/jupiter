@@ -35,16 +35,25 @@ public final class Lh extends IType {
     super("lh", "lh rd, offset(rs1)", "set x[rd] = sext(memory[x[rs1] + sext(offset)][15:0])");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0000011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) throws SimulationException {
     return Globals.memory.loadHalf(rs1 + imm);

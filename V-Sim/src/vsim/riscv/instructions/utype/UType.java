@@ -48,12 +48,18 @@ abstract class UType extends Instruction {
    */
   protected abstract int compute(int imm);
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(code.get(InstructionField.IMM_31_12)));
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

@@ -34,11 +34,17 @@ public final class Auipc extends UType {
     super("auipc", "auipc rd, imm", "set x[rd] = imm << 12 + pc");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int imm) {
     return (imm << 12) + Globals.regfile.getProgramCounter();

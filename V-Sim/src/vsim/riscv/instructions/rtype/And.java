@@ -31,11 +31,17 @@ public final class And extends RType {
     super("and", "and rd, rs1, rs2", "set x[rd] = x[rs1] & x[rs2], bitwise and");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int rs2) {
     return rs1 & rs2;

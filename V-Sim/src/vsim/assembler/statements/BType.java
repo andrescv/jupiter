@@ -62,11 +62,17 @@ public final class BType extends Statement {
     this.offset = new Relocation(Relocation.DEFAULT, offset, debug);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void resolve() {
     this.offset.resolve(0);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void build(int pc) {
     int imm = this.offset.resolve(pc);

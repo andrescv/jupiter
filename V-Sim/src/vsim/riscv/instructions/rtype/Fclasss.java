@@ -40,21 +40,33 @@ public final class Fclasss extends Instruction {
         "set x[rd] = 10-bit mask that indicates the class of the floating-point register f[rs1]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b1110000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     int out = 0;
@@ -92,6 +104,9 @@ public final class Fclasss extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

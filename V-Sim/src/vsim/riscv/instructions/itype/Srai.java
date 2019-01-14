@@ -31,21 +31,33 @@ public final class Srai extends IType {
     super("srai", "srai rd, rs1, shamt", "set x[rd] = x[rs1] >> shamt, arithmetic shift right");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b101;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0100000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return rs1 >> (imm & 0x1f);

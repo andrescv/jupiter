@@ -38,16 +38,25 @@ public final class Fmvwx extends Instruction {
     super(Format.R, "fmv.w.x", "fmv.w.x rd, rs1", "set f[rd] = x[rs1][31:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b1111000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     Globals.fregfile.setRegister(code.get(InstructionField.RD),
@@ -55,6 +64,9 @@ public final class Fmvwx extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

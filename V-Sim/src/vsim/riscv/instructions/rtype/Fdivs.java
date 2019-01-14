@@ -31,16 +31,25 @@ public final class Fdivs extends FRType {
     super("fdiv.s", "fdiv.s rd, rs1, rs2", "set f[rd] = f[rs1] / f[rs2]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b111;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b0001100;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float compute(float rs1, float rs2) {
     return rs1 / rs2;

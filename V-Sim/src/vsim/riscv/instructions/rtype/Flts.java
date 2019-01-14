@@ -38,21 +38,33 @@ public final class Flts extends Instruction {
     super(Format.R, "flt.s", "flt.s rd, rs1, rs2", "set x[rd] = 1 if f[rs1] < f[rs2] else 0");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b1010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b001;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct7() {
     return 0b1010000;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute(MachineCode code) {
     float rs1 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS1));
@@ -62,6 +74,9 @@ public final class Flts extends Instruction {
     Globals.regfile.incProgramCounter();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String disassemble(MachineCode code) {
     String op = this.getMnemonic();

@@ -31,16 +31,25 @@ public final class Srli extends IType {
     super("srli", "srli rd, rs1, shamt", "set x[rd] = x[rs1] >>> shamt, logical shift right");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOpCode() {
     return 0b0010011;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getFunct3() {
     return 0b101;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected int compute(int rs1, int imm) {
     return rs1 >>> (imm & 0x1f);

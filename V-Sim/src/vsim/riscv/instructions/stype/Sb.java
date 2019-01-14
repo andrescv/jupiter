@@ -35,6 +35,9 @@ public final class Sb extends SType {
     super("sb", "sb rs2, offset(rs1)", "set memory[x[rs1] + sext(offset)] = x[rs2][7:0]");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void setMemory(int rs1, int rs2, int imm) throws SimulationException {
     Globals.memory.storeByte(rs1 + imm, rs2);
