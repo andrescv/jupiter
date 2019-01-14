@@ -119,6 +119,7 @@ public final class Linker {
       Linker.dataAddress += Data.WORD_LENGTH;
     // save heap segment start address
     MemorySegments.HEAP_SEGMENT = Linker.dataAddress;
+    MemorySegments.HEAP_SEGMENT_BEGIN = MemorySegments.HEAP_SEGMENT;
   }
 
   /**
@@ -211,30 +212,17 @@ public final class Linker {
       LinkedProgram program = Linker.linkPrograms(programs);
       // report errors
       if (!Errors.report()) {
-        // dump statements ?
-        if (Settings.DUMP != null) {
-          File file = new File(Settings.DUMP);
-          try {
-            // create file if necessary
-            if (!file.exists())
-              file.createNewFile();
-            // use info statements to dump machine code
-            try {
-              BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-              for (InfoStatement stmt : program.getInfoStatements()) {
-                bw.write(stmt.getMachineCode().substring(2));
-                bw.newLine();
-              }
-              bw.close();
-              Message.log("machine code dumped to: " + file + System.getProperty("line.separator"));
-            } catch (IOException e) {
-              Message.error("the file " + file + " could not be written");
-            }
-          } catch (IOException e) {
-            Message.warning("the file " + file + " could not be created");
-          } finally {
-            Settings.DUMP = null;
-          }
+        // dump code statements ?
+        if (Settings.CODE != null) {
+          File file = new File(Settings.CODE);
+          Linker.dumpCode(program, file);
+          Settings.CODE = null;
+        }
+        // dump static data ?
+        if (Settings.DATA != null) {
+          File file = new File(Settings.DATA);
+          Linker.dumpData(file);
+          Settings.DATA = null;
         }
         // clean all
         programs = null;
@@ -244,6 +232,63 @@ public final class Linker {
       return null;
     }
     return null;
+  }
+
+  /**
+   * Dumps generated machine code to a file.
+   *
+   * @param program linked program
+   * @param file file to dump machine
+   */
+  public static void dumpCode(LinkedProgram program, File file) {
+    try {
+      // create file if necessary
+      if (!file.exists())
+        file.createNewFile();
+      // use info statements to dump machine code
+      try {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        for (InfoStatement stmt : program.getInfoStatements()) {
+          bw.write(stmt.getMachineCode().substring(2));
+          bw.newLine();
+        }
+        bw.close();
+        Message.log("machine code dumped to: " + file + System.getProperty("line.separator"));
+      } catch (IOException e) {
+        Message.error("the file " + file + " could not be written");
+      }
+    } catch (IOException e) {
+      Message.warning("the file " + file + " could not be created");
+    }
+  }
+
+  /**
+   * Dumps static data to a file.
+   *
+   * @param file file to dump static data
+   */
+  public static void dumpData(File file) {
+    try {
+      // create file if necessary
+      if (!file.exists())
+        file.createNewFile();
+      // use info statements to dump machine code
+      try {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        long start = Integer.toUnsignedLong(MemorySegments.STATIC_SEGMENT);
+        long end = Integer.toUnsignedLong(MemorySegments.HEAP_SEGMENT_BEGIN);
+        for (long addr = start; addr < end; addr += Data.WORD_LENGTH) {
+          bw.write(String.format("%08x", Globals.memory.privLoadWord((int) addr)));
+          bw.newLine();
+        }
+        bw.close();
+        Message.log("static data dumped to: " + file + System.getProperty("line.separator"));
+      } catch (IOException e) {
+        Message.error("the file " + file + " could not be written");
+      }
+    } catch (IOException e) {
+      Message.warning("the file " + file + " could not be created");
+    }
   }
 
 }

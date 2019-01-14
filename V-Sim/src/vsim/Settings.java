@@ -59,8 +59,11 @@ public final class Settings {
   /** show title and copyright notice, disable with -notitle */
   public static boolean TITLE = true;
 
-  /** dump machine code to a file, set with -dump flag */
-  public static String DUMP = null;
+  /** dump machine code to a file, set with -code flag */
+  public static String CODE = null;
+
+  /** dump static data to a file, set with -data flag */
+  public static String DATA = null;
 
 // GUI ONLY SETTINGS
 
