@@ -17,10 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.application.Platform;
@@ -83,8 +80,10 @@ public class SimulatorController {
   @FXML protected JFXButton backstepBtn;
   /** Simulator reset button */
   @FXML protected JFXButton resetBtn;
-  /** Simulator dump button */
-  @FXML protected JFXButton dumpBtn;
+  /** Simulator dump code button */
+  @FXML protected JFXButton dumpCodeBtn;
+  /** Simulator dump data button */
+  @FXML protected JFXButton dumpDataBtn;
 
   /** Simulator text segment table view */
   @FXML protected TableView<InfoStatement> textTable;
@@ -344,30 +343,21 @@ public class SimulatorController {
   }
 
   /** Dumps generated machine code to a file. */
-  protected void dump() {
+  protected void dumpCode() {
     FileChooser chooser = new FileChooser();
     chooser.setTitle("Dump Machine Code To File");
     File file = chooser.showSaveDialog(this.mainController.stage);
-    if (file != null) {
-      try {
-        if (!file.exists())
-          file.createNewFile();
-      } catch (IOException e) {
-        Message.error("the file " + file + " could not be created");
-        return;
-      }
-      try {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        for (InfoStatement stmt : this.textTable.getItems()) {
-          bw.write(stmt.getMachineCode().substring(2));
-          bw.newLine();
-        }
-        bw.close();
-        Message.log("machine code dumped to: " + file);
-      } catch (IOException e) {
-        Message.error("the file " + file + " could not be written");
-      }
-    }
+    if (file != null)
+      Linker.dumpCode(this.debugger.getProgram(), file);
+  }
+
+  /** Dumps static data segment code to a file */
+  protected void dumpData() {
+    FileChooser chooser = new FileChooser();
+    chooser.setTitle("Dump Static Data To File");
+    File file = chooser.showSaveDialog(this.mainController.stage);
+    if (file != null)
+      Linker.dumpData(file);
   }
 
   /** Shows Symbol Table tab if SHOW_LABELS setting is set to true. */
@@ -558,8 +548,10 @@ public class SimulatorController {
     this.backstepBtn.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.EXIT, Status.RUNNING)));
     this.resetBtn.setOnAction(e -> this.reset());
     this.resetBtn.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EMPTY));
-    this.dumpBtn.setOnAction(e -> this.dump());
-    this.dumpBtn.disableProperty().bind(Status.RUNNING);
+    this.dumpCodeBtn.setOnAction(e -> this.dumpCode());
+    this.dumpCodeBtn.disableProperty().bind(Status.RUNNING);
+    this.dumpDataBtn.setOnAction(e -> this.dumpData());
+    this.dumpDataBtn.disableProperty().bind(Status.RUNNING);
   }
 
   /** This method initializes the text segment table. */
