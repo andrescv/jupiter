@@ -49,8 +49,11 @@ public final class MemorySegments {
   /** global pointer memory address */
   public static final int GLOBAL_POINTER = 0x10008000;
 
-  /** memory address where the heap segment starts */
+  /** heap segment pointer */
   public static int HEAP_SEGMENT = -1;
+
+  /** memory address where the heap segment starts */
+  public static int HEAP_SEGMENT_BEGIN = -1;
 
   /** memory address where the rodata segment starts */
   public static int RODATA_SEGMENT_BEGIN = -1;

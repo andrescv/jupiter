@@ -51,7 +51,8 @@ public final class Cmd {
     parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-info", "print info of an instruction and exit", "<mnemonic>");
     parser.add("-notitle", "do not print V-Sim title");
-    parser.add("-dump", "dump machine code to a file", "<file>");
+    parser.add("-code", "dump machine code to a file", "<file>");
+    parser.add("-data", "dump static data to a file", "<file>");
     parser.add("-start", "start program at global label (default: main)", "<label>");
     parser.add("-debug", "start the debugger");
     parser.add("-version", "show the simulator version and exit");
@@ -74,7 +75,8 @@ public final class Cmd {
     Settings.EXTRICT = parser.hasFlag("-extrict");
     Settings.SELF_MODIFYING = parser.hasFlag("-self");
     Settings.TITLE = !parser.hasFlag("-notitle");
-    Settings.DUMP = parser.hasFlag("-dump") ? parser.value("-dump") : null;
+    Settings.CODE = parser.hasFlag("-code") ? parser.value("-code") : null;
+    Settings.DATA = parser.hasFlag("-data") ? parser.value("-data") : null;
     Settings.DEBUG = parser.hasFlag("-debug");
     // try to set start label
     if (parser.hasFlag("-start")) {
