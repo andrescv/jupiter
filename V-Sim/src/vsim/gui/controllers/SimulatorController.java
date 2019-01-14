@@ -200,6 +200,8 @@ public class SimulatorController {
     this.textTable.getItems().clear();
     this.STTable.getItems().clear();
     Status.READY.set(false);
+    this.lastReg = null;
+    this.refreshTables();
     // save all open tabs
     this.mainController.editorController.saveAllTabs();
     if (this.mainController.editorController.allSaved()) {
@@ -329,6 +331,8 @@ public class SimulatorController {
   /** Resets all the simulator state and starts again. */
   protected void reset() {
     this.debugger.reset();
+    this.lastReg = null;
+    this.refreshTables();
   }
 
   /** Clear all breakpoints that were set. */
