@@ -18,6 +18,8 @@ V-Sim is a simple assembler and runtime simulator inspired by _SPIM_ for program
 
 ### Contributing
 
+[![Join the chat at https://gitter.im/RISC-V-Sim/community](https://badges.gitter.im/RISC-V-Sim/community.svg)](https://gitter.im/RISC-V-Sim/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/andrescv/VSim/issues/new).
 
 ### Acknowledgments
