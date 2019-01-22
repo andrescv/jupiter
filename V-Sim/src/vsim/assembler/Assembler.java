@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import vsim.Errors;
 import vsim.Globals;
+import vsim.Log;
 import vsim.assembler.statements.Statement;
 
 
@@ -46,6 +47,7 @@ public final class Assembler {
    * @return all the assembled files
    */
   public static ArrayList<Program> assemble(ArrayList<File> files) {
+    Log.info("assembling files: " + files.toString());
     ArrayList<Program> programs = new ArrayList<Program>();
     // assemble all files
     if (files.size() > 0) {
@@ -69,12 +71,15 @@ public final class Assembler {
       }
     }
     // do first pass
+    Log.info("doing first pass...");
     for (Program program : programs) {
       // add program ST to Globals.local
       SymbolTable table = program.getST();
       String filename = program.getFilename();
+      Log.info("saving " + filename + " local symbol table");
       Globals.local.put(filename, table);
       // check globals of program
+      Log.info("checking " + filename + " global symbols");
       for (String global : program.getGlobals()) {
         Symbol sym = table.getSymbol(global);
         DebugInfo debug = program.getGlobalDebug(global);
@@ -86,6 +91,7 @@ public final class Assembler {
       }
     }
     // try to resolve all statements and collect errors if any
+    Log.info("trying to resolve all symbols...");
     for (Program program : programs) {
       for (Statement stmt : program.getStatements())
         stmt.resolve();
@@ -95,6 +101,7 @@ public final class Assembler {
       Errors.add("assembler: no valid RISC-V source file was passed");
     // report errors
     if (!Errors.report()) {
+      Log.info("assemble operation completed successfully");
       // clean all
       Assembler.program = null;
       Assembler.filename = null;
