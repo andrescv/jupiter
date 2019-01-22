@@ -56,37 +56,33 @@ public final class FindReplaceDialog {
   /** Dialog find text field */
   @FXML private JFXTextField replaceText;
 
-  public FindReplaceDialog(EditorController controller) {
-    try {
-      this.stage = new Stage();
-      this.controller = controller;
-      this.found = new ArrayList<Integer>();
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FindReplaceDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 479, 198);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim.css").toExternalForm());
-      this.stage.setScene(scene);
-      // add actions
-      this.find.setOnAction(e -> this.find());
-      this.replace.setOnAction(e -> this.replace());
-      this.replaceAll.setOnAction(e -> this.replaceAll());
-      // perform a search if find text field change
-      this.findText.textProperty().addListener((e, oldVal, newVal) -> this.search());
-      // perform a search if case sensitive checkbox selected property changes
-      this.caseSensitive.selectedProperty().addListener((e, oldVal, newVal) -> this.search());
-      // and also perform a search if selected tab changes
-      this.controller.getEditor().getSelectionModel().selectedItemProperty()
-          .addListener((e, oldVal, newVal) -> this.search());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public FindReplaceDialog(EditorController controller) throws IOException {
+    this.stage = new Stage();
+    this.controller = controller;
+    this.found = new ArrayList<Integer>();
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FindReplaceDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 479, 198);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim.css").toExternalForm());
+    this.stage.setScene(scene);
+    // add actions
+    this.find.setOnAction(e -> this.find());
+    this.replace.setOnAction(e -> this.replace());
+    this.replaceAll.setOnAction(e -> this.replaceAll());
+    // perform a search if find text field change
+    this.findText.textProperty().addListener((e, oldVal, newVal) -> this.search());
+    // perform a search if case sensitive checkbox selected property changes
+    this.caseSensitive.selectedProperty().addListener((e, oldVal, newVal) -> this.search());
+    // and also perform a search if selected tab changes
+    this.controller.getEditor().getSelectionModel().selectedItemProperty()
+        .addListener((e, oldVal, newVal) -> this.search());
   }
 
   /** Searches all indexes in editor text that matches find text field. */

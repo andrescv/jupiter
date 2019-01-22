@@ -19,6 +19,7 @@ package vsim.gui.controllers;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -32,6 +33,8 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXCheckBox;
+import vsim.Globals;
+import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.AboutDialog;
 import vsim.gui.components.EditorDialog;
@@ -346,13 +349,18 @@ public class MenuBarController {
 
   @FXML
   private void start(ActionEvent e) {
-    InputDialog dialog = new InputDialog();
-    String start = dialog.showAndWait("Enter new global start label");
-    if (start.length() > 0) {
-      if (!Settings.setStart(start, true))
-        Message.warning(String.format("invalid start label '%s'", start));
-      else
-        Message.log(String.format("new start label '%s' saved", start));
+    try {
+      InputDialog dialog = new InputDialog();
+      String start = dialog.showAndWait("Enter new global start label");
+      if (start.length() > 0) {
+        if (!Settings.setStart(start, true))
+          Message.warning(String.format("invalid start label '%s'", start));
+        else
+          Message.log(String.format("new start label '%s' saved", start));
+      }
+    } catch (IOException ex) {
+      Message.warning("could not load input dialog, try again");
+      Log.severe(ex);
     }
   }
 
@@ -368,10 +376,19 @@ public class MenuBarController {
 
   @FXML
   private void editor(ActionEvent e) {
-    if (this.editorDialog == null)
-      this.editorDialog = new EditorDialog();
-    this.editorDialog.showAndWait();
-    this.mainController.editorController.updateSettings();
+    if (this.editorDialog == null) {
+      try {
+        this.editorDialog = new EditorDialog();
+      } catch (IOException ex) {
+        Message.warning("could not open editor settings, try again");
+        Log.severe(ex);
+      }
+    }
+    // show editor dialog only if it was created
+    if (this.editorDialog != null) {
+      this.editorDialog.showAndWait();
+      this.mainController.editorController.updateSettings();
+    }
   }
 
   @FXML
@@ -403,11 +420,11 @@ public class MenuBarController {
 
       @Override
       protected Void call() {
-        final String url = "https://git.io/fhnyL";
         try {
-          Desktop.getDesktop().browse(new URI(url));
+          Desktop.getDesktop().browse(new URI(Globals.HELP));
         } catch (Exception ex) {
-          Platform.runLater(() -> Message.error("could not open online docs, try again later or go to: " + url));
+          Message.runError("could not open online docs, try again later or go to: " + Globals.HELP);
+          Log.severe(ex);
         }
         return null;
       }
@@ -419,9 +436,17 @@ public class MenuBarController {
 
   @FXML
   private void about(ActionEvent e) {
-    if (this.aboutDialog == null)
-      this.aboutDialog = new AboutDialog();
-    this.aboutDialog.show();
+    if (this.aboutDialog == null) {
+      try {
+        this.aboutDialog = new AboutDialog();
+      } catch (IOException ex) {
+        Message.warning("could not open about dialog, try again");
+        Log.severe(ex);
+      }
+    }
+    // show about dialog only if it was created
+    if (this.aboutDialog != null)
+      this.aboutDialog.show();
   }
 
 }

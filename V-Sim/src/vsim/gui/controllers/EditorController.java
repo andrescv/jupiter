@@ -30,6 +30,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXTabPane;
+import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
@@ -73,7 +74,11 @@ public class EditorController {
   protected void initialize(MainController controller) {
     this.mainController = controller;
     // create a new find replace dialog
-    this.findReplaceDialog = new FindReplaceDialog(this);
+    try {
+      this.findReplaceDialog = new FindReplaceDialog(this);
+    } catch (IOException e) {
+      Log.severe(e);
+    }
     // init tree
     this.initTree();
     // start directory watcher
@@ -237,22 +242,27 @@ public class EditorController {
     for (Tab openTab : this.editor.getTabs())
       save |= ((EditorTab) openTab).hasChanged();
     if (save) {
-      CloseDialog dialog = new CloseDialog();
-      switch (dialog.showAndWait()) {
-        case 0:
-          (new ArrayList<Tab>(this.editor.getTabs())).forEach(e -> this.closeTab((EditorTab) e));
-          break;
-        case 1:
-          ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
-          for (Tab openTab : tabs) {
-            EditorTab tab = (EditorTab) openTab;
-            this.saveTab(tab, true);
-            if (!tab.isClosed())
-              break;
-          }
-          break;
-        default:
-          break;
+      try {
+        CloseDialog dialog = new CloseDialog();
+        switch (dialog.showAndWait()) {
+          case 0:
+            (new ArrayList<Tab>(this.editor.getTabs())).forEach(e -> this.closeTab((EditorTab) e));
+            break;
+          case 1:
+            ArrayList<Tab> tabs = new ArrayList<Tab>(this.editor.getTabs());
+            for (Tab openTab : tabs) {
+              EditorTab tab = (EditorTab) openTab;
+              this.saveTab(tab, true);
+              if (!tab.isClosed())
+                break;
+            }
+            break;
+          default:
+            break;
+        }
+      } catch (IOException e) {
+        Message.error("could not show close dialog");
+        Log.severe(e);
       }
     } else
       this.closeAllTabs();
@@ -432,20 +442,24 @@ public class EditorController {
    */
   private void closeTabSafetly(EditorTab tab) {
     if (tab.hasChanged()) {
-      SaveDialog dialog = new SaveDialog();
-      switch (dialog.showAndWait(tab.getName())) {
-        // dont save
-        case 0:
-          this.closeTab(tab);
-          break;
-        // save
-        case 1:
-          // save as ?
-          this.saveTab(tab, true);
-          break;
-        // cancel
-        default:
-          break;
+      try {
+        SaveDialog dialog = new SaveDialog();
+        switch (dialog.showAndWait(tab.getName())) {
+          // dont save
+          case 0:
+            this.closeTab(tab);
+            break;
+          // save
+          case 1:
+            // save as ?
+            this.saveTab(tab, true);
+            break;
+          // cancel
+          default:
+            break;
+        }
+      } catch (IOException e) {
+        Log.severe(e);
       }
     } else
       this.closeTab(tab);
@@ -527,33 +541,37 @@ public class EditorController {
   private void addNewFile() {
     // get selected tree item
     TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-    // get user new path
-    InputDialog dialog = new InputDialog();
-    String filename = dialog.showAndWait("Enter the path for the new file");
-    // if user actually enters a filename
-    if (filename.length() > 0) {
-      // only accept assembler files
-      if (filename.endsWith(".s") || filename.endsWith(".asm")) {
-        // create a new path
-        File path = new File(item.getPath() + File.separator + filename);
-        if (path.exists())
-          Message.warning(String.format("file %s already exists", filename));
-        else {
-          try {
-            // create all necessary folders
-            (new File(path.getParent())).mkdirs();
-            // create file
-            if (path.createNewFile())
-              // add titled tab with the new file
-              this.addTitledTab(path);
-            else
-              Message.warning("could not create file: " + path);
-          } catch (IOException e) {
-            Message.warning("Could not create file: " + path);
+    try {
+      // get user new path
+      InputDialog dialog = new InputDialog();
+      String filename = dialog.showAndWait("Enter the path for the new file");
+      // if user actually enters a filename
+      if (filename.length() > 0) {
+        // only accept assembler files
+        if (filename.endsWith(".s") || filename.endsWith(".asm")) {
+          // create a new path
+          File path = new File(item.getPath() + File.separator + filename);
+          if (path.exists())
+            Message.warning(String.format("file %s already exists", filename));
+          else {
+            try {
+              // create all necessary folders
+              (new File(path.getParent())).mkdirs();
+              // create file
+              if (path.createNewFile())
+                // add titled tab with the new file
+                this.addTitledTab(path);
+              else
+                Message.warning("could not create file: " + path);
+            } catch (IOException e) {
+              Message.warning("Could not create file: " + path);
+            }
           }
-        }
-      } else
-        Message.warning("invalid file name: " + filename);
+        } else
+          Message.warning("invalid file name: " + filename);
+      }
+    } catch (IOException e) {
+      Log.severe(e);
     }
   }
 
@@ -561,59 +579,73 @@ public class EditorController {
   private void addNewFolder() {
     // get selected tree item
     TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-    // get user new path
-    InputDialog dialog = new InputDialog();
-    String dirname = dialog.showAndWait("Enter the path for the new folder");
-    // if user actually enters a dir name
-    if (dirname.length() > 0) {
-      // create new path
-      File path = new File(item.getPath() + File.separator + dirname);
-      if (path.exists())
-        Message.warning(String.format("directory %s already exists", dirname));
-      else {
-        // create all necessary folders
-        if (path.mkdirs())
-          DirWatcher.open(path);
-        else
-          Message.warning("could not create folder: " + path);
+    try {
+      // get user new path
+      InputDialog dialog = new InputDialog();
+      String dirname = dialog.showAndWait("Enter the path for the new folder");
+      // if user actually enters a dir name
+      if (dirname.length() > 0) {
+        // create new path
+        File path = new File(item.getPath() + File.separator + dirname);
+        if (path.exists())
+          Message.warning(String.format("directory %s already exists", dirname));
+        else {
+          // create all necessary folders
+          if (path.mkdirs())
+            DirWatcher.open(path);
+          else
+            Message.warning("could not create folder: " + path);
+        }
       }
+    } catch (IOException e) {
+      Log.severe(e);
     }
   }
 
   /** Renames a directory. */
   private void renameDir() {
     TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-    InputDialog dialog = new InputDialog();
-    String dirname = dialog.showAndWait("Enter the path for the new folder");
-    // if user actually enters a new name
-    if (dirname.length() > 0) {
-      File newPath = new File(item.getPath().getParent() + File.separator + dirname);
-      File oldPath = item.getPath();
-      // rename file and find a open tab
-      if (!oldPath.equals(newPath) && !newPath.exists()) {
-        newPath.mkdirs();
-        if (item.getPath().renameTo(newPath)) {
-          this.renameOpenTabsWith(oldPath, newPath);
-          DirWatcher.rename(oldPath, newPath);
-        } else
-          Message.warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
+    try {
+      InputDialog dialog = new InputDialog();
+      String dirname = dialog.showAndWait("Enter the path for the new folder");
+      // if user actually enters a new name
+      if (dirname.length() > 0) {
+        File newPath = new File(item.getPath().getParent() + File.separator + dirname);
+        File oldPath = item.getPath();
+        // rename file and find a open tab
+        if (!oldPath.equals(newPath) && !newPath.exists()) {
+          newPath.mkdirs();
+          if (item.getPath().renameTo(newPath)) {
+            this.renameOpenTabsWith(oldPath, newPath);
+            DirWatcher.rename(oldPath, newPath);
+          } else
+            Message
+                .warning(String.format("could not rename directory %s to %s", oldPath.toString(), newPath.toString()));
+        }
+        // dont do anything if the user uses the same path
+        else if (oldPath.equals(newPath))
+          return;
+        else if (newPath.exists())
+          Message.warning(String.format("directory %s already exists", newPath.getName()));
       }
-      // dont do anything if the user uses the same path
-      else if (oldPath.equals(newPath))
-        return;
-      else if (newPath.exists())
-        Message.warning(String.format("directory %s already exists", newPath.getName()));
+    } catch (IOException e) {
+      Log.severe(e);
     }
   }
 
   /** Recursively deletes a selected directory. */
   private void deleteDir() {
     // only if user really wants to delete the directory
-    DeleteDialog dialog = new DeleteDialog();
-    if (dialog.showAndWait()) {
-      TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-      if (!this.deleteDir(item.getPath()))
-        Message.warning("could not delete directory " + item.getPath());
+    try {
+      DeleteDialog dialog = new DeleteDialog();
+      if (dialog.showAndWait()) {
+        TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
+        if (!this.deleteDir(item.getPath()))
+          Message.warning("could not delete directory " + item.getPath());
+      }
+    } catch (IOException e) {
+      Message.error("could not show delete dialog");
+      Log.severe(e);
     }
   }
 
@@ -621,65 +653,74 @@ public class EditorController {
   private void renameFile() {
     // get selected tree item
     TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-    // get user new path
-    InputDialog dialog = new InputDialog();
-    String filename = dialog.showAndWait("Enter the path for the new file");
-    // if user actually enters a new name
-    if (filename.length() > 0) {
-      // create new path
-      File newPath = new File(item.getPath().getParent() + File.separator + filename);
-      // get old file path
-      File oldPath = item.getPath();
-      // rename file and find a open tab
-      if (!oldPath.equals(newPath) && !newPath.exists()) {
-        EditorTab tab = null;
-        for (Tab openTab : this.editor.getTabs()) {
-          EditorTab t = (EditorTab) openTab;
-          if (t.getPath() != null && t.getPath().equals(oldPath)) {
-            tab = t;
-            break;
+    try {
+      // get user new path
+      InputDialog dialog = new InputDialog();
+      String filename = dialog.showAndWait("Enter the path for the new file");
+      // if user actually enters a new name
+      if (filename.length() > 0) {
+        // create new path
+        File newPath = new File(item.getPath().getParent() + File.separator + filename);
+        // get old file path
+        File oldPath = item.getPath();
+        // rename file and find a open tab
+        if (!oldPath.equals(newPath) && !newPath.exists()) {
+          EditorTab tab = null;
+          for (Tab openTab : this.editor.getTabs()) {
+            EditorTab t = (EditorTab) openTab;
+            if (t.getPath() != null && t.getPath().equals(oldPath)) {
+              tab = t;
+              break;
+            }
           }
+          // try to rename path
+          if (item.getPath().renameTo(newPath)) {
+            if (tab != null)
+              tab.setPath(newPath);
+          } else
+            Message
+                .warning(String.format("could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
         }
-        // try to rename path
-        if (item.getPath().renameTo(newPath)) {
-          if (tab != null)
-            tab.setPath(newPath);
-        } else
-          Message
-              .warning(String.format("could not rename file %s to %s", tab.getPath().toString(), newPath.toString()));
+        // dont do anything if the user uses the same path
+        else if (oldPath.equals(newPath))
+          return;
+        else if (newPath.exists())
+          Message.warning(String.format("file %s already exists", newPath.getName()));
       }
-      // dont do anything if the user uses the same path
-      else if (oldPath.equals(newPath))
-        return;
-      else if (newPath.exists())
-        Message.warning(String.format("file %s already exists", newPath.getName()));
+    } catch (IOException e) {
+      Log.severe(e);
     }
   }
 
   /** Deletes a file and also closes an open tab if there is an open tab with the same path. */
   private void deleteFile() {
-    // only if user really wants to delete the file
-    DeleteDialog dialog = new DeleteDialog();
-    boolean delete = dialog.showAndWait();
-    if (delete) {
-      // get selected tree item
-      TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
-      // find open tab (if any)
-      EditorTab tab = null;
-      for (Tab openTab : this.editor.getTabs()) {
-        EditorTab t = (EditorTab) openTab;
-        if (t.getPath() != null && t.getPath().equals(item.getPath())) {
-          tab = t;
-          break;
+    try {
+      // only if user really wants to delete the file
+      DeleteDialog dialog = new DeleteDialog();
+      boolean delete = dialog.showAndWait();
+      if (delete) {
+        // get selected tree item
+        TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
+        // find open tab (if any)
+        EditorTab tab = null;
+        for (Tab openTab : this.editor.getTabs()) {
+          EditorTab t = (EditorTab) openTab;
+          if (t.getPath() != null && t.getPath().equals(item.getPath())) {
+            tab = t;
+            break;
+          }
         }
+        // delete file
+        boolean deleted = item.getPath().delete();
+        if (!deleted)
+          Message.warning("could not delete file: " + item.getPath());
+        // only if file really was deleted
+        if (tab != null && deleted)
+          this.closeTab(tab);
       }
-      // delete file
-      boolean deleted = item.getPath().delete();
-      if (!deleted)
-        Message.warning("could not delete file: " + item.getPath());
-      // only if file really was deleted
-      if (tab != null && deleted)
-        this.closeTab(tab);
+    } catch (IOException e) {
+      Message.error("could not open delete dialog");
+      Log.severe(e);
     }
   }
 

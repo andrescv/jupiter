@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import java.io.IOException;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -29,6 +30,7 @@ import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTabPane;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
+import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
@@ -116,8 +118,12 @@ public class MainController {
     IO.guistdin = new ConsoleInput(console);
     IO.guistdout = new ConsoleOutput(console);
     IO.guistderr = IO.guistdout;
-    // input dialog
-    IO.dialog = new InputDialog();
+    try {
+      // input dialog
+      IO.dialog = new InputDialog();
+    } catch (IOException e) {
+      Log.severe(e);
+    }
     // clear option
     MenuItem clear = new MenuItem("clear");
     clear.setOnAction(e -> console.replaceText(0, console.getLength(), ""));

@@ -45,27 +45,23 @@ public final class AboutDialog {
   /**
    * Creates a new about dialog.
    */
-  public AboutDialog() {
-    try {
-      this.stage = new Stage();
-      this.stage.setTitle("V-Sim About");
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Preloader.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 504, 312);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm());
-      this.stage.setScene(scene);
-      this.version.setText(Globals.VERSION);
-      this.copyright.setText(Globals.COPYRIGHT);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public AboutDialog() throws IOException {
+    this.stage = new Stage();
+    this.stage.setTitle("V-Sim About");
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Preloader.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 504, 312);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm());
+    this.stage.setScene(scene);
+    this.version.setText(Globals.VERSION);
+    this.copyright.setText(Globals.COPYRIGHT);
   }
 
   /**

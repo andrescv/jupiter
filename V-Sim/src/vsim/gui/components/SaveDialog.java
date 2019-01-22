@@ -59,50 +59,46 @@ public final class SaveDialog {
   /**
    * Creates a save dialog.
    */
-  public SaveDialog() {
-    try {
-      this.result = -1;
-      this.stage = new Stage();
-      this.stage.setTitle("Save...");
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SaveDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 419, 189);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim.css").toExternalForm());
-      this.stage.setScene(scene);
-      // save actions
-      this.save.setOnAction(e -> this.save());
-      this.save.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.save();
-      });
-      // cancel actions
-      this.cancel.setOnAction(e -> this.cancel());
-      this.cancel.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.cancel();
-      });
-      // dont save actions
-      this.dontSave.setOnAction(e -> this.dontSave());
-      this.dontSave.setOnKeyPressed(e -> {
-        if (SaveDialog.ENTER.match(e))
-          this.dontSave();
-      });
-      // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (SaveDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public SaveDialog() throws IOException {
+    this.result = -1;
+    this.stage = new Stage();
+    this.stage.setTitle("Save...");
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SaveDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 419, 189);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim.css").toExternalForm());
+    this.stage.setScene(scene);
+    // save actions
+    this.save.setOnAction(e -> this.save());
+    this.save.setOnKeyPressed(e -> {
+      if (SaveDialog.ENTER.match(e))
+        this.save();
+    });
+    // cancel actions
+    this.cancel.setOnAction(e -> this.cancel());
+    this.cancel.setOnKeyPressed(e -> {
+      if (SaveDialog.ENTER.match(e))
+        this.cancel();
+    });
+    // dont save actions
+    this.dontSave.setOnAction(e -> this.dontSave());
+    this.dontSave.setOnKeyPressed(e -> {
+      if (SaveDialog.ENTER.match(e))
+        this.dontSave();
+    });
+    // stage actions
+    this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+      if (SaveDialog.ESCAPE.match(e))
+        this.cancel();
+    });
   }
 
   /** Save action. */

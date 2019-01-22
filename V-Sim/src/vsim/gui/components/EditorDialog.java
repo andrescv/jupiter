@@ -117,55 +117,51 @@ public final class EditorDialog {
   @FXML private JFXCheckBox autoIndent;
 
   /** Creates a new dialog for changing editor settings. */
-  public EditorDialog() {
-    try {
-      this.stage = new Stage();
-      this.stage.setTitle("Editor Settings");
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.setResizable(false);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditorDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      this.editor = new Editor();
-      this.editor.setEditable(false);
-      VirtualizedScrollPane<Editor> scroll = new VirtualizedScrollPane<>(this.editor);
-      AnchorPane.setBottomAnchor(scroll, 0.0);
-      AnchorPane.setTopAnchor(scroll, 0.0);
-      AnchorPane.setLeftAnchor(scroll, 0.0);
-      AnchorPane.setRightAnchor(scroll, 0.0);
-      this.anchor.getChildren().add(scroll);
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      Scene scene = new Scene(decorator, 704, 638);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim.css").toExternalForm());
-      this.stage.setScene(scene);
-      // enable color pickers only if custom option is selected
-      this.syntax.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.directive.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.keyword.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.label.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.identifier.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.register.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.number.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.comment.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.string.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.backslash.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.error.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.background.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.selection.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.lineno.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.linenobg.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.caret.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      this.highlight.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
-      // populate combo boxes
-      this.fontstyle.setItems(FXCollections.observableArrayList("Bold", "Bold Italic", "Italic", "Regular"));
-      this.fontfamily.setItems(FXCollections.observableArrayList(Font.getFamilies()));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public EditorDialog() throws IOException {
+    this.stage = new Stage();
+    this.stage.setTitle("Editor Settings");
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.setResizable(false);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditorDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    this.editor = new Editor();
+    this.editor.setEditable(false);
+    VirtualizedScrollPane<Editor> scroll = new VirtualizedScrollPane<>(this.editor);
+    AnchorPane.setBottomAnchor(scroll, 0.0);
+    AnchorPane.setTopAnchor(scroll, 0.0);
+    AnchorPane.setLeftAnchor(scroll, 0.0);
+    AnchorPane.setRightAnchor(scroll, 0.0);
+    this.anchor.getChildren().add(scroll);
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    Scene scene = new Scene(decorator, 704, 638);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim.css").toExternalForm());
+    this.stage.setScene(scene);
+    // enable color pickers only if custom option is selected
+    this.syntax.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.directive.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.keyword.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.label.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.identifier.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.register.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.number.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.comment.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.string.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.backslash.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.error.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.background.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.selection.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.lineno.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.linenobg.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.caret.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    this.highlight.disableProperty().bind(Bindings.not(this.custom.selectedProperty()));
+    // populate combo boxes
+    this.fontstyle.setItems(FXCollections.observableArrayList("Bold", "Bold Italic", "Italic", "Regular"));
+    this.fontfamily.setItems(FXCollections.observableArrayList(Font.getFamilies()));
   }
 
   /**
