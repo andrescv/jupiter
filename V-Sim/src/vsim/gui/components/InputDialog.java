@@ -58,42 +58,38 @@ public final class InputDialog {
   /**
    * Creates an input dialog with a default title.
    */
-  public InputDialog() {
-    try {
-      this.stage = new Stage();
-      this.queue = new ArrayBlockingQueue<String>(1);
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InputDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.enterPressed = false;
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 304, 150);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim.css").toExternalForm());
-      this.stage.setScene(scene);
-      // enter actions
-      this.enter.setOnAction(e -> this.enter());
-      this.enter.setOnKeyPressed(e -> {
-        if (InputDialog.ENTER.match(e))
-          this.enter();
-      });
-      this.text.setOnKeyPressed(e -> {
-        if (InputDialog.ENTER.match(e))
-          this.enter();
-      });
-      // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (InputDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public InputDialog() throws IOException {
+    this.stage = new Stage();
+    this.queue = new ArrayBlockingQueue<String>(1);
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InputDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.enterPressed = false;
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 304, 150);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim.css").toExternalForm());
+    this.stage.setScene(scene);
+    // enter actions
+    this.enter.setOnAction(e -> this.enter());
+    this.enter.setOnKeyPressed(e -> {
+      if (InputDialog.ENTER.match(e))
+        this.enter();
+    });
+    this.text.setOnKeyPressed(e -> {
+      if (InputDialog.ENTER.match(e))
+        this.enter();
+    });
+    // stage actions
+    this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+      if (InputDialog.ESCAPE.match(e))
+        this.cancel();
+    });
   }
 
   /** Cancel action. */

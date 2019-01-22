@@ -53,49 +53,45 @@ public final class CloseDialog {
   /** Save dialog result */
   private int result;
 
-  public CloseDialog() {
-    try {
-      this.result = -1;
-      this.stage = new Stage();
-      this.stage.setTitle("Save program changes ?");
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CloseDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 637, 166);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm());
-      this.stage.setScene(scene);
-      // save actions
-      this.save.setOnAction(e -> this.save());
-      this.save.setOnKeyPressed(e -> {
-        if (CloseDialog.ENTER.match(e))
-          this.save();
-      });
-      // cancel actions
-      this.cancel.setOnAction(e -> this.cancel());
-      this.cancel.setOnKeyPressed(e -> {
-        if (CloseDialog.ENTER.match(e))
-          this.cancel();
-      });
-      // dont save actions
-      this.dontSave.setOnAction(e -> this.dontSave());
-      this.dontSave.setOnKeyPressed(e -> {
-        if (CloseDialog.ENTER.match(e))
-          this.dontSave();
-      });
-      // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (CloseDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public CloseDialog() throws IOException {
+    this.result = -1;
+    this.stage = new Stage();
+    this.stage.setTitle("Save program changes ?");
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CloseDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 637, 166);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm());
+    this.stage.setScene(scene);
+    // save actions
+    this.save.setOnAction(e -> this.save());
+    this.save.setOnKeyPressed(e -> {
+      if (CloseDialog.ENTER.match(e))
+        this.save();
+    });
+    // cancel actions
+    this.cancel.setOnAction(e -> this.cancel());
+    this.cancel.setOnKeyPressed(e -> {
+      if (CloseDialog.ENTER.match(e))
+        this.cancel();
+    });
+    // dont save actions
+    this.dontSave.setOnAction(e -> this.dontSave());
+    this.dontSave.setOnKeyPressed(e -> {
+      if (CloseDialog.ENTER.match(e))
+        this.dontSave();
+    });
+    // stage actions
+    this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+      if (CloseDialog.ESCAPE.match(e))
+        this.cancel();
+    });
   }
 
   /** Save action. */

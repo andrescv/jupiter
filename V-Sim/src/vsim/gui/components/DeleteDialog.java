@@ -51,43 +51,39 @@ public final class DeleteDialog {
   /** Save dialog result */
   private boolean result;
 
-  public DeleteDialog() {
-    try {
-      this.result = false;
-      this.stage = new Stage();
-      this.stage.setTitle("Delete Item");
-      this.stage.initModality(Modality.APPLICATION_MODAL);
-      this.stage.getIcons().add(Icons.getFavicon());
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeleteDialog.fxml"));
-      loader.setController(this);
-      Parent root = loader.load();
-      JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-      decorator.setGraphic(Icons.getImage("logo"));
-      this.stage.setResizable(false);
-      Scene scene = new Scene(decorator, 437, 166);
-      scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-          getClass().getResource("/css/vsim-fonts.css").toExternalForm());
-      this.stage.setScene(scene);
-      // cancel actions
-      this.cancel.setOnAction(e -> this.cancel());
-      this.cancel.setOnKeyPressed(e -> {
-        if (DeleteDialog.ENTER.match(e))
-          this.cancel();
-      });
-      // delete actions
-      this.delete.setOnAction(e -> this.delete());
-      this.delete.setOnKeyPressed(e -> {
-        if (DeleteDialog.ENTER.match(e))
-          this.delete();
-      });
-      // stage actions
-      this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-        if (DeleteDialog.ESCAPE.match(e))
-          this.cancel();
-      });
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public DeleteDialog() throws IOException {
+    this.result = false;
+    this.stage = new Stage();
+    this.stage.setTitle("Delete Item");
+    this.stage.initModality(Modality.APPLICATION_MODAL);
+    this.stage.getIcons().add(Icons.getFavicon());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeleteDialog.fxml"));
+    loader.setController(this);
+    Parent root = loader.load();
+    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
+    decorator.setGraphic(Icons.getImage("logo"));
+    this.stage.setResizable(false);
+    Scene scene = new Scene(decorator, 437, 166);
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm());
+    this.stage.setScene(scene);
+    // cancel actions
+    this.cancel.setOnAction(e -> this.cancel());
+    this.cancel.setOnKeyPressed(e -> {
+      if (DeleteDialog.ENTER.match(e))
+        this.cancel();
+    });
+    // delete actions
+    this.delete.setOnAction(e -> this.delete());
+    this.delete.setOnKeyPressed(e -> {
+      if (DeleteDialog.ENTER.match(e))
+        this.delete();
+    });
+    // stage actions
+    this.stage.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+      if (DeleteDialog.ESCAPE.match(e))
+        this.cancel();
+    });
   }
 
   /** Delete action. */

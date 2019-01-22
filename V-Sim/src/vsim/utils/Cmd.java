@@ -110,13 +110,12 @@ public final class Cmd {
     }
     // check -docs flag
     if (parser.hasFlag("-docs")) {
-      String url = "https://git.io/fhnyL";
       try {
-        Desktop.getDesktop().browse(new URI(url));
+        Desktop.getDesktop().browse(new URI(Globals.HELP));
         System.exit(0);
       } catch (Exception ex) {
         Cmd.title();
-        Message.error("could not open online docs, go to: " + url);
+        Message.error("could not open online docs, go to: " + Globals.HELP);
         System.exit(1);
       }
     }
