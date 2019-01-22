@@ -20,6 +20,7 @@ package vsim.simulator;
 import java.io.File;
 import java.util.ArrayList;
 import vsim.Globals;
+import vsim.Log;
 import vsim.Settings;
 import vsim.assembler.Assembler;
 import vsim.assembler.statements.Statement;
@@ -52,6 +53,7 @@ public final class Simulator {
     // set start address
     program.reset();
     // execute all program
+    Log.info("simulating program...");
     while (true) {
       try {
         // fetch
@@ -59,6 +61,7 @@ public final class Simulator {
         // execute
         Globals.iset.get(stmt.getMnemonic()).execute(stmt.result());
       } catch (BreakpointException e) {
+        Log.info("starting debugger: " + e.getMessage());
         Message.log(e.getMessage());
         Globals.regfile.incProgramCounter();
         Simulator.debug(program);
@@ -78,6 +81,7 @@ public final class Simulator {
             else
               Message.panic(e.getMessage());
           } catch (BreakpointException ex) {
+            Log.info("starting debugger: " + ex.getMessage());
             Message.log(ex.getMessage());
             Globals.regfile.incProgramCounter();
             Simulator.debug(program);
@@ -101,6 +105,7 @@ public final class Simulator {
    * @see vsim.linker.LinkedProgram
    */
   public static void debug(LinkedProgram program) {
+    Log.info("debugging program...");
     // create a debugger and run it
     (new Debugger(program)).run();
   }

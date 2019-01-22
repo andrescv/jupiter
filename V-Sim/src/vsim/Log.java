@@ -62,6 +62,18 @@ public final class Log {
   }
 
   /**
+   * Emits a warning log message for an exception.
+   *
+   * @param e exception
+   */
+  public static void warning(Exception e) {
+    getLogger().severe("exception: ");
+    StringWriter writer = new StringWriter();
+    e.printStackTrace(new PrintWriter(writer));
+    getLogger().warning(writer.toString());
+  }
+
+  /**
    * Emits a severe log message.
    *
    * @param msg log message
