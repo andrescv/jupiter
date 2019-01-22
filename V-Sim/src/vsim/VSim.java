@@ -40,15 +40,15 @@ public final class VSim {
       // parse arguments
       ArrayList<File> files = Cmd.parse(args);
       Cmd.title();
-      Log.getLogger().info("starting V-Sim CLI application");
+      Log.info("starting V-Sim CLI application");
       // only if files are provided
       if (files.size() > 0) {
         // simulate/debug program
         if (!Settings.DEBUG) {
-          Log.getLogger().info("running simulation...");
+          Log.info("running simulation...");
           Simulator.simulate(files);
         } else {
-          Log.getLogger().info("starting debugger...");
+          Log.info("starting debugger...");
           Simulator.debug(files);
         }
       }
@@ -57,8 +57,9 @@ public final class VSim {
     else {
       Cmd.titleAndLicense();
       Settings.GUI = true;
-      Log.getLogger().info("starting V-Sim GUI application...");
+      Log.info("starting V-Sim GUI application...");
       System.setProperty("prism.lcdtext", "false");
+      Log.config("loading simulator settings...");
       Settings.load();
       LauncherImpl.launchApplication(Gui.class, Preloader.class, args);
     }

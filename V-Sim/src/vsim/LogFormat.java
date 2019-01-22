@@ -36,8 +36,7 @@ public final class LogFormat extends Formatter {
     SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
     sb.append("[").append(fmt.format(new Date())).append("] ").append("(").append(record.getLevel().getLocalizedName())
-        .append(") ").append(record.getSourceClassName()).append("/").append(record.getSourceMethodName()).append(": ")
-        .append(record.getMessage()).append(System.getProperty("line.separator"));
+        .append("): ").append(record.getMessage()).append(System.getProperty("line.separator"));
     return sb.toString();
   }
 

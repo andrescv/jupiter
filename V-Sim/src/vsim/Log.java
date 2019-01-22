@@ -19,6 +19,8 @@ package vsim;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.LogManager;
@@ -33,11 +35,59 @@ public final class Log {
   private static Logger logger = null;
 
   /**
+   * Emits a config log message.
+   *
+   * @param msg log message
+   */
+  public static void config(String msg) {
+    getLogger().config(msg);
+  }
+
+  /**
+   * Emits an info log message.
+   *
+   * @param msg log message
+   */
+  public static void info(String msg) {
+    getLogger().info(msg);
+  }
+
+  /**
+   * Emits a warning log message.
+   *
+   * @param msg log message
+   */
+  public static void warning(String msg) {
+    getLogger().warning(msg);
+  }
+
+  /**
+   * Emits a severe log message.
+   *
+   * @param msg log message
+   */
+  public static void severe(String msg) {
+    getLogger().severe(msg);
+  }
+
+  /**
+   * Emits a severe log message for an exception.
+   *
+   * @param e exception
+   */
+  public static void severe(Exception e) {
+    getLogger().severe("exception: ");
+    StringWriter writer = new StringWriter();
+    e.printStackTrace(new PrintWriter(writer));
+    getLogger().severe(writer.toString());
+  }
+
+  /**
    * Gets default V-Sim logger.
    *
    * @return application logger
    */
-  public static Logger getLogger() {
+  private static Logger getLogger() {
     if (logger == null) {
       // load properties
       try {
