@@ -36,6 +36,9 @@ public final class Globals {
   /** V-Sim Copyright */
   public static final String COPYRIGHT = "Copyright (c) 2018-2019 Andres Castellanos";
 
+  /** Help URL */
+  public static final String HELP = "https://git.io/fhnyL";
+
   /** RISC-V (RV32) principal memory (RAM) */
   public static final Memory memory = Memory.ram;
 
