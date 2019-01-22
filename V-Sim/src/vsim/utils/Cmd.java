@@ -274,11 +274,4 @@ public final class Cmd {
     IO.stdout.println("See https://git.io/fpcYS for a full copyright notice");
   }
 
-  /**
-   * This method prints the prompt of the V-Sim simulator.
-   */
-  public static void prompt() {
-    IO.stdout.print(">>> ");
-  }
-
 }

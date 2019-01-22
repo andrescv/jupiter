@@ -25,7 +25,6 @@ import vsim.linker.LinkedProgram;
 import vsim.riscv.MemorySegments;
 import vsim.riscv.exceptions.*;
 import vsim.riscv.instructions.MachineCode;
-import vsim.utils.Cmd;
 import vsim.utils.Data;
 import vsim.utils.IO;
 import vsim.utils.Message;
@@ -560,7 +559,7 @@ public final class Debugger {
    */
   public void run() {
     while (true) {
-      Cmd.prompt();
+      IO.stdout.print(">>> ");
       // read a line from stdin
       String line = IO.readString(Integer.MAX_VALUE);
       // nothing entered
