@@ -132,7 +132,7 @@ public class ConsoleInput {
 
       @Override
       public void changed(ObservableValue obs, Boolean oldValue, Boolean newValue) {
-        if (newValue == true)
+        if (newValue)
           returnResponse();
       }
     };

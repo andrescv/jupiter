@@ -48,12 +48,6 @@ import vsim.utils.Message;
  */
 public class MenuBarController {
 
-  /** File menu new file option */
-  @FXML private MenuItem newFile;
-  /** File menu open file option */
-  @FXML private MenuItem openFile;
-  /** File menu open folder option */
-  @FXML private MenuItem openFolder;
   /** File menu save option */
   @FXML private MenuItem save;
   /** File menu save as... option */
@@ -64,8 +58,6 @@ public class MenuBarController {
   @FXML private MenuItem closeTab;
   /** File menu close all tabs option */
   @FXML private MenuItem closeAll;
-  /** File menu quit option */
-  @FXML private MenuItem quit;
 
   /** Edit menu undo option */
   @FXML private MenuItem undo;
@@ -95,43 +87,20 @@ public class MenuBarController {
   /** Run menu clear breakpoints option */
   @FXML private MenuItem clearBreakpoints;
 
-  /** Settings menu show labels option */
-  @FXML private MenuItem showLabels;
   /** Settings menu show labels checkbox */
   @FXML private JFXCheckBox showLabelsBox;
-  /** Settings menu popup for ecalls option */
-  @FXML private MenuItem popup;
   /** Settings menu popup for ecalls checkbox */
   @FXML private JFXCheckBox popupBox;
-  /** Settings menu assemble only open files option */
-  @FXML private MenuItem onlyOpen;
   /** Settings menu assemble only open files checkbox */
   @FXML private JFXCheckBox onlyOpenBox;
-  /** Settings menu warnings = errors option */
-  @FXML private MenuItem warnings;
   /** Settings menu warnings = errors checkbox */
   @FXML private JFXCheckBox warningsBox;
-  /** Settings menu change start label option */
-  @FXML private MenuItem start;
-  /** Settings menu permit pseudos option */
-  @FXML private MenuItem permit;
   /** Settings menu permit pseudos checkbox */
   @FXML private JFXCheckBox permitBox;
-  /** Settings menu permit pseudos option */
-  @FXML private MenuItem self;
   /** Settings menu permit pseudos checkbox */
   @FXML private JFXCheckBox selfBox;
   /** Settings menu editor option */
   @FXML private MenuItem editor;
-  /** Settings menu trap handler option */
-  @FXML private MenuItem trap;
-  /** Settings menu clear trap handler option */
-  @FXML private MenuItem clearTrap;
-
-  /** Help menu help option */
-  @FXML private MenuItem help;
-  /** Help menu about option */
-  @FXML private MenuItem about;
 
   /** About dialog */
   private AboutDialog aboutDialog;
