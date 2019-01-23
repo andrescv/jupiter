@@ -238,8 +238,6 @@ public final class Linker {
           Linker.dumpData(file);
           Settings.DATA = null;
         }
-        // clean all
-        programs = null;
         // return linked program, now simulate ?
         return program;
       }

@@ -104,6 +104,7 @@ public final class FS {
    */
   public static int read(int fd, int buffer, int nbytes) throws SimulationException {
     // only available from stdin
+    int buff = buffer;
     if (fd == FS.STDIN) {
       int rbytes = 0;
       for (int i = 0; i < nbytes; i++) {
@@ -111,7 +112,7 @@ public final class FS {
           int c = IO.readChar();
           if (c == -1)
             c = 0;
-          Globals.memory.storeByte(buffer++, c);
+          Globals.memory.storeByte(buff++, c);
           rbytes++;
         } catch (Exception e) {
           if (rbytes > 0)

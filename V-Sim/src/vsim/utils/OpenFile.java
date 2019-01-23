@@ -161,11 +161,12 @@ public final class OpenFile {
    */
   public int write(int buffer, int nbytes) throws SimulationException {
     // build string
+    int buff = buffer;
     if (this.write && !this.rdwr || this.rdwr && !this.write) {
       StringBuffer s = new StringBuffer(0);
       int wbytes = 0;
       for (int i = 0; i < nbytes; i++) {
-        char c = (char) Globals.memory.loadByteUnsigned(buffer++);
+        char c = (char) Globals.memory.loadByteUnsigned(buff++);
         s.append(c);
         wbytes++;
       }

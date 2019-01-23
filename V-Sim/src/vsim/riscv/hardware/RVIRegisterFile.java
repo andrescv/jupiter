@@ -128,14 +128,14 @@ public final class RVIRegisterFile extends RegisterFile {
   @Override
   public void printReg(String name) {
     Register reg = null;
-    if (name.equals("pc"))
+    if ("pc".equals(name))
       reg = pc;
     else
       reg = rf.get(name);
     if (reg == null)
       throw new IllegalArgumentException("Invalid Register: " + name);
     // print regular register
-    if (reg != pc) {
+    if (!("pc".equals(reg.getMnemonic()))) {
       String fmt = "%s (%s) [%s] {= %d}";
       String number = prefix + reg.getNumber();
       String mnemonic = reg.getMnemonic();
