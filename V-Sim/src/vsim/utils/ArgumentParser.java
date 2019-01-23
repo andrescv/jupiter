@@ -137,7 +137,7 @@ public final class ArgumentParser {
           invalid += value + " ";
         for (int i = position + 2; this.values.get(i) != null; i++)
           invalid += this.values.get(i) + " ";
-        if (!invalid.equals(""))
+        if (!("".equals(invalid)))
           this.errors.add("unexpected value(s): " + invalid.trim());
       }
     }

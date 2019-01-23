@@ -128,7 +128,7 @@ public final class Program {
         case RODATA:
           this.table.set(label, offset + this.rodataStart);
           break;
-        case BSS:
+        default:
           this.table.set(label, offset + this.bssStart);
           break;
       }
