@@ -219,8 +219,9 @@ public final class InstructionSet {
             return "bltu";
           case 0b111: // bgeu
             return "bgeu";
+          default:
+            return null;
         }
-        break;
       case 0b0000011: // loads
         switch (code.get(InstructionField.FUNCT3)) {
           case 0b000: // lb
@@ -233,8 +234,9 @@ public final class InstructionSet {
             return "lbu";
           case 0b101: // lhu
             return "lhu";
+          default:
+            return null;
         }
-        break;
       case 0b0100011: // stores
         switch (code.get(InstructionField.FUNCT3)) {
           case 0b000: // sb
@@ -243,8 +245,9 @@ public final class InstructionSet {
             return "sh";
           case 0b010: // sw
             return "sw";
+          default:
+            return null;
         }
-        break;
       case 0b0010011: // immediates
         switch (code.get(InstructionField.FUNCT3)) {
           case 0b000: // addi
@@ -267,10 +270,12 @@ public final class InstructionSet {
                 return "srli";
               case 0b0100000: // srai
                 return "srai";
+              default:
+                return null;
             }
-            break;
+          default:
+            return null;
         }
-        break;
       case 0b0110011: // r
         switch (code.get(InstructionField.FUNCT3)) {
           case 0b000:
@@ -281,40 +286,45 @@ public final class InstructionSet {
                 return "sub";
               case 0b0000001: // mul
                 return "mul";
+              default:
+                return null;
             }
-            break;
           case 0b001:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // sll
                 return "sll";
               case 0b0000001: // mulh
                 return "mulh";
+              default:
+                return null;
             }
-            break;
           case 0b010:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // slt
                 return "slt";
               case 0b0000001: // mulhsu
                 return "mulhsu";
+              default:
+                return null;
             }
-            break;
           case 0b011:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // sltu
                 return "sltu";
               case 0b0000001: // mulhu
                 return "mulhu";
+              default:
+                return null;
             }
-            break;
           case 0b100:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // xor
                 return "xor";
               case 0b0000001: // div
                 return "div";
+              default:
+                return null;
             }
-            break;
           case 0b101:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // srl
@@ -323,35 +333,40 @@ public final class InstructionSet {
                 return "sra";
               case 0b0000001: // divu
                 return "divu";
+              default:
+                return null;
             }
-            break;
           case 0b110:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // or
                 return "or";
               case 0b0000001: // rem
                 return "rem";
+              default:
+                return null;
             }
-            break;
           case 0b111:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // and
                 return "and";
               case 0b0000001: // remu
                 return "remu";
+              default:
+                return null;
             }
-            break;
+          default:
+            return null;
         }
-        break;
       case 0b1110011:
         switch (code.get(InstructionField.IMM_11_0)) {
           case 0b000000000000: // ecall
             return "ecall";
           case 0b000000000001: // ebreak
             return "ebreak";
+          default:
+            return null;
         }
-        break;
-      // f extension
+        // f extension
       case 0b0000111: // flw
         return "flw";
       case 0b0100111: // fsw
@@ -385,32 +400,36 @@ public final class InstructionSet {
                 return "fsgnjn.s";
               case 0b010:
                 return "fsgnjx.s";
+              default:
+                return null;
             }
-            break;
           case 0b0010100:
             switch (code.get(InstructionField.FUNCT3)) {
               case 0b000:
                 return "fmin.s";
               case 0b001:
                 return "fmax.s";
+              default:
+                return null;
             }
-            break;
           case 0b1100000:
             switch (code.get(InstructionField.RS2)) {
               case 0b00000:
                 return "fcvt.w.s";
               case 0b00001:
                 return "fcvt.wu.s";
+              default:
+                return null;
             }
-            break;
           case 0b1110000:
             switch (code.get(InstructionField.FUNCT3)) {
               case 0b000:
                 return "fmv.x.w";
               case 0b001:
                 return "fclass.s";
+              default:
+                return null;
             }
-            break;
           case 0b1010000:
             switch (code.get(InstructionField.FUNCT3)) {
               case 0b010:
@@ -420,9 +439,8 @@ public final class InstructionSet {
               case 0b000:
                 return "fle.s";
               default:
-                break;
+                return null;
             }
-            break;
           case 0b1101000:
             switch (code.get(InstructionField.RS2)) {
               case 0b00000:
@@ -430,15 +448,14 @@ public final class InstructionSet {
               case 0b00001:
                 return "fcvt.s.wu";
               default:
-                break;
+                return null;
             }
-            break;
           case 0b1111000:
             return "fmv.w.x";
         }
-        break;
+      default:
+        return null;
     }
-    return null;
   }
 
   /**
@@ -447,22 +464,22 @@ public final class InstructionSet {
    * @param mnemonic instruction mnemonic to print
    */
   public void print(String mnemonic) {
-    mnemonic = mnemonic.toLowerCase();
-    Instruction inst = this.instructions.get(mnemonic);
+    String name = mnemonic.toLowerCase();
+    Instruction inst = this.instructions.get(name);
     if (inst != null) {
       IO.stdout.println("Instruction:");
       IO.stdout.println();
-      IO.stdout.println(String.format("[%s] (%s) example: %s", inst.getFormat().toString(), mnemonic, inst.getUsage()));
+      IO.stdout.println(String.format("[%s] (%s) example: %s", inst.getFormat().toString(), name, inst.getUsage()));
       IO.stdout.println();
       IO.stdout.println("Description:");
       IO.stdout.println();
       IO.stdout.println(inst.getDescription());
       for (int i = 0; i < InstructionSet.pseudos.length; i++) {
-        if (pseudos[i][0].equals(mnemonic)) {
+        if (pseudos[i][0].equals(name)) {
           IO.stdout.println();
           IO.stdout.println("Pseudo Instruction:");
           IO.stdout.println();
-          IO.stdout.println(String.format("(%s) example: %s", mnemonic, pseudos[i][1]));
+          IO.stdout.println(String.format("(%s) example: %s", name, pseudos[i][1]));
           IO.stdout.println();
           IO.stdout.println("Base Instruction(s):");
           IO.stdout.println();
@@ -473,12 +490,12 @@ public final class InstructionSet {
     } else {
       boolean enter = false;
       for (int i = 0; i < InstructionSet.pseudos.length; i++) {
-        if (pseudos[i][0].equals(mnemonic)) {
+        if (pseudos[i][0].equals(name)) {
           if (enter)
             IO.stdout.println();
           IO.stdout.println("Pseudo Instruction:");
           IO.stdout.println();
-          IO.stdout.println(String.format("(%s) example: %s", mnemonic, pseudos[i][1]));
+          IO.stdout.println(String.format("(%s) example: %s", name, pseudos[i][1]));
           IO.stdout.println();
           IO.stdout.println("Base Instruction(s):");
           IO.stdout.println();
