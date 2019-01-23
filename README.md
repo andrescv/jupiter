@@ -21,6 +21,8 @@ V-Sim is a simple assembler and runtime simulator inspired by _SPIM_ for program
 
 ### Contributing
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8410d706fe1b498b9ebf66a5eccfcc19)](https://app.codacy.com/app/andrescv/V-Sim?utm_source=github.com&utm_medium=referral&utm_content=andrescv/V-Sim&utm_campaign=Badge_Grade_Dashboard)
+
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/andrescv/VSim/issues/new).
 
 ### Acknowledgments
