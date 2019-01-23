@@ -197,47 +197,47 @@ public class MenuBarController {
   *-------------------------------------------------------*/
 
   @FXML
-  private void newFile(ActionEvent event) {
+  protected void newFile(ActionEvent event) {
     this.mainController.editorController.addNewUntitledTab();
   }
 
   @FXML
-  private void openFile(ActionEvent event) {
+  protected void openFile(ActionEvent event) {
     this.mainController.editorController.addTitledTab();
   }
 
   @FXML
-  private void openFolder(ActionEvent event) {
+  protected void openFolder(ActionEvent event) {
     this.mainController.editorController.openFolder();
   }
 
   @FXML
-  private void save(ActionEvent event) {
+  protected void save(ActionEvent event) {
     this.mainController.editorController.saveTab();
   }
 
   @FXML
-  private void saveAs(ActionEvent event) {
+  protected void saveAs(ActionEvent event) {
     this.mainController.editorController.saveTabAs();
   }
 
   @FXML
-  private void saveAll(ActionEvent event) {
+  protected void saveAll(ActionEvent event) {
     this.mainController.editorController.saveAllTabs();
   }
 
   @FXML
-  private void closeTab(ActionEvent event) {
+  protected void closeTab(ActionEvent event) {
     this.mainController.editorController.closeTab();
   }
 
   @FXML
-  private void closeAllTabs(ActionEvent event) {
+  protected void closeAllTabs(ActionEvent event) {
     this.mainController.editorController.closeAllTabs();
   }
 
   @FXML
-  private void quit(Event event) {
+  protected void quit(Event event) {
     this.mainController.editorController.quit();
     // only
     if (!this.mainController.editorController.editor.getTabs().isEmpty())
@@ -254,37 +254,37 @@ public class MenuBarController {
   *-------------------------------------------------------*/
 
   @FXML
-  private void undo(ActionEvent e) {
+  protected void undo(ActionEvent e) {
     this.mainController.editorController.undo();
   }
 
   @FXML
-  private void redo(ActionEvent e) {
+  protected void redo(ActionEvent e) {
     this.mainController.editorController.redo();
   }
 
   @FXML
-  private void cut(ActionEvent e) {
+  protected void cut(ActionEvent e) {
     this.mainController.editorController.cut();
   }
 
   @FXML
-  private void copy(ActionEvent e) {
+  protected void copy(ActionEvent e) {
     this.mainController.editorController.copy();
   }
 
   @FXML
-  private void paste(ActionEvent e) {
+  protected void paste(ActionEvent e) {
     this.mainController.editorController.paste();
   }
 
   @FXML
-  private void selectAll(ActionEvent e) {
+  protected void selectAll(ActionEvent e) {
     this.mainController.editorController.selectAll();
   }
 
   @FXML
-  private void findReplaceInBuffer(ActionEvent e) {
+  protected void findReplaceInBuffer(ActionEvent e) {
     this.mainController.editorController.findReplaceInBuffer();
   }
 
@@ -293,32 +293,32 @@ public class MenuBarController {
   *-------------------------------------------------------*/
 
   @FXML
-  private void assemble(ActionEvent e) {
+  protected void assemble(ActionEvent e) {
     this.mainController.simulatorController.assemble();
   }
 
   @FXML
-  private void go(ActionEvent e) {
+  protected void go(ActionEvent e) {
     this.mainController.simulatorController.go();
   }
 
   @FXML
-  private void step(ActionEvent e) {
+  protected void step(ActionEvent e) {
     this.mainController.simulatorController.step();
   }
 
   @FXML
-  private void backstep(ActionEvent e) {
+  protected void backstep(ActionEvent e) {
     this.mainController.simulatorController.backstep();
   }
 
   @FXML
-  private void reset(ActionEvent e) {
+  protected void reset(ActionEvent e) {
     this.mainController.simulatorController.reset();
   }
 
   @FXML
-  private void clearAllBreakpoints(ActionEvent e) {
+  protected void clearAllBreakpoints(ActionEvent e) {
     this.mainController.simulatorController.clearAllBreakpoints();
   }
 
@@ -327,28 +327,28 @@ public class MenuBarController {
   *-------------------------------------------------------*/
 
   @FXML
-  private void showLabels(ActionEvent e) {
+  protected void showLabels(ActionEvent e) {
     this.showLabelsBox.setSelected(Settings.toggleShowLabels());
     this.mainController.simulatorController.showST();
   }
 
   @FXML
-  private void popup(ActionEvent e) {
+  protected void popup(ActionEvent e) {
     this.popupBox.setSelected(Settings.togglePopup());
   }
 
   @FXML
-  private void onlyOpen(ActionEvent e) {
+  protected void onlyOpen(ActionEvent e) {
     this.onlyOpenBox.setSelected(Settings.toggleAssembleOnlyOpen());
   }
 
   @FXML
-  private void warnings(ActionEvent e) {
+  protected void warnings(ActionEvent e) {
     this.warningsBox.setSelected(Settings.toggleExtrict());
   }
 
   @FXML
-  private void start(ActionEvent e) {
+  protected void start(ActionEvent e) {
     try {
       InputDialog dialog = new InputDialog();
       String start = dialog.showAndWait("Enter new global start label");
@@ -365,17 +365,17 @@ public class MenuBarController {
   }
 
   @FXML
-  private void permit(ActionEvent e) {
+  protected void permit(ActionEvent e) {
     this.permitBox.setSelected(!Settings.toggleBare());
   }
 
   @FXML
-  private void self(ActionEvent e) {
+  protected void self(ActionEvent e) {
     this.selfBox.setSelected(Settings.toggleSelfModifying());
   }
 
   @FXML
-  private void editor(ActionEvent e) {
+  protected void editor(ActionEvent e) {
     if (this.editorDialog == null) {
       try {
         this.editorDialog = new EditorDialog();
@@ -392,7 +392,7 @@ public class MenuBarController {
   }
 
   @FXML
-  private void trap(ActionEvent e) {
+  protected void trap(ActionEvent e) {
     FileChooser chooser = new FileChooser();
     chooser.setTitle("Load RISC-V Trap Handler");
     if (Settings.TRAP != null && Settings.TRAP.exists())
@@ -406,7 +406,7 @@ public class MenuBarController {
   }
 
   @FXML
-  private void clearTrap(ActionEvent e) {
+  protected void clearTrap(ActionEvent e) {
     Settings.clearTrap();
   }
 
@@ -415,7 +415,7 @@ public class MenuBarController {
   *-------------------------------------------------------*/
 
   @FXML
-  private void help(ActionEvent e) {
+  protected void help(ActionEvent e) {
     Task<Void> showHelp = new Task<Void>() {
 
       @Override
@@ -435,7 +435,7 @@ public class MenuBarController {
   }
 
   @FXML
-  private void about(ActionEvent e) {
+  protected void about(ActionEvent e) {
     if (this.aboutDialog == null) {
       try {
         this.aboutDialog = new AboutDialog();

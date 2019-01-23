@@ -95,11 +95,10 @@ public class ConsoleInput {
             break;
           // nothing
           default:
-            if (e.getEventType() == KeyEvent.KEY_RELEASED) {
-              if (area.getText(initialPos, area.getLength()).length() == maxLength) {
-                returnResponse();
-                area.appendText(System.getProperty("line.separator"));
-              }
+            if (e.getEventType() == KeyEvent.KEY_RELEASED
+                && area.getText(initialPos, area.getLength()).length() == maxLength) {
+              returnResponse();
+              area.appendText(System.getProperty("line.separator"));
             }
             // change area input color
             if (initialPos < area.getLength())

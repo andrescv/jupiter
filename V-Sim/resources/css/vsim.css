@@ -192,7 +192,7 @@
 }
 
 .corner {
-  -fx-background-color: -fx-primary !important;
+  -fx-background-color: -fx-primary;
 }
 
 .scroll-bar:vertical {
@@ -378,7 +378,7 @@
 }
 
 .code-area .selection {
-  -fx-fill: -fx-selection !important;
+  -fx-fill: -fx-selection;
 }
 
 .code-area .lineno {
@@ -501,7 +501,7 @@
 
 .table-view .table-row-cell:selected .table-cell,
 .table-view:focused .table-row-cell:selected .table-cell {
-  -fx-text-fill: #333333 !important;
+  -fx-text-fill: #333333;
 }
 
 .table-view .table-row-cell:filled,
@@ -567,7 +567,7 @@
 }
 
 .table-view .table-cell:symFile > .text {
-  -fx-fill: #01579b !important;
+  -fx-fill: #01579b;
 }
 
 .table-view .table-cell.editable-cell {
@@ -613,8 +613,8 @@
 
 .table-view .table-row-cell:changed,
 .table-view .table-row-cell:selected:changed {
-  -fx-border-width: 1 0 1 0 !important;
-  -fx-border-color: #303f9f !important;
+  -fx-border-width: 1 0 1 0;
+  -fx-border-color: #303f9f;
 }
 
 .table-row-cell:grouped {
@@ -659,13 +659,13 @@
 }
 
 .jfx-check-box:selected .box {
-  -fx-border-color: -fx-secondary !important;
-  -fx-background-color: -fx-secondary !important;
+  -fx-border-color: -fx-secondary;
+  -fx-background-color: -fx-secondary;
 }
 
 .jfx-check-box.setting:selected .box {
-  -fx-border-color: #0F9D58 !important;
-  -fx-background-color: #0F9D58 !important;
+  -fx-border-color: #0F9D58;
+  -fx-background-color: #0F9D58;
 }
 
 .check-box {
