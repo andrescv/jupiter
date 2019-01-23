@@ -3,6 +3,9 @@
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
   </a>
+  <a href="https://app.codacy.com/app/andrescv/V-Sim?utm_source=github.com&utm_medium=referral&utm_content=andrescv/V-Sim&utm_campaign=Badge_Grade_Dashboard">
+    <img src="https://api.codacy.com/project/badge/Grade/8410d706fe1b498b9ebf66a5eccfcc19" alt="Codacy Badge">
+  </a>
   <a href="https://gitter.im/RISC-V-Sim/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
     <img src="https://badges.gitter.im/RISC-V-Sim/community.svg" alt="Join the chat at https://gitter.im/RISC-V-Sim/community">
   </a>
@@ -20,8 +23,6 @@
 V-Sim is a simple assembler and runtime simulator inspired by _SPIM_ for programming in **RISC-V** assembly language and intended for educational purposes. One of the main goals was to make it functional and easy to use. Almost all the 32-bit base integer instruction set (`RV32I`) can be simulated, as well as the `M` and `F` extensions plus all the their respective pseudo-instructions. For the installation guide and a complete list of supported instructions, please visit the [docs](https://andrescv.github.io/V-Sim/) page.
 
 ### Contributing
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8410d706fe1b498b9ebf66a5eccfcc19)](https://app.codacy.com/app/andrescv/V-Sim?utm_source=github.com&utm_medium=referral&utm_content=andrescv/V-Sim&utm_campaign=Badge_Grade_Dashboard)
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/andrescv/VSim/issues/new).
 
