@@ -419,6 +419,8 @@ public final class InstructionSet {
                 return "flt.s";
               case 0b000:
                 return "fle.s";
+              default:
+                break;
             }
             break;
           case 0b1101000:
@@ -427,6 +429,8 @@ public final class InstructionSet {
                 return "fcvt.s.w";
               case 0b00001:
                 return "fcvt.s.wu";
+              default:
+                break;
             }
             break;
           case 0b1111000:

@@ -170,7 +170,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  private void changeColor(ActionEvent e) {
+  private void changeColor() {
     this.update();
   }
 
@@ -440,7 +440,7 @@ public final class EditorDialog {
       case "onelight":
         this.onelight.setSelected(true);
         break;
-      case "custom":
+      default:
         this.custom.setSelected(true);
         break;
     }
@@ -451,7 +451,7 @@ public final class EditorDialog {
       this.fontstyle.getSelectionModel().select("Regular");
     else if (Settings.CODE_AREA_FONT_STYLE.equals("italic") && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
       this.fontstyle.getSelectionModel().select("Italic");
-    else if (Settings.CODE_AREA_FONT_STYLE.equals("normal") && Settings.CODE_AREA_FONT_WEIGHT.equals("bold"))
+    else if ("normal".equals(Settings.CODE_AREA_FONT_STYLE) && "bold".equals(Settings.CODE_AREA_FONT_WEIGHT))
       this.fontstyle.getSelectionModel().select("Bold");
     else
       this.fontstyle.getSelectionModel().select("Bold Italic");
