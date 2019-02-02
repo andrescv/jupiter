@@ -30,7 +30,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXTabPane;
-import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
@@ -77,7 +76,6 @@ public class EditorController {
     try {
       this.findReplaceDialog = new FindReplaceDialog(this);
     } catch (IOException e) {
-      Log.severe(e);
     }
     // init tree
     this.initTree();
@@ -262,7 +260,6 @@ public class EditorController {
         }
       } catch (IOException e) {
         Message.error("could not show close dialog");
-        Log.severe(e);
       }
     } else
       this.closeAllTabs();
@@ -459,7 +456,6 @@ public class EditorController {
             break;
         }
       } catch (IOException e) {
-        Log.severe(e);
       }
     } else
       this.closeTab(tab);
@@ -571,7 +567,6 @@ public class EditorController {
           Message.warning("invalid file name: " + filename);
       }
     } catch (IOException e) {
-      Log.severe(e);
     }
   }
 
@@ -598,7 +593,6 @@ public class EditorController {
         }
       }
     } catch (IOException e) {
-      Log.severe(e);
     }
   }
 
@@ -629,7 +623,6 @@ public class EditorController {
           Message.warning(String.format("directory %s already exists", newPath.getName()));
       }
     } catch (IOException e) {
-      Log.severe(e);
     }
   }
 
@@ -645,7 +638,6 @@ public class EditorController {
       }
     } catch (IOException e) {
       Message.error("could not show delete dialog");
-      Log.severe(e);
     }
   }
 
@@ -688,7 +680,6 @@ public class EditorController {
           Message.warning(String.format("file %s already exists", newPath.getName()));
       }
     } catch (IOException e) {
-      Log.severe(e);
     }
   }
 
@@ -720,7 +711,6 @@ public class EditorController {
       }
     } catch (IOException e) {
       Message.error("could not open delete dialog");
-      Log.severe(e);
     }
   }
 

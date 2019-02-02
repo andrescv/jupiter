@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import vsim.Errors;
 import vsim.Globals;
-import vsim.Log;
 import vsim.Settings;
 import vsim.assembler.DebugInfo;
 import vsim.assembler.Program;
@@ -57,7 +56,6 @@ public final class Linker {
    * @see vsim.assembler.Program
    */
   private static void linkRodata(ArrayList<Program> programs) {
-    Log.info("saving .rodata in memory...");
     int startAddress = Linker.dataAddress;
     MemorySegments.RODATA_SEGMENT_BEGIN = Linker.dataAddress;
     MemorySegments.RODATA_SEGMENT_END = Linker.dataAddress;
@@ -74,7 +72,6 @@ public final class Linker {
     if (Linker.dataAddress != startAddress)
       Linker.dataAddress += Data.WORD_LENGTH;
     else {
-      Log.info("no .rodata data found");
       MemorySegments.RODATA_SEGMENT_BEGIN = -1;
       MemorySegments.RODATA_SEGMENT_END = -1;
     }
@@ -87,7 +84,6 @@ public final class Linker {
    * @see vsim.assembler.Program
    */
   private static void linkBss(ArrayList<Program> programs) {
-    Log.info("saving .bss data in memory...");
     int startAddress = Linker.dataAddress;
     for (Program program : programs) {
       program.setBssStart(Linker.dataAddress);
@@ -100,8 +96,6 @@ public final class Linker {
     // move next address by 1 word to set a bss address range properly
     if (Linker.dataAddress != startAddress)
       Linker.dataAddress += Data.WORD_LENGTH;
-    else
-      Log.info("no .bss data found");
   }
 
   /**
@@ -111,7 +105,6 @@ public final class Linker {
    * @see vsim.assembler.Program
    */
   private static void linkData(ArrayList<Program> programs) {
-    Log.info("saving .data in memory...");
     int startAddress = Linker.dataAddress;
     for (Program program : programs) {
       program.setDataStart(Linker.dataAddress);
@@ -124,10 +117,7 @@ public final class Linker {
     // move next address by 1 word to set a data address range properly
     if (Linker.dataAddress != startAddress)
       Linker.dataAddress += Data.WORD_LENGTH;
-    else
-      Log.info("no .data data found");
     // save heap segment start address
-    Log.info("saving heap pointer");
     MemorySegments.HEAP_SEGMENT = Linker.dataAddress;
     MemorySegments.HEAP_SEGMENT_BEGIN = MemorySegments.HEAP_SEGMENT;
   }
@@ -139,7 +129,6 @@ public final class Linker {
    * @see vsim.assembler.Program
    */
   private static void linkSymbols(ArrayList<Program> programs) {
-    Log.info("linking symbols...");
     // first relocate symbols
     for (Program program : programs) {
       program.setTextStart(Linker.textAddress);
@@ -159,13 +148,11 @@ public final class Linker {
    * @return a RISC-V linked program
    */
   private static LinkedProgram linkPrograms(ArrayList<Program> programs) {
-    Log.info("linking programs...");
     // set start of text segment
     Linker.textAddress = MemorySegments.TEXT_SEGMENT_BEGIN;
     HashMap<Integer, Statement> all = new HashMap<Integer, Statement>();
     if (Globals.globl.get(Settings.START) != null
         && Globals.globl.getSymbol(Settings.START).getSegment() == Segment.TEXT) {
-      Log.info("creating call <start> initial instructions");
       // far call to start label always the first (two) statements
       DebugInfo debug = new DebugInfo(0, 0, "call " + Settings.START, "start");
       // utype statement (CALL start)
@@ -183,7 +170,6 @@ public final class Linker {
       // next word align address
       Linker.textAddress += Data.WORD_LENGTH;
       for (Program program : programs) {
-        Log.info("saving " + program.getFilename() + " instructions in memory...");
         for (Statement stmt : program.getStatements()) {
           // build machine code
           stmt.build(Linker.textAddress);
@@ -254,7 +240,6 @@ public final class Linker {
    */
   public static void dumpCode(LinkedProgram program, File file) {
     try {
-      Log.info("dumping .text segment to file " + Settings.CODE);
       // create file if necessary
       if (!file.exists())
         file.createNewFile();
@@ -269,13 +254,9 @@ public final class Linker {
         Message.log("machine code dumped to: " + file + System.getProperty("line.separator"));
       } catch (IOException e) {
         Message.warning("the file " + file + " could not be written");
-        Log.warning("the file " + file + " could not be written");
-        Log.warning(e);
       }
     } catch (IOException e) {
       Message.warning("the file " + file + " could not be created");
-      Log.warning("the file " + file + " could not be created");
-      Log.warning(e);
     }
   }
 
@@ -286,7 +267,6 @@ public final class Linker {
    */
   public static void dumpData(File file) {
     try {
-      Log.info("dumping static data segment to file " + Settings.DATA);
       // create file if necessary
       if (!file.exists())
         file.createNewFile();
@@ -303,13 +283,9 @@ public final class Linker {
         Message.log("static data dumped to: " + file + System.getProperty("line.separator"));
       } catch (IOException e) {
         Message.warning("the file " + file + " could not be written");
-        Log.warning("the file " + file + " could not be written");
-        Log.warning(e);
       }
     } catch (IOException e) {
       Message.warning("the file " + file + " could not be created");
-      Log.warning("the file " + file + " could not be created");
-      Log.warning(e);
     }
   }
 
