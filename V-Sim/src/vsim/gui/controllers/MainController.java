@@ -30,7 +30,6 @@ import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTabPane;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
-import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
@@ -122,7 +121,6 @@ public class MainController {
       // input dialog
       IO.dialog = new InputDialog();
     } catch (IOException e) {
-      Log.severe(e);
     }
     // clear option
     MenuItem clear = new MenuItem("clear");

@@ -34,7 +34,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXCheckBox;
 import vsim.Globals;
-import vsim.Log;
 import vsim.Settings;
 import vsim.gui.components.AboutDialog;
 import vsim.gui.components.EditorDialog;
@@ -329,7 +328,6 @@ public class MenuBarController {
       }
     } catch (IOException ex) {
       Message.warning("could not load input dialog, try again");
-      Log.severe(ex);
     }
   }
 
@@ -350,7 +348,6 @@ public class MenuBarController {
         this.editorDialog = new EditorDialog();
       } catch (IOException ex) {
         Message.warning("could not open editor settings, try again");
-        Log.severe(ex);
       }
     }
     // show editor dialog only if it was created
@@ -393,7 +390,6 @@ public class MenuBarController {
           Desktop.getDesktop().browse(new URI(Globals.HELP));
         } catch (Exception ex) {
           Message.runError("could not open online docs, try again later or go to: " + Globals.HELP);
-          Log.severe(ex);
         }
         return null;
       }
@@ -410,7 +406,6 @@ public class MenuBarController {
         this.aboutDialog = new AboutDialog();
       } catch (IOException ex) {
         Message.warning("could not open about dialog, try again");
-        Log.severe(ex);
       }
     }
     // show about dialog only if it was created
