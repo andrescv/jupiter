@@ -61,8 +61,10 @@ public final class IO {
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(-1);
-      else
+      else {
         input = IO.dialog.getInput("Enter an integer value");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator"));
+      }
     } else {
       try {
         input = IO.stdin.readLine();
@@ -88,8 +90,10 @@ public final class IO {
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(-1);
-      else
+      else {
         input = IO.dialog.getInput("Enter a float value");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator"));
+      }
     } else {
       try {
         input = IO.stdin.readLine();
@@ -116,8 +120,10 @@ public final class IO {
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(maxLength);
-      else
+      else {
         input = IO.dialog.getInput("Enter a string");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator"));
+      }
     } else {
       try {
         input = IO.stdin.readLine();
@@ -145,8 +151,10 @@ public final class IO {
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
         input = IO.guistdin.readString(1);
-      else
+      else {
         input = IO.dialog.getInput("Enter a character value");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator"));
+      }
     } else {
       try {
         input = IO.stdin.readLine();

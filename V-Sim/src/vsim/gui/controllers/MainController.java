@@ -25,6 +25,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTabPane;
@@ -41,6 +42,9 @@ import vsim.utils.IO;
 
 /** Main controller class. */
 public class MainController {
+
+  /** root stack pane */
+  @FXML protected StackPane root;
 
   /** Main tab pane */
   @FXML protected JFXTabPane main;
