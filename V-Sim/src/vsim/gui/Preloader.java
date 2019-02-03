@@ -82,6 +82,8 @@ public final class Preloader extends javafx.application.Preloader {
       case BEFORE_START:
         this.stage.hide();
         break;
+      default:
+        break;
     }
   }
 

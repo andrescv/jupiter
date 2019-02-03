@@ -79,12 +79,10 @@ public final class Cmd {
     Settings.DATA = parser.hasFlag("-data") ? parser.value("-data") : null;
     Settings.DEBUG = parser.hasFlag("-debug");
     // try to set start label
-    if (parser.hasFlag("-start")) {
-      if (!Settings.setStart(parser.value("-start"), false)) {
-        Cmd.title();
-        Message.error("invalid start label: " + parser.value("-start"));
-        System.exit(1);
-      }
+    if (parser.hasFlag("-start") && !Settings.setStart(parser.value("-start"), false)) {
+      Cmd.title();
+      Message.error("invalid start label: " + parser.value("-start"));
+      System.exit(1);
     }
     // try to set trap handler
     if (parser.hasFlag("-trap")) {
@@ -233,7 +231,6 @@ public final class Cmd {
    */
   public static void title() {
     // print the title and license note if the -notitle flag is not set
-    String newline = System.getProperty("line.separator");
     if (Settings.TITLE) {
       // cool title :]
       IO.stdout.println();
