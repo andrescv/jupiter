@@ -731,7 +731,7 @@ public class SimulatorController {
             this.pseudoClassStateChanged(changed, false);
             return;
           }
-          this.pseudoClassStateChanged(changed, reg == lastReg);
+          this.pseudoClassStateChanged(changed, reg.getMnemonic().equals(lastReg.getMnemonic()));
         }
       };
     });
@@ -772,7 +772,7 @@ public class SimulatorController {
             this.pseudoClassStateChanged(changed, false);
             return;
           }
-          this.pseudoClassStateChanged(changed, reg == lastReg);
+          this.pseudoClassStateChanged(changed, reg.getMnemonic().equals(lastReg.getMnemonic()));
         }
       };
     });

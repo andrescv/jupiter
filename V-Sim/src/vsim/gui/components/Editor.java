@@ -277,10 +277,8 @@ public final class Editor extends CodeArea {
       if (line.charAt(pos) != ' ')
         break;
     }
-    if (((!exclude && col > 0) || exclude)
+    return (((!exclude && col > 0) || exclude)
         && ((exclude && col <= (pos - this.tabSize.length())) || (!exclude && col <= pos))
-        && (col % this.tabSize.length() == 0))
-      return true;
-    return false;
+        && (col % this.tabSize.length() == 0));
   }
 }

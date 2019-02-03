@@ -94,7 +94,7 @@ public final class Relocation {
       case PCRELLO:
         target = Data.signExtend(((delta + 4) & Data.PC_LO_MASK), 12);
         break;
-      case DEFAULT:
+      default:
         target = delta;
         break;
     }
