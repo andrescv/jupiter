@@ -319,6 +319,8 @@ public final class Program {
       case BSS:
         this.bssIndex = this.addTo(b, this.bssIndex, this.bss);
         break;
+      default:
+        break;
     }
   }
 
@@ -347,6 +349,8 @@ public final class Program {
         this.rodata.add((byte) 0);
         this.rodata.add((byte) 0);
         this.rodata.add((byte) 0);
+        break;
+      default:
         break;
     }
   }

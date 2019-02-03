@@ -51,9 +51,6 @@ public class EditorController {
   /** Editor tab pane */
   @FXML protected JFXTabPane editor;
 
-  /** directory watcher */
-  private DirWatcher watcher;
-
   /** tree view directory context menu */
   private ContextMenu dirContext;
   /** tree view file context menu */
@@ -614,9 +611,8 @@ public class EditorController {
     // only if user really wants to delete the directory
     TreePath item = (TreePath) this.tree.getSelectionModel().getSelectedItem();
     DeleteDialog dialog = new DeleteDialog(this.mainController.stage, item.getPath());
-    if (dialog.get()) {
-      if (!this.deleteDir(item.getPath()))
-        Message.warning("could not delete directory " + item.getPath());
+    if (dialog.get() && !this.deleteDir(item.getPath())) {
+      Message.warning("could not delete directory " + item.getPath());
     }
   }
 
