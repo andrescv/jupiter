@@ -133,22 +133,4 @@ public final class InputDialog {
     }
   }
 
-  /**
-   * Shows input dialog and returns user input text.
-   *
-   * @param title dialog title
-   * @return user input text
-   */
-  public String showAndWait(String title) {
-    String data = "";
-    this.stage.setTitle(title);
-    // request input focus
-    this.text.requestFocus();
-    this.stage.showAndWait();
-    if (this.enterPressed)
-      data = this.text.getText();
-    this.text.setText("");
-    this.enterPressed = false;
-    return data;
-  }
 }
