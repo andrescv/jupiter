@@ -34,8 +34,6 @@ import vsim.Globals;
  */
 public final class AboutDialog extends JFXDialog {
 
-  /** Dialog stage */
-  private Stage stage;
   /** version label */
   @FXML private Label version;
   /** copyright label */
