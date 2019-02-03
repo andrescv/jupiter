@@ -24,7 +24,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import com.jfoenix.controls.JFXDialog;
 import vsim.Globals;
 
