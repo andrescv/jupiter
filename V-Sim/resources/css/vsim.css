@@ -727,3 +727,29 @@
   -jfx-selected-color: -fx-secondary;
   -jfx-unselected-color: #eee;
 }
+
+
+/*
+  Text Area Styles
+*/
+.text-area {
+  -fx-text-fill: #fff;
+  -fx-font-family: 'Roboto', sans-serif;
+  -fx-font-size: 12pt;
+}
+
+.text-area .content {
+  -fx-background-color: -fx-primary;
+}
+
+#exceptionmsg {
+  -fx-font-size: 10pt;
+}
+
+#stacktrace {
+  -fx-font-size: 10pt;
+}
+
+#exceptionhint {
+  -fx-font-size: 8pt;
+}
