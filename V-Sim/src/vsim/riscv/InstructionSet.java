@@ -452,6 +452,8 @@ public final class InstructionSet {
             }
           case 0b1111000:
             return "fmv.w.x";
+          default:
+            return null;
         }
       default:
         return null;

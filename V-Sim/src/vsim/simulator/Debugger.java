@@ -206,12 +206,10 @@ public final class Debugger {
       int pcVal = Globals.regfile.getProgramCounter();
       String pc = String.format("0x%08x", pcVal);
       // manage breakpoints
-      if (goStep) {
+      if (goStep && this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
         // breakpoint at this point ?
-        if (this.breakpoints.containsKey(pcVal) && this.breakpoints.get(pcVal)) {
-          this.breakpoints.put(pcVal, false);
-          return false;
-        }
+        this.breakpoints.put(pcVal, false);
+        return false;
       }
       // get statement machine code
       MachineCode result = stmt.result();
@@ -250,7 +248,7 @@ public final class Debugger {
             // manage breakpoints
             if (goStep) {
               // runtime ebreak
-              if (mnemonic.equals("ebreak") && !this.breakpoints.containsKey(pcVal)) {
+              if ("ebreak".equals(mnemonic) && !this.breakpoints.containsKey(pcVal)) {
                 this.breakpoints.put(pcVal, false);
                 return false;
               }

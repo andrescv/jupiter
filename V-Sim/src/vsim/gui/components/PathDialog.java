@@ -88,12 +88,6 @@ public final class PathDialog extends JFXAlert<Void> {
     });
   }
 
-  /** Cancel action. */
-  private void cancel() {
-    this.enterPressed = false;
-    this.close();
-  }
-
   /** Enter action. */
   private void enter() {
     this.enterPressed = true;

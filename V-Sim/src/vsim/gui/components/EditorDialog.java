@@ -169,7 +169,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  void changeColor() {
+  protected void changeColor() {
     this.update();
   }
 
@@ -179,7 +179,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  void save() {
+  protected void save() {
     // save syntax theme setting
     if (this.eclipse.isSelected())
       Settings.setCodeAreaSyntaxTheme("eclipse");
@@ -239,7 +239,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  void saveAndClose() {
+  protected void saveAndClose() {
     this.save();
     this.stage.hide();
   }
@@ -250,7 +250,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  void cancel() {
+  protected void cancel() {
     this.stage.hide();
   }
 
@@ -446,7 +446,7 @@ public final class EditorDialog {
     // load auto-indent settings
     this.autoIndent.setSelected(Settings.CODE_AREA_AUTO_INDENT);
     // load font settings
-    if (Settings.CODE_AREA_FONT_STYLE.equals("normal") && Settings.CODE_AREA_FONT_WEIGHT.equals("normal"))
+    if ("normal".equals(Settings.CODE_AREA_FONT_STYLE) && "normal".equals(Settings.CODE_AREA_FONT_WEIGHT))
       this.fontstyle.getSelectionModel().select("Regular");
     else if ("italic".equals(Settings.CODE_AREA_FONT_STYLE) && "normal".equals(Settings.CODE_AREA_FONT_WEIGHT))
       this.fontstyle.getSelectionModel().select("Italic");

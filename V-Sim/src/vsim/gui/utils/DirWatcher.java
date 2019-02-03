@@ -57,13 +57,9 @@ public final class DirWatcher extends Task<Void> {
    *
    * @param controller editor controller used to refresh tree view
    */
-  public DirWatcher(EditorController controller) {
+  public DirWatcher(EditorController controller) throws IOException {
     this.controller = controller;
-    try {
-      this.watcher = FileSystems.getDefault().newWatchService();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    this.watcher = FileSystems.getDefault().newWatchService();
     this.keys = new HashMap<WatchKey, Path>();
   }
 
@@ -213,10 +209,14 @@ public final class DirWatcher extends Task<Void> {
       DirWatcher.current.cancel();
     // run new watcher task
     DirWatcher.expanded.clear();
-    DirWatcher.current = new DirWatcher(controller);
-    Thread t = new Thread(DirWatcher.current);
-    t.setDaemon(true);
-    t.start();
+    try {
+      DirWatcher.current = new DirWatcher(controller);
+      Thread t = new Thread(DirWatcher.current);
+      t.setDaemon(true);
+      t.start();
+    } catch (IOException e) {
+      // TODO: report exception
+    }
   }
 
 }

@@ -270,21 +270,22 @@ public final class Program {
    * @return the aligned segment index
    */
   private int align(int index, ArrayList<Byte> segment) {
+    int idx = index;
     int padding = 0;
     // calculate padding
     if (this.align) {
-      if (Integer.remainderUnsigned(index, this.alignVal) != 0)
-        padding = this.alignVal - Integer.remainderUnsigned(index, this.alignVal);
+      if (Integer.remainderUnsigned(idx, this.alignVal) != 0)
+        padding = this.alignVal - Integer.remainderUnsigned(idx, this.alignVal);
       this.align = false;
     }
     // add padding if necessary
     if (padding != 0) {
       for (int i = 0; i < padding; i++)
         segment.add((byte) 0);
-      index += padding;
+      idx += padding;
     }
     // return new segment index
-    return index;
+    return idx;
   }
 
   /**
@@ -296,10 +297,11 @@ public final class Program {
    * @return the new segment index
    */
   private int addTo(byte b, int index, ArrayList<Byte> segment) {
-    index = this.align(index, segment);
+    int idx = index;
+    idx = this.align(idx, segment);
     segment.add(b);
-    index++;
-    return index;
+    idx++;
+    return idx;
   }
 
   /**
