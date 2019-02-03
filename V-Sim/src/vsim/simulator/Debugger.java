@@ -563,7 +563,7 @@ public final class Debugger {
       // read a line from stdin
       String line = IO.readString(Integer.MAX_VALUE);
       // nothing entered
-      if (line.equals(""))
+      if ("".equals(line))
         continue;
       // interpret line
       this.interpret(line.trim().toLowerCase().split(" "));

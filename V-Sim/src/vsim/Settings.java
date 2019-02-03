@@ -238,12 +238,10 @@ public final class Settings {
    * @return true if success, false if not
    */
   public static boolean setTrap(File trap) {
-    if (trap != null && trap.exists()) {
-      if (Settings.TRAP == null || Settings.TRAP != null && !trap.equals(Settings.TRAP)) {
-        Settings.prefs.put("TRAP", trap.getAbsolutePath());
-        Settings.TRAP = trap;
-        return true;
-      }
+    if (trap != null && trap.exists() && (Settings.TRAP == null || Settings.TRAP != null && !trap.equals(Settings.TRAP))) {
+      Settings.prefs.put("TRAP", trap.getAbsolutePath());
+      Settings.TRAP = trap;
+      return true;
     }
     return false;
   }

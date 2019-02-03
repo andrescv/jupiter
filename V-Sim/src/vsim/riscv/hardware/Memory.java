@@ -476,11 +476,8 @@ public final class Memory {
     if (Data.inRange(address, MemorySegments.TEXT_SEGMENT_BEGIN, MemorySegments.TEXT_SEGMENT_END))
       return false;
     // read only segment ?
-    if (!read && MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
-        && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END))
-      return false;
-    // otherwise
-    return true;
+    return !(!read && MemorySegments.RODATA_SEGMENT_BEGIN != MemorySegments.RODATA_SEGMENT_END
+        && Data.inRange(address, MemorySegments.RODATA_SEGMENT_BEGIN, MemorySegments.RODATA_SEGMENT_END));
   }
 
 }
