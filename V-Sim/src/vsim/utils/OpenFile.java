@@ -128,6 +128,7 @@ public final class OpenFile {
    * @throws SimulationException if an exception occurs while reading open file
    */
   public int read(int buffer, int nbytes) throws SimulationException {
+    int buff = buffer;
     // read permissions ?
     if (this.read || this.rdwr) {
       int rbytes = 0;
@@ -137,7 +138,7 @@ public final class OpenFile {
           int b = br.read();
           if (b == -1)
             b = 0;
-          Globals.memory.storeByte(buffer++, b);
+          Globals.memory.storeByte(buff++, b);
           rbytes++;
         }
         br.close();

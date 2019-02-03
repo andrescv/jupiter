@@ -149,6 +149,7 @@ public final class FS {
    * @throws SimulationException if an exception occurs while writing to open file
    */
   public static int write(int fd, int buffer, int nbytes) throws SimulationException {
+    int buff = buffer;
     // stdin
     if (fd == FS.STDIN) {
       Message.warning("file system: writing to stdin not allowed");
@@ -159,7 +160,7 @@ public final class FS {
       StringBuffer s = new StringBuffer(0);
       int wbytes = 0;
       for (int i = 0; i < nbytes; i++) {
-        char c = (char) Globals.memory.loadByteUnsigned(buffer++);
+        char c = (char) Globals.memory.loadByteUnsigned(buff++);
         s.append(c);
         wbytes++;
       }
@@ -178,7 +179,7 @@ public final class FS {
     }
     // normal file
     else if (FS.open.containsKey(fd))
-      return FS.open.get(fd).write(buffer, nbytes);
+      return FS.open.get(fd).write(buff, nbytes);
     return -1;
   }
 
