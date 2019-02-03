@@ -21,7 +21,6 @@ import java.io.IOException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -170,7 +169,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  private void changeColor() {
+  void changeColor() {
     this.update();
   }
 
@@ -180,7 +179,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  private void save(ActionEvent e) {
+  void save() {
     // save syntax theme setting
     if (this.eclipse.isSelected())
       Settings.setCodeAreaSyntaxTheme("eclipse");
@@ -240,8 +239,8 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  private void saveAndClose(ActionEvent e) {
-    this.save(e);
+  void saveAndClose() {
+    this.save();
     this.stage.hide();
   }
 
@@ -251,7 +250,7 @@ public final class EditorDialog {
    * @param e action event
    */
   @FXML
-  private void cancel(ActionEvent e) {
+  void cancel() {
     this.stage.hide();
   }
 

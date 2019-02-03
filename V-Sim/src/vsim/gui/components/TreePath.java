@@ -77,7 +77,7 @@ public final class TreePath extends TreeItem<String> {
   public ObservableList<TreeItem<String>> getChildren() {
     if (this.build) {
       this.build = false;
-      super.getChildren().setAll(this.buildChildren(this));
+      super.getChildren().setAll(this.buildChildren());
     }
     return super.getChildren();
   }
@@ -99,7 +99,7 @@ public final class TreePath extends TreeItem<String> {
    * @return an ObservableList<TreeItem<String>> containing TreeItems, which represent all children available in handed
    * TreeItem. If the handed TreeItem is a leaf, an empty list is returned.
    */
-  private ObservableList<TreeItem<String>> buildChildren(TreePath item) {
+  private ObservableList<TreeItem<String>> buildChildren() {
     if (this.path != null && path.isDirectory()) {
       File[] files = path.listFiles();
       if (files != null) {
