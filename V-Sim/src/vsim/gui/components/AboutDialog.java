@@ -21,19 +21,18 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.stage.Modality;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXDialog;
 import vsim.Globals;
-import vsim.gui.utils.Icons;
 
 
 /**
  * Simple class representing an about dialog. This class reuse Preloader fxml file.
  */
-public final class AboutDialog {
+public final class AboutDialog extends JFXDialog {
 
   /** Dialog stage */
   private Stage stage;
@@ -45,30 +44,16 @@ public final class AboutDialog {
   /**
    * Creates a new about dialog.
    */
-  public AboutDialog() throws IOException {
-    this.stage = new Stage();
-    this.stage.setTitle("V-Sim About");
-    this.stage.initModality(Modality.APPLICATION_MODAL);
-    this.stage.getIcons().add(Icons.getFavicon());
+  public AboutDialog(StackPane root) throws IOException {
+    super();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Preloader.fxml"));
     loader.setController(this);
-    Parent root = loader.load();
-    JFXDecorator decorator = new JFXDecorator(stage, root, false, false, false);
-    decorator.setGraphic(Icons.getImage("logo"));
-    this.stage.setResizable(false);
-    Scene scene = new Scene(decorator, 504, 312);
-    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-        getClass().getResource("/css/vsim-fonts.css").toExternalForm());
-    this.stage.setScene(scene);
+    Parent content = loader.load();
     this.version.setText(Globals.VERSION);
     this.copyright.setText(Globals.COPYRIGHT);
-  }
-
-  /**
-   * Shows about dialog.
-   */
-  public void show() {
-    this.stage.show();
+    this.setDialogContainer(root);
+    this.setContent((Region) content);
+    this.setTransitionType(JFXDialog.DialogTransition.TOP);
   }
 
 }
