@@ -343,7 +343,7 @@ public class MenuBarController {
       try {
         this.editorDialog = new EditorDialog();
       } catch (IOException ex) {
-        Message.warning("could not open editor settings, try again");
+        this.mainController.exceptionDialog.show("Could not open editor dialog", ex);
       }
     }
     // show editor dialog only if it was created
@@ -399,8 +399,9 @@ public class MenuBarController {
   protected void about(ActionEvent e) {
     if (this.aboutDialog == null) {
       try {
-        this.aboutDialog = new AboutDialog();
+        this.aboutDialog = new AboutDialog(this.mainController.root);
       } catch (IOException ex) {
+        this.mainController.exceptionDialog.show("Could not open about dialog", ex);
       }
     }
     // show about dialog only if it was created

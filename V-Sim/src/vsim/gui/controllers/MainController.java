@@ -32,6 +32,7 @@ import com.jfoenix.controls.JFXTabPane;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
 import vsim.Settings;
+import vsim.gui.components.ExceptionDialog;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
 import vsim.gui.utils.ConsoleOutput;
@@ -65,6 +66,9 @@ public class MainController {
   /** Reference to simulator controller */
   @FXML protected SimulatorController simulatorController;
 
+  /** Exception dialog */
+  protected ExceptionDialog exceptionDialog;
+
   /** Primary stage */
   protected Stage stage;
 
@@ -76,6 +80,7 @@ public class MainController {
   public void initialize(Stage stage) {
     this.loading(false);
     this.stage = stage;
+    this.exceptionDialog = new ExceptionDialog(this.root);
     this.initConsole();
     // disable simulation tab if project is not ready
     this.simTab.disableProperty().bind(Bindings.not(Status.READY));
@@ -125,6 +130,7 @@ public class MainController {
       // input dialog
       IO.dialog = new InputDialog();
     } catch (IOException e) {
+      this.exceptionDialog.show("Could not create input dialog", e);
     }
     // clear option
     MenuItem clear = new MenuItem("clear");
