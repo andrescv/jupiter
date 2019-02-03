@@ -73,6 +73,7 @@ public class EditorController {
     try {
       this.findReplaceDialog = new FindReplaceDialog(this);
     } catch (IOException e) {
+      this.mainController.exceptionDialog.show("Could not create find/replace dialog", e);
     }
     // init tree
     this.initTree();
