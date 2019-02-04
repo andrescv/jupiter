@@ -43,7 +43,7 @@ public final class ArgumentParser {
   private TreeMap<String, String> options;
   /** stores the valid options that requires a value */
   private HashSet<String> optsval;
-  /** stores all the targers (aka files) */
+  /** stores all the targets (aka files) */
   private ArrayList<File> targets;
   /** stores all the parser errors */
   private ArrayList<String> errors;
@@ -108,13 +108,8 @@ public final class ArgumentParser {
     this.targets.clear();
     this.errors.clear();
     // examine all arguments
-    String lastFlag = null;
-    int lastFlagPos = -1;
     for (int i = 0; i < args.length; i++) {
       if (args[i].startsWith("-")) {
-        // localize last flag
-        lastFlagPos = i;
-        lastFlag = args[i];
         // valid flag ?
         if (!this.options.containsKey(args[i]))
           this.errors.add("unknown option: " + args[i]);
@@ -124,42 +119,20 @@ public final class ArgumentParser {
         this.values.put(i, args[i]);
     }
     // verify values
+    ArrayList<Integer> valsUsed = new ArrayList<Integer>();
     for (String flag : this.flags.keySet()) {
       int position = this.flags.get(flag);
       // no value is present if needed?
       String value = this.values.get(position + 1);
-      if (value == null && this.optsval.contains(flag))
+      if (value == null && this.optsval.contains(flag)) {
         this.errors.add("argument '" + flag + "' requires a value");
-      // examine for unexpected values
-      if (position != lastFlagPos && value != null) {
-        String invalid = "";
-        if (!this.optsval.contains(flag))
-          invalid += value + " ";
-        for (int i = position + 2; this.values.get(i) != null; i++)
-          invalid += this.values.get(i) + " ";
-        if (!("".equals(invalid)))
-          this.errors.add("unexpected value(s): " + invalid.trim());
-      }
+      } else
+        valsUsed.add(position + 1);
     }
     // set targets
-    if (lastFlag != null) {
-      int offset = lastFlagPos;
-      if (this.optsval.contains(lastFlag))
-        offset += 2;
-      else
-        offset += 1;
-      // add targets starting at this offset
-      for (int i = offset; this.values.get(i) != null; i++) {
-        File f = new File(this.values.get(i));
-        if (!this.targets.contains(f))
-          this.targets.add(f);
-        else
-          Message.warning("duplicated files: " + f + " (ignoring)");
-      }
-    } else {
-      // targets = all values
-      for (int pos : this.values.keySet()) {
-        File f = new File(this.values.get(pos));
+    for (Integer index : this.values.keySet()) {
+      if (!valsUsed.contains(index)) {
+        File f = new File(this.values.get(index));
         if (!this.targets.contains(f))
           this.targets.add(f);
         else
