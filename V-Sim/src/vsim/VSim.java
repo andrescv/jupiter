@@ -51,6 +51,8 @@ public final class VSim {
     }
     // run GUI
     else {
+      // set uncaught exception handler
+      Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
       Cmd.titleAndLicense();
       Settings.GUI = true;
       System.setProperty("prism.lcdtext", "false");

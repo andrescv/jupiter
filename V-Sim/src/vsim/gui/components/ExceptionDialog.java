@@ -138,7 +138,7 @@ public final class ExceptionDialog extends JFXDialog {
     while (rootCause.getCause() != null && rootCause.getCause() != rootCause)
       rootCause = rootCause.getCause();
     loc = rootCause.getStackTrace()[0].getClassName() + "/" + rootCause.getStackTrace()[0].getMethodName();
-    title.setText("Unexpected Exception in " + loc);
+    title.setText("Exception in " + loc);
     this.show();
   }
 

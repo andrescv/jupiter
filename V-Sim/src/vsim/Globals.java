@@ -19,6 +19,7 @@ package vsim;
 
 import java.util.Hashtable;
 import vsim.assembler.SymbolTable;
+import vsim.gui.components.ExceptionDialog;
 import vsim.riscv.InstructionSet;
 import vsim.riscv.hardware.Memory;
 import vsim.riscv.hardware.RVFRegisterFile;
@@ -56,6 +57,9 @@ public final class Globals {
 
   /** local symbol table per file (used for debugging and local symbols) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
+
+  /** Exception dialog available only in GUI */
+  public static ExceptionDialog exceptionDialog = null;
 
   /**
    * This method resets the simulator state
