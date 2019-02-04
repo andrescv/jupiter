@@ -62,8 +62,8 @@ import vsim.riscv.hardware.MemoryCell;
 import vsim.riscv.hardware.Register;
 import vsim.simulator.Debugger;
 import vsim.simulator.Status;
-import vsim.utils.Cmd;
 import vsim.utils.Data;
+import vsim.utils.FileIO;
 import vsim.utils.Message;
 
 
@@ -209,7 +209,7 @@ public class SimulatorController {
         files = this.mainController.editorController.getSavedOpenPaths();
       else {
         files = new ArrayList<File>();
-        if (!Cmd.getFilesInDir(files)) {
+        if (!FileIO.getFilesInDir(files)) {
           Message.warning(
               "assemble: operation cancelled, could not get files in dir" + System.getProperty("line.separator"));
           this.mainController.loading(false);
@@ -217,7 +217,7 @@ public class SimulatorController {
         }
       }
       // load trap handler
-      Cmd.addTrapHandler(files);
+      FileIO.addTrapHandler(files);
       if (files != null && files.size() > 0) {
         String assembling = files.toString();
         Message.log("assemble: assembling " + assembling.substring(1, assembling.length() - 1)

@@ -19,10 +19,7 @@ package vsim.utils;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import vsim.Globals;
 import vsim.Settings;
@@ -142,6 +139,11 @@ public final class Cmd {
     }
     // get files
     ArrayList<File> files = parser.targets();
+    // assemble all files in directory
+    if (parser.hasFlag("-all"))
+      FileIO.getFilesInDir(files);
+    // add traphandler
+    FileIO.addTrapHandler(files);
     // check files
     for (File f : files) {
       if (!f.exists()) {
@@ -155,11 +157,6 @@ public final class Cmd {
         System.exit(1);
       }
     }
-    // assemble all files in directory
-    if (parser.hasFlag("-all"))
-      Cmd.getFilesInDir(files);
-    // add traphandler
-    Cmd.addTrapHandler(files);
     // check if no files passed
     if (files.isEmpty()) {
       Cmd.title();
@@ -167,63 +164,6 @@ public final class Cmd {
     }
     files.trimToSize();
     return files;
-  }
-
-  /**
-   * Adds trap handler to file list.
-   *
-   * @param files array list where trap handler file will be added
-   */
-  public static void addTrapHandler(ArrayList<File> files) {
-    if (files.size() > 0) {
-      // load traphandler from V-Sim install dir
-      if (Settings.TRAP == null) {
-        try {
-          String root = new File(Cmd.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-          File trapfile = new File(root + File.separator + "traphandler.s");
-          if (trapfile.exists())
-            Settings.TRAP = trapfile;
-        } catch (Exception e) {
-          /* NOTHING */
-        }
-      }
-      // add trap handler at the head of the list
-      if (Settings.TRAP != null)
-        files.add(0, Settings.TRAP);
-    }
-  }
-
-  /**
-   * This method adds all assembler files in current user directory into an array list.
-   *
-   * @param files array list where file paths will be added
-   * @return true if success, false otherwise
-   */
-  public static boolean getFilesInDir(ArrayList<File> files) {
-    try {
-      // recursively find all files in user cwd
-      Files.find(Paths.get(Settings.DIR.toString()), Integer.MAX_VALUE,
-          // keep files that ends with .s or .asm extension
-          (filePath, fileAttr) -> {
-            if (fileAttr.isRegularFile()) {
-              String path = filePath.toString();
-              if (path.endsWith(".s") || path.endsWith(".asm"))
-                return true;
-            }
-            return false;
-          }).forEach(path -> {
-            File f = new File(path.toString());
-            // avoid duplicated files
-            if (!files.contains(f))
-              files.add(f);
-          });
-    } catch (IOException e) {
-      Message.error("An error occurred while recursively searching the files in directory (aborting...)");
-      if (!Settings.GUI)
-        System.exit(1);
-      return false;
-    }
-    return true;
   }
 
   /**

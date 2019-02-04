@@ -166,21 +166,12 @@ public final class Settings {
   /** Loads all saved preferences in GUI mode. */
   public static void load() {
     Settings.START = Settings.prefs.get("START", "main");
-    try {
-      String trap = Settings.prefs.get("TRAP", null);
-      if (trap != null)
-        Settings.TRAP = new File(trap);
-      else {
-        String root = new File(Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-        File trapfile = new File(root + File.separator + "traphandler.s");
-        if (trapfile.exists())
-          Settings.TRAP = trapfile;
-      }
-    } catch (Exception e) {
-
+    String trap = Settings.prefs.get("TRAP", null);
+    if (trap != null) {
+      Settings.TRAP = new File(trap);
+      if (Settings.TRAP != null && !Settings.TRAP.exists())
+        Settings.TRAP = null;
     }
-    if (Settings.TRAP != null && !Settings.TRAP.exists())
-      Settings.TRAP = null;
     Settings.BARE = Settings.prefs.getBoolean("BARE", false);
     Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", false);
     Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", false);
