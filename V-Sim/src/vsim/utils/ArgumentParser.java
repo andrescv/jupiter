@@ -126,7 +126,7 @@ public final class ArgumentParser {
       String value = this.values.get(position + 1);
       if (value == null && this.optsval.contains(flag)) {
         this.errors.add("argument '" + flag + "' requires a value");
-      } else
+      } else if (value != null && this.optsval.contains(flag))
         valsUsed.add(position + 1);
     }
     // set targets
