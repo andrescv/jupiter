@@ -343,7 +343,7 @@ public class MenuBarController {
       try {
         this.editorDialog = new EditorDialog();
       } catch (IOException ex) {
-        this.mainController.exceptionDialog.show("Could not open editor dialog", ex);
+        Globals.exceptionDialog.show("Could not open editor dialog", ex);
       }
     }
     // show editor dialog only if it was created
@@ -401,7 +401,7 @@ public class MenuBarController {
       try {
         this.aboutDialog = new AboutDialog(this.mainController.root);
       } catch (IOException ex) {
-        this.mainController.exceptionDialog.show("Could not open about dialog", ex);
+        Globals.exceptionDialog.show("Could not open about dialog", ex);
       }
     }
     // show about dialog only if it was created

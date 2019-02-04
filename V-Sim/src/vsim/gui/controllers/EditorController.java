@@ -30,6 +30,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXTabPane;
+import vsim.Globals;
 import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
@@ -73,7 +74,7 @@ public class EditorController {
     try {
       this.findReplaceDialog = new FindReplaceDialog(this);
     } catch (IOException e) {
-      this.mainController.exceptionDialog.show("Could not create find/replace dialog", e);
+      Globals.exceptionDialog.show("Could not create find/replace dialog", e);
     }
     // init tree
     this.initTree();
