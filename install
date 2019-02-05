@@ -168,7 +168,6 @@
         exit 1
       }
     fi
-    #
     # download jar file
     vsim_download
     # create V-Sim launcher
@@ -188,13 +187,15 @@
       printf "${SOURCE_STR}\n"
       printf 'then source it\n'
     else
+      # find source string in profile
       if ! command grep -qc "$(vsim_install_dir)" "${VSIM_PROFILE}"; then
         printf "appending V-Sim source string to ${VSIM_PROFILE}\n"
         printf "${SOURCE_STR}" >> "${VSIM_PROFILE}"
       else
         printf "V-Sim source string already in ${VSIM_PROFILE}\n"
       fi
-      source "$VSIM_PROFILE"
+      printf '\nnow source your profile with:\n\n'
+      printf "source $VSIM_PROFILE\n"
     fi
     printf "\n=> all done\n"
   }
