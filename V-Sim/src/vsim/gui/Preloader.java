@@ -52,6 +52,7 @@ public final class Preloader extends javafx.application.Preloader {
 
   @Override
   public void start(Stage stage) throws IOException {
+    stage.setTitle("V-Sim");
     // remove main frame and buttons (close, minimize, maximize...)
     stage.initStyle(StageStyle.UNDECORATED);
     stage.getIcons().add(Icons.getFavicon());

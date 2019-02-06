@@ -88,6 +88,9 @@ public final class Settings {
   /** assemble all files currently open (only in gui mode) */
   public static boolean ASSEMBLE_ONLY_OPEN = false;
 
+  /** assemble only selected tab */
+  public static boolean ASSEMBLE_ONLY_SELECTED = false;
+
   /** code area current syntax theme */
   public static String CODE_AREA_SYNTAX_THEME = "material";
 
@@ -178,6 +181,7 @@ public final class Settings {
     Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", false);
     Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", false);
     Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", false);
+    Settings.ASSEMBLE_ONLY_SELECTED = Settings.prefs.getBoolean("ASSEMBLE_ONLY_SELECTED", false);
     Settings.CONSOLE_FONT_SIZE = Settings.prefs.getInt("CONSOLE_FONT_SIZE", 11);
     Settings.CODE_AREA_TAB_SIZE = Settings.prefs.getInt("CODE_AREA_TAB_SIZE", 4);
     Settings.CODE_AREA_AUTO_INDENT = Settings.prefs.getBoolean("CODE_AREA_AUTO_INDENT", true);
@@ -310,6 +314,17 @@ public final class Settings {
     Settings.prefs.putBoolean("ASSEMBLE_ONLY_OPEN", !Settings.ASSEMBLE_ONLY_OPEN);
     Settings.ASSEMBLE_ONLY_OPEN = !Settings.ASSEMBLE_ONLY_OPEN;
     return Settings.ASSEMBLE_ONLY_OPEN;
+  }
+
+  /**
+   * Toggles only selected setting.
+   *
+   * @return only selected setting value after toggle
+   */
+  public static boolean toggleAssembleOnlySelected() {
+    Settings.prefs.putBoolean("ASSEMBLE_ONLY_SELECTED", !Settings.ASSEMBLE_ONLY_SELECTED);
+    Settings.ASSEMBLE_ONLY_SELECTED = !Settings.ASSEMBLE_ONLY_SELECTED;
+    return Settings.ASSEMBLE_ONLY_SELECTED;
   }
 
   /**

@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 
-<MenuBar prefHeight="29.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MenuBarController">
+<MenuBar prefHeight="29.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MenuBarController">
    <menus>
       <Menu mnemonicParsing="false" text="_File">
          <items>
@@ -304,6 +304,11 @@
             <MenuItem fx:id="onlyOpen" mnemonicParsing="false" onAction="#onlyOpen" text="Assemble All Files Currently Open">
                <graphic>
                   <JFXCheckBox fx:id="onlyOpenBox" styleClass="setting" text=" " />
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="onlySelected" mnemonicParsing="false" onAction="#onlySelected" text="Assemble Only Selected Tab">
+               <graphic>
+                  <JFXCheckBox fx:id="onlySelectedBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
             <MenuItem fx:id="warnings" mnemonicParsing="false" onAction="#warnings" text="Assembler Warnings Are Consider Errors">
