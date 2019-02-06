@@ -92,6 +92,8 @@ public class MenuBarController {
   @FXML private JFXCheckBox popupBox;
   /** Settings menu assemble only open files checkbox */
   @FXML private JFXCheckBox onlyOpenBox;
+  /** Settings menu assemble only selected tab */
+  @FXML private JFXCheckBox onlySelectedBox;
   /** Settings menu warnings = errors checkbox */
   @FXML private JFXCheckBox warningsBox;
   /** Settings menu permit pseudos checkbox */
@@ -150,12 +152,14 @@ public class MenuBarController {
     this.showLabelsBox.setSelected(Settings.SHOW_LABELS);
     this.popupBox.setSelected(Settings.POPUP_ECALL_INPUT);
     this.onlyOpenBox.setSelected(Settings.ASSEMBLE_ONLY_OPEN);
+    this.onlySelectedBox.setSelected(Settings.ASSEMBLE_ONLY_SELECTED);
     this.warningsBox.setSelected(Settings.EXTRICT);
     this.permitBox.setSelected(!Settings.BARE);
     this.selfBox.setSelected(Settings.SELF_MODIFYING);
     this.showLabelsBox.setText("");
     this.popupBox.setText("");
     this.onlyOpenBox.setText("");
+    this.onlySelectedBox.setText("");
     this.warningsBox.setText("");
     this.permitBox.setText("");
   }
@@ -308,6 +312,15 @@ public class MenuBarController {
   @FXML
   protected void onlyOpen(ActionEvent e) {
     this.onlyOpenBox.setSelected(Settings.toggleAssembleOnlyOpen());
+    if (Settings.ASSEMBLE_ONLY_SELECTED)
+      this.onlySelectedBox.setSelected(Settings.toggleAssembleOnlySelected());
+  }
+
+  @FXML
+  protected void onlySelected(ActionEvent e) {
+    this.onlySelectedBox.setSelected(Settings.toggleAssembleOnlySelected());
+    if (Settings.ASSEMBLE_ONLY_OPEN)
+      this.onlyOpenBox.setSelected(Settings.toggleAssembleOnlyOpen());
   }
 
   @FXML
