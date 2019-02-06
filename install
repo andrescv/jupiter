@@ -1,30 +1,29 @@
 #!/usr/bin/env bash
 
-
 {
 
   #------------------------------------- UTILS ---------------------------------
 
   # verifies if a command exists
   # @param $1 command to verify
-  has() {
-    type "$1" > /dev/null 2>&1
+  vsim_has() {
+    type "$1" &> /dev/null
   }
 
   # downloads a file
   # @param $1 url
   # @param $2 output name
-  download() {
-    if has 'curl'; then
+  vsim_download() {
+    if vsim_has 'curl'; then
       curl "$1" -L -o "$2" > /dev/null 2>&1
-    elif has 'wget'; then
+    elif vsim_has 'wget'; then
       wget -O "$2" "$1" > /dev/null 2>&1
     fi
   }
 
   # tries a profile file
   # @param $1 file
-  try_profile() {
+  vsim_try_profile() {
     if [ -z "${1-}" ] || [ ! -f "${1}" ]; then
       return 1
     fi
@@ -32,7 +31,7 @@
   }
 
   # auto-detect profile
-  detect_profile() {
+  vsim_detect_profile() {
     # the user has specifically requested NOT to have V-Sim touch their profile
     if [ "${PROFILE-}" == '/dev/null' ]; then
       return
@@ -121,16 +120,16 @@
   }
 
   # downloads V-Sim
-  vsim_download() {
+  vsim_download_jar() {
     # download files
     printf "downloading V-Sim version: $(vsim_version)...\n"
-    download "$(vsim_url)" "$(vsim_install_dir)/$(vsim_jar)" || {
+    vsim_download "$(vsim_url)" "$(vsim_install_dir)/$(vsim_jar)" || {
       printf 'an error occurs while downloading V-Sim, try again\n'
       exit 1
     }
     # check sum if possible
     local CHECKSUM
-    if has 'md5sum'; then
+    if vsim_has 'md5sum'; then
       printf 'checking md5sum... '
       CHECKSUM=($(md5sum $(vsim_install_dir)/$(vsim_jar)))
       if [ "$(vsim_md5sum)" != "$CHECKSUM" ]; then
@@ -146,37 +145,37 @@
     clear
     vsim_title
     # only install if java 8 (or later) is installed
-    if ! has 'java'; then
-      error 'you need Java SE 8 (or later) runtime environment (JRE) installed on your computer\n'
+    if ! vsim_has 'java'; then
+      printf 'you need Java SE 8 (or later) runtime environment (JRE) installed on your computer\n'
       exit 1
     fi
     # also test if curl or wget is available
-    if ! has 'wget' || ! has 'curl'; then
+    if ! vsim_has 'wget' || ! vsim_has 'curl'; then
       printf 'you need curl or wget to install V-Sim\n'
       exit 1
     fi
     # create install directory
     if [ -d "$(vsim_install_dir)" ]; then
-      printf 'V-Sim installation directory (%s) already exists (updating)\n' "$(vsim_install_dir)"
+      printf "V-Sim installation directory ($(vsim_install_dir)) already exists (updating)\n"
       # clean old files
       printf 'cleaning old files...\n'
       find "$(vsim_install_dir)" -name '*.jar' -delete
       find "$(vsim_install_dir)" -name 'vsim' -delete
     else
-      printf 'creating V-Sim installation directory ()...\n' "$(vsim_install_dir)"
+      printf "creating V-Sim installation directory ($(vsim_install_dir))...\n"
       mkdir -p "$(vsim_install_dir)" || {
         exit 1
       }
     fi
     # download jar file
-    vsim_download
+    vsim_download_jar
     # create V-Sim launcher
     printf 'creating vsim launcher script...\n'
     printf "java -jar $(vsim_install_dir)/$(vsim_jar) %s" '$@' > "$(vsim_install_dir)/vsim"
     chmod +x "$(vsim_install_dir)/vsim"
     # append source to profile
     local VSIM_PROFILE
-    VSIM_PROFILE=$(detect_profile)
+    VSIM_PROFILE=$(vsim_detect_profile)
     local SOURCE_STR
     SOURCE_STR="\n# V-Sim\nexport VSIM_DIR=\"$(vsim_install_dir)\"\nexport PATH=\"\$VSIM_DIR:\$PATH\"\n"
     # append source to profile
