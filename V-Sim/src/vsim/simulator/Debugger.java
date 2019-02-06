@@ -202,6 +202,9 @@ public final class Debugger {
    */
   public synchronized boolean step(boolean goStep) {
     try {
+      // already done ?
+      if (Status.EXIT.get())
+        return false;
       Statement stmt = program.next();
       int pcVal = Globals.regfile.getProgramCounter();
       String pc = String.format("0x%08x", pcVal);
