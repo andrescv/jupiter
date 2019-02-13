@@ -158,13 +158,6 @@ public class SimulatorController {
   /** V-Sim debugger */
   private Debugger debugger;
 
-  /** Text table virtual flow */
-  private VirtualFlow<?> vflow;
-  /** RVI table virtual flow */
-  private VirtualFlow<?> rviVFlow;
-  /** RVF table virtual flow */
-  private VirtualFlow<?> rvfVFlow;
-
   /** Last register modified */
   private Register lastReg;
 
@@ -258,7 +251,6 @@ public class SimulatorController {
                 this.textTable.requestFocus();
                 this.textTable.refresh();
                 this.STTable.refresh();
-                this.vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.textTable.getSkin()).getChildren().get(1);
                 Status.READY.set(true);
                 this.mainController.selectSimulatorTab();
                 this.mainController.loading(false);
@@ -569,10 +561,13 @@ public class SimulatorController {
           this.textTable.refresh();
           int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / Data.WORD_LENGTH;
           int row = Math.min(pc, this.textTable.getItems().size() - 1);
-          int first = this.vflow.getFirstVisibleCell().getIndex();
-          int last = this.vflow.getLastVisibleCell().getIndex();
-          if (row >= last || row <= first)
-            this.textTable.scrollTo(row);
+          VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.textTable.getSkin()).getChildren().get(1);
+          if (vflow != null) {
+            int first = vflow.getFirstVisibleCell().getIndex();
+            int last = vflow.getLastVisibleCell().getIndex();
+            if (row >= last || row <= first)
+              this.textTable.scrollTo(row);
+          }
         });
       }
     });
@@ -714,11 +709,14 @@ public class SimulatorController {
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
             hardware.getSelectionModel().select(rviTab);
-            int first = rviVFlow.getFirstVisibleCell().getIndex();
-            int last = rviVFlow.getLastVisibleCell().getIndex();
-            if (number >= last || number <= first)
-              rviTable.scrollTo(number);
-            rviTable.refresh();
+            VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rviTable.getSkin()).getChildren().get(1);
+            if (vflow != null) {
+              int first = vflow.getFirstVisibleCell().getIndex();
+              int last = vflow.getLastVisibleCell().getIndex();
+              if (number >= last || number <= first)
+                rviTable.scrollTo(number);
+              rviTable.refresh();
+            }
           });
         }
       });
@@ -756,11 +754,14 @@ public class SimulatorController {
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
             hardware.getSelectionModel().select(rvfTab);
-            int first = rvfVFlow.getFirstVisibleCell().getIndex();
-            int last = rvfVFlow.getLastVisibleCell().getIndex();
-            if (number >= last || number <= first)
-              rvfTable.scrollTo(number);
-            rvfTable.refresh();
+            VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rvfTable.getSkin()).getChildren().get(1);
+            if (vflow != null) {
+              int first = vflow.getFirstVisibleCell().getIndex();
+              int last = vflow.getLastVisibleCell().getIndex();
+              if (number >= last || number <= first)
+                rvfTable.scrollTo(number);
+              rvfTable.refresh();
+            }
           });
         }
       });
@@ -813,9 +814,6 @@ public class SimulatorController {
     Platform.runLater(() -> {
       this.rviTable.refresh();
       this.rvfTable.refresh();
-      // get virtual flows
-      this.rviVFlow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rviTable.getSkin()).getChildren().get(1);
-      this.rvfVFlow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rvfTable.getSkin()).getChildren().get(1);
     });
     // disable table columns reordering (hacky and ugly)
     this.rviTable.getColumns().addListener(new ListChangeListener() {
