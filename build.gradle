@@ -49,7 +49,7 @@ sourceSets {
 sourceCompatibility = 1.8
 
 // jar distribution file
-version = '2.0.1'
+version = '2.0.2'
 archivesBaseName = 'V-Sim'
 jar {
   manifest {

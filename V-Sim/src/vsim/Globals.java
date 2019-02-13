@@ -32,7 +32,7 @@ import vsim.riscv.hardware.RVIRegisterFile;
 public final class Globals {
 
   /** V-Sim current version */
-  public static final String VERSION = "v2.0.1";
+  public static final String VERSION = "v2.0.2";
 
   /** V-Sim Copyright */
   public static final String COPYRIGHT = "Copyright (c) 2018-2019 Andres Castellanos";
