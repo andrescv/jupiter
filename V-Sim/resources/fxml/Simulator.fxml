@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.62" prefHeight="624.0" prefWidth="966.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
+<SplitPane fx:id="simSplitPane" dividerPositions="0.62" prefHeight="624.0" prefWidth="966.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.SimulatorController">
    <items>
       <VBox alignment="CENTER" minWidth="520.0" prefHeight="263.0" prefWidth="520.0">
          <children>

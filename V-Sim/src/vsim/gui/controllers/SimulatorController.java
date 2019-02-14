@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -69,6 +70,9 @@ import vsim.utils.Message;
 
 /** Simulator controller class. */
 public class SimulatorController {
+
+  /** Simulator split pane */
+  @FXML protected SplitPane simSplitPane;
 
   /** Simulator go button */
   @FXML protected JFXButton goBtn;
@@ -366,6 +370,15 @@ public class SimulatorController {
       if (selected == this.STTab)
         this.hardware.getSelectionModel().select(0);
     }
+  }
+
+  /*-------------------------------------------------------*
+  |                    public actions                      |
+  *-------------------------------------------------------*/
+
+  /** Removes simulator SplitPane divider */
+  public void removeSplitPaneDivider() {
+    this.simSplitPane.lookupAll(".split-pane-divider").stream().forEach(div -> div.setMouseTransparent(true));
   }
 
   /*-------------------------------------------------------*
