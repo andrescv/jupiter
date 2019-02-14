@@ -76,12 +76,12 @@
 
   # current V-Sim version
   vsim_version() {
-    echo "2.0.1"
+    echo "2.0.2"
   }
 
   # vsim md5sum
   vsim_md5sum() {
-    echo "86d65b2641653315ad6efe95e2709157"
+    echo "0ec900fc6d75cfd875893877be895c0d"
   }
 
   # pretty prints title
