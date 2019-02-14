@@ -81,7 +81,7 @@
 
   # vsim md5sum
   vsim_md5sum() {
-    echo "0ec900fc6d75cfd875893877be895c0d"
+    echo "ae61b8de1b99a11bd8a0ee7aea4cb646"
   }
 
   # pretty prints title
