@@ -60,5 +60,7 @@ public final class Gui extends Application {
     stage.setScene(scene);
     stage.show();
     stage.toFront();
+    // clear splitpane divider
+    controller.getSimulatorController().removeSplitPaneDivider();
   }
 }

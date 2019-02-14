@@ -92,6 +92,15 @@ public class MainController {
     this.simulatorController.initialize(this);
   }
 
+  /**
+   * Gets simulator controller.
+   *
+   * @return application simulator controller
+   */
+  public SimulatorController getSimulatorController() {
+    return this.simulatorController;
+  }
+
   /** Selects editor tab. */
   protected void selectEditorTab() {
     this.main.getSelectionModel().select(this.editorTab);
