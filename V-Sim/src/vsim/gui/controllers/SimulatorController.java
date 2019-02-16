@@ -212,7 +212,8 @@ public class SimulatorController {
         files = this.mainController.editorController.getSavedOpenPaths();
       else if (Settings.ASSEMBLE_ONLY_SELECTED) {
         files = new ArrayList<File>(1);
-        files.add(this.mainController.editorController.getSelectedTab().getPath());
+        if (this.mainController.editorController.getSelectedTab() != null)
+          files.add(this.mainController.editorController.getSelectedTab().getPath());
       } else {
         files = new ArrayList<File>();
         if (!FileIO.getFilesInDir(files)) {
