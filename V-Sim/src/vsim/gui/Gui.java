@@ -23,7 +23,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import com.jfoenix.controls.JFXDecorator;
 import vsim.gui.controllers.MainController;
 import vsim.gui.utils.Icons;
 
@@ -47,12 +46,9 @@ public final class Gui extends Application {
     Parent root = loader.load();
     MainController controller = (MainController) loader.getController();
     controller.initialize(stage);
-    JFXDecorator decorator = new JFXDecorator(stage, root, true, true, true);
-    decorator.setGraphic(Icons.getImage("logo"));
-    decorator.setCustomMaximize(true);
-    decorator.setMaximized(true);
+    stage.setMaximized(true);
     // create scene
-    Scene scene = new Scene(decorator, 1024, 800);
+    Scene scene = new Scene(root, 1024, 800);
     // add styles
     scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
         getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
