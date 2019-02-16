@@ -14,16 +14,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.2559241706161137" prefHeight="443.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.EditorController">
+<SplitPane dividerPositions="0.25" prefHeight="443.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.EditorController">
    <items>
-      <VBox maxWidth="280.0" minWidth="150.0" style="-fx-background-color: #212121; -fx-border-width: 0;" SplitPane.resizableWithParent="false">
+      <VBox minWidth="150.0" style="-fx-background-color: #212121; -fx-border-width: 0;" SplitPane.resizableWithParent="false">
          <children>
-            <Label alignment="CENTER" prefHeight="34.0" prefWidth="280.0" style="-fx-background-color: #212121;" text="Project" textFill="#dddddd">
+            <Label alignment="CENTER" prefHeight="34.0" style="-fx-background-color: #212121;" text="Project" textFill="#dddddd">
                <font>
                   <Font name="Roboto Bold" size="15.0" />
                </font>
                <padding>
-                  <Insets bottom="2.0" />
+                  <Insets bottom="2.0" left="10.0" />
                </padding>
             </Label>
             <TreeView fx:id="tree" VBox.vgrow="ALWAYS" />
