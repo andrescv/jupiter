@@ -185,7 +185,7 @@ public final class Linker {
         }
       }
     } else
-      Errors.add("linker: global start label '" + Settings.START + "' wast not found in text segment");
+      Errors.add("linker: global start label '" + Settings.START + "' was not found in text segment");
     return new LinkedProgram(all);
   }
 
