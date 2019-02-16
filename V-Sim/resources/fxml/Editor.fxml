@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -23,6 +29,73 @@
             <TreeView fx:id="tree" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <JFXTabPane id="editorTabs" fx:id="editor" tabClosingPolicy="ALL_TABS" />
+      <VBox fx:id="editorBox" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <JFXTabPane id="editorTabs" fx:id="editor" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
+            <AnchorPane fx:id="findAndReplace" prefHeight="130.0" prefWidth="467.0" style="-fx-background-color: #212121; -fx-border-color: #1e1e1e; -fx-border-width: 2 0 0 0;">
+               <children>
+                  <Label fx:id="searchLbl" textFill="#dddddd" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="Roboto Regular" size="12.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="findText" focusColor="#fe315c" layoutX="10.0" layoutY="45.0" prefHeight="26.0" prefWidth="435.0" promptText="Find in current buffer" style="-fx-text-fill: #eee;" unFocusColor="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXTextField fx:id="replaceText" focusColor="#fe315c" layoutX="10.0" layoutY="89.0" promptText="Replace in current buffer" style="-fx-text-fill: #eee;" unFocusColor="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font>
+                  </JFXTextField>
+                  <HBox alignment="CENTER" layoutX="76.0" layoutY="8.0" spacing="1.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <JFXButton fx:id="find" text="Find" textFill="#aaaaaa">
+                           <font>
+                              <Font name="Roboto Bold" size="14.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </JFXButton>
+                        <JFXButton fx:id="replace" text="Replace" textFill="#aaaaaa">
+                           <font>
+                              <Font name="Roboto Bold" size="14.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </JFXButton>
+                        <JFXButton fx:id="replaceAll" text="Replace All" textFill="#aaaaaa">
+                           <font>
+                              <Font name="Roboto Bold" size="14.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </JFXButton>
+                        <JFXCheckBox fx:id="caseSensitive" style="-fx-label-padding: 0;" styleClass="setting" text="Aa" textFill="#aaaaaa">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font name="Roboto Bold" size="15.0" />
+                           </font>
+                        </JFXCheckBox>
+                        <JFXButton fx:id="findReplaceClose" text="✕" textFill="#dddddd">
+                           <font>
+                              <Font name="Roboto Bold" size="14.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
    </items>
 </SplitPane>

@@ -22,15 +22,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTabPane;
-import vsim.Globals;
+import com.jfoenix.controls.JFXTextField;
 import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
@@ -57,6 +62,32 @@ public class EditorController {
   /** tree view file context menu */
   private ContextMenu fileContext;
 
+  /** Dialog find button */
+  @FXML private JFXButton find;
+  /** Dialog replace button */
+  @FXML private JFXButton replace;
+  /** Dialog replace all button */
+  @FXML private JFXButton replaceAll;
+  /** Dialog case sensitive switch */
+  @FXML private JFXCheckBox caseSensitive;
+  /** Dialog replace text field */
+  @FXML private JFXTextField findText;
+  /** Dialog find text field */
+  @FXML private JFXTextField replaceText;
+  /** find and replace search label */
+  @FXML private Label searchLbl;
+  /** find and replace close button */
+  @FXML private JFXButton findReplaceClose;
+  /** find and replace anchor pane */
+  @FXML private AnchorPane findAndReplace;
+  /** editor vertical box */
+  @FXML private VBox editorBox;
+
+  /** Current selected tab */
+  private EditorTab current;
+  /** Current search indexes */
+  private ArrayList<Integer> found;
+
   /** Find/Replace in buffer dialog */
   private FindReplaceDialog findReplaceDialog;
 
@@ -70,14 +101,10 @@ public class EditorController {
    */
   protected void initialize(MainController controller) {
     this.mainController = controller;
-    // create a new find replace dialog
-    try {
-      this.findReplaceDialog = new FindReplaceDialog(this);
-    } catch (IOException e) {
-      Globals.exceptionDialog.show("Could not create find/replace dialog", e);
-    }
     // init tree
     this.initTree();
+    // init find and replace
+    this.initFindAndReplace();
     // start directory watcher
     DirWatcher.start(this);
     // add font size listener
@@ -292,8 +319,11 @@ public class EditorController {
 
   /** Shows find/replace in buffer dialog. */
   protected void findReplaceInBuffer() {
-    if (!this.findReplaceDialog.isShowing())
-      this.findReplaceDialog.show();
+    if (!this.editorBox.getChildren().contains(this.findAndReplace)) {
+      this.search();
+      this.find();
+      this.editorBox.getChildren().add(this.findAndReplace);
+    }
   }
 
   /** Updates all tabs with saved settings. */
@@ -683,6 +713,125 @@ public class EditorController {
     }
   }
 
+  /** Searches all indexes in editor text that matches find text field. */
+  private void search() {
+    // get selected tab
+    EditorTab tab = this.getSelectedTab();
+    if (this.findText.getText().length() > 0 && tab != null) {
+      // save selected tab
+      this.current = tab;
+      // clear previous content
+      this.found.clear();
+      String find = this.caseSensitive.isSelected() ? this.findText.getText() : this.findText.getText().toLowerCase();
+      String text = this.caseSensitive.isSelected() ? tab.getEditorText() : tab.getEditorText().toLowerCase();
+      int lastIndex = 0;
+      // search all indexes
+      while (lastIndex != -1) {
+        lastIndex = text.indexOf(find, lastIndex);
+        if (lastIndex != -1) {
+          this.found.add(lastIndex);
+          lastIndex += find.length();
+        }
+      }
+      // update stage title
+      this.setSearchLabel(false, false);
+    } else {
+      // remove any selection in editor
+      if (current != null)
+        this.current.deselect();
+      // cleanup all state
+      this.current = null;
+      this.found.clear();
+      // update stage title with default title
+      this.setSearchLabel(false, true);
+    }
+  }
+
+  /**
+   * Finds the next index to look at in found array list.
+   *
+   * @return next index closest to editor caret position, -1 if no matches or no tab is selected.
+   */
+  private int getSearchIndex() {
+    if (this.current != null && this.found.size() > 0) {
+      // use index 0 as default
+      int index = 0;
+      int minDiff = Integer.MAX_VALUE;
+      int caretPos = this.current.getEditorCaretPosition();
+      int counter = 0;
+      for (Integer i : this.found) {
+        int diff = i - caretPos;
+        // use the index that is closest to editor caret position
+        if (diff >= 0 && diff <= minDiff) {
+          index = counter;
+          minDiff = diff;
+        }
+        counter++;
+      }
+      return index;
+    }
+    return -1;
+  }
+
+  /**
+   * Sets stage title with search info.
+   *
+   * @param dispIndex display current search index
+   */
+  private void setSearchLabel(boolean dispIndex, boolean defaultTitle) {
+    int size = this.found.size();
+    if (size > 0 && !defaultTitle) {
+      if (dispIndex)
+        this.searchLbl
+            .setText(String.format("Find And Replace (%d results) (%d of %d)", size, this.getSearchIndex() + 1, size));
+      else
+        this.searchLbl.setText(String.format("Find And Replace (%d results)", size));
+    } else {
+      if (defaultTitle)
+        this.searchLbl.setText("Find And Replace");
+      else
+        this.searchLbl.setText("Find And Replace (no results)");
+    }
+  }
+
+  /** Selects the next found match. */
+  private void find() {
+    if (this.current != null && this.found.size() > 0) {
+      int result = this.found.get(this.getSearchIndex());
+      this.setSearchLabel(true, false);
+      this.current.select(result, result + this.findText.getText().length());
+    }
+  }
+
+  /** Replaces the current selected match. */
+  private void replace() {
+    if (this.current != null && this.found.size() > 0) {
+      // perform a find if no selected text, otherwise replace will not take effect
+      if (!this.current.isEditorTextSelected())
+        this.find();
+      this.current.replace(this.replaceText.getText());
+      // because indexes change, need to do a search again
+      this.search();
+      // select next match
+      this.find();
+    }
+  }
+
+  /** Replaces all matches. */
+  private void replaceAll() {
+    if (this.current != null && this.found.size() > 0) {
+      // just loop until no more matches
+      while (this.found.size() > 0) {
+        // always get the head of the array (ascending mode)
+        int index = this.found.remove(0);
+        // replace match
+        this.current.replace(index, index + this.findText.getText().length(), this.replaceText.getText());
+        // perform a search to refresh indexes
+        this.search();
+      }
+    }
+  }
+
   /*-------------------------------------------------------*
   |                       Inits                           |
   *-------------------------------------------------------*/
@@ -726,4 +875,24 @@ public class EditorController {
       }
     });
   }
+
+  /** Initialize find and replace components */
+  private void initFindAndReplace() {
+    // remove find and replace
+    this.editorBox.getChildren().remove(this.findAndReplace);
+    // initialize found
+    this.found = new ArrayList<Integer>();
+    // add actions
+    this.find.setOnAction(e -> this.find());
+    this.replace.setOnAction(e -> this.replace());
+    this.replaceAll.setOnAction(e -> this.replaceAll());
+    // perform a search if find text field change
+    this.findText.textProperty().addListener((e, oldVal, newVal) -> this.search());
+    // perform a search if case sensitive checkbox selected property changes
+    this.caseSensitive.selectedProperty().addListener((e, oldVal, newVal) -> this.search());
+    // perform a search if the current tab changes
+    this.editor.getSelectionModel().selectedItemProperty().addListener((e, oldVal, newVal) -> this.search());
+    this.findReplaceClose.setOnAction(e -> this.editorBox.getChildren().remove(this.findAndReplace));
+  }
+
 }
