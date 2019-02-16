@@ -44,8 +44,6 @@ import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import vsim.Globals;
 import vsim.Settings;
 import vsim.assembler.Assembler;
@@ -53,6 +51,7 @@ import vsim.gui.components.BooleanCell;
 import vsim.gui.components.InfoCell;
 import vsim.gui.components.MemoryEditingCell;
 import vsim.gui.components.RegisterEditingCell;
+import vsim.gui.components.TableViewExt;
 import vsim.gui.utils.Icons;
 import vsim.gui.utils.SymbolInfo;
 import vsim.linker.InfoStatement;
@@ -167,6 +166,13 @@ public class SimulatorController {
 
   /** current go task */
   private Task<Boolean> goTask;
+
+  /** text table extension */
+  private TableViewExt<?> txtExt;
+  /** rvi table extension */
+  private TableViewExt<?> rviExt;
+  /** rvf table extension */
+  private TableViewExt<?> rvfExt;
 
   /**
    * Initialize simulator controller.
@@ -574,11 +580,10 @@ public class SimulatorController {
           this.textTable.refresh();
           int pc = (Globals.regfile.getProgramCounter() - MemorySegments.TEXT_SEGMENT_BEGIN) / Data.WORD_LENGTH;
           int row = Math.min(pc, this.textTable.getItems().size() - 1);
-          VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.textTable.getSkin()).getChildren().get(1);
-          if (vflow != null) {
-            int first = vflow.getFirstVisibleCell().getIndex();
-            int last = vflow.getLastVisibleCell().getIndex();
-            if (row >= last || row <= first)
+          if (this.txtExt != null) {
+            int first = this.txtExt.getFirstVisibleIndex();
+            int last = this.txtExt.getLastVisibleIndex();
+            if (first != -1 && last != -1 && (row >= last || row <= first))
               this.textTable.scrollTo(row);
           }
         });
@@ -621,6 +626,8 @@ public class SimulatorController {
         TableColumn<InfoStatement, Boolean> p) -> new BooleanCell();
     this.txtBkptCol.setCellValueFactory(new PropertyValueFactory<InfoStatement, Boolean>("breakpoint"));
     this.txtBkptCol.setCellFactory(boolCellFactory);
+    // load table extension
+    this.txtExt = new TableViewExt<>(this.textTable);
   }
 
   /** This method initializes the memory table. */
@@ -722,11 +729,10 @@ public class SimulatorController {
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
             hardware.getSelectionModel().select(rviTab);
-            VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rviTable.getSkin()).getChildren().get(1);
-            if (vflow != null) {
-              int first = vflow.getFirstVisibleCell().getIndex();
-              int last = vflow.getLastVisibleCell().getIndex();
-              if (number >= last || number <= first)
+            if (this.rviExt != null) {
+              int first = this.rviExt.getFirstVisibleIndex();
+              int last = this.rviExt.getLastVisibleIndex();
+              if (first != -1 && last != -1 && (number >= last || number <= first))
                 rviTable.scrollTo(number);
               rviTable.refresh();
             }
@@ -749,6 +755,7 @@ public class SimulatorController {
         }
       };
     });
+    this.rviExt = new TableViewExt<>(this.rviTable);
     this.rviTable.setItems(rviList);
     // RVF table
     this.rvfMnemonic.setCellValueFactory(new PropertyValueFactory<Register, String>("mnemonic"));
@@ -767,11 +774,10 @@ public class SimulatorController {
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
             hardware.getSelectionModel().select(rvfTab);
-            VirtualFlow<?> vflow = (VirtualFlow<?>) ((TableViewSkin<?>) this.rvfTable.getSkin()).getChildren().get(1);
-            if (vflow != null) {
-              int first = vflow.getFirstVisibleCell().getIndex();
-              int last = vflow.getLastVisibleCell().getIndex();
-              if (number >= last || number <= first)
+            if (this.rvfExt != null) {
+              int first = this.rvfExt.getFirstVisibleIndex();
+              int last = this.rvfExt.getLastVisibleIndex();
+              if (first != -1 && last != -1 && (number >= last || number <= first))
                 rvfTable.scrollTo(number);
               rvfTable.refresh();
             }
@@ -793,6 +799,7 @@ public class SimulatorController {
         }
       };
     });
+    this.rvfExt = new TableViewExt<>(this.rvfTable);
     this.rvfTable.setItems(rvfList);
     // set rvi table context menu
     MenuItem hex = new MenuItem("Hex Display Mode");
