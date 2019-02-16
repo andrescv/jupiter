@@ -567,7 +567,7 @@ public final class Debugger {
       if ("".equals(line))
         continue;
       // interpret line
-      this.interpret(line.trim().toLowerCase().split(" "));
+      this.interpret(line.trim().toLowerCase().replaceAll("( |\t)+", " ").split(" "));
     }
   }
 
