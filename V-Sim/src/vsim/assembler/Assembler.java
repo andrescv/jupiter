@@ -68,6 +68,16 @@ public final class Assembler {
           programs.add(program);
       }
     }
+    // report syntax errors
+    if (Errors.report()) {
+      // clean all
+      Assembler.program = null;
+      Assembler.filename = null;
+      Assembler.segment = Segment.TEXT;
+      programs.trimToSize();
+      // return all processed programs, now linking ?
+      return null;
+    }
     // do first pass
     for (Program program : programs) {
       // add program ST to Globals.local
