@@ -521,7 +521,7 @@
 }
 
 .table-view:focused .table-row-cell:selected .table-cell {
-  -fx-text-fill: -fx-primary-dark;
+  -fx-text-fill: #333333;
 }
 
 .table-view .column-header,
@@ -608,13 +608,12 @@
 }
 
 .table-view.text-table .table-row-cell:pc .table-cell {
-  -fx-background-color: #64ffda;
+  -fx-background-color: #d8d8d8;
 }
 
 .table-view .table-row-cell:changed,
 .table-view .table-row-cell:selected:changed {
-  -fx-border-width: 1 0 1 0;
-  -fx-border-color: #303f9f;
+  -fx-background-color: #d8d8d8;
 }
 
 .table-row-cell:grouped {
@@ -627,6 +626,11 @@
 
 .table-view .menu-item .label {
   -fx-padding: 5 0 5 0;
+}
+
+.table-view.text-table .scroll-bar:horizontal {
+  -fx-opacity: 0;
+  -fx-padding:-7;
 }
 
 .table-view.text-table *.scroll-bar:horizontal *.increment-button,
