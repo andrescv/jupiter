@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.25" prefHeight="443.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.EditorController">
+<SplitPane dividerPositions="0.25" prefHeight="443.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.EditorController">
    <items>
       <VBox minWidth="150.0" style="-fx-background-color: #212121; -fx-border-width: 0;" SplitPane.resizableWithParent="false">
          <children>
@@ -32,7 +32,7 @@
       <VBox fx:id="editorBox" prefHeight="200.0" prefWidth="100.0">
          <children>
             <JFXTabPane id="editorTabs" fx:id="editor" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
-            <AnchorPane fx:id="findAndReplace" prefHeight="130.0" prefWidth="467.0" style="-fx-background-color: #212121; -fx-border-color: #1e1e1e; -fx-border-width: 2 0 0 0;">
+            <AnchorPane fx:id="findAndReplace" prefHeight="130.0" prefWidth="467.0" style="-fx-background-color: #212121; -fx-border-color: #1e1e1e; -fx-border-width: 4 0 0 0;">
                <children>
                   <Label fx:id="searchLbl" textFill="#dddddd" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <font>
@@ -49,9 +49,9 @@
                         <Font name="Roboto Regular" size="13.0" />
                      </font>
                   </JFXTextField>
-                  <HBox alignment="CENTER" layoutX="76.0" layoutY="8.0" spacing="1.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                  <HBox alignment="CENTER" layoutX="76.0" layoutY="8.0" spacing="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <children>
-                        <JFXButton fx:id="find" text="Find" textFill="#aaaaaa">
+                        <JFXButton fx:id="find" style="-fx-background-color: #555;" text="Find" textFill="#aaaaaa">
                            <font>
                               <Font name="Roboto Bold" size="14.0" />
                            </font>
@@ -59,7 +59,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </JFXButton>
-                        <JFXButton fx:id="replace" text="Replace" textFill="#aaaaaa">
+                        <JFXButton fx:id="replace" style="-fx-background-color: #555;" text="Replace" textFill="#aaaaaa">
                            <font>
                               <Font name="Roboto Bold" size="14.0" />
                            </font>
@@ -67,7 +67,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </JFXButton>
-                        <JFXButton fx:id="replaceAll" text="Replace All" textFill="#aaaaaa">
+                        <JFXButton fx:id="replaceAll" style="-fx-background-color: #555;" text="Replace All" textFill="#aaaaaa">
                            <font>
                               <Font name="Roboto Bold" size="14.0" />
                            </font>
