@@ -40,7 +40,6 @@ import vsim.Settings;
 import vsim.gui.components.CloseDialog;
 import vsim.gui.components.DeleteDialog;
 import vsim.gui.components.EditorTab;
-import vsim.gui.components.FindReplaceDialog;
 import vsim.gui.components.PathDialog;
 import vsim.gui.components.SaveDialog;
 import vsim.gui.components.TreePath;
@@ -87,9 +86,6 @@ public class EditorController {
   private EditorTab current;
   /** Current search indexes */
   private ArrayList<Integer> found;
-
-  /** Find/Replace in buffer dialog */
-  private FindReplaceDialog findReplaceDialog;
 
   /** Reference to main controller */
   protected MainController mainController;
