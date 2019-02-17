@@ -6,22 +6,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="274.0" maxWidth="500.0" minHeight="274.0" minWidth="500.0" prefHeight="274.0" prefWidth="500.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="274.0" maxWidth="500.0" minHeight="274.0" minWidth="500.0" prefHeight="274.0" prefWidth="500.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="274.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
             <Image url="@../img/preloader.png" />
          </image>
       </ImageView>
-      <Label fx:id="version" layoutX="449.0" layoutY="3.0" textFill="WHITE" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-         <font>
-            <Font name="Roboto Bold" size="16.0" />
-         </font>
-      </Label>
-      <Label fx:id="copyright" layoutX="11.0" layoutY="252.0" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0">
-         <font>
-            <Font name="Roboto Bold" size="13.0" />
-         </font>
-      </Label>
+      <Label fx:id="version" layoutX="449.0" layoutY="3.0" id="version" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
+      <Label fx:id="copyright" layoutX="11.0" layoutY="252.0" id="copyright" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
    </children>
 </AnchorPane>

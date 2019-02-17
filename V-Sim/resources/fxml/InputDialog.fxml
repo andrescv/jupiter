@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="112.0" prefWidth="300.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="112.0" prefWidth="300.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <JFXTextField id="inputDialogText" fx:id="text" focusColor="#fe315c" layoutX="41.0" layoutY="14.0" prefHeight="26.0" prefWidth="218.0" style="-fx-text-fill: #eeeeee;" unFocusColor="#fe315c">
          <font>

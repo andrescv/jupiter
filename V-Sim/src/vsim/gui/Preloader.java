@@ -65,6 +65,10 @@ public final class Preloader extends javafx.application.Preloader {
     this.stage = stage;
     stage.setResizable(false);
     Scene scene = new Scene(root, WIDTH, HEIGHT);
+    // add styles
+    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
+        getClass().getResource("/css/preloader.css").toExternalForm());
     stage.setScene(scene);
     // center stage
     Rectangle2D bounds = Screen.getPrimary().getVisualBounds();

@@ -1,0 +1,12 @@
+#version, #copyright {
+  -fx-font-family: 'Roboto Bold';
+  -fx-text-fill: #fff;
+}
+
+#version {
+  -fx-font-size: 16;
+}
+
+#copyright {
+  -fx-font-size: 13;
+}

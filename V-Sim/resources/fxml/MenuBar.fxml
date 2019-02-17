@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 
-<MenuBar prefHeight="29.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MenuBarController">
+<MenuBar prefHeight="29.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.MenuBarController">
    <menus>
       <Menu mnemonicParsing="false" text="_File">
          <items>
