@@ -341,7 +341,7 @@ public final class EditorDialog {
     this.error.setValue(Color.web("#EF4D13"));
     this.background.setValue(Color.web("#212121"));
     this.selection.setValue(Color.web("#3b3b3b"));
-    this.lineno.setValue(Color.web("#B2CCD6"));
+    this.lineno.setValue(Color.web("#aaa"));
     this.linenobg.setValue(Color.web("#212121"));
     this.caret.setValue(Color.web("#009688"));
     this.highlight.setValue(Color.web("#1b1b1b"));

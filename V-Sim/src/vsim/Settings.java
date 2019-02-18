@@ -92,7 +92,7 @@ public final class Settings {
   public static boolean ASSEMBLE_ONLY_SELECTED = false;
 
   /** code area current syntax theme */
-  public static String CODE_AREA_SYNTAX_THEME = "material";
+  public static String CODE_AREA_SYNTAX_THEME = "monokai";
 
   /** code area tab size */
   public static int CODE_AREA_TAB_SIZE = 4;
@@ -101,7 +101,7 @@ public final class Settings {
   public static boolean CODE_AREA_AUTO_INDENT = true;
 
   /** code area background color */
-  public static String CODE_AREA_BG = "#212121";
+  public static String CODE_AREA_BG = "#222222";
 
   /** code area font weight */
   public static String CODE_AREA_FONT_WEIGHT = "normal";
@@ -110,103 +110,102 @@ public final class Settings {
   public static String CODE_AREA_FONT_STYLE = "normal";
 
   /** code area font family */
-  public static String CODE_AREA_FONT_FAMILY = "Envy Code R";
+  public static String CODE_AREA_FONT_FAMILY = "Menlo";
 
   /** code area font size */
-  public static final SimpleIntegerProperty CODE_AREA_FONT_SIZE = new SimpleIntegerProperty(11);
+  public static final SimpleIntegerProperty CODE_AREA_FONT_SIZE = new SimpleIntegerProperty(13);
 
   /** console font size */
-  public static int CONSOLE_FONT_SIZE = 11;
+  public static int CONSOLE_FONT_SIZE = 12;
 
   /** code area selection color */
-  public static String CODE_AREA_SELECTION = "#3b3b3b";
+  public static String CODE_AREA_SELECTION = "rgba(230, 42, 25, 0.3)";
 
   /** code area line numbering text color */
-  public static String CODE_AREA_LINENO_COLOR = "#b2ccd6";
+  public static String CODE_AREA_LINENO_COLOR = "rgba(171, 179, 186, 0.5)";
 
   /** code area line numbering background color */
-  public static String CODE_AREA_LINENO_BG = "#212121";
+  public static String CODE_AREA_LINENO_BG = "#262626";
 
   /** code area caret color */
-  public static String CODE_AREA_CARET_COLOR = "#009688";
+  public static String CODE_AREA_CARET_COLOR = "rgba(200, 200, 200, 0.8)";
 
   /** code area current caret line highlight color */
-  public static String CODE_AREA_LINE_HIGHLIGHT = "#1b1b1b";
+  public static String CODE_AREA_LINE_HIGHLIGHT = "rgba(0, 0, 0, 0.1)";
 
   /** code area synxtax color */
-  public static String CODE_AREA_SYNTAX = "#b2ccd6";
+  public static String CODE_AREA_SYNTAX = "#abb3ba";
 
   /** code area directive color */
-  public static String CODE_AREA_DIRECTIVE = "#82aaff";
+  public static String CODE_AREA_DIRECTIVE = "#66d9ef";
 
   /** code area keyword color */
-  public static String CODE_AREA_KEYWORD = "#c792ea";
+  public static String CODE_AREA_KEYWORD = "#f92672";
 
   /** code area label color */
-  public static String CODE_AREA_LABEL = "#f78c6a";
+  public static String CODE_AREA_LABEL = "#fc9867";
 
   /** code area identifier color */
-  public static String CODE_AREA_IDENTIFIER = "#ffcb6b";
+  public static String CODE_AREA_IDENTIFIER = "#b0ec38";
 
   /** code area register color */
-  public static String CODE_AREA_REGISTER = "#dddddd";
+  public static String CODE_AREA_REGISTER = "#fd971f";
 
   /** code area numeric number color */
-  public static String CODE_AREA_NUMBER = "#f07178";
+  public static String CODE_AREA_NUMBER = "#ae81ff";
 
   /** code area comment color */
-  public static String CODE_AREA_COMMENT = "#545454";
+  public static String CODE_AREA_COMMENT = "rgba(171, 179, 186, 0.5)";
 
   /** code area string and char color */
-  public static String CODE_AREA_STRING = "#c3e88d";
+  public static String CODE_AREA_STRING = "#e6db74";
 
   /** code area backslash in string/char color */
-  public static String CODE_AREA_BACKSLASH = "#89ddf3";
+  public static String CODE_AREA_BACKSLASH = "#e91f24";
 
   /** code area error */
-  public static String CODE_AREA_ERROR = "#ef4d13";
+  public static String CODE_AREA_ERROR = "#e62a19";
 
   /** Loads all saved preferences in GUI mode. */
   public static void load() {
-    Settings.START = Settings.prefs.get("START", "main");
+    Settings.START = Settings.prefs.get("START", START);
     String trap = Settings.prefs.get("TRAP", null);
     if (trap != null) {
       Settings.TRAP = new File(trap);
       if (Settings.TRAP != null && !Settings.TRAP.exists())
         Settings.TRAP = null;
     }
-    Settings.BARE = Settings.prefs.getBoolean("BARE", false);
-    Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", false);
-    Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", false);
-    Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", false);
-    Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", false);
-    Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", false);
-    Settings.ASSEMBLE_ONLY_SELECTED = Settings.prefs.getBoolean("ASSEMBLE_ONLY_SELECTED", false);
-    Settings.CONSOLE_FONT_SIZE = Settings.prefs.getInt("CONSOLE_FONT_SIZE", 11);
-    Settings.CODE_AREA_TAB_SIZE = Settings.prefs.getInt("CODE_AREA_TAB_SIZE", 4);
-    Settings.CODE_AREA_AUTO_INDENT = Settings.prefs.getBoolean("CODE_AREA_AUTO_INDENT", true);
-    Settings.CODE_AREA_SYNTAX_THEME = Settings.prefs.get("CODE_AREA_SYNTAX_THEME", "material");
-    Settings.CODE_AREA_BG = Settings.prefs.get("CODE_AREA_BG", "#212121");
-    Settings.CODE_AREA_FONT_WEIGHT = Settings.prefs.get("CODE_AREA_FONT_WEIGHT", "normal");
-    Settings.CODE_AREA_FONT_STYLE = Settings.prefs.get("CODE_AREA_FONT_STYLE", "normal");
-    Settings.CODE_AREA_FONT_FAMILY = Settings.prefs.get("CODE_AREA_FONT_FAMILY", "Envy Code R");
-    Settings.CODE_AREA_FONT_SIZE.set(Settings.prefs.getInt("CODE_AREA_FONT_SIZE", 11));
-    Settings.CODE_AREA_SELECTION = Settings.prefs.get("CODE_AREA_SELECTION", "#3b3b3b");
-    Settings.CODE_AREA_LINENO_COLOR = Settings.prefs.get("CODE_AREA_LINENO_COLOR", "#b2ccd6");
-    Settings.CODE_AREA_LINENO_BG = Settings.prefs.get("CODE_AREA_LINENO_BG", "#212121");
-    Settings.CODE_AREA_CARET_COLOR = Settings.prefs.get("CODE_AREA_CARET_COLOR", "#009688");
-    Settings.CODE_AREA_LINE_HIGHLIGHT = Settings.prefs.get("CODE_AREA_LINE_HIGHLIGHT", "#1b1b1b");
-    Settings.CODE_AREA_SYNTAX = Settings.prefs.get("CODE_AREA_SYNTAX", "#b2ccd6");
-    Settings.CODE_AREA_DIRECTIVE = Settings.prefs.get("CODE_AREA_DIRECTIVE", "#82aaff");
-    Settings.CODE_AREA_KEYWORD = Settings.prefs.get("CODE_AREA_KEYWORD", "#c792eA");
-    Settings.CODE_AREA_LABEL = Settings.prefs.get("CODE_AREA_LABEL", "#f78c6a");
-    Settings.CODE_AREA_IDENTIFIER = Settings.prefs.get("CODE_AREA_IDENTIFIER", "#ffcb6b");
-    Settings.CODE_AREA_REGISTER = Settings.prefs.get("CODE_AREA_REGISTER", "#dddddd");
-    Settings.CODE_AREA_NUMBER = Settings.prefs.get("CODE_AREA_NUMBER", "#f07178");
-    Settings.CODE_AREA_COMMENT = Settings.prefs.get("CODE_AREA_COMMENT", "#545454");
-    Settings.CODE_AREA_STRING = Settings.prefs.get("CODE_AREA_STRING", "#c3e88d");
-    Settings.CODE_AREA_BACKSLASH = Settings.prefs.get("CODE_AREA_BACKSLASH", "#89ddf3");
-    Settings.CODE_AREA_ERROR = Settings.prefs.get("CODE_AREA_ERROR", "#ef4d13");
+    Settings.BARE = Settings.prefs.getBoolean("BARE", BARE);
+    Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", EXTRICT);
+    Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", SELF_MODIFYING);
+    Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", SHOW_LABELS);
+    Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", POPUP_ECALL_INPUT);
+    Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN);
+    Settings.ASSEMBLE_ONLY_SELECTED = Settings.prefs.getBoolean("ASSEMBLE_ONLY_SELECTED", ASSEMBLE_ONLY_SELECTED);
+    Settings.CODE_AREA_TAB_SIZE = Settings.prefs.getInt("CODE_AREA_TAB_SIZE", CODE_AREA_TAB_SIZE);
+    Settings.CODE_AREA_AUTO_INDENT = Settings.prefs.getBoolean("CODE_AREA_AUTO_INDENT", CODE_AREA_AUTO_INDENT);
+    Settings.CODE_AREA_SYNTAX_THEME = Settings.prefs.get("CODE_AREA_SYNTAX_THEME", CODE_AREA_SYNTAX_THEME);
+    Settings.CODE_AREA_BG = Settings.prefs.get("CODE_AREA_BG", CODE_AREA_BG);
+    Settings.CODE_AREA_FONT_WEIGHT = Settings.prefs.get("CODE_AREA_FONT_WEIGHT", CODE_AREA_FONT_WEIGHT);
+    Settings.CODE_AREA_FONT_STYLE = Settings.prefs.get("CODE_AREA_FONT_STYLE", CODE_AREA_FONT_STYLE);
+    Settings.CODE_AREA_FONT_FAMILY = Settings.prefs.get("CODE_AREA_FONT_FAMILY", CODE_AREA_FONT_FAMILY);
+    Settings.CODE_AREA_FONT_SIZE.set(Settings.prefs.getInt("CODE_AREA_FONT_SIZE", CODE_AREA_FONT_SIZE.get()));
+    Settings.CODE_AREA_SELECTION = Settings.prefs.get("CODE_AREA_SELECTION", CODE_AREA_SELECTION);
+    Settings.CODE_AREA_LINENO_COLOR = Settings.prefs.get("CODE_AREA_LINENO_COLOR", CODE_AREA_LINENO_COLOR);
+    Settings.CODE_AREA_LINENO_BG = Settings.prefs.get("CODE_AREA_LINENO_BG", CODE_AREA_LINENO_BG);
+    Settings.CODE_AREA_CARET_COLOR = Settings.prefs.get("CODE_AREA_CARET_COLOR", CODE_AREA_CARET_COLOR);
+    Settings.CODE_AREA_LINE_HIGHLIGHT = Settings.prefs.get("CODE_AREA_LINE_HIGHLIGHT", CODE_AREA_LINE_HIGHLIGHT);
+    Settings.CODE_AREA_SYNTAX = Settings.prefs.get("CODE_AREA_SYNTAX", CODE_AREA_SYNTAX);
+    Settings.CODE_AREA_DIRECTIVE = Settings.prefs.get("CODE_AREA_DIRECTIVE", CODE_AREA_DIRECTIVE);
+    Settings.CODE_AREA_KEYWORD = Settings.prefs.get("CODE_AREA_KEYWORD", CODE_AREA_KEYWORD);
+    Settings.CODE_AREA_LABEL = Settings.prefs.get("CODE_AREA_LABEL", CODE_AREA_LABEL);
+    Settings.CODE_AREA_IDENTIFIER = Settings.prefs.get("CODE_AREA_IDENTIFIER", CODE_AREA_IDENTIFIER);
+    Settings.CODE_AREA_REGISTER = Settings.prefs.get("CODE_AREA_REGISTER", CODE_AREA_REGISTER);
+    Settings.CODE_AREA_NUMBER = Settings.prefs.get("CODE_AREA_NUMBER", CODE_AREA_NUMBER);
+    Settings.CODE_AREA_COMMENT = Settings.prefs.get("CODE_AREA_COMMENT", CODE_AREA_COMMENT);
+    Settings.CODE_AREA_STRING = Settings.prefs.get("CODE_AREA_STRING", CODE_AREA_STRING);
+    Settings.CODE_AREA_BACKSLASH = Settings.prefs.get("CODE_AREA_BACKSLASH", CODE_AREA_BACKSLASH);
+    Settings.CODE_AREA_ERROR = Settings.prefs.get("CODE_AREA_ERROR", CODE_AREA_ERROR);
   }
 
   /**
