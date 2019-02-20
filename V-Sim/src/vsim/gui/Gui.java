@@ -50,9 +50,7 @@ public final class Gui extends Application {
     // create scene
     Scene scene = new Scene(root, 1024, 800);
     // add styles
-    scene.getStylesheets().addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-        getClass().getResource("/css/vsim-fonts.css").toExternalForm(),
-        getClass().getResource("/css/vsim.css").toExternalForm());
+    scene.getStylesheets().addAll(getClass().getResource("/css/vsim.css").toExternalForm());
     stage.setScene(scene);
     stage.show();
     stage.toFront();

@@ -814,7 +814,7 @@ public final class Lexer {
           case 35:
             break;
           case 17: {
-            return symbol("label");
+            return symbol("lbl");
           }
           // fall through
           case 36:

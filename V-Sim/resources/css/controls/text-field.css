@@ -1,0 +1,14 @@
+.jfx-text-field {
+  -jfx-focus-color: -fx-secondary;
+  -fx-font-family: 'Menlo', monospace;
+  -fx-font-size: 13;
+}
+
+.jfx-text-field.findreplace {
+  -fx-text-fill: #eee;
+  -jfx-focus-color: #00bcd4;
+}
+
+#inputDialogText {
+  -fx-text-fill: #eee;
+}

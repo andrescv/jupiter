@@ -287,7 +287,7 @@ ERROR = .
 
   // labels
   {LABEL} {
-    return symbol("label");
+    return symbol("lbl");
   }
 
   // directives

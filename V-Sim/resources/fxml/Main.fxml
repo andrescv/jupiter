@@ -35,9 +35,6 @@
                          </content>
                       </Tab>
                    </tabs>
-                   <cursor>
-                      <Cursor fx:constant="DEFAULT" />
-                   </cursor>
                 </JFXTabPane>
                 <JFXTabPane fx:id="consoles" prefHeight="300.0" SplitPane.resizableWithParent="false">
                    <tabs>

@@ -1,0 +1,21 @@
+.label.findreplace {
+  -fx-font-family: 'Menlo';
+  -fx-font-size: 12;
+  -fx-text-fill: #ddd;
+  -fx-font-weight: bold
+}
+
+.label.project {
+  -fx-font-size: 15;
+  -fx-text-fill: #ddd;
+  -fx-background-color: -fx-primary;
+  -fx-padding: 0 0 2 10;
+  -fx-font-family: 'Roboto';
+}
+
+.label.editordialog {
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-font-size: 14;
+  -fx-text-fill: #eee;
+}
