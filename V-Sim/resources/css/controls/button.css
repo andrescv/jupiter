@@ -1,0 +1,81 @@
+.jfx-button {
+  -fx-cursor: hand;
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-text-fill: #fff;
+  -fx-font-size: 14;
+}
+
+#runBtns {
+  -fx-background-color: -fx-primary;
+  -fx-padding: 5, 0, 5, 0;
+  -fx-spacing: 10;
+  -fx-text-fill: #ffffff;
+}
+
+#memBtns {
+  -fx-background-color: -fx-primary-light;
+  -fx-padding: 2, 0, 2, 0;
+  -fx-spacing: 5;
+}
+
+#goBtn {
+  -fx-background-color: #388e3c;
+}
+
+#stopBtn {
+  -fx-background-color: #d32f2f;
+}
+
+#stepBtn {
+  -fx-background-color: #ff6f00;
+}
+
+#backstepBtn {
+  -fx-background-color: #0277bd;
+}
+
+#resetBtn {
+  -fx-background-color: #ffa000;
+}
+
+#dumpCodeBtn {
+  -fx-background-color: #7b1fa2;
+}
+
+#dumpDataBtn {
+  -fx-background-color: #3949ab;
+}
+
+#upBtn {
+  -fx-background-color: #00897b;
+}
+
+#downBtn {
+  -fx-background-color: #f9a825;
+}
+
+#inputDialogBtn {
+  -fx-background-color: #388e3c;
+}
+
+#editorDialogSaveAndClose {
+  -fx-background-color: #00897b;
+}
+
+#editorDialogCancel {
+  -fx-background-color: #0277bd;
+}
+
+#editorDialogSave {
+  -fx-background-color: #388e3c;
+}
+
+.jfx-button.findreplace {
+  -fx-background-color: #555;
+  -fx-text-fill: #aaa;
+}
+
+.jfx-button.close, .jfx-button.findreplace:hover {
+  -fx-text-fill: #ddd;
+}

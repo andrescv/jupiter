@@ -1,6 +1,9 @@
+@import "vsim-fonts.css";
+
 #version, #copyright {
-  -fx-font-family: 'Roboto Bold';
+  -fx-font-family: 'Roboto';
   -fx-text-fill: #fff;
+  -fx-font-weight: bold;
 }
 
 #version {

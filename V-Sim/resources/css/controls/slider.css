@@ -1,0 +1,4 @@
+.jfx-slider {
+  -jfx-default-thumb: -fx-secondary;
+  -fx-cursor: HAND;
+}

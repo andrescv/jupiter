@@ -1,0 +1,10 @@
+.context-menu {
+  -fx-cursor: DEFAULT;
+  -fx-font-family: 'Roboto';
+  -fx-font-size: 11pt;
+}
+
+.context-menu .menu-item:focused {
+  -fx-background-color: -fx-secondary;
+  -fx-text-fill: #ffffff;
+}

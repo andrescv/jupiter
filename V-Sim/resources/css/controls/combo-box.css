@@ -1,0 +1,44 @@
+.jfx-combo-box {
+  -jfx-focus-color: -fx-secondary;
+  -jfx-unfocus-color: -fx-secondary;
+  -fx-prompt-text-fill: #fff;
+  -fx-cursor: HAND;
+}
+
+.jfx-combo-box .list-cell {
+  -fx-background-color: -fx-primary;
+  -fx-text-fill: #fff;
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-font-size: 12pt;
+}
+
+.jfx-combo-box .list-cell {
+  -fx-background: -fx-primary-light;
+  -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+  -fx-background-color: -fx-primary-light;
+  -fx-background-insets: 0, 0;
+  -fx-effect: none;
+  -fx-cursor: HAND;
+}
+
+.combo-box-popup .list-view .list-cell {
+  -fx-background-color: -fx-primary-light;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+  -fx-background-color: -fx-secondary;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+  -fx-background-color: -fx-secondary;
+}
+
+.jfx-combo-box > .arrow-button .arrow,
+.jfx-combo-box:editable > .arrow-button .arrow,
+.jfx-combo-box:editable:focused > .arrow-button .arrow {
+  -fx-background-color: -fx-secondary;
+}

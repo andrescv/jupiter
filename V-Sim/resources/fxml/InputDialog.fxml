@@ -8,16 +8,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="112.0" prefWidth="300.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="112.0" prefWidth="300.0" id="inputDialog" xmlns="http://javafx.com/javafx/8.0.161-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <JFXTextField id="inputDialogText" fx:id="text" focusColor="#fe315c" layoutX="41.0" layoutY="14.0" prefHeight="26.0" prefWidth="218.0" style="-fx-text-fill: #eeeeee;" unFocusColor="#fe315c">
-         <font>
-            <Font name="Roboto Regular" size="14.0" />
-         </font></JFXTextField>
-      <JFXButton id="inputDialogBtn" fx:id="enter" layoutX="103.0" layoutY="60.0" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #388e3c;" text="Enter" textFill="WHITE">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
+      <JFXTextField id="inputDialogText" fx:id="text" layoutX="41.0" layoutY="14.0" prefHeight="26.0" prefWidth="218.0" />
+      <JFXButton id="inputDialogBtn" fx:id="enter" layoutX="103.0" layoutY="60.0" prefHeight="38.0" prefWidth="95.0" text="Enter">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -25,8 +19,6 @@
                </image>
             </ImageView>
          </graphic>
-         <font>
-            <Font name="Roboto Bold" size="14.0" />
-         </font></JFXButton>
+      </JFXButton>
    </children>
 </AnchorPane>

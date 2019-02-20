@@ -1,0 +1,42 @@
+.menu-bar {
+  -fx-background-color: #ffffff;
+}
+
+.menu:showing {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu:focused {
+  -fx-background-color: -fx-primary-light;
+}
+
+.menu {
+  -fx-cursor: HAND;
+}
+
+.menu .label {
+  -fx-text-fill: -fx-primary;
+  -fx-font-family: 'Roboto';
+  -fx-font-weight: bold;
+  -fx-font-size: 14;
+}
+
+.menu:hover > .label {
+  -fx-text-fill: #fff;
+}
+
+.menu:showing .label {
+  -fx-text-fill: -fx-primary;
+}
+
+.menu:showing > .label {
+  -fx-text-fill: #fff;
+}
+
+.menu:hover {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu .menu-item:focused {
+ -fx-background-color: #ccc;
+}

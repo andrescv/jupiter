@@ -1,0 +1,26 @@
+.tree-view:focused {
+  -fx-background-color: -fx-primary;
+}
+
+.tree-cell {
+  -fx-background-color: -fx-primary;
+  -fx-font-family: 'Roboto';
+  -fx-font-size: 14px;
+  -fx-text-fill: rgba(200, 200, 200, 0.9);
+}
+
+.tree-cell:selected {
+  -fx-background-color: -fx-primary-light;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow  {
+  -fx-background-color: #606060;
+}
+
+.tree-cell:selected > .tree-disclosure-node > .arrow  {
+  -fx-background-color: -fx-secondary;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: #66D9EF;
+}

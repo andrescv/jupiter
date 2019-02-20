@@ -26,21 +26,68 @@
 }
 
 /*
-  Envy Code R Font
+  Menlo Font
 
-  Damien Guard, May 2008.
+  Menlo is a Trademark of Apple Inc.
 
-  Copyright © 2006-2008 Envy Technologies Ltd.  Free to use but redistribution prohibited.
+  Copyright © 2009 Apple Inc. Copyright © 2006 by Tavmjong Bah. Copyright © 2003 by Bitstream, Inc. All Rights Reserved.
 */
 
 @font-face {
-  src: url("/font/Envy_Code_R/EnvyCodeR.ttf");
+  font-family: "Menlo";
+  src: url("/font/Menlo/Menlo-Regular.ttf");
 }
 
 @font-face {
-  src: url("/font/Envy_Code_R/EnvyCodeR-Bold.ttf");
+  font-family: "Menlo Bold";
+  src: url("/font/Menlo/Menlo-Bold.ttf");
 }
 
 @font-face {
-  src: url("/font/Envy_Code_R/EnvyCodeR-Italic.ttf");
+  font-family: "Menlo Italic";
+  src: url("/font/Menlo/Menlo-Italic.ttf");
+}
+
+@font-face {
+  font-family: "Menlo Bold Italic";
+  src: url("/font/Menlo/Menlo-BoldItalic.ttf");
+}
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@font-face {
+  font-family: Roboto;
+  src: url("/font/roboto/Roboto-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Roboto Medium";
+  src: url("/font/roboto/Roboto-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Roboto Light";
+  src: url("/font/roboto/Roboto-Light.ttf");
+}
+
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("/font/roboto/Roboto-Bold.ttf");
 }
