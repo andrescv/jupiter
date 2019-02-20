@@ -12,6 +12,9 @@
   <a href="https://travis-ci.org/andrescv/V-Sim">
     <img src="https://api.travis-ci.org/andrescv/V-Sim.svg?branch=master" alt="Travis CI">
   </a>
+  <a href="https://github.com/andrescv/V-Sim/issues">
+    <img src="https://img.shields.io/github/issues/andrescv/V-Sim.svg" alt="issues" />
+  </a>
   <a href="https://github.com/andrescv/V-Sim/releases">
     <img src="https://img.shields.io/github/release/andrescv/V-Sim/all.svg" alt="Version">
   </a>
