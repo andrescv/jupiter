@@ -163,8 +163,6 @@ public final class EditorDialog {
 
   /**
    * Action fired when a color picker changes.
-   *
-   * @param e action event
    */
   @FXML
   protected void changeColor() {
@@ -173,8 +171,6 @@ public final class EditorDialog {
 
   /**
    * Action fired when save button is clicked.
-   *
-   * @param e action event
    */
   @FXML
   protected void save() {
@@ -233,8 +229,6 @@ public final class EditorDialog {
 
   /**
    * Action fired when save and close button is clicked.
-   *
-   * @param e action event
    */
   @FXML
   protected void saveAndClose() {
@@ -244,8 +238,6 @@ public final class EditorDialog {
 
   /**
    * Action fired when cancel button is clicked.
-   *
-   * @param e action event
    */
   @FXML
   protected void cancel() {
