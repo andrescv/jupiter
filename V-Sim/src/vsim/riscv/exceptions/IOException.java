@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.exceptions;
 
 /**
- * Breakpoint exception class throwed by ebreak statement.
+ * I/O exception class.
  */
 public final class IOException extends SimulationException {
 
