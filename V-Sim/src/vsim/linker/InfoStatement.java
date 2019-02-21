@@ -55,7 +55,8 @@ public final class InfoStatement {
     this.breakpoint = new SimpleBooleanProperty(this.ebreak);
     this.address = new SimpleStringProperty(String.format("0x%08x", address));
     this.machineCode = new SimpleStringProperty(String.format("0x%08x", result.get(InstructionField.ALL)));
-    this.sourceCode = new SimpleStringProperty(stmt.getDebugInfo().getSource().replaceAll("( |\t)+", " "));
+    this.sourceCode = new SimpleStringProperty(
+        stmt.getDebugInfo().getSource().replaceAll("( |\t)+", " ").replaceAll(".+:", "").trim());
     this.basicCode = new SimpleStringProperty(Globals.iset.get(stmt.getMnemonic()).disassemble(result));
   }
 

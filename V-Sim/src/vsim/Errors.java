@@ -51,7 +51,7 @@ public final class Errors {
   public static void add(DebugInfo debug, String phase, String msg) {
     String filename = debug.getFilename();
     String newline = System.getProperty("line.separator");
-    String source = debug.getSource().replace('\t', ' ');
+    String source = debug.getSource().replaceAll("\t", " ");
     int lineno = debug.getLineNumber();
     int column = debug.getColumnNumber();
     if (column < source.length()) {
