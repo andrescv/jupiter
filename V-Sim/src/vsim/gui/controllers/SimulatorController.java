@@ -554,15 +554,16 @@ public class SimulatorController {
   /** This method initializes simulator control buttons. */
   private void initButtons() {
     this.goBtn.setOnAction(e -> this.go());
-    this.goBtn.disableProperty().bind(Bindings.or(Status.EXIT, Status.RUNNING));
+    this.goBtn.disableProperty().bind(Bindings.or(Bindings.or(Status.EXIT, Status.RUNNING), Status.IO));
     this.stopBtn.setOnAction(e -> this.stop());
     this.stopBtn.disableProperty().bind(Bindings.not(Status.RUNNING));
     this.stepBtn.setOnAction(e -> this.step());
-    this.stepBtn.disableProperty().bind(Bindings.or(Status.EXIT, Status.RUNNING));
+    this.stepBtn.disableProperty().bind(Bindings.or(Bindings.or(Status.EXIT, Status.RUNNING), Status.IO));
     this.backstepBtn.setOnAction(e -> this.backstep());
-    this.backstepBtn.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.EXIT, Status.RUNNING)));
+    this.backstepBtn.disableProperty()
+        .bind(Bindings.or(Status.EMPTY, Bindings.or(Bindings.or(Status.EXIT, Status.RUNNING), Status.IO)));
     this.resetBtn.setOnAction(e -> this.reset());
-    this.resetBtn.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EMPTY));
+    this.resetBtn.disableProperty().bind(Bindings.or(Bindings.or(Status.RUNNING, Status.EMPTY), Status.IO));
     this.dumpCodeBtn.setOnAction(e -> this.dumpCode());
     this.dumpCodeBtn.disableProperty().bind(Status.RUNNING);
     this.dumpDataBtn.setOnAction(e -> this.dumpData());

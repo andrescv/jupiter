@@ -25,6 +25,7 @@ import vsim.Settings;
 import vsim.gui.components.InputDialog;
 import vsim.gui.utils.ConsoleInput;
 import vsim.gui.utils.ConsoleOutput;
+import vsim.simulator.Status;
 
 
 /** The class IO represents the standard I/O of the simulator. */
@@ -57,6 +58,7 @@ public final class IO {
    * @return int value corresponding to user input
    */
   public static int readInt() {
+    Status.IO.set(true);
     String input = "0";
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
@@ -76,6 +78,7 @@ public final class IO {
       IO.stdout.println();
       input = "0";
     }
+    Status.IO.set(false);
     // client is responsible for catching NumberFormatException
     return Data.parseInt(input.trim());
   }
@@ -86,6 +89,7 @@ public final class IO {
    * @return float value corresponding to user input
    */
   public static float readFloat() {
+    Status.IO.set(true);
     String input = "0.0";
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
@@ -105,6 +109,7 @@ public final class IO {
       IO.stdout.println();
       input = "0.0";
     }
+    Status.IO.set(false);
     // client is responsible for catching NumberFormatException
     return Data.parseFloat(input.trim());
   }
@@ -116,6 +121,7 @@ public final class IO {
    * @return the entered string, truncated to maximum length if necessary
    */
   public static String readString(int maxLength) {
+    Status.IO.set(true);
     String input = "";
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
@@ -135,6 +141,7 @@ public final class IO {
       IO.stdout.println();
       input = "";
     }
+    Status.IO.set(false);
     // ensure maxLength
     if (input.length() > maxLength)
       input = (maxLength <= 0) ? "" : input.substring(0, maxLength);
@@ -147,6 +154,7 @@ public final class IO {
    * @return int value with lowest byte corresponding to user input
    */
   public static int readChar() {
+    Status.IO.set(true);
     String input = "0";
     if (Settings.GUI) {
       if (!Settings.POPUP_ECALL_INPUT && guistdin != null)
@@ -164,6 +172,7 @@ public final class IO {
     // handle CTRL + D
     if (input == null)
       input = "0";
+    Status.IO.set(false);
     return (int) input.charAt(0);
   }
 }
