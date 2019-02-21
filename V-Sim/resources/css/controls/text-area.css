@@ -1,11 +1,14 @@
 .text-area {
-  -fx-text-fill: #fff;
   -fx-font-family: 'Menlo', monospace;
   -fx-font-size: 12pt;
 }
 
 .text-area .content {
   -fx-background-color: -fx-primary;
+}
+
+#console .selection {
+  -fx-fill: rgba(183, 227, 255, 0.6);
 }
 
 #exceptionmsg {
