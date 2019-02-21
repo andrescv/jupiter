@@ -218,7 +218,7 @@ public final class Debugger {
       MachineCode result = stmt.result();
       // display console info (CLI mode only)
       if (!Settings.GUI && !goStep) {
-        String source = stmt.getDebugInfo().getSource();
+        String source = stmt.getDebugInfo().getSource().replaceAll("( |\t)+", " ").replaceAll(".+:", "").trim();
         // format all debugging info
         IO.stdout.println(String.format("FROM: %s", stmt.getDebugInfo().getFilename()));
         IO.stdout.println(String.format("PC [%s] CODE:%s    %s » %s", pc, result.toString(), source,
