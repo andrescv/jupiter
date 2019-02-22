@@ -38,7 +38,7 @@
                 </JFXTabPane>
                 <JFXTabPane fx:id="consoles" prefHeight="300.0" SplitPane.resizableWithParent="false">
                    <tabs>
-                      <Tab fx:id="consoleTab" closable="false" text="Console" />
+                      <Tab fx:id="consoleTab" closable="false" styleClass="normal" text="Console" />
                    </tabs>
                 </JFXTabPane>
              </items>
