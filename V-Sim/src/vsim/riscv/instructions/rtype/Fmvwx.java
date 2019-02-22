@@ -62,6 +62,7 @@ public final class Fmvwx extends Instruction {
     Globals.fregfile.setRegister(code.get(InstructionField.RD),
         Globals.regfile.getRegister(code.get(InstructionField.RS1)));
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**

@@ -81,6 +81,7 @@ abstract class BType extends Instruction {
     if (cmp) {
       int pc = Globals.regfile.getProgramCounter();
       Globals.regfile.setProgramCounter(pc + this.getImm(code));
+      Globals.stats.branch();
     } else
       Globals.regfile.incProgramCounter();
   }

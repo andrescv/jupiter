@@ -60,6 +60,7 @@ abstract class FR4Type extends Instruction {
     float rs3 = Globals.fregfile.getRegisterFloat(code.get(InstructionField.RS3));
     Globals.fregfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, rs2, rs3));
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**

@@ -55,6 +55,7 @@ abstract class UType extends Instruction {
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(code.get(InstructionField.IMM_31_12)));
     Globals.regfile.incProgramCounter();
+    Globals.stats.alu();
   }
 
   /**

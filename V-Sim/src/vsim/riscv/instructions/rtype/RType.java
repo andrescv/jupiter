@@ -66,6 +66,7 @@ abstract class RType extends Instruction {
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, rs2));
     Globals.regfile.incProgramCounter();
+    Globals.stats.alu();
   }
 
   /**

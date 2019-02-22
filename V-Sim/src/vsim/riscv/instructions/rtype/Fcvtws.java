@@ -75,6 +75,7 @@ public final class Fcvtws extends Instruction {
       result = Math.round(value);
     Globals.regfile.setRegister(code.get(InstructionField.RD), result);
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**

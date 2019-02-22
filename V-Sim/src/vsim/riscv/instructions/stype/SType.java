@@ -82,6 +82,7 @@ abstract class SType extends Instruction {
     int rs2 = Globals.regfile.getRegister(code.get(InstructionField.RS2));
     this.setMemory(rs1, rs2, this.getImm(code));
     Globals.regfile.incProgramCounter();
+    Globals.stats.memory();
   }
 
   /**

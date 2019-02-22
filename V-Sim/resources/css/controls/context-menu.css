@@ -1,5 +1,5 @@
 .context-menu {
-  -fx-cursor: DEFAULT;
+  -fx-cursor: HAND;
   -fx-font-family: 'Roboto';
   -fx-font-size: 11pt;
 }

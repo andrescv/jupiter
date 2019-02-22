@@ -295,6 +295,11 @@
                   <JFXCheckBox fx:id="showLabelsBox" styleClass="setting" text=" " />
                </graphic>
             </MenuItem>
+            <MenuItem fx:id="stats" mnemonicParsing="false" onAction="#printStats" text="Print Instruction Statistics">
+               <graphic>
+                  <JFXCheckBox fx:id="statsBox" styleClass="setting" text=" " />
+               </graphic>
+            </MenuItem>
             <MenuItem fx:id="popup" mnemonicParsing="false" onAction="#popup" text="Popup Dialog For Input Ecalls">
                <graphic>
                   <JFXCheckBox fx:id="popupBox" styleClass="setting" text=" " />
@@ -363,6 +368,28 @@
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/icons/label.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="_Tools">
+         <items>
+            <MenuItem fx:id="cacheSim" mnemonicParsing="false" text="Cache Simulator">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/cache.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuItem>
+            <MenuItem fx:id="bitmapDisplay" mnemonicParsing="false" text="Bitmap Display">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/icons/display.png" />
                      </image>
                   </ImageView>
                </graphic>
