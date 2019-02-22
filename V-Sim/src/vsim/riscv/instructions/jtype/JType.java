@@ -70,6 +70,7 @@ abstract class JType extends Instruction {
   @Override
   public void execute(MachineCode code) {
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(this.getImm(code)));
+    Globals.stats.jump();
   }
 
   /**

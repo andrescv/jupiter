@@ -51,6 +51,9 @@ public final class Settings {
   /** self-modifying code */
   public static boolean SELF_MODIFYING = false;
 
+  /** print instruction stats */
+  public static boolean STATS = false;
+
 // CLI ONLY SETTINGS
 
   /** debugging mode, set with -debug flag or ebreak instruction */
@@ -178,6 +181,7 @@ public final class Settings {
     Settings.BARE = Settings.prefs.getBoolean("BARE", BARE);
     Settings.EXTRICT = Settings.prefs.getBoolean("EXTRICT", EXTRICT);
     Settings.SELF_MODIFYING = Settings.prefs.getBoolean("SELF_MODIFYING", SELF_MODIFYING);
+    Settings.STATS = Settings.prefs.getBoolean("STATS", STATS);
     Settings.SHOW_LABELS = Settings.prefs.getBoolean("SHOW_LABELS", SHOW_LABELS);
     Settings.POPUP_ECALL_INPUT = Settings.prefs.getBoolean("POPUP_ECALL_INPUT", POPUP_ECALL_INPUT);
     Settings.ASSEMBLE_ONLY_OPEN = Settings.prefs.getBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN);
@@ -269,6 +273,17 @@ public final class Settings {
     Settings.prefs.putBoolean("EXTRICT", !Settings.EXTRICT);
     Settings.EXTRICT = !Settings.EXTRICT;
     return Settings.EXTRICT;
+  }
+
+  /**
+   * Toggles stats setting.
+   *
+   * @return stats setting value after toggle
+   */
+  public static boolean toggleStats() {
+    Settings.prefs.putBoolean("STATS", !Settings.STATS);
+    Settings.STATS = !Settings.STATS;
+    return Settings.STATS;
   }
 
   /**

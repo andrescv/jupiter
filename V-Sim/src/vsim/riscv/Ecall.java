@@ -260,9 +260,20 @@ public final class Ecall {
       IO.guistdout.postRunMessage("vsim: " + "exit(", "#01579b");
       IO.guistdout.postRunMessage("0", "#b71c1c");
       IO.guistdout.postRunMessage(")" + System.getProperty("line.separator"), "#01579b");
+      if (Settings.STATS) {
+        IO.guistdout.postRunMessage(System.getProperty("line.separator") + "Instruction Stats:");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator") + System.getProperty("line.separator"));
+        IO.guistdout.postRunMessage(Globals.stats.toString() + System.getProperty("line.separator"));
+      }
     } else {
       IO.stdout.println();
       Message.log("exit(0)");
+      if (Settings.STATS) {
+        IO.stdout.println();
+        IO.stdout.println("Instruction Stats:");
+        IO.stdout.println();
+        IO.stdout.println(Globals.stats);
+      }
     }
     Status.EXIT.set(true);
     if (!Settings.GUI)
@@ -352,9 +363,20 @@ public final class Ecall {
       IO.guistdout.postRunMessage("vsim: " + "exit(", "#01579b");
       IO.guistdout.postRunMessage(status + "", "#b71c1c");
       IO.guistdout.postRunMessage(")" + System.getProperty("line.separator"), "#01579b");
+      if (Settings.STATS) {
+        IO.guistdout.postRunMessage(System.getProperty("line.separator") + "Instruction Stats:");
+        IO.guistdout.postRunMessage(System.getProperty("line.separator") + System.getProperty("line.separator"));
+        IO.guistdout.postRunMessage(Globals.stats.toString() + System.getProperty("line.separator"));
+      }
     } else {
       IO.stdout.println();
       Message.log("exit(" + status + ")");
+      if (Settings.STATS) {
+        IO.stdout.println();
+        IO.stdout.println("Instruction Stats:");
+        IO.stdout.println();
+        IO.stdout.println(Globals.stats);
+      }
     }
     if (!Settings.GUI)
       System.exit(status);

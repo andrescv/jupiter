@@ -72,6 +72,7 @@ public final class Flts extends Instruction {
     int result = (rs1 < rs2) ? 1 : 0;
     Globals.regfile.setRegister(code.get(InstructionField.RD), result);
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**

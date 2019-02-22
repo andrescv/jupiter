@@ -62,6 +62,17 @@ abstract class IType extends Instruction {
     Globals.regfile.setRegister(code.get(InstructionField.RD), this.compute(rs1, imm));
     if (!this.getMnemonic().equals("jalr"))
       Globals.regfile.incProgramCounter();
+    // update stats
+    String mnemonic = this.getMnemonic();
+    if (mnemonic.equals("jalr"))
+      Globals.stats.jump();
+    else if (mnemonic.equals("lb") || mnemonic.equals("lbu") || mnemonic.equals("lh") || mnemonic.equals("lhu")
+        || mnemonic.equals("lw") || mnemonic.equals("flw"))
+      Globals.stats.memory();
+    else if (mnemonic.equals("ecall") || mnemonic.equals("ebreak"))
+      Globals.stats.other();
+    else
+      Globals.stats.alu();
   }
 
   /**

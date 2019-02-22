@@ -24,6 +24,7 @@ import vsim.riscv.InstructionSet;
 import vsim.riscv.hardware.Memory;
 import vsim.riscv.hardware.RVFRegisterFile;
 import vsim.riscv.hardware.RVIRegisterFile;
+import vsim.utils.Stats;
 
 
 /**
@@ -55,6 +56,9 @@ public final class Globals {
   /** .globl symbol table (used for debugging and global symbols) */
   public static final SymbolTable globl = new SymbolTable();
 
+  /** Instruction statistics */
+  public static final Stats stats = new Stats();
+
   /** local symbol table per file (used for debugging and local symbols) */
   public static Hashtable<String, SymbolTable> local = new Hashtable<String, SymbolTable>();
 
@@ -71,6 +75,8 @@ public final class Globals {
     Globals.regfile.reset();
     // reset floating point registers
     Globals.fregfile.reset();
+    // reset stats
+    Globals.stats.reset();
   }
 
   /**

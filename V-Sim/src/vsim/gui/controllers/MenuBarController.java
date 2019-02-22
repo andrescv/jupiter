@@ -100,6 +100,8 @@ public class MenuBarController {
   @FXML private JFXCheckBox permitBox;
   /** Settings menu permit pseudos checkbox */
   @FXML private JFXCheckBox selfBox;
+  /** Settings menu stats checkbox */
+  @FXML private JFXCheckBox statsBox;
   /** Settings menu editor option */
   @FXML private MenuItem editor;
 
@@ -156,12 +158,14 @@ public class MenuBarController {
     this.warningsBox.setSelected(Settings.EXTRICT);
     this.permitBox.setSelected(!Settings.BARE);
     this.selfBox.setSelected(Settings.SELF_MODIFYING);
+    this.statsBox.setSelected(Settings.STATS);
     this.showLabelsBox.setText("");
     this.popupBox.setText("");
     this.onlyOpenBox.setText("");
     this.onlySelectedBox.setText("");
     this.warningsBox.setText("");
     this.permitBox.setText("");
+    this.statsBox.setText("");
   }
 
   /*-------------------------------------------------------*
@@ -302,6 +306,11 @@ public class MenuBarController {
   protected void showLabels(ActionEvent e) {
     this.showLabelsBox.setSelected(Settings.toggleShowLabels());
     this.mainController.simulatorController.showST();
+  }
+
+  @FXML
+  protected void printStats() {
+    this.statsBox.setSelected(Settings.toggleStats());
   }
 
   @FXML

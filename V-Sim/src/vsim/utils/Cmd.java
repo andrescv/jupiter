@@ -47,6 +47,7 @@ public final class Cmd {
     parser.add("-self", "enable self-modifying code");
     parser.add("-extrict", "assembler warnings are consider errors");
     parser.add("-info", "print info of an instruction and exit", "<mnemonic>");
+    parser.add("-stats", "print instruction statistics");
     parser.add("-notitle", "do not print V-Sim title");
     parser.add("-code", "dump machine code to a file", "<file>");
     parser.add("-data", "dump static data to a file", "<file>");
@@ -69,6 +70,7 @@ public final class Cmd {
     }
     // override default Settings
     Settings.BARE = parser.hasFlag("-bare");
+    Settings.STATS = parser.hasFlag("-stats");
     Settings.EXTRICT = parser.hasFlag("-extrict");
     Settings.SELF_MODIFYING = parser.hasFlag("-self");
     Settings.TITLE = !parser.hasFlag("-notitle");

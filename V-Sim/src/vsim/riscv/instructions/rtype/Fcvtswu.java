@@ -70,6 +70,7 @@ public final class Fcvtswu extends Instruction {
     int value = Globals.regfile.getRegister(code.get(InstructionField.RS1));
     Globals.fregfile.setRegister(code.get(InstructionField.RD), ((Long) Integer.toUnsignedLong(value)).floatValue());
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**

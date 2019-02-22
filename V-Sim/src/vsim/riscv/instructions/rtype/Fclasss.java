@@ -102,6 +102,7 @@ public final class Fclasss extends Instruction {
       out |= 1 << 9;
     Globals.regfile.setRegister(code.get(InstructionField.RD), out);
     Globals.regfile.incProgramCounter();
+    Globals.stats.other();
   }
 
   /**
