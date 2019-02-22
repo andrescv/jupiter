@@ -226,7 +226,6 @@ public class SimulatorController {
       // load trap handler
       FileIO.addTrapHandler(files);
       if (files != null && files.size() > 0) {
-        String assembling = files.toString();
         LinkedProgram program = Linker.link(Assembler.assemble(files));
         if (program != null) {
           program.reset();
