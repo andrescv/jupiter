@@ -727,7 +727,6 @@ public class SimulatorController {
         lastReg = reg;
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
-            hardware.getSelectionModel().select(rviTab);
             if (this.rviExt != null) {
               int first = this.rviExt.getFirstVisibleIndex();
               int last = this.rviExt.getLastVisibleIndex();
@@ -772,7 +771,6 @@ public class SimulatorController {
         lastReg = reg;
         if (!Status.RUNNING.get()) {
           Platform.runLater(() -> {
-            hardware.getSelectionModel().select(rvfTab);
             if (this.rvfExt != null) {
               int first = this.rvfExt.getFirstVisibleIndex();
               int last = this.rvfExt.getLastVisibleIndex();
