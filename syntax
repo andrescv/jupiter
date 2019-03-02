@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# remove old files
+rm -f src/main/java/vsim/assembler/Lexer.java
+rm -f src/main/java/vsim/gui/utils/Lexer.java
+rm -f src/main/java/vsim/assembler/Parser.java
+
+# create new files
+java -jar lib/jflex-1.7.0.jar src/main/syntax/lexer.flex -d src/main/java/vsim/assembler
+java -jar lib/jflex-1.7.0.jar src/main/syntax/guilexer.flex -d src/main/java/vsim/gui/utils
+java -jar lib/java-cup-11b.jar -parser Parser -symbols Token -destdir src/main/java/vsim/assembler src/main/syntax/parser.cup
