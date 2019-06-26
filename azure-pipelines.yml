@@ -1,0 +1,34 @@
+trigger:
+  - master
+
+variables:
+  version: '3.0.0'
+
+# jobs
+jobs:
+  # Linux job
+  - template: src/pipeline/build-job.yml
+    parameters:
+      name: Linux
+      platform: linux
+      version: $(version)
+      pool:
+        vmImage: 'ubuntu-16.04'
+
+  # Mac OS job
+  - template: src/pipeline/build-job.yml
+    parameters:
+      name: MacOS
+      platform: mac
+      version: $(version)
+      pool:
+        vmImage: 'macOS-10.13'
+
+  # Windows job
+  - template: src/pipeline/build-job.yml
+    parameters:
+      name: Windows
+      platform: win
+      version: $(version)
+      pool:
+        vmImage: 'windows-2019'
