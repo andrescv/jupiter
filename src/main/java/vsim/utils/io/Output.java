@@ -35,9 +35,7 @@ public interface Output {
    */
   public void println(String txt);
 
-  /**
-   * Terminates the current line by writing the line separator string.
-   */
+  /** Terminates the current line by writing the line separator string. */
   public void println();
 
 }
