@@ -2,7 +2,7 @@
 # Fibonnaci Example #
 #####################
 
-.globl main
+.globl __start
 
 .rodata
   msg1: .string "Please enter a number: "
@@ -11,7 +11,7 @@
 
 .text
 
-main:
+__start:
   li t0, 0
   li t1, 1
   # prints msg1

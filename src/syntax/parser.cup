@@ -1,0 +1,714 @@
+package vsim.asm;
+
+import java.util.ArrayList;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.Scanner;
+
+import vsim.Flags;
+import vsim.utils.Data;
+import vsim.exceptions.AssemblerException;
+
+
+parser code {:
+
+  /** assembler unlinked program */
+  private Program program;
+
+  /** columns for debugging */
+  private ArrayList<Integer> cols;
+
+  /**
+   * Creates a new parser.
+   *
+   * @param s lexer
+   * @param program assembler unlinked program
+   */
+  @SuppressWarnings("deprecation")
+  protected Parser(Scanner s, Program program) {
+    super(s);
+    this.program = program;
+    cols = new ArrayList<>();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void syntax_error(Symbol token) {
+    // show all escaped sequences
+    if (cur_token.value instanceof String) {
+      cur_token.value = ((String) cur_token.value).replace("\n", "\\n");
+      cur_token.value = ((String) cur_token.value).replace("\r", "\\r");
+      cur_token.value = ((String) cur_token.value).replace("\b", "\\b");
+      cur_token.value = ((String) cur_token.value).replace("\f", "\\f");
+      cur_token.value = ((String) cur_token.value).replace("\0", "\\0");
+      cur_token.value = ((String) cur_token.value).replace("\t", "\\t");
+      cur_token.value = ((String) cur_token.value).replace("\u000b", "\\v");
+    }
+    // parser error
+    if (cur_token.sym != Token.ERROR) {
+      program.addError("(syntax) unexpected input '" + cur_token.value + "'", cur_token.left, cur_token.right);
+    } else {
+      program.addError((String) cur_token.value, cur_token.left, cur_token.right);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void unrecovered_syntax_error(Symbol token) {
+    /* DO NOTHING */
+  }
+
+:};
+
+/*  TERMINALS */
+
+// Syntax
+terminal COMMA, LPAREN, RPAREN, LABEL, NEWLINE;
+
+
+// keywords
+terminal I_LUI, I_AUIPC, I_JAL, I_JALR, I_BEQ, I_BNE;
+terminal I_BLT, I_BGE, I_BLTU, I_BGEU, I_LB, I_LH, I_LW;
+terminal I_LBU, I_LHU, I_SB, I_SH, I_SW, I_ADDI, I_SLTI;
+terminal I_SLTIU, I_XORI, I_ORI, I_ANDI, I_SLLI, I_SRLI;
+terminal I_SRAI, I_ADD, I_SUB, I_SLL, I_SLT, I_SLTU, I_XOR;
+terminal I_SRL, I_SRA, I_OR, I_AND, I_FENCE, I_ECALL, I_EBREAK;
+terminal I_CSRRW, I_CSRRS, I_CSRRC, I_CSRRWI, I_CSRRSI, I_CSRRCI;
+terminal I_MUL, I_MULH, I_MULHSU, I_MULHU, I_DIV, I_DIVU, I_REM;
+terminal I_REMU, I_FLW, I_FSW, I_FMADDS, I_FMSUBS, I_FNMSUBS;
+terminal I_FNMADDS, I_FADDS, I_FSUBS, I_FMULS, I_FDIVS, I_FSQRTS;
+terminal I_FSGNJS, I_FSGNJNS, I_FSGNJXS, I_FMINS, I_FMAXS, I_FCVTWS;
+terminal I_FCVTWUS, I_FMVXW, I_FEQS, I_FLTS, I_FLES, I_FCLASSS;
+terminal I_FCVTSW, I_FCVTSWU, I_FMVWX, I_LA, I_NOP, I_LI, I_MV;
+terminal I_NOT, I_NEG, I_SEQZ, I_SNEZ, I_SLTZ, I_SGTZ, I_FMVS;
+terminal I_FABSS, I_FNEGS, I_BEQZ, I_BNEZ, I_BLEZ, I_BGEZ, I_BLTZ;
+terminal I_BGTZ, I_BGT, I_BLE, I_BGTU, I_BLEU, I_J, I_JR, I_RET;
+terminal I_CALL, I_TAIL, I_CSRR, I_CSRW, I_CSRS, I_CSRC, I_CSRWI;
+terminal I_CSRSI, I_CSRCI, I_FRCSR, I_FSCSR, I_FRRM, I_FSRM, I_FRFLAGS;
+terminal I_FSFLAGS;
+
+// registers
+terminal XREG, FREG;
+
+// ids
+terminal ID;
+
+// directives
+terminal D_FILE, D_ZERO, D_ASCIIZ, D_ASCII, D_BYTE, D_HALF, D_WORD, D_FLOAT;
+terminal D_ALIGN, D_BALIGN, D_GLOBL, D_SECTION, D_DATA, D_TEXT, D_RODATA, D_BSS;
+terminal D_DIRECTIVE;
+
+// relocation functions
+terminal HI, LO, PCREL_HI, PCREL_LO;
+
+// literals
+terminal INT, HEX, BIN, FLOAT, STRING, CHARACTER;
+
+// error token
+terminal ERROR;
+
+/* NON TERMINALS */
+non terminal prog, lines, line, stmt, label, instruction, rv32i, rv32zicsr, rv32m, rv32f;
+non terminal data, directive, pseudos, offset, delimiter, epsilon;
+
+non terminal Integer imm, xreg, freg;
+non terminal Float fimm;
+non terminal String string, id;
+non terminal ArrayList<Integer> numlist;
+non terminal ArrayList<String> idlist;
+non terminal ArrayList<Float> floatlist;
+
+
+/* BNF GRAMMAR */
+
+prog        ::= lines
+              ;
+
+lines       ::= line
+              | line lines
+              | stmt
+              ;
+
+line        ::= stmt NEWLINE
+              | NEWLINE
+              ;
+
+stmt        ::= label instruction
+              | label data
+              | label
+              | data
+              | instruction
+              | directive
+              ;
+
+label       ::= LABEL:id
+                {: program.emitSymbol((String) id, idleft, idright); :}
+              ;
+
+instruction ::= rv32i
+              | rv32zicsr
+              | rv32m
+              | rv32f
+              | pseudos:p
+                {:
+                  if (Flags.BARE) {
+                    program.addError("-b flag used, no pseudos available", pleft);
+                  }
+                :}
+              ;
+
+rv32i       ::= I_LUI:i xreg:rd delimiter imm:imm
+                {: program.addUType(ileft, (String) i, rd, imm, -1); :}
+              | I_LUI:i xreg:rd delimiter HI LPAREN id:id RPAREN
+                {: program.addUType(ileft, (String) i, rd, id, Relocation.HI); :}
+              | I_AUIPC:i xreg:rd delimiter imm:imm
+                {: program.addUType(ileft, (String) i, rd, imm, -1); :}
+              | I_AUIPC:i xreg:rd delimiter PCREL_HI LPAREN id:id RPAREN
+                {: program.addUType(ileft, (String) i, rd, id, Relocation.PCRELHI); :}
+              | I_JAL:i xreg:rd delimiter offset:offset
+                {: program.addJType(ileft, (String) i, rd, offset, Relocation.PCREL); :}
+              | I_JALR:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_JALR:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_BEQ:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_BNE:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_BLT:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_BGE:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_BLTU:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_BGEU:i xreg:rs1 delimiter xreg:rs2 delimiter offset:offset
+                {: program.addBType(ileft, (String) i, rs1, rs2, offset, Relocation.PCREL); :}
+              | I_LB:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LB:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LB:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LB:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LB:i xreg:rd delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LB:i xreg:rd delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LH:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LH:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LH:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LH:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LH:i xreg:rd delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LH:i xreg:rd delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LW:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LW:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LW:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LW:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LW:i xreg:rd delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LW:i xreg:rd delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LBU:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LBU:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LBU:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LBU:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LBU:i xreg:rd delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LBU:i xreg:rd delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LHU:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LHU:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LHU:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_LHU:i xreg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_LHU:i xreg:rd delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_LHU:i xreg:rd delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_SB:i xreg:rs1 delimiter xreg:rs2 delimiter imm:imm
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SB:i xreg:rs1 delimiter xreg:rs2 delimiter LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SB:i xreg:rs1 delimiter xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_SB:i xreg:rs2 delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SB:i xreg:rs2 delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SB:i xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_SH:i xreg:rs1 delimiter xreg:rs2 delimiter imm:imm
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SH:i xreg:rs1 delimiter xreg:rs2 delimiter LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SH:i xreg:rs1 delimiter xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_SH:i xreg:rs2 delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SH:i xreg:rs2 delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SH:i xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_SW:i xreg:rs1 delimiter xreg:rs2 delimiter imm:imm
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SW:i xreg:rs1 delimiter xreg:rs2 delimiter LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SW:i xreg:rs1 delimiter xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_SW:i xreg:rs2 delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_SW:i xreg:rs2 delimiter LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.LO); :}
+              | I_SW:i xreg:rs2 delimiter PCREL_LO LPAREN id:id RPAREN LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, id, Relocation.PCRELLO); :}
+              | I_ADDI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_ADDI:i xreg:rd delimiter xreg:rs1 delimiter LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.LO); :}
+              | I_ADDI:i xreg:rd delimiter xreg:rs1 delimiter PCREL_LO LPAREN id:id RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, id, Relocation.PCRELLO); :}
+              | I_SLTI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_SLTIU:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_XORI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_ORI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_ANDI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_SLLI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_SRLI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_SRAI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_ADD:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SUB:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SLL:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SLT:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SLTU:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_XOR:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SRL:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_SRA:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_OR:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_AND:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_ECALL:i
+                {: program.addIType(ileft, (String) i, 0, 0, 0, -1); :}
+              | I_EBREAK:i
+                {: program.addIType(ileft, (String) i, 0, 0, 1, -1); :}
+              |  I_FENCE:i
+             ;
+
+rv32zicsr   ::= I_CSRRW:i xreg:rd delimiter imm:csr delimiter xreg:rs1
+                {: program.addIType(ileft, (String) i, rd, rs1, csr, -1); :}
+              | I_CSRRS:i xreg:rd delimiter imm:csr delimiter xreg:rs1
+                {: program.addIType(ileft, (String) i, rd, rs1, csr, -1); :}
+              | I_CSRRC:i xreg:rd delimiter imm:csr delimiter xreg:rs1
+                {: program.addIType(ileft, (String) i, rd, rs1, csr, -1); :}
+              | I_CSRRWI:i xreg:rd delimiter imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, (String) i, rd, (int) uimm, csr, -1); :}
+              | I_CSRRSI:i xreg:rd delimiter imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, (String) i, rd, (int) uimm, csr, -1); :}
+              | I_CSRRCI:i xreg:rd delimiter imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, (String) i, rd, (int) uimm, csr, -1); :}
+              ;
+
+rv32m       ::= I_MUL:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_MULH:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_MULHSU:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_MULHU:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_DIV:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_DIVU:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_REM:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_REMU:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              ;
+
+rv32f       ::= I_FLW:i freg:rd delimiter xreg:rs1 delimiter imm:imm
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_FLW:i freg:rd delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_FSW:i xreg:rs1 delimiter freg:rs2 delimiter imm:imm
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_FSW:i freg:rs2 delimiter imm:imm LPAREN xreg:rs1 RPAREN
+                {: program.addSType(ileft, (String) i, rs1, rs2, imm, -1); :}
+              | I_FMADDS:i freg:rd delimiter freg:rs1 delimiter freg:rs2 delimiter freg:rs3
+                {: program.addR4Type(ileft, (String) i, rd, rs1, rs2, rs3); :}
+              | I_FMSUBS:i freg:rd delimiter freg:rs1 delimiter freg:rs2 delimiter freg:rs3
+                {: program.addR4Type(ileft, (String) i, rd, rs1, rs2, rs3); :}
+              | I_FNMSUBS:i freg:rd delimiter freg:rs1 delimiter freg:rs2 delimiter freg:rs3
+                {: program.addR4Type(ileft, (String) i, rd, rs1, rs2, rs3); :}
+              | I_FNMADDS:i freg:rd delimiter freg:rs1 delimiter freg:rs2 delimiter freg:rs3
+                {: program.addR4Type(ileft, (String) i, rd, rs1, rs2, rs3); :}
+              | I_FADDS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FSUBS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FMULS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FDIVS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FSQRTS:i freg:rd delimiter freg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              | I_FSGNJS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FSGNJNS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FSGNJXS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FMINS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FMAXS:i freg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FCVTWS:i xreg:rd delimiter freg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              | I_FCVTWUS:i xreg:rd delimiter freg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 1); :}
+              | I_FMVXW:i xreg:rd delimiter freg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              | I_FEQS:i xreg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FLTS:i xreg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FLES:i xreg:rd delimiter freg:rs1 delimiter freg:rs2
+                {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
+              | I_FCLASSS:i xreg:rd delimiter freg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              | I_FCVTSW:i freg:rd delimiter xreg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              | I_FCVTSWU:i freg:rd delimiter xreg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 1); :}
+              | I_FMVWX:i freg:rd delimiter xreg:rs1
+                {: program.addRType(ileft, (String) i, rd, rs1, 0); :}
+              ;
+
+pseudos     ::= I_LA:i xreg:rd delimiter id:symbol
+                {:
+                  program.addUType(ileft, "auipc", rd, symbol, Relocation.PCRELHI);
+                  program.addIType(ileft, "addi", rd, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_LB:i xreg:rd delimiter id:symbol
+                {:
+                  program.addUType(ileft, "auipc", rd, symbol, Relocation.PCRELHI);
+                  program.addIType(ileft, (String) i, rd, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_LH:i xreg:rd delimiter id:symbol
+                {:
+                  program.addUType(ileft, "auipc", rd, symbol, Relocation.PCRELHI);
+                  program.addIType(ileft, (String) i, rd, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_LW:i xreg:rd delimiter id:symbol
+                {:
+                  program.addUType(ileft, "auipc", rd, symbol, Relocation.PCRELHI);
+                  program.addIType(ileft, (String) i, rd, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_SB:i xreg:rd delimiter id:symbol delimiter xreg:rt
+                {:
+                  program.addUType(ileft, "auipc", rt, symbol, Relocation.PCRELHI);
+                  program.addSType(ileft, (String) i, rt, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_SH:i xreg:rd delimiter id:symbol delimiter xreg:rt
+                {:
+                  program.addUType(ileft, "auipc", rt, symbol, Relocation.PCRELHI);
+                  program.addSType(ileft, (String) i, rt, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_SW:i xreg:rd delimiter id:symbol delimiter xreg:rt
+                {:
+                  program.addUType(ileft, "auipc", rt, symbol, Relocation.PCRELHI);
+                  program.addSType(ileft, (String) i, rt, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_FLW:i freg:rd delimiter id:symbol delimiter xreg:rt
+                {:
+                  program.addUType(ileft, "auipc", rt, symbol, Relocation.PCRELHI);
+                  program.addIType(ileft, (String) i, rd, rt, symbol, Relocation.PCRELLO);
+                :}
+              | I_FSW:i freg:rd delimiter id:symbol delimiter xreg:rt
+                {:
+                  program.addUType(ileft, "auipc", rt, symbol, Relocation.PCRELHI);
+                  program.addSType(ileft, (String) i, rt, rd, symbol, Relocation.PCRELLO);
+                :}
+              | I_NOP:i
+                {: program.addIType(ileft, "addi", 0, 0, 0, -1); :}
+              | I_LI:i xreg:rd delimiter imm:imm
+                {:
+                  if (imm > 2047 || imm < -2048) {
+                    program.addUType(ileft, "lui", rd, ((imm >>> 12) + ((imm >>> 11) & 0x1)) & 0x000fffff, -1);
+                    program.addIType(ileft, "addi", rd, rd, Data.signExtend((imm & 0xfff), 12), -1);
+                  } else {
+                    program.addIType(ileft, "addi", rd, 0, imm, -1);
+                  }
+                :}
+              | I_MV:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "addi", rd, rs, 0, -1); :}
+              | I_NOT:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "xori", rd, rs, -1, -1); :}
+              | I_NEG:i xreg:rd delimiter xreg:rs
+                {: program.addRType(ileft, "sub", rd, 0, rs); :}
+              | I_SEQZ:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "sltiu", rd, rs, 1, -1); :}
+              | I_SNEZ:i xreg:rd delimiter xreg:rs
+                {: program.addRType(ileft, "sltu", rd, 0, rs); :}
+              | I_SLTZ:i xreg:rd delimiter xreg:rs
+                {: program.addRType(ileft, "slt", rd, rs, 0); :}
+              | I_SGTZ:i xreg:rd delimiter xreg:rs
+                {: program.addRType(ileft, "slt", rd, 0, rs); :}
+              | I_FMVS:i freg:rd delimiter freg:rs
+                {: program.addRType(ileft, "fsgnj.s", rd, rs, rs); :}
+              | I_FABSS:i freg:rd delimiter freg:rs
+                {: program.addRType(ileft, "fsgnjx.s", rd, rs, rs); :}
+              | I_FNEGS:i freg:rd delimiter freg:rs
+                {: program.addRType(ileft, "fsgnjn.s", rd, rs, rs); :}
+              | I_BEQZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "beq", rs, 0, offset, Relocation.PCREL); :}
+              | I_BNEZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "bne", rs, 0, offset, Relocation.PCREL); :}
+              | I_BLEZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "bge", 0, rs, offset, Relocation.PCREL); :}
+              | I_BGEZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "bge", rs, 0, offset, Relocation.PCREL); :}
+              | I_BLTZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "blt", rs, 0, offset, Relocation.PCREL); :}
+              | I_BGTZ:i xreg:rs delimiter offset:offset
+                {: program.addBType(ileft, "blt", 0, rs, offset, Relocation.PCREL); :}
+              | I_BGT:i xreg:rs delimiter xreg:rt delimiter offset:offset
+                {: program.addBType(ileft, "blt", rt, rs, offset, Relocation.PCREL); :}
+              | I_BLE:i xreg:rs delimiter xreg:rt delimiter offset:offset
+                {: program.addBType(ileft, "bge", rt, rs, offset, Relocation.PCREL); :}
+              | I_BGTU:i xreg:rs delimiter xreg:rt delimiter offset:offset
+                {: program.addBType(ileft, "bltu", rt, rs, offset, Relocation.PCREL); :}
+              | I_BLEU:i xreg:rs delimiter xreg:rt delimiter offset:offset
+                {: program.addBType(ileft, "bgeu", rt, rs, offset, Relocation.PCREL); :}
+              | I_J:i offset:offset
+                {: program.addJType(ileft, "jal", 0, offset, Relocation.PCREL); :}
+              | I_JAL:i offset:offset
+                {: program.addJType(ileft, "jal", 1, offset, Relocation.PCREL); :}
+              | I_JR:i xreg:rs
+                {: program.addIType(ileft, "jalr", 0, rs, 0, -1); :}
+              | I_JALR:i xreg:rs
+                {: program.addIType(ileft, "jalr", 1, rs, 0, -1); :}
+              | I_RET:i
+                {: program.addIType(ileft, "jalr", 0, 1, 0, -1); :}
+              | I_CALL:i id:offset
+                {:
+                  program.addUType(ileft, "auipc", 6, offset, Relocation.PCRELHI);
+                  program.addIType(ileft, "jalr", 1, 6, offset, Relocation.PCRELLO);
+                :}
+              | I_TAIL:i id:offset
+                {:
+                  program.addUType(ileft, "auipc", 6, offset, Relocation.PCRELHI);
+                  program.addIType(ileft, "jalr", 0, 6, offset, Relocation.PCRELLO);
+                :}
+              | I_CSRR:i xreg:rd delimiter imm:csr
+                {: program.addIType(ileft, "csrrs", rd, 0, csr, -1); :}
+              | I_CSRW:i imm:csr delimiter xreg:rs
+                {: program.addIType(ileft, "csrrw", 0, rs, csr, -1); :}
+              | I_CSRS:i imm:csr delimiter xreg:rs
+                {: program.addIType(ileft, "csrrs", 0, rs, csr, -1); :}
+              | I_CSRC:i imm:csr delimiter xreg:rs
+                {: program.addIType(ileft, "csrrc", 0, rs, csr, -1); :}
+              | I_CSRWI:i imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, "csrrwi", 0, (int) uimm, csr, -1); :}
+              | I_CSRSI:i imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, "csrrsi", 0, (int) uimm, csr, -1); :}
+              | I_CSRCI:i imm:csr delimiter imm:uimm
+                {: program.addIType(ileft, "csrrci", 0, (int) uimm, csr, -1); :}
+              | I_FRCSR:i xreg:rd
+                {: program.addIType(ileft, "csrrs", rd, 0, 11, -1); :}
+              | I_FSCSR:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "csrrw", rd, (int) rs, 11, -1); :}
+              | I_FSCSR:i xreg:rs
+                {: program.addIType(ileft, "csrrw", 0, (int) rs, 11, -1); :}
+              | I_FRRM:i xreg:rd
+                {: program.addIType(ileft, "csrrs", rd, 0, 11, -1); :}
+              | I_FSRM:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "csrrw", rd, (int) rs, 11, -1); :}
+              | I_FSRM:i xreg:rs
+                {: program.addIType(ileft, "csrrw", 0, (int) rs, 11, -1); :}
+              | I_FRFLAGS:i xreg:rd
+                {: program.addIType(ileft, "csrrs", rd, 0, 11, -1); :}
+              | I_FSFLAGS:i xreg:rd delimiter xreg:rs
+                {: program.addIType(ileft, "csrrw", rd, (int) rs, 11, -1); :}
+              | I_FSFLAGS:i xreg:rs
+                {: program.addIType(ileft, "csrrw", 0, (int) rs, 11, -1); :}
+              ;
+
+data        ::= D_BYTE:d numlist:l
+                {: program.emitBytes(l, dleft, dright, cols); :}
+              | D_HALF:d numlist:l
+                {: program.emitHalfs(l, (String) d, dleft, dright, cols); :}
+              | D_WORD:d numlist:l
+                {: program.emitWords(l, (String) d, dleft, dright); :}
+              | D_WORD:d idlist:l
+                {: program.emitRefs(l, (String) d, dleft, dright); :}
+              | D_FLOAT:d floatlist:l
+                {: program.emitFloats(l, dleft, dright); :}
+              | D_ASCII:d string:s
+                {: program.emitAscii(s, dleft, dright); :}
+              | D_ASCIIZ:d string:s
+                {: program.emitAsciiz(s, (String) d, sleft, sright); :}
+              | D_ZERO:d imm:bytes
+                {: program.emitZero(bytes, (String) d, bytesleft, bytesright); :}
+             ;
+
+directive   ::= D_SECTION D_TEXT
+                {: program.emitText(); :}
+              | D_SECTION D_DATA
+                {: program.emitData(); :}
+              | D_SECTION D_RODATA
+                {: program.emitRodata(); :}
+              | D_SECTION D_BSS
+                {: program.emitBss(); :}
+              | D_TEXT
+                {: program.emitText(); :}
+              | D_DATA
+                {: program.emitData(); :}
+              | D_RODATA
+                {: program.emitRodata(); :}
+              | D_BSS
+                {: program.emitBss(); :}
+              | D_GLOBL id:id
+                {: program.emitGlobal(id, idleft, idright); :}
+              | D_ALIGN imm:imm
+                {: program.emitAlign(imm, immleft, immright); :}
+              | D_BALIGN imm:imm
+                {: program.emitBAlign(imm, immleft, immright); :}
+              | D_DIRECTIVE:d
+                {: program.addError("invalid directive '" + d + "'", dleft, dright); :}
+              | D_FILE string
+              ;
+
+numlist     ::= imm:imm
+                {:
+                  ArrayList<Integer> l = new ArrayList<>();
+                  l.add(imm);
+                  cols.clear();
+                  cols.add(immright);
+                  RESULT = l;
+                :}
+              | numlist:l COMMA imm:imm
+                {:
+                  l.add(imm);
+                  cols.add(immright);
+                  RESULT = l;
+                :}
+              ;
+
+idlist      ::= id:id
+                {:
+                  ArrayList<String> l = new ArrayList<>();
+                  l.add(id);
+                  cols.clear();
+                  cols.add(idright);
+                  RESULT = l;
+                :}
+              | idlist:l COMMA id:id
+                {:
+                  l.add(id);
+                  cols.add(idright);
+                  RESULT = l;
+                :}
+              ;
+
+floatlist   ::= fimm:f
+                {:
+                  ArrayList<Float> l = new ArrayList<>();
+                  l.add(f);
+                  cols.clear();
+                  cols.add(fright);
+                  RESULT = l;
+                :}
+              | floatlist:l COMMA fimm:f
+                {:
+                  l.add(f);
+                  cols.add(fright);
+                  RESULT = l;
+                :}
+              ;
+
+offset      ::= imm:imm
+                {: RESULT = (int) imm; :}
+              | id:id
+                {: RESULT = (String) id; :}
+              ;
+
+xreg        ::= XREG:x
+                {: RESULT = (int) x; :}
+              ;
+
+freg        ::= FREG:f
+                {: RESULT = (int) f; :}
+              ;
+
+id          ::= ID:id
+                {: RESULT = (String) id; :}
+              ;
+
+string      ::= STRING:s
+                {: RESULT = (String) s; :}
+              ;
+
+imm         ::= INT:i
+                {: RESULT = (int) i; :}
+              | HEX:h
+                {: RESULT = (int) h; :}
+              | BIN:b
+                {: RESULT = (int) b; :}
+              | CHARACTER:c
+                {: RESULT = (int) ((char) c); :}
+              ;
+
+fimm        ::= FLOAT:f
+                {: RESULT = (float) f; :}
+              | INT:i
+                {: RESULT = (float) ((int) i); :}
+              | HEX:h
+                {: RESULT = Float.intBitsToFloat((int) h); :}
+              | BIN:b
+                {: RESULT = Float.intBitsToFloat((int) b); :}
+              ;
+
+delimiter   ::= COMMA
+              | epsilon
+              ;
+
+epsilon     ::=
+              ;
