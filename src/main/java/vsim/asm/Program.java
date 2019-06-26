@@ -28,7 +28,7 @@ import vsim.Flags;
 import vsim.Globals;
 import vsim.Logger;
 import vsim.asm.stmts.*;
-import vsim.exceptions.*;
+import vsim.exc.*;
 import vsim.utils.Data;
 import vsim.utils.FS;
 

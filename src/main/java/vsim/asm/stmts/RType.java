@@ -20,7 +20,7 @@ package vsim.asm.stmts;
 import java.nio.file.Path;
 
 import vsim.Globals;
-import vsim.exceptions.AssemblerException;
+import vsim.exc.AssemblerException;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;

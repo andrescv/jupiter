@@ -20,7 +20,7 @@ package vsim.asm;
 import java.nio.file.Path;
 
 import vsim.Globals;
-import vsim.exceptions.RelocationException;
+import vsim.exc.RelocationException;
 import vsim.utils.Data;
 
 

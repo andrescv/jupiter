@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import vsim.Flags;
 import vsim.Logger;
 import vsim.asm.Assembler;
-import vsim.exceptions.*;
+import vsim.exc.*;
 import vsim.linker.Linker;
 
 

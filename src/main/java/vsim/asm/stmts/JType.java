@@ -21,8 +21,8 @@ import java.nio.file.Path;
 
 import vsim.Globals;
 import vsim.asm.Relocation;
-import vsim.exceptions.AssemblerException;
-import vsim.exceptions.RelocationException;
+import vsim.exc.AssemblerException;
+import vsim.exc.RelocationException;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;

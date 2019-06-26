@@ -15,32 +15,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Throwed when a relocation error occurs. */
-public class RelocationException extends AssemblerException {
+/** Throwed when an invalid register name is used. */
+public class RegisterException extends AssemblerException {
 
-  /** relocation target */
-  private final String target;
+  /** register */
+  private final String register;
 
   /**
-   * Creates a new assembler exception.
+   * Creates a new register exception.
    *
-   * @param msg assembler exception message
+   * @param msg register exception message
    */
-  public RelocationException(String target) {
-    super("label: '" + target + "' used but not defined");
-    this.target = target;
+  public RegisterException(String register) {
+    super("invalid register: " + register);
+    this.register = register;
   }
 
   /**
-   * Returns relocation target.
+   * Returns register.
    *
-   * @return relocation target
+   * @return register
    */
-  public String getTarget() {
-    return target;
+  public String getRegister() {
+    return register;
   }
 
 }

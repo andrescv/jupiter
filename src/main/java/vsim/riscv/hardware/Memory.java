@@ -19,7 +19,7 @@ package vsim.riscv.hardware;
 
 import java.util.HashMap;
 
-import vsim.exceptions.InvalidAddressException;
+import vsim.exc.InvalidAddressException;
 import vsim.utils.Data;
 import vsim.utils.IO;
 

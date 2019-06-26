@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions;
 
 import vsim.State;
-import vsim.exceptions.SimulationException;
+import vsim.exc.SimulationException;
 
 
 /** Represents an abstract instruction implementation. */

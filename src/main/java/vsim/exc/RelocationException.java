@@ -15,19 +15,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Used for linker errors. */
-public class LinkerException extends VSimException {
+/** Throwed when a relocation error occurs. */
+public class RelocationException extends AssemblerException {
+
+  /** relocation target */
+  private final String target;
 
   /**
-   * Creates a new linker exception.
+   * Creates a new assembler exception.
    *
-   * @param msg linker exception message
+   * @param msg assembler exception message
    */
-  public LinkerException(String msg) {
-    super(msg);
+  public RelocationException(String target) {
+    super("label: '" + target + "' used but not defined");
+    this.target = target;
+  }
+
+  /**
+   * Returns relocation target.
+   *
+   * @return relocation target
+   */
+  public String getTarget() {
+    return target;
   }
 
 }

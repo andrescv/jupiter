@@ -24,7 +24,7 @@ import vsim.Globals;
 import vsim.Logger;
 import vsim.State;
 import vsim.asm.stmts.Statement;
-import vsim.exceptions.*;
+import vsim.exc.*;
 import vsim.linker.LinkedProgram;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Data;
