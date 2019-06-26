@@ -1,9 +1,0 @@
-#console {
-  -fx-font-family: 'Menlo';
-  -fx-font-size: 11pt;
-  -fx-padding: 2;
-}
-
-#console .selection {
-  -fx-fill: red;
-}
