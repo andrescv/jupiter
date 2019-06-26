@@ -1,48 +1,40 @@
-import java.nio.file.Paths
-
 // project plugins
 plugins {
   id 'java'
+  id 'com.diffplug.gradle.spotless' version '3.23.1'
+  id 'org.openjfx.javafxplugin' version '0.0.7'
+  id 'org.beryx.jlink' version '2.11.1'
 }
+
+// V-Sim version
+version = '3.0.0'
 
 // dependencies repositories
 repositories {
   mavenCentral()
-  flatDir {
-    dirs 'lib'
-  }
 }
 
 // compile and test dependencies
 dependencies {
-  implementation name: 'java-cup-11b'
-  implementation 'com.jfoenix:jfoenix:8.0.8'
-  implementation 'org.fxmisc.richtext:richtextfx:0.9.2'
-  testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.2'
-  testCompile 'org.junit.jupiter:junit-jupiter-params:5.3.2'
-  testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+  compile files('lib/java-cup-11b-runtime.jar')
+  testCompile 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+  testCompile 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+  testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
-// Java target version
-sourceCompatibility = 1.8
+// javafx modules
+javafx {
+  version = '11.0.2'
+  modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
+}
 
-// jar distribution file
-version = '2.0.2'
-archivesBaseName = 'V-Sim'
-jar {
-  manifest {
-    attributes (
-      'Main-Class': 'vsim.VSim',
-      'Implementation-Title': 'V-Sim',
-      'Implementation-Version': version
-    )
-  }
-  // create fat jar
-  from {
-    configurations.runtimeClasspath.collect {
-      it.isDirectory() ? it : zipTree(it)
-    }
-  }
+// V-Sim main class
+mainClassName = "vsim/vsim.VSim"
+
+// jlink configuration
+jlink {
+  imageZip = project.file("${buildDir}/distributions/V-Sim-${version}-${javafx.platform.classifier}.zip")
+  options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
 }
 
 // test config
@@ -50,21 +42,31 @@ test {
   useJUnitPlatform()
   dependsOn 'cleanTest'
   testLogging {
-    events "passed", "skipped", "failed"
+    events 'passed', 'skipped', 'failed'
   }
 }
 
-// create a task for running riscv-tests
-task riscv_tests(type: Exec) {
-  workingDir '.'
-  commandLine 'python3', 'test.py'
+// spotless configuration
+spotless {
+  java {
+    licenseHeaderFile 'gradle/spotless/HEADER'
+    importOrder 'java', 'javafx', 'com', 'org', 'vsim', ''
+    removeUnusedImports()
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+  }
 }
 
-// execute this task after creating the jar distribution file
-riscv_tests.dependsOn(jar)
+// distribution task
+task dist {
+  dependsOn clean, jlinkZip
+  description "Calls clean and then jlinkZip"
+}
 
-// run riscv_tests task after test task
-test.finalizedBy(riscv_tests)
+// java source and target compatibility
+sourceCompatibility = 11
+targetCompatibility = 11
 
 // compile java source code in UTF-8
 compileJava.options.encoding = 'UTF-8'
