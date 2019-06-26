@@ -3,9 +3,6 @@
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
   </a>
-  <a href="https://app.codacy.com/app/andrescv/V-Sim?utm_source=github.com&utm_medium=referral&utm_content=andrescv/V-Sim&utm_campaign=Badge_Grade_Dashboard">
-    <img src="https://api.codacy.com/project/badge/Grade/8410d706fe1b498b9ebf66a5eccfcc19" alt="Codacy Badge">
-  </a>
   <a href="https://gitter.im/RISC-V-Sim/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
     <img src="https://badges.gitter.im/RISC-V-Sim/community.svg" alt="Join the chat at https://gitter.im/RISC-V-Sim/community">
   </a>
