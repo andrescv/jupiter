@@ -20,7 +20,7 @@ package vsim.riscv;
 import java.util.Random;
 
 import vsim.State;
-import vsim.exceptions.*;
+import vsim.exc.*;
 import vsim.utils.Data;
 import vsim.utils.IO;
 

@@ -15,32 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Throwed when an invalid register name is used. */
-public class RegisterException extends AssemblerException {
-
-  /** register */
-  private final String register;
+/** General V-Sim exception. */
+public class VSimException extends Exception {
 
   /**
-   * Creates a new register exception.
+   * Creates a new V-Sim general exception.
    *
-   * @param msg register exception message
+   * @param msg exception message
    */
-  public RegisterException(String register) {
-    super("invalid register: " + register);
-    this.register = register;
-  }
-
-  /**
-   * Returns register.
-   *
-   * @return register
-   */
-  public String getRegister() {
-    return register;
+  public VSimException(String msg) {
+    super(msg);
   }
 
 }

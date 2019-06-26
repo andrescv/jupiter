@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** General V-Sim exception. */
-public class VSimException extends Exception {
+/** General simulation exception. */
+public class SimulationException extends VSimException {
 
   /**
-   * Creates a new V-Sim general exception.
+   * Creates a new simulation exception.
    *
-   * @param msg exception message
+   * @param msg simulation exception message
    */
-  public VSimException(String msg) {
+  public SimulationException(String msg) {
     super(msg);
   }
 

@@ -20,7 +20,7 @@ package vsim.riscv.instructions.itype;
 import static vsim.riscv.Ecall.handler;
 
 import vsim.State;
-import vsim.exceptions.SimulationException;
+import vsim.exc.SimulationException;
 
 
 /** RISC-V ecall (Environment Call) instruction. */

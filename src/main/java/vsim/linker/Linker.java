@@ -25,7 +25,7 @@ import vsim.asm.Program;
 import vsim.asm.Segment;
 import vsim.asm.Symbol;
 import vsim.asm.stmts.*;
-import vsim.exceptions.LinkerException;
+import vsim.exc.LinkerException;
 
 
 /** V-Sim linker. */

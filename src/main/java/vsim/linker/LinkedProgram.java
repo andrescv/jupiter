@@ -24,8 +24,8 @@ import vsim.Flags;
 import vsim.Globals;
 import vsim.State;
 import vsim.asm.stmts.Statement;
-import vsim.exceptions.NonInstructionException;
-import vsim.exceptions.SimulationException;
+import vsim.exc.NonInstructionException;
+import vsim.exc.SimulationException;
 import vsim.riscv.instructions.MachineCode;
 import vsim.utils.Data;
 

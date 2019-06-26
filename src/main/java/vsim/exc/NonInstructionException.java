@@ -15,32 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Halt exception for exit ecall. */
-public final class HaltException extends SimulationException {
+/** Throwed when attempt to execute an invalid {@code 0x00000000} instruction. */
+public final class NonInstructionException extends SimulationException {
 
-  /** exit code */
-  private final int code;
-
-  /**
-   * Creates a new halt exception.
-   *
-   * @param code exit code
-   */
-  public HaltException(int code) {
-    super(String.format("exit(%d)", code));
-    this.code = code;
-  }
-
-  /**
-   * Returns exit code.
-   *
-   * @return exit code
-   */
-  public int getCode() {
-    return code;
+  /** Creates a new non-instruction exception. */
+  public NonInstructionException(int pc) {
+    super(String.format("attempt to execute non-instruction at 0x%08x", pc));
   }
 
 }

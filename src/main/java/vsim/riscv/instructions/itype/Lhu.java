@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.State;
-import vsim.exceptions.SimulationException;
+import vsim.exc.SimulationException;
 
 
 /** RISC-V lhu (Load Half, Unsigned) instruction. */

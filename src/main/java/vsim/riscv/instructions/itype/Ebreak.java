@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.State;
-import vsim.exceptions.BreakpointException;
-import vsim.exceptions.SimulationException;
+import vsim.exc.BreakpointException;
+import vsim.exc.SimulationException;
 
 
 /** RISC-V ebreak (Environment Breakpoint) instruction. */

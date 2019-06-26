@@ -6,7 +6,6 @@ import java_cup.runtime.Scanner;
 
 import vsim.Flags;
 import vsim.utils.Data;
-import vsim.exceptions.AssemblerException;
 
 
 parser code {:

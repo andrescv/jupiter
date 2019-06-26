@@ -20,7 +20,7 @@ package vsim.asm;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import vsim.exceptions.AssemblerException;
+import vsim.exc.AssemblerException;
 import vsim.utils.Data;
 
 

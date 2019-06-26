@@ -15,19 +15,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Assembler errors. */
-public class AssemblerException extends VSimException {
+/** Halt exception for exit ecall. */
+public final class HaltException extends SimulationException {
+
+  /** exit code */
+  private final int code;
 
   /**
-   * Creates a new assembler exception.
+   * Creates a new halt exception.
    *
-   * @param msg assembler exception message
+   * @param code exit code
    */
-  public AssemblerException(String msg) {
-    super(msg);
+  public HaltException(int code) {
+    super(String.format("exit(%d)", code));
+    this.code = code;
+  }
+
+  /**
+   * Returns exit code.
+   *
+   * @return exit code
+   */
+  public int getCode() {
+    return code;
   }
 
 }

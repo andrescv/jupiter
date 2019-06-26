@@ -15,15 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.exceptions;
+package vsim.exc;
 
 
-/** Throwed when attempt to execute an invalid {@code 0x00000000} instruction. */
-public final class NonInstructionException extends SimulationException {
+/** Used for linker errors. */
+public class LinkerException extends VSimException {
 
-  /** Creates a new non-instruction exception. */
-  public NonInstructionException(int pc) {
-    super(String.format("attempt to execute non-instruction at 0x%08x", pc));
+  /**
+   * Creates a new linker exception.
+   *
+   * @param msg linker exception message
+   */
+  public LinkerException(String msg) {
+    super(msg);
   }
 
 }
