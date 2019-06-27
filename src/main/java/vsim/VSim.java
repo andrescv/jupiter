@@ -19,6 +19,7 @@ package vsim;
 
 import java.awt.GraphicsEnvironment;
 
+import vsim.gui.App;
 import vsim.sim.Loader;
 import vsim.utils.Cmd;
 
@@ -37,6 +38,7 @@ public final class VSim {
       Loader.load(Cmd.parse(args));
     } else if (!GraphicsEnvironment.isHeadless()) {
       // GUI mode
+      App.load(args);
     }
   }
 
