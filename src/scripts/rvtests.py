@@ -44,10 +44,10 @@ def main():
             if rcode != 0 or stderr.decode().strip() != '':
                 nerror += 1
                 print(stderr.decode())
-                print('    ' + f + ':test%02d ✘' % rcode)
-                errors.append('    ' + f + ':test%02d ✘' % rcode)
+                print('    ' + f + ':test%02d [failed]' % rcode)
+                errors.append('    ' + f + ':test%02d [failed]' % rcode)
             else:
-                print('    ' + f + ': ✔')
+                print('    ' + f + ': [passed]')
                 nsuccess += 1
         print(newline + '%d/%d tests passed' % (nsuccess, total))
         if len(errors) == 0:
