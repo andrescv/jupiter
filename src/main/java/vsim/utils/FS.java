@@ -75,15 +75,12 @@ public final class FS {
    * @param file file path
    * @param text text to write
    * @return true if success, false if an error occurs while writing
+   * @throws IOException if an I/O error occurs
    */
-  public static boolean write(Path file, String text) {
-    try {
-      StandardOpenOption[] opts = new StandardOpenOption[] { WRITE, TRUNCATE_EXISTING };
-      Files.write(file, text.getBytes(), opts);
-      return true;
-    } catch (IOException e) {
-      return false;
-    }
+  public static boolean write(Path file, String text) throws IOException {
+    StandardOpenOption[] opts = new StandardOpenOption[] { WRITE, TRUNCATE_EXISTING };
+    Files.write(file, text.getBytes(), opts);
+    return true;
   }
 
   /**
@@ -91,17 +88,14 @@ public final class FS {
    *
    * @param file file to read
    * @return file text content, or null if an error occurs while reading the file
+   * @throws IOException if an I/O error occurs
    */
-  public static String read(Path file) {
-    try {
-      FileInputStream fis = new FileInputStream(file.toFile());
-      byte[] data = new byte[(int) file.toFile().length()];
-      fis.read(data);
-      fis.close();
-      return new String(data);
-    } catch (IOException e) {
-      return null;
-    }
+  public static String read(Path file) throws IOException {
+    FileInputStream fis = new FileInputStream(file.toFile());
+    byte[] data = new byte[(int) file.toFile().length()];
+    fis.read(data);
+    fis.close();
+    return new String(data);
   }
 
   /**
@@ -180,6 +174,21 @@ public final class FS {
   }
 
   /**
+   * Verifies if two paths are equal.
+   *
+   * @param a first path to verify
+   * @param b second path to verify
+   * @return {@code true} if paths are equal, {@code false} if not
+   */
+  public static boolean equals(Path a, Path b) {
+    try {
+      return Files.isSameFile(a, b);
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
+  /**
    * Verifies if a path is already in the given list of paths.
    *
    * @param path path to check
@@ -188,11 +197,9 @@ public final class FS {
    */
   public static boolean contains(Path path, ArrayList<Path> paths) {
     for (Path other : paths) {
-      try {
-        if (Files.isSameFile(path, other)) {
-          return true;
-        }
-      } catch (IOException e) { }
+      if (equals(path, other)) {
+        return true;
+      }
     }
     return false;
   }
