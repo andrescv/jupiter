@@ -57,8 +57,6 @@ public final class Cmd {
     add("--license", false);
     add("--docs", false);
     add("--no-title", false);
-    add("--info", true);
-    add("--iset", false);
     add("-b", "--bare", false);
     add("-f", "--self", false);
     add("-e", "--extrict", false);
@@ -241,16 +239,6 @@ public final class Cmd {
         license();
         System.exit(0);
       }
-      // info
-      if (cmd.hasOption("--info")) {
-        Globals.iset.print(cmd.getOptionValue("--info"));
-        System.exit(0);
-      }
-      // iset
-      if (cmd.hasOption("--iset")) {
-        Globals.iset.print();
-        System.exit(0);
-      }
       // check file size
       if (files.size() == 0) {
         Logger.error("no RISC-V assembly files were passed" + Data.EOL);
@@ -302,9 +290,6 @@ public final class Cmd {
     IO.stdout().println("      --license          show license and exit");
     IO.stdout().println("      --docs             open online documentation");
     IO.stdout().println("      --notitle          do not print V-Sim title");
-    IO.stdout().println("      --info <mnemonic>  print instruction info and exit");
-    IO.stdout().println("      --iset             print available instruction set and exit");
-    IO.stdout().println("      --stats            print simulator statistics at the end of simulation");
     IO.stdout().println(Data.EOL + "[Simulator Options]");
     IO.stdout().println("  -b, --bare             bare machine (no pseudo-ops)");
     IO.stdout().println("  -f, --self             enable self-modifying code");

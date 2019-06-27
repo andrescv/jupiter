@@ -26,7 +26,6 @@ import java.util.HashMap;
 import vsim.Logger;
 import vsim.asm.stmts.*;
 import vsim.riscv.instructions.*;
-import vsim.utils.Data;
 import vsim.utils.IO;
 
 
@@ -49,7 +48,7 @@ public final class InstructionSet {
   /** Populates the instruction set instance with all the instructions available. */
   private void populate() {
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/iset/all.txt")));
+      BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/vsim/all.txt")));
       String line = "";
       String pkg = "";
       while ((line = br.readLine()) != null) {
@@ -75,7 +74,7 @@ public final class InstructionSet {
       }
       br.close();
       // add pseudos
-      br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/iset/pseudos.txt")));
+      br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/vsim/pseudos.txt")));
       line = "";
       while ((line = br.readLine()) != null) {
         line = line.trim();
@@ -85,69 +84,8 @@ public final class InstructionSet {
       }
     } catch (Exception e) {
       Logger.error("could not load RISC-V instruction set");
-      e.printStackTrace(System.err);
       System.exit(1);
     }
-  }
-
-  /**
-   * Prints instruction info.
-   *
-   * @param mnemonic instruction mnemonic.
-   */
-  public void print(String mnemonic) {
-    if (contains(mnemonic)) {
-      try {
-        String path = String.format("/iset/%s.txt", mnemonic.toLowerCase());
-        BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
-        while (true) {
-          String line = br.readLine();
-          if (line != null) {
-            IO.stdout().println(line);
-          } else {
-            break;
-          }
-        }
-      } catch (Exception e) {
-        Logger.error("could not display info for " + mnemonic + " instruction");
-        System.exit(1);
-      }
-    } else {
-      Logger.error("unknown instruction: " + mnemonic);
-      System.exit(1);
-    }
-  }
-
-  /** Prints available instruction set. */
-  public void print() {
-    String out = "[RV32IMF]" + Data.EOL;
-    // TAL
-    for (String i : instructions.keySet()) {
-      System.out.println(i);
-      try {
-        BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/iset/" + i + ".txt")));
-        String line = br.readLine().trim();
-        out += " * " + line + Data.EOL;
-        br.close();
-      } catch (Exception e) {
-        Logger.error("could not display instruction set");
-        System.exit(1);
-      }
-    }
-    // Pseudos
-    out += Data.EOL + "[PSEUDOS]" + Data.EOL;
-    for (String i : pseudos) {
-      try {
-        BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/iset/" + i + ".txt")));
-        String line = br.readLine().trim();
-        out += " * " + line + Data.EOL;
-        br.close();
-      } catch (Exception e) {
-        Logger.error("could not display instruction set");
-        System.exit(1);
-      }
-    }
-    IO.stdout().println(out.trim());
   }
 
   /**
