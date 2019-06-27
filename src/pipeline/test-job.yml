@@ -20,4 +20,4 @@ jobs:
         architecture: 'x64'
     - task: PythonScript@0
       inputs:
-        script: 'python src/scripts/rvtests.py'
+        script: 'python $(System.DefaultWorkingDirectory)/src/scripts/rvtests.py'
