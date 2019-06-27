@@ -1,0 +1,80 @@
+:vsim.riscv.instructions.rtype
+  Add
+  Sub
+  Sll
+  Slt
+  Sltu
+  Xor
+  Srl
+  Sra
+  Or
+  And
+  Div
+  Divu
+  Mul
+  Mulh
+  Mulhu
+  Mulhsu
+  Rem
+  Remu
+  Fmvwx
+  Fmvxw
+  Fcvtsw
+  Fcvtswu
+  Fcvtws
+  Fcvtwus
+  Fadds
+  Fsubs
+  Fmuls
+  Fdivs
+  Fsqrts
+  Fsgnjs
+  Fsgnjns
+  Fsgnjxs
+  Feqs
+  Flts
+  Fles
+  Fclasss
+  Fmins
+  Fmaxs
+:vsim.riscv.instructions.itype
+  Jalr
+  Lb
+  Lh
+  Lw
+  Lbu
+  Lhu
+  Addi
+  Slti
+  Sltiu
+  Xori
+  Ori
+  Andi
+  Slli
+  Srli
+  Srai
+  Ecall
+  Flw
+  Ebreak
+:vsim.riscv.instructions.stype
+  Sb
+  Sh
+  Sw
+  Fsw
+:vsim.riscv.instructions.btype
+  Beq
+  Bge
+  Bgeu
+  Blt
+  Bltu
+  Bne
+:vsim.riscv.instructions.utype
+  Auipc
+  Lui
+:vsim.riscv.instructions.jtype
+  Jal
+:vsim.riscv.instructions.r4type
+  Fmadds
+  Fmsubs
+  Fnmadds
+  Fnmsubs
