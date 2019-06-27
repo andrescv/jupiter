@@ -1,0 +1,54 @@
+.jfx-button {
+  -fx-cursor: hand;
+  -fx-font-family: 'Montserrat Medium';
+  -fx-text-fill: #ffffff;
+  -fx-font-size: 14;
+}
+
+.jfx-button.run-btn {
+  -fx-background-color: #388e3c;
+}
+
+.jfx-button..stop-btn {
+  -fx-background-color: #d32f2f;
+}
+
+.jfx-button..step-btn {
+  -fx-background-color: #ff6f00;
+}
+
+.jfx-button..backstep-btn {
+  -fx-background-color: #0277bd;
+}
+
+.jfx-button..reset-btn {
+  -fx-background-color: #ffa000;
+}
+
+.jfx-button..code-btn {
+  -fx-background-color: #7b1fa2;
+}
+
+.jfx-button..data-btn {
+  -fx-background-color: #3949ab;
+}
+
+.jfx-button..up-btn {
+  -fx-background-color: #00897b;
+}
+
+.jfx-button..down-btn {
+  -fx-background-color: #f9a825;
+}
+
+.jfx-button.save {
+  -fx-background-color: #388e3c;
+}
+
+.jfx-button.dont-save, .jfx-button.delete {
+  -fx-background-color: #d32f2f;
+}
+
+.jfx-button.cancel {
+  -fx-background-color: #0277bd;
+}

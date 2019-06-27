@@ -1,0 +1,7 @@
+.tab {
+  -fx-cursor: HAND;
+}
+
+.tab.normal {
+  -fx-cursor: DEFAULT;
+}

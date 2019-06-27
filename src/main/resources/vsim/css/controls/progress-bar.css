@@ -1,0 +1,7 @@
+.jfx-progress-bar > .track {
+  -fx-background-color: -fx-secondary;
+}
+
+.jfx-progress-bar > .bar, .jfx-progress-bar:indeterminate > .bar {
+  -fx-background-color: -fx-secondary-light;
+}
