@@ -1,0 +1,44 @@
+.menu-bar {
+  -fx-background-color: #eee;
+}
+
+.menu-bar .menu:hover {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu-bar .menu:showing {
+  -fx-background-color: -fx-secondary;
+}
+
+.menu-bar .menu:focused {
+  -fx-background-color: -fx-primary-light;
+}
+
+.menu-bar .menu:showing .menu-item:focused {
+  -fx-background-color: #ccc;
+}
+
+.menu-bar .menu:showing .menu .menu-item:focused {
+  -fx-background-color: #ccc;
+}
+
+.menu-bar .label {
+  -fx-text-fill: -fx-primary;
+  -fx-font-family: 'Montserrat SemiBold';
+}
+
+.menu-bar .menu:hover .label {
+  -fx-text-fill: #333;
+}
+
+.menu-bar .menu:showing .label {
+  -fx-text-fill: #333;
+}
+
+.menu-bar .menu:showing .menu-item .label {
+  -fx-text-fill: #333;
+}
+
+.menu-bar .menu:showing .menu-item:focused .label {
+  -fx-text-fill: #222;
+}

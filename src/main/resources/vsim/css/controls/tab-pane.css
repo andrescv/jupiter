@@ -1,0 +1,15 @@
+.jfx-tab-pane {
+  -fx-background-color: -fx-primary;
+}
+
+.jfx-tab-pane .tab-header-background {
+  -fx-background-color: -fx-primary-light;
+}
+
+.jfx-tab-pane .headers-region > .tab > .jfx-rippler {
+  -jfx-rippler-fill: -fx-primary-light;
+}
+
+.jfx-tab-pane .tab-selected-line {
+  -fx-background-color: -fx-secondary;
+}

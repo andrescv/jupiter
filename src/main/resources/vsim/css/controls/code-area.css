@@ -1,0 +1,70 @@
+.code-area {
+  -fx-font-size: 20;
+  -fx-background-color: #212121;
+  -fx-font-family: 'Ubuntu Mono';
+}
+
+.code-area .selection {
+  -fx-fill: #3b3b3b !important;
+}
+
+.code-area .lineno {
+  -fx-font-family: monospace;
+  -fx-font-weight: normal;
+  -fx-font-style: normal;
+  -fx-text-fill: #666666;
+  -fx-background-color: #242424;
+}
+
+.code-area .caret {
+  -fx-stroke: #009688;
+}
+
+.code-area .paragraph-box:has-caret {
+  -fx-background-color: #1b1b1b;
+}
+
+.code-area .syntax {
+  -fx-fill: #b2ccd6;
+}
+
+.code-area .directive {
+  -fx-fill: #82aaff;
+}
+
+.code-area .keyword {
+  -fx-fill: #c792ea;
+}
+
+.code-area .lbl {
+  -fx-fill: #f78c6a;
+}
+
+.code-area .register {
+  -fx-fill: #dddddd;
+}
+
+.code-area .identifier {
+  -fx-fill: #ffcb6b;
+}
+
+.code-area .number {
+  -fx-fill: #f07178;
+}
+
+.code-area .comment {
+  -fx-fill: #545454;
+}
+
+.code-area .string {
+  -fx-fill: #c3e88d;
+}
+
+.code-area .stringb {
+  -fx-fill: #89ddf3;
+}
+
+.code-area .error {
+  -fx-fill: red;
+  -fx-font-style: italic;
+}
