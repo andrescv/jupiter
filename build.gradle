@@ -39,7 +39,16 @@ jlink {
   options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
   launcher {
     name = 'vsim'
-    jvmArgs = []
+    jvmArgs = [
+      '--add-exports',
+      'vsim/vsim.gui=javafx.graphics',
+      '--add-exports',
+      'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
+      '--add-exports',
+      'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
+      '--add-exports',
+      'javafx.graphics/com.sun.javafx.scene=com.jfoenix'
+    ]
   }
   addExtraDependencies('javafx')
 }
