@@ -27,11 +27,38 @@ import vsim.utils.io.Output;
 public final class IO {
 
   /** command line standard input */
-  private static final Input stdin = new CmdInput(System.in);
+  private static Input stdin = new CmdInput(System.in);
   /** command line standard output */
-  private static final Output stdout = new CmdOutput(System.out);
+  private static Output stdout = new CmdOutput(System.out);
   /** command line standard error */
-  private static final Output stderr = new CmdOutput(System.err);
+  private static Output stderr = new CmdOutput(System.err);
+
+  /**
+   * Sets standard input.
+   *
+   * @param stdin new standard input;
+   */
+  public static void setStdout(Input stdin) {
+    IO.stdin = stdin;
+  }
+
+  /**
+   * Sets standard output.
+   *
+   * @param stdout new standard output;
+   */
+  public static void setStdout(Output stdout) {
+    IO.stdout = stdout;
+  }
+
+  /**
+   * Sets standard error.
+   *
+   * @param stdout new standard error;
+   */
+  public static void setStderr(Output stderr) {
+    IO.stderr = stderr;
+  }
 
   /**
    * Returns current standard input.
