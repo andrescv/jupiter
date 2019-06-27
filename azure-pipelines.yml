@@ -6,62 +6,58 @@ variables:
 
 # stages
 stages:
+  # test stage
   - stage: 'test'
+    displayName: 'V-Sim tests'
+    jobs:
+      - template: src/pipeline/test-job.yml
+        parameters:
+          name: Linux
+          platform: linux
+          pool:
+            vmImage: 'ubuntu-16.04'
+      # Mac OS test job
+      - template: src/pipeline/test-job.yml
+        parameters:
+          name: MacOS
+          platform: mac
+          pool:
+            vmImage: 'macOS-10.13'
+      # Windows test job
+      - template: src/pipeline/test-job.yml
+        parameters:
+          name: Windows
+          platform: win
+          pool:
+            vmImage: 'windows-2019'
+
+  # jobs
   - stage: 'deploy'
-    dependsOn: 'test'
+    displayName: 'V-Sim deploy'
+    jobs:
+      # Linux job
+      - template: src/pipeline/deploy-job.yml
+        parameters:
+          name: Linux
+          platform: linux
+          version: $(version)
+          pool:
+            vmImage: 'ubuntu-16.04'
 
-# test stage
-- stage: 'test'
-  displayName: 'V-Sim tests'
-  jobs:
-    - template: src/pipeline/test-job.yml
-      parameters:
-        name: Linux
-        platform: linux
-        pool:
-          vmImage: 'ubuntu-16.04'
-    # Mac OS test job
-    - template: src/pipeline/test-job.yml
-      parameters:
-        name: MacOS
-        platform: mac
-        pool:
-          vmImage: 'macOS-10.13'
-    # Windows test job
-    - template: src/pipeline/test-job.yml
-      parameters:
-        name: Windows
-        platform: win
-        pool:
-          vmImage: 'windows-2019'
+      # Mac OS job
+      - template: src/pipeline/deploy-job.yml
+        parameters:
+          name: MacOS
+          platform: mac
+          version: $(version)
+          pool:
+            vmImage: 'macOS-10.13'
 
-# jobs
-- stage: 'deploy'
-  displayName: 'V-Sim deploy'
-  jobs:
-    # Linux job
-    - template: src/pipeline/deploy-job.yml
-      parameters:
-        name: Linux
-        platform: linux
-        version: $(version)
-        pool:
-          vmImage: 'ubuntu-16.04'
-
-    # Mac OS job
-    - template: src/pipeline/deploy-job.yml
-      parameters:
-        name: MacOS
-        platform: mac
-        version: $(version)
-        pool:
-          vmImage: 'macOS-10.13'
-
-    # Windows job
-    - template: src/pipeline/deploy-job.yml
-      parameters:
-        name: Windows
-        platform: win
-        version: $(version)
-        pool:
-          vmImage: 'windows-2019'
+      # Windows job
+      - template: src/pipeline/deploy-job.yml
+        parameters:
+          name: Windows
+          platform: win
+          version: $(version)
+          pool:
+            vmImage: 'windows-2019'
