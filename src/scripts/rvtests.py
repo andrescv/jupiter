@@ -21,7 +21,7 @@ import subprocess
 from glob import glob
 
 newline = os.linesep
-CMD = './build/image/bin/vsim -e --no-title -s main %s'
+CMD = './build/image/bin/vsim -e --no-title %s'
 
 
 def main():
