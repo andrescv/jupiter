@@ -85,6 +85,7 @@ public final class InstructionSet {
       }
     } catch (Exception e) {
       Logger.error("could not load RISC-V instruction set");
+      e.printStackTrace(System.err);
       System.exit(1);
     }
   }
