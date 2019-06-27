@@ -1,7 +1,6 @@
 <p align="center">
   <img src="./docs/assets/images/logo.png" alt="V-Sim" width="400"><br>
   <a href="https://github.com/andrescv/V-Sim/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a>
-  <a href="https://travis-ci.org/andrescv/V-Sim"><img src="https://api.travis-ci.org/andrescv/V-Sim.svg?branch=master" alt="Travis CI"></a>
   <img src="https://dev.azure.com/andrescv/andrescv/_apis/build/status/andrescv.V-Sim?branchName=master" alt="Azure Pipelines">
   <a href="https://github.com/andrescv/V-Sim/releases"><img src="https://img.shields.io/github/release/andrescv/V-Sim/all.svg" alt="Version"></a>
   <img src="https://img.shields.io/github/downloads/andrescv/V-Sim/total.svg">
