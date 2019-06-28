@@ -176,8 +176,6 @@ public final class Cmd {
             throw new IllegalArgumentException("passed duplicated file: " + filename);
           }
         } else {
-          System.err.println(FS.isRegularFile(file));
-          System.err.println(filename.endsWith(".s") || filename.endsWith(".asm"));
           throw new IllegalArgumentException("invalid file: " + filename);
         }
       }
