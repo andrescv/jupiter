@@ -49,6 +49,7 @@ jlink {
       '--add-exports',
       'javafx.graphics/com.sun.javafx.scene=com.jfoenix'
     ]
+    windowsScriptTemplate = file('gradle/jlink/vsim.bat')
   }
   addExtraDependencies('javafx')
 }
