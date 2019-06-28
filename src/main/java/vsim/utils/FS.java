@@ -19,7 +19,6 @@ package vsim.utils;
 
 import static java.nio.file.StandardOpenOption.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -171,12 +170,7 @@ public final class FS {
    * @return true if the given path is a regular file, false if not
    */
   public static boolean isRegularFile(Path file) {
-    File f = file.toFile();
-    try {
-      return f.canRead() && f.canWrite();
-    } catch (SecurityException e) {
-      return false;
-    }
+    return Files.isRegularFile(file);
   }
 
   /**
