@@ -104,9 +104,10 @@ public final class DeleteDialog extends JFXAlert<Void> {
   /**
    * Shows delete dialog and returns result code.
    *
+   * @param filename file name
    * @return result code
    */
-  public boolean get(Path file) {
+  public boolean get(String filename) {
     result = false;
     body.setText("You are deleting: " + file);
     showAndWait();
