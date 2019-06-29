@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.dialogs;
 
-import java.nio.file.Path;
 
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
@@ -109,7 +108,7 @@ public final class DeleteDialog extends JFXAlert<Void> {
    */
   public boolean get(String filename) {
     result = false;
-    body.setText("You are deleting: " + file);
+    body.setText("You are deleting: " + filename);
     showAndWait();
     return result;
   }
