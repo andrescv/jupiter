@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.dialogs;
 
-import java.nio.file.Path;
 
 import javafx.stage.Stage;
 
@@ -39,10 +38,11 @@ public final class SaveDialog extends CloseDialog {
   /**
    * Shows save dialog and returns result code.
    *
+   * @param filename file name
    * @return result code
    */
-  public int get(Path file) {
-    title.setText(String.format("'%s' has changes, do you want to save them?", file.toFile().getName()));
+  public int get(String filename) {
+    title.setText(String.format("'%s' has changes, do you want to save them?", filename));
     return super.get();
   }
 
