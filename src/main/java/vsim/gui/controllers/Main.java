@@ -19,7 +19,10 @@ package vsim.gui.controllers;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -91,6 +94,28 @@ public final class Main {
   /** editor tab size 8 setting radio button */
   @FXML private JFXRadioButton tabSize8;
 
+  @FXML private MenuItem newFile;
+  @FXML private MenuItem openFile;
+  @FXML private MenuItem save;
+  @FXML private MenuItem saveAs;
+  @FXML private MenuItem saveAll;
+  @FXML private MenuItem close;
+  @FXML private MenuItem closeAll;
+  @FXML private MenuItem undo;
+  @FXML private MenuItem redo;
+  @FXML private MenuItem cut;
+  @FXML private MenuItem copy;
+  @FXML private MenuItem paste;
+  @FXML private MenuItem selectAll;
+  @FXML private MenuItem findAndReplace;
+  @FXML private MenuItem assemble;
+  @FXML private MenuItem run;
+  @FXML private MenuItem step;
+  @FXML private MenuItem backstep;
+  @FXML private MenuItem stop;
+  @FXML private MenuItem reset;
+  @FXML private MenuItem clearAllBreakpoints;
+
   /**
    * Initializes V-Sim's GUI main controller.
    *
@@ -118,6 +143,31 @@ public final class Main {
     tabSize2.selectedProperty().bind(Bindings.equal(2, Settings.TAB_SIZE));
     tabSize4.selectedProperty().bind(Bindings.equal(4, Settings.TAB_SIZE));
     tabSize8.selectedProperty().bind(Bindings.equal(8, Settings.TAB_SIZE));
+    // disable some file menu items if there are no tabs open
+    ReadOnlyBooleanProperty editorSelected = editorTab.selectedProperty();
+    ReadOnlyBooleanProperty simulatorSelected = simulatorTab.selectedProperty();
+    BooleanBinding fileCond = Bindings.or(Bindings.isEmpty(editorController.getEditorTabPane().getTabs()), simulatorSelected);
+    newFile.disableProperty().bind(simulatorSelected);
+    openFile.disableProperty().bind(simulatorSelected);
+    save.disableProperty().bind(fileCond);
+    saveAs.disableProperty().bind(fileCond);
+    saveAll.disableProperty().bind(fileCond);
+    close.disableProperty().bind(fileCond);
+    closeAll.disableProperty().bind(fileCond);
+    undo.disableProperty().bind(fileCond);
+    redo.disableProperty().bind(fileCond);
+    cut.disableProperty().bind(fileCond);
+    copy.disableProperty().bind(fileCond);
+    paste.disableProperty().bind(fileCond);
+    selectAll.disableProperty().bind(fileCond);
+    findAndReplace.disableProperty().bind(fileCond);
+    assemble.disableProperty().bind(Status.READY);
+    run.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
+    stop.disableProperty().bind(Bindings.or(Bindings.not(Status.RUNNING), Bindings.or(editorSelected, Status.EXIT)));
+    reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorTab.selectedProperty(), Status.EXIT)));
+    clearAllBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
   }
 
   /**
