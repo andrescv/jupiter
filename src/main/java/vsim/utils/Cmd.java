@@ -18,9 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.utils;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -159,15 +159,19 @@ public final class Cmd {
     for (Integer index : posToValue.keySet()) {
       if (!ignore.contains(index)) {
         String filename = posToValue.get(index);
-        Path file = Paths.get(filename);
+        Path file = FS.toPath(filename);
         if (FS.isDirectory(file)) {
-          for (Path path : FS.ls(file)) {
-            String p = path.toString();
-            if (!FS.contains(path, files) && (p.endsWith(".s") || p.endsWith(".asm"))) {
-              files.add(path);
-            } else {
-              throw new IllegalArgumentException("passed duplicated file: " + path);
+          try {
+            for (Path path : FS.ls(file)) {
+              String p = path.toString();
+              if (!FS.contains(path, files) && (p.endsWith(".s") || p.endsWith(".asm"))) {
+                files.add(path);
+              } else {
+                throw new IllegalArgumentException("passed duplicated file: " + path);
+              }
             }
+          } catch (IOException e) {
+            throw new IllegalArgumentException("could not search files in dir: " + file);
           }
         } else if (FS.isRegularFile(file) && (filename.endsWith(".s") || filename.endsWith(".asm"))) {
           if (!FS.contains(file, files)) {
