@@ -7,3 +7,15 @@
   -fx-font-size: 14;
   -fx-text-fill: #ffffff;
 }
+
+.label.status-bar-labels {
+  -fx-font-size: 14;
+  -fx-text-fill: #eee;
+}
+
+.label.findreplace {
+  -fx-font-family: monospace;
+  -fx-font-size: 12;
+  -fx-text-fill: #ddd;
+  -fx-font-weight: bold
+}

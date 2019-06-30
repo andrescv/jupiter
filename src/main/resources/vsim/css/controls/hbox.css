@@ -1,0 +1,9 @@
+.hbox-simulator {
+  -fx-border-insets: 0;
+}
+
+.status-bar {
+  -fx-border-color: #222;
+  -fx-border-width: 1 0 0 0;
+  -fx-background-color: #242424;
+}

@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.fxmisc.richtext.InlineCssTextArea?>
 
-
 <StackPane fx:id="rootStackPane" prefHeight="631.0" prefWidth="867.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.Main">
    <children>
       <VBox>
@@ -86,7 +85,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#closeTab" text="Close Tab">
+                        <MenuItem mnemonicParsing="false" onAction="#close" text="Close Tab">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -98,7 +97,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#closeAllTabs" text="Close All Tabs">
+                        <MenuItem mnemonicParsing="false" onAction="#closeAll" text="Close All Tabs">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -303,62 +302,62 @@
                   </Menu>
                   <Menu mnemonicParsing="false" text="_Settings">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Show Symbol Table">
+                        <MenuItem mnemonicParsing="false" onAction="#showSymbolTable" text="Show Symbol Table">
                            <graphic>
                               <JFXCheckBox fx:id="showSymbolTable" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                      <MenuItem mnemonicParsing="false" text="Popup Dialog for Input Ecalls">
+                      <MenuItem mnemonicParsing="false" onAction="#popupDialog" text="Popup Dialog for Input Ecalls">
                            <graphic>
                               <JFXCheckBox fx:id="popupDialog" disable="true" text="" />
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Assemble All Files In Directory">
+                        <MenuItem mnemonicParsing="false" onAction="#assembleAll" text="Assemble All Files In Directory">
                            <graphic>
                               <JFXCheckBox fx:id="assembleAll" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Assembler Warnings Are Consider Errors">
+                        <MenuItem mnemonicParsing="false" onAction="#assemblerWarnings" text="Assembler Warnings Are Consider Errors">
                            <graphic>
                               <JFXCheckBox fx:id="assemblerWarnings" disable="true" text="" />
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Permit Pseudoinstructions">
+                        <MenuItem mnemonicParsing="false" onAction="#permitPseudos" text="Permit Pseudoinstructions">
                            <graphic>
                               <JFXCheckBox fx:id="permitPseudos" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Allow Self-modifying Code">
+                        <MenuItem mnemonicParsing="false" onAction="#selfModifyingCode" text="Allow Self-modifying Code">
                            <graphic>
                               <JFXCheckBox fx:id="selfModifyingCode" disable="true" text="" />
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Editor Auto Indent">
+                        <MenuItem mnemonicParsing="false" onAction="#editorAutoIndent" text="Editor Auto Indent">
                            <graphic>
                               <JFXCheckBox fx:id="autoIndent" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Editor Dark Mode">
+                        <MenuItem mnemonicParsing="false" onAction="#editorDarkMode" text="Editor Dark Mode">
                            <graphic>
                               <JFXCheckBox fx:id="darkMode" disable="true" text="" />
                            </graphic>
                         </MenuItem>
                         <Menu mnemonicParsing="false" text="Editor Tab Size">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="2">
+                            <MenuItem mnemonicParsing="false" onAction="#editorTabSize2" text="2">
                                  <graphic>
                                     <JFXRadioButton fx:id="tabSize2" disable="true" text="" />
                                  </graphic>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="4">
+                              <MenuItem mnemonicParsing="false" onAction="#editorTabSize4" text="4">
                                  <graphic>
                                     <JFXRadioButton fx:id="tabSize4" disable="true" text="" />
                                  </graphic>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="8">
+                              <MenuItem mnemonicParsing="false" onAction="#editorTabSize8" text="8">
                                  <graphic>
                                     <JFXRadioButton fx:id="tabSize8" disable="true" text="" />
                                  </graphic>
@@ -440,11 +439,7 @@
                   </JFXTabPane>
                   <JFXTabPane SplitPane.resizableWithParent="false">
                      <tabs>
-                        <Tab text="Console">
-                           <content>
-                              <InlineCssTextArea />
-                           </content>
-                        </Tab>
+                        <Tab fx:id="consoleTab" closable="false" text="Console" />
                      </tabs>
                   </JFXTabPane>
               </items>

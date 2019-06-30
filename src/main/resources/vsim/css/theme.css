@@ -1,0 +1,8 @@
+.root {
+  -fx-primary: #212121;
+  -fx-primary-light: #484848;
+  -fx-primary-dark: #000000;
+  -fx-secondary: #ff9800;
+  -fx-secondary-light: #ffc947;
+  -fx-secondary-dark: #c66900;
+}
