@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import javafx.fxml.FXML;
+
 
 /** V-Sim GUI simulator controller. */
 public final class Simulator {
@@ -31,6 +33,41 @@ public final class Simulator {
    */
   protected void initialize(Main mainController) {
     this.mainController = mainController;
+  }
+
+  /** Assembles RISC-V files. */
+  protected void assemble() {
+
+  }
+
+  /** Runs RISC-V program. */
+  @FXML protected void run() {
+
+  }
+
+  /** Continue until another instruction reached */
+  @FXML protected void step() {
+
+  }
+
+  /** Back to the previous instruction */
+  @FXML protected void backstep() {
+
+  }
+
+  /** Stops simulation. */
+  @FXML protected void stop() {
+
+  }
+
+  /** Resets simulation. */
+  @FXML protected void reset() {
+
+  }
+
+  /** Clears all breakpoints. */
+  protected void clearAllBreakpoints() {
+
   }
 
 }
