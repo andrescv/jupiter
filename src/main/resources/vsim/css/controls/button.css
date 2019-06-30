@@ -9,35 +9,35 @@
   -fx-background-color: #388e3c;
 }
 
-.jfx-button..stop-btn {
+.jfx-button.stop-btn {
   -fx-background-color: #d32f2f;
 }
 
-.jfx-button..step-btn {
+.jfx-button.step-btn {
   -fx-background-color: #ff6f00;
 }
 
-.jfx-button..backstep-btn {
+.jfx-button.backstep-btn {
   -fx-background-color: #0277bd;
 }
 
-.jfx-button..reset-btn {
+.jfx-button.reset-btn {
   -fx-background-color: #ffa000;
 }
 
-.jfx-button..code-btn {
+.jfx-button.code-btn {
   -fx-background-color: #7b1fa2;
 }
 
-.jfx-button..data-btn {
+.jfx-button.data-btn {
   -fx-background-color: #3949ab;
 }
 
-.jfx-button..up-btn {
+.jfx-button.up-btn {
   -fx-background-color: #00897b;
 }
 
-.jfx-button..down-btn {
+.jfx-button.down-btn {
   -fx-background-color: #f9a825;
 }
 
@@ -51,4 +51,13 @@
 
 .jfx-button.cancel {
   -fx-background-color: #0277bd;
+}
+
+.jfx-button.findreplace {
+  -fx-background-color: #555;
+  -fx-text-fill: #aaa;
+}
+
+.jfx-button.close, .jfx-button.findreplace:hover {
+  -fx-text-fill: #ddd;
 }

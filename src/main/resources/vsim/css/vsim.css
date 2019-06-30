@@ -1,17 +1,15 @@
-.root {
-  -fx-primary: #212121;
-  -fx-primary-light: #484848;
-  -fx-primary-dark: #000000;
-  -fx-secondary: #ffb300;
-  -fx-secondary-light: #ffe54c;
-  -fx-secondary-dark: #c68400;
-}
+@import "theme.css";
 
+@import "controls/anchor-pane.css";
 @import "controls/button.css";
+@import "controls/checkbox.css";
 @import "controls/code-area.css";
+@import "controls/hbox.css";
 @import "controls/label.css";
 @import "controls/menu-bar.css";
 @import "controls/progress-bar.css";
+@import "controls/scroll-pane.css";
 @import "controls/split-pane.css";
 @import "controls/tab-pane.css";
 @import "controls/tab.css";
+@import "controls/text-field.css";

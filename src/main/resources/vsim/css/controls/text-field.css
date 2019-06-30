@@ -1,0 +1,4 @@
+.jfx-text-field.findreplace {
+  -fx-text-fill: #eee;
+  -jfx-focus-color: -fx-secondary-light;
+}

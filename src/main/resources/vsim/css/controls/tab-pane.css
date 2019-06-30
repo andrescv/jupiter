@@ -13,3 +13,8 @@
 .jfx-tab-pane .tab-selected-line {
   -fx-background-color: -fx-secondary;
 }
+
+.jfx-tab-pane.hardware {
+  -fx-border-color: -fx-primary-dark;
+  -fx-border-width: 0 0 0 3;
+}

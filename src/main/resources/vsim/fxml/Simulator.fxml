@@ -5,7 +5,6 @@
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
@@ -17,13 +16,13 @@
 
 <StackPane prefHeight="667.0" prefWidth="989.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.Simulator">
    <children>
-      <SplitPane dividerPositions="0.67">
-         <items>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+      <HBox styleClass="hbox-simulator">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
                   <HBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <JFXButton styleClass="run-btn" text="">
+                        <JFXButton onAction="#run" styleClass="run-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -32,16 +31,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton styleClass="stop-btn" text="">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../img/icons/btns/stop.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </JFXButton>
-                        <JFXButton styleClass="step-btn" text="">
+                        <JFXButton onAction="#step" styleClass="step-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -50,7 +40,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton styleClass="backstep-btn" text="">
+                        <JFXButton onAction="#backstep" styleClass="backstep-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -59,7 +49,16 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton styleClass="reset-btn" text="">
+                        <JFXButton onAction="#stop" styleClass="stop-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/stop.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton onAction="#reset" styleClass="reset-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -93,9 +92,9 @@
                   </HBox>
                   <JFXTreeTableView style="-fx-background-insets: 0;" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TreeTableColumn prefWidth="75.0" text="Bkpt" />
-                        <TreeTableColumn prefWidth="75.0" text="Address" />
-                        <TreeTableColumn prefWidth="75.0" text="Machine Code" />
+                        <TreeTableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="Bkpt" />
+                        <TreeTableColumn maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" text="Address" />
+                        <TreeTableColumn maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" text="Machine Code" />
                         <TreeTableColumn prefWidth="75.0" text="Basic Code" />
                         <TreeTableColumn prefWidth="75.0" text="Source Code" />
                      </columns>
@@ -105,15 +104,15 @@
                   </JFXTreeTableView>
                </children>
             </VBox>
-            <JFXTabPane prefHeight="571.0" prefWidth="251.0" SplitPane.resizableWithParent="false">
+            <JFXTabPane maxWidth="305.0" minWidth="305.0" prefWidth="305.0" styleClass="hardware">
                <tabs>
                   <Tab text="RVI">
                      <content>
                         <JFXTreeTableView style="-fx-background-insets: 0;">
                            <columns>
-                              <TreeTableColumn editable="false" prefWidth="90.0" sortable="false" text="Mnemonic" />
-                              <TreeTableColumn editable="false" prefWidth="71.0" sortable="false" text="Number" />
-                              <TreeTableColumn prefWidth="83.0" sortable="false" text="Value" />
+                              <TreeTableColumn editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Mnemonic" />
+                              <TreeTableColumn editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Number" />
+                              <TreeTableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Value" />
                            </columns>
                            <columnResizePolicy>
                               <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -125,9 +124,9 @@
                      <content>
                         <JFXTreeTableView style="-fx-background-insets: 0;">
                            <columns>
-                              <TreeTableColumn editable="false" prefWidth="89.0" sortable="false" text="Mnemonic" />
-                              <TreeTableColumn editable="false" prefWidth="72.0" sortable="false" text="Number" />
-                              <TreeTableColumn prefWidth="74.0" sortable="false" text="Value" />
+                              <TreeTableColumn editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Mnemonic" />
+                              <TreeTableColumn editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Number" />
+                              <TreeTableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Value" />
                            </columns>
                            <columnResizePolicy>
                               <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -141,11 +140,11 @@
                            <children>
                               <JFXTreeTableView style="-fx-background-insets: 0;" VBox.vgrow="ALWAYS">
                                  <columns>
-                                    <TreeTableColumn prefWidth="75.0" text="Address" />
-                                    <TreeTableColumn prefWidth="75.0" text="+0" />
-                                    <TreeTableColumn prefWidth="75.0" text="+1" />
-                                    <TreeTableColumn prefWidth="75.0" text="+2" />
-                                    <TreeTableColumn prefWidth="75.0" text="+3" />
+                                    <TreeTableColumn editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" text="Address" />
+                                    <TreeTableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
+                                    <TreeTableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
+                                    <TreeTableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
+                                    <TreeTableColumn maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+3" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -183,7 +182,7 @@
                   </Tab>
                </tabs>
             </JFXTabPane>
-         </items>
-      </SplitPane>
+         </children>
+      </HBox>
    </children>
 </StackPane>
