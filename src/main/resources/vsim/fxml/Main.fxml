@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import org.fxmisc.richtext.InlineCssTextArea?>
 
 <StackPane fx:id="rootStackPane" prefHeight="631.0" prefWidth="867.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vsim.gui.controllers.Main">
    <children>
@@ -26,7 +25,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="_File">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#newFile" text="New File">
+                    <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#newFile" text="New File">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -38,7 +37,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File">
+                        <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#openFile" text="Open File">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -51,7 +50,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#save" text="Save">
+                        <MenuItem fx:id="save" mnemonicParsing="false" onAction="#save" text="Save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -63,7 +62,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As...">
+                        <MenuItem fx:id="saveAs" mnemonicParsing="false" onAction="#saveAs" text="Save As...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
@@ -75,7 +74,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#saveAll" text="Save All">
+                        <MenuItem fx:id="saveAll" mnemonicParsing="false" onAction="#saveAll" text="Save All">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -85,7 +84,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#close" text="Close Tab">
+                        <MenuItem fx:id="close" mnemonicParsing="false" onAction="#close" text="Close Tab">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -97,7 +96,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#closeAll" text="Close All Tabs">
+                        <MenuItem fx:id="closeAll" mnemonicParsing="false" onAction="#closeAll" text="Close All Tabs">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -122,7 +121,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="_Edit">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#undo" text="Undo">
+                    <MenuItem fx:id="undo" mnemonicParsing="false" onAction="#undo" text="Undo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -134,7 +133,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#redo" text="Redo">
+                        <MenuItem fx:id="redo" mnemonicParsing="false" onAction="#redo" text="Redo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="Y" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -147,7 +146,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#cut" text="Cut">
+                        <MenuItem fx:id="cut" mnemonicParsing="false" onAction="#cut" text="Cut">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="X" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -159,7 +158,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#copy" text="Copy">
+                        <MenuItem fx:id="copy" mnemonicParsing="false" onAction="#copy" text="Copy">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -171,7 +170,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#paste" text="Paste">
+                        <MenuItem fx:id="paste" mnemonicParsing="false" onAction="#paste" text="Paste">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -183,7 +182,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#selectAll" text="Select All">
+                        <MenuItem fx:id="selectAll" mnemonicParsing="false" onAction="#selectAll" text="Select All">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -196,7 +195,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#findReplace" text="Find/Replace in Buffer">
+                        <MenuItem fx:id="findAndReplace" mnemonicParsing="false" onAction="#findReplace" text="Find/Replace in Buffer">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
@@ -212,7 +211,7 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="_Run">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#assemble" text="Assemble">
+                      <MenuItem fx:id="assemble" mnemonicParsing="false" onAction="#assemble" text="Assemble">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="F3" control="UP" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -225,7 +224,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#run" text="Run">
+                        <MenuItem fx:id="run" mnemonicParsing="false" onAction="#run" text="Run">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -237,7 +236,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#step" text="Step">
+                        <MenuItem fx:id="step" mnemonicParsing="false" onAction="#step" text="Step">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="F7" control="UP" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -249,7 +248,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#backstep" text="Backstep">
+                        <MenuItem fx:id="backstep" mnemonicParsing="false" onAction="#backstep" text="Backstep">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="F8" control="UP" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -261,7 +260,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#stop" text="Stop">
+                        <MenuItem fx:id="stop" mnemonicParsing="false" onAction="#stop" text="Stop">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="F11" control="UP" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
@@ -273,7 +272,7 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#reset" text="Reset">
+                        <MenuItem fx:id="reset" mnemonicParsing="false" onAction="#reset" text="Reset">
                           <accelerator>
                              <KeyCodeCombination alt="UP" code="F12" control="UP" meta="UP" shift="UP" shortcut="UP" />
                           </accelerator>
@@ -286,7 +285,7 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#clearAllBreakpoints" text="Clear All Breakpoints">
+                        <MenuItem fx:id="clearAllBreakpoints" mnemonicParsing="false" onAction="#clearAllBreakpoints" text="Clear All Breakpoints">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="K" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
