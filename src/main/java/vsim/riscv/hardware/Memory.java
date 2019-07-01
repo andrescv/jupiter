@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.hardware;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
 import vsim.exc.InvalidAddressException;
@@ -44,16 +46,38 @@ public final class Memory {
   /** memory diff */
   private HashMap<Integer, Byte> diff;
 
+  /** property change support */
+  private final PropertyChangeSupport pcs;
+
   /** Creates a new main memory (RAM). */
   public Memory() {
     memory = new HashMap<>();
     diff = new HashMap<>();
+    pcs = new PropertyChangeSupport(this);
   }
 
   /** Clears all the allocated bytes from memory. */
   public void reset() {
     memory.clear();
     diff.clear();
+  }
+
+  /**
+   * Adds a new observer.
+   *
+   * @param observer observer to add
+   */
+  public void addObserver(PropertyChangeListener observer) {
+    pcs.addPropertyChangeListener(observer);
+  }
+
+  /**
+   * Removes an observer.
+   *
+   * @param observer observer to remove
+   */
+  public void removeObserver(PropertyChangeListener observer) {
+    pcs.removePropertyChangeListener(observer);
   }
 
   /**
@@ -126,9 +150,13 @@ public final class Memory {
    * @param address address where the byte value will be stored
    * @param value the byte value to store
    */
-  public void privStoreByte(int address, int value) {
+  public synchronized void privStoreByte(int address, int value) {
     if (memory.containsKey(address) && (memory.get(address) != ((byte) (value & Data.BYTE_MASK)))) {
       diff.put(address, memory.get(address));
+      pcs.firePropertyChange(String.format("0x%08x", address), (int) memory.get(address), value);
+    } else if (!memory.containsKey(address)) {
+      diff.put(address, (byte) 0);
+      pcs.firePropertyChange(String.format("0x%08x", address), 0, value);
     }
     memory.put(address, (byte) (value & Data.BYTE_MASK));
   }

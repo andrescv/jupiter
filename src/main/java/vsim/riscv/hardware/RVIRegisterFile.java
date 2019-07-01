@@ -22,8 +22,9 @@ import vsim.utils.IO;
 
 
 /** Register file for the I extension. */
-public class RVIRegisterFile extends RegisterFile {
+public final class RVIRegisterFile extends RegisterFile {
 
+  // register file mnemonics
   private static final String[] mnemonics = {
     "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "s0", "s1", "a0", "a1", "a2",
     "a3", "a4", "a5", "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10",
@@ -31,7 +32,7 @@ public class RVIRegisterFile extends RegisterFile {
   };
 
   /** program counter special register */
-  private Register pc;
+  private final Register pc;
 
   /** Creates a RVI register file. */
   public RVIRegisterFile() {
@@ -57,40 +58,6 @@ public class RVIRegisterFile extends RegisterFile {
     }
     // create program counter
     pc = new Register(32, "pc", Data.TEXT, true);
-  }
-
-  /**
-   * Creates a new RVI register file.
-   *
-   * @param cls register class
-   */
-  public RVIRegisterFile(Class<? extends Register> cls) {
-    super(32, "x");
-    try {
-      // add 32 general purpose registers
-      for (int i = 0; i < mnemonics.length; i++) {
-        // default reset value
-        int resetValue = 0;
-        // default reset value for stack pointer
-        if (mnemonics[i].equals("sp"))
-          resetValue = Data.STACK_POINTER;
-        // default reset value for global pointer
-        if (mnemonics[i].equals("gp"))
-          resetValue = Data.GLOBAL_POINTER;
-        // note: only "zero" register is not editable
-        Register reg = cls.getConstructor().newInstance(i, mnemonics[i], resetValue, i != 0);
-        // point all names to this new register
-        rf.put(mnemonics[i], reg);
-        rf.put(prefix + i, reg);
-        // special frame pointer
-        if (mnemonics[i].equals("s0"))
-          rf.put("fp", reg);
-      }
-      // create program counter
-      pc = cls.getConstructor().newInstance(32, "pc", Data.TEXT, true);
-    } catch (Exception e) {
-      // TODO: handle exception
-    }
   }
 
   /**
