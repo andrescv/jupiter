@@ -19,7 +19,7 @@ package vsim.riscv.hardware;
 
 
 /** Represents a "hardware" register. */
-public final class Register {
+public class Register {
 
   /** register value */
   private int value;
