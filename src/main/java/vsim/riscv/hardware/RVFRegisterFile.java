@@ -21,9 +21,9 @@ import vsim.utils.IO;
 
 
 /** Register file for the F extension. */
-public class RVFRegisterFile extends RegisterFile {
+public final class RVFRegisterFile extends RegisterFile {
 
-  /** F extension mnemonics */
+  /** register file mnemonics */
   private static final String[] mnemonics = {
     "ft0", "ft1", "ft2", "ft3", "ft4", "ft5", "ft6", "ft7", "fs0", "fs1", "fa0", "fa1", "fa2",
     "fa3", "fa4", "fa5", "fa6", "fa7", "fs2", "fs3", "fs4", "fs5", "fs6", "fs7", "fs8", "fs9",
@@ -41,28 +41,6 @@ public class RVFRegisterFile extends RegisterFile {
       rf.put(mnemonics[i], reg);
       // default name f0-f31
       rf.put("f" + i, reg);
-    }
-  }
-
-  /**
-   * Creates a new RVF register file.
-   *
-   * @param cls register class
-   */
-  public RVFRegisterFile(Class<? extends Register> cls) {
-    super(32, "f");
-    try {
-      // add 32 float registers
-      for (int i = 0; i < mnemonics.length; i++) {
-        // all registers are editable
-        Register reg = cls.getConstructor().newInstance(i, mnemonics[i], 0, true);
-        // abi name
-        rf.put(mnemonics[i], reg);
-        // default name f0-f31
-        rf.put("f" + i, reg);
-      }
-    } catch (Exception e) {
-      // TODO: handle exception
     }
   }
 

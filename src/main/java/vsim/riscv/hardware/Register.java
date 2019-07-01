@@ -19,7 +19,7 @@ package vsim.riscv.hardware;
 
 
 /** Represents a "hardware" register. */
-public class Register {
+public final class Register {
 
   /** register value */
   private int value;
@@ -90,7 +90,7 @@ public class Register {
    *
    * @param newValue new register value
    */
-  public void setValue(int newValue) {
+  public synchronized void setValue(int newValue) {
     if (this.editable) {
       value = newValue;
     }

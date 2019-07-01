@@ -17,6 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.hardware;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -30,7 +33,9 @@ public abstract class RegisterFile {
   /** register lookup */
   protected final HashMap<String, Register> rf;
   /** current register file diff */
-  protected HashMap<String, Integer> diff;
+  private HashMap<String, Integer> diff;
+  /** property change support */
+  private final PropertyChangeSupport pcs;
 
   /**
    * Creates a general register file.
@@ -42,6 +47,7 @@ public abstract class RegisterFile {
     this.prefix = prefix;
     rf = new HashMap<>();
     diff = new HashMap<>();
+    pcs = new PropertyChangeSupport(this);
   }
 
   /** Pretty prints the register file . */
@@ -54,6 +60,24 @@ public abstract class RegisterFile {
    * @throws IllegalArgumentException if the name is invalid
    */
   public abstract void print(String name);
+
+  /**
+   * Adds a new observer.
+   *
+   * @param observer observer to add
+   */
+  public void addObserver(PropertyChangeListener observer) {
+    pcs.addPropertyChangeListener(observer);
+  }
+
+  /**
+   * Removes an observer.
+   *
+   * @param observer observer to remove
+   */
+  public void removeObserver(PropertyChangeListener observer) {
+    pcs.removePropertyChangeListener(observer);
+  }
 
   /** Resets register file state. */
   public void reset() {
@@ -86,8 +110,10 @@ public abstract class RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("invalid register: " + (prefix + number));
     // save previous register value in diff
-    if (value != reg.getValue())
+    if (value != reg.getValue()) {
       diff.put(prefix + number, reg.getValue());
+      pcs.firePropertyChange(reg.getMnemonic(), reg.getValue(), value);
+    }
     reg.setValue(value);
   }
 
@@ -103,8 +129,10 @@ public abstract class RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("invalid register: " + name);
     // save previous register value in diff
-    if (value != reg.getValue())
-      diff.put(prefix + reg.getNumber(), reg.getValue());
+    if (value != reg.getValue()) {
+      diff.put(name, reg.getValue());
+      pcs.firePropertyChange(reg.getMnemonic(), reg.getValue(), value);
+    }
     reg.setValue(value);
   }
 
@@ -145,6 +173,19 @@ public abstract class RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("invalid register: " + name);
     return reg.getValue();
+  }
+
+  /**
+   * Returns all register in the register file.
+   *
+   * @return all register in the register file
+   */
+  public ArrayList<Register> getRF() {
+    ArrayList<Register> out = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) {
+      out.add(rf.get(prefix + i));
+    }
+    return out;
   }
 
 }
