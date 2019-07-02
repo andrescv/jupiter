@@ -25,8 +25,15 @@ public final class Fonts {
 
   /** Loads V-Sim fonts. */
   public static void load() {
+    anonymous();
     montserrat();
     ubuntu();
+  }
+
+  /** Loads Anonymous Pro font. */
+  private static void anonymous() {
+    Font.loadFont(Fonts.class.getResource("/vsim/fonts/Anonymous_Pro/AnonymousPro.ttf").toExternalForm(), 10);
+    Font.loadFont(Fonts.class.getResource("/vsim/fonts/Anonymous_Pro/AnonymousPro-Bold.ttf").toExternalForm(), 10);
   }
 
   /** Loads Montserrat font. */
