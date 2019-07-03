@@ -22,14 +22,17 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
 
 import vsim.gui.Settings;
@@ -52,8 +55,11 @@ public final class Main {
   /** file chooser */
   private FileDialog fileDialog;
 
+  /** snackbar */
+  private JFXSnackbar snackbar;
+
   /** editor controller */
-  @FXML private Editor editorController;
+  @FXML protected Editor editorController;
   /** simulator controller */
   @FXML private Simulator simulatorController;
 
@@ -94,26 +100,47 @@ public final class Main {
   /** editor tab size 8 setting radio button */
   @FXML private JFXRadioButton tabSize8;
 
+  /** new file menu item */
   @FXML private MenuItem newFile;
+  /** open file menu item */
   @FXML private MenuItem openFile;
+  /** save menu item */
   @FXML private MenuItem save;
+  /** save as menu item */
   @FXML private MenuItem saveAs;
+  /** save all menu item */
   @FXML private MenuItem saveAll;
+  /** close menu item */
   @FXML private MenuItem close;
+  /** close all menu item */
   @FXML private MenuItem closeAll;
+  /** undo menu item */
   @FXML private MenuItem undo;
+  /** redo menu item */
   @FXML private MenuItem redo;
+  /** cut menu item */
   @FXML private MenuItem cut;
+  /** copy menu item */
   @FXML private MenuItem copy;
+  /** paste menu item */
   @FXML private MenuItem paste;
+  /** select all menu item */
   @FXML private MenuItem selectAll;
+  /** find and replace menu item */
   @FXML private MenuItem findAndReplace;
+  /** assemble menu item */
   @FXML private MenuItem assemble;
+  /** run menu item */
   @FXML private MenuItem run;
+  /** step menu item */
   @FXML private MenuItem step;
+  /** backstep menu item */
   @FXML private MenuItem backstep;
+  /** stop menu item */
   @FXML private MenuItem stop;
+  /** reset menu item */
   @FXML private MenuItem reset;
+  /** clear all breakpoints menu item */
   @FXML private MenuItem clearAllBreakpoints;
 
   /**
@@ -166,7 +193,7 @@ public final class Main {
     step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
     backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
     stop.disableProperty().bind(Bindings.or(Bindings.not(Status.RUNNING), Bindings.or(editorSelected, Status.EXIT)));
-    reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorTab.selectedProperty(), Status.EXIT)));
+    reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorSelected, Status.EXIT)));
     clearAllBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
   }
 
@@ -237,6 +264,19 @@ public final class Main {
       saveDialog = new SaveDialog(stage);
     }
     return saveDialog;
+  }
+
+  /**
+   * Creates a toast message.
+   *
+   * @param msg toast message
+   * @param duration toast duration
+   */
+  protected void toast(String msg, long duration) {
+    if (snackbar == null) {
+      snackbar = new JFXSnackbar(rootStackPane);
+    }
+    snackbar.enqueue(new JFXSnackbar.SnackbarEvent(new Label(msg), new Duration(duration), null));
   }
 
   /*===================*
