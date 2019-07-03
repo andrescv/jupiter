@@ -131,6 +131,24 @@ public final class LinkedProgram {
   }
 
   /**
+   * Returns all statements of the program.
+   *
+   * @return all statements of the program
+   */
+  public ArrayList<Statement> statements() {
+    ArrayList<Statement> stmts = new ArrayList<>();
+    int pc = Data.TEXT;
+    while (true) {
+      Statement stmt = text.get(pc);
+      if (stmt == null) break;
+      stmts.add(stmt);
+      pc += Data.WORD_LENGTH;
+    }
+    stmts.trimToSize();
+    return stmts;
+  }
+
+  /**
    * Returns next program statement.
    *
    * @return next program statement
