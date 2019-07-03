@@ -26,13 +26,13 @@ import vsim.riscv.hardware.RVIRegisterFile;
 public final class State {
 
   /** RISC-V main memory */
-  public final Memory memory;
+  private final Memory memory;
 
   /** RVI register file */
-  public final RVIRegisterFile xregfile;
+  private final RVIRegisterFile xregfile;
 
   /** RVF register file */
-  public final RVFRegisterFile fregfile;
+  private final RVFRegisterFile fregfile;
 
   /** Creates a new simulator state. */
   public State() {
