@@ -113,7 +113,7 @@ public final class RegisterItem extends RecursiveTreeObject<RegisterItem> implem
   /** {@inheritDoc} */
   @Override
   public void propertyChange(PropertyChangeEvent e) {
-    if (e.getPropertyName().equals(mnemonic.get())) {
+    if (e.getPropertyName().equals(mnemonic.get()) && !mnemonic.get().equals("zero")) {
       intValue = (int) e.getNewValue();
       value.set(getValue(intValue));
     }
