@@ -83,7 +83,10 @@ public abstract class RegisterFile {
   public void reset() {
     // clear all registers
     for (int i = 0; i < size; i++) {
-      rf.get(prefix + i).reset();
+      Register reg = rf.get(prefix + i);
+      int old = reg.getValue();
+      reg.reset();
+      pcs.firePropertyChange(reg.getMnemonic(), old, reg.getValue());
     }
   }
 

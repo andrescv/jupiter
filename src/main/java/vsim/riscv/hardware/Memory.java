@@ -360,6 +360,24 @@ public final class Memory {
   }
 
   /**
+   * Returns static segment start address.
+   *
+   * @return static segment start address
+   */
+  public int getStaticSegment() {
+    return rodataStart;
+  }
+
+  /**
+   * Returns heap segment start address.
+   *
+   * @return heap segment start address
+   */
+  public int getHeapSegment() {
+    return heapStart;
+  }
+
+  /**
    * Returns current heap pointer.
    *
    * @return current heap pointer
