@@ -330,8 +330,8 @@ public final class Debugger {
   private void reset() {
     terminated = false;
     history.reset();
-    program.load();
     program.getState().reset();
+    program.load();
   }
 
   /** Sets a breakpoint. */
