@@ -120,7 +120,8 @@ public final class FS {
       Files.walkFileTree(dir, visitOpts, Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          if (attrs.isRegularFile()) {
+          String p = file.toString();
+          if (attrs.isRegularFile() && (p.endsWith(".s") || p.endsWith(".asm"))) {
             files.add(file);
           }
           return FileVisitResult.CONTINUE;

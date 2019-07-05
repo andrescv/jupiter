@@ -164,7 +164,7 @@ public final class Cmd {
           try {
             for (Path path : FS.ls(file)) {
               String p = path.toString();
-              if (!FS.contains(path, files) && (p.endsWith(".s") || p.endsWith(".asm"))) {
+              if (!FS.contains(path, files)) {
                 files.add(path);
               } else {
                 throw new IllegalArgumentException("passed duplicated file: " + path);
