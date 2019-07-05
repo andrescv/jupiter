@@ -27,6 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -508,7 +509,7 @@ public final class Main {
     paste.disableProperty().bind(fileCond);
     selectAll.disableProperty().bind(fileCond);
     findAndReplace.disableProperty().bind(fileCond);
-    assemble.disableProperty().bind(Bindings.or(Status.READY, assembling));
+    assemble.disableProperty().bind(Bindings.or(Bindings.isEmpty(editorController.getEditorTabPane().getTabs()), Bindings.or(Status.READY, assembling)));
     run.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
     step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
     backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
@@ -538,6 +539,18 @@ public final class Main {
     IO.setStdout(new GUIConsoleOutput(console));
     IO.setStderr(new GUIConsoleOutput(console));
     consoleTab.setContent(new VirtualizedScrollPane<>(console));
+    // scroll listener
+    console.setStyle(String.format("-fx-font-size: %d;", Settings.CONSOLE_FONT_SIZE.get()));
+    console.addEventFilter(ScrollEvent.SCROLL, e -> {
+      if (e.isControlDown()) {
+        if (e.getDeltaY() > 0)
+          Settings.incConsoleFontSize();
+        else if (e.getDeltaY() < 0)
+          Settings.decConsoleFontSize();
+        console.setStyle(String.format("-fx-font-size: %d;", Settings.CONSOLE_FONT_SIZE.get()));
+        e.consume();
+      }
+    });
   }
 
 }
