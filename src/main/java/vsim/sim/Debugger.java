@@ -262,6 +262,7 @@ public final class Debugger {
         history.saveMemAndRegs(program.getState());
       } catch (BreakpointException e) {
         // nothing here :]
+        program.getState().xregfile().incProgramCounter();
       } catch (HaltException e) {
         terminated = true;
         IO.stdout().println();
