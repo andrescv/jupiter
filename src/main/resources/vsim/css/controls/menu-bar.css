@@ -42,3 +42,7 @@
 .menu-bar .menu:showing .menu-item:focused .label {
   -fx-text-fill: #222;
 }
+
+.menu-bar .jfx-check-box:disabled, .menu-bar .jfx-radio-button:disabled {
+  -fx-opacity: 1.0;
+}

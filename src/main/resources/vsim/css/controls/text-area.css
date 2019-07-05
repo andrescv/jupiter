@@ -1,0 +1,14 @@
+#console {
+  -fx-font-family: 'Ubuntu Mono';
+  -fx-font-size: 16;
+  -fx-padding: 2;
+  -fx-background-color: #fafafa;
+}
+
+#console:readonly {
+  -fx-cursor: DEFAULT;
+}
+
+#console .selection {
+  -fx-fill: #cfcfcf;
+}

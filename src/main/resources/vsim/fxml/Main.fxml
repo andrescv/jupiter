@@ -49,6 +49,18 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
+                        <MenuItem fx:id="changeProjectFolder" mnemonicParsing="false" onAction="#changeProjectFolder" text="Change Project Folder">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/root.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="save" mnemonicParsing="false" onAction="#save" text="Save">
                            <accelerator>
@@ -306,12 +318,12 @@
                               <JFXCheckBox fx:id="showSymbolTable" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#popupDialog" text="Popup Dialog for Input Ecalls">
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#assembleOnly" text="Assemble Only Open Files">
                            <graphic>
-                              <JFXCheckBox fx:id="popupDialog" disable="true" text="" />
+                              <JFXCheckBox fx:id="assembleOnly" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#assembleAll" text="Assemble All Files In Directory">
                            <graphic>
                               <JFXCheckBox fx:id="assembleAll" disable="true" text="" />

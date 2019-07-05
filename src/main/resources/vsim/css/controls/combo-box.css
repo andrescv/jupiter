@@ -1,0 +1,23 @@
+.jfx-combo-box {
+  -jfx-focus-color: -fx-secondary;
+  -jfx-unfocus-color: -fx-secondary;
+  -fx-prompt-text-fill: #fff;
+  -fx-cursor: HAND;
+}
+
+.jfx-combo-box .list-cell .label {
+  -fx-text-fill: #fff;
+  -fx-font-family: 'Montserrat SemiBold';
+}
+
+.jfx-combo-box .list-view .list-cell .label {
+  -fx-text-fill: #222;
+}
+
+.jfx-combo-box .list-view .list-cell:hover, .jfx-combo-box .list-view .list-cell:selected  {
+  -fx-background-color: #7d7d7d;
+}
+
+.jfx-combo-box .list-view .list-cell:hover .label, .jfx-combo-box .list-view .list-cell:selected .label {
+  -fx-text-fill: #fff;
+}

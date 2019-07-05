@@ -1,0 +1,8 @@
+.jfx-snackbar .label {
+  -fx-background-color: -fx-primary;
+  -fx-font-size: 16;
+  -fx-text-fill: #fff;
+  -fx-border-width: 1 1 0 1;
+  -fx-border-color: -fx-secondary;
+  -fx-padding: 10;
+}
