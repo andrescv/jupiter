@@ -61,6 +61,12 @@ public final class Settings {
   /** editor tab size */
   public static final SimpleIntegerProperty TAB_SIZE = new SimpleIntegerProperty(2);
 
+  /** text editor font size */
+  public static final SimpleIntegerProperty CODE_FONT_SIZE = new SimpleIntegerProperty(20);
+
+  /** console font size */
+  public static final SimpleIntegerProperty CONSOLE_FONT_SIZE = new SimpleIntegerProperty(16);
+
 
   /** Loads V-Sim GUI settings. */
   public static void load() {
@@ -74,6 +80,8 @@ public final class Settings {
     AUTO_INDENT.set(prefs.getBoolean("AUTO_INDENT", AUTO_INDENT.get()));
     DARK_MODE.set(prefs.getBoolean("DARK_MODE", DARK_MODE.get()));
     TAB_SIZE.set(prefs.getInt("TAB_SIZE", TAB_SIZE.get()));
+    CODE_FONT_SIZE.set(prefs.getInt("CODE_FONT_SIZE", CODE_FONT_SIZE.get()));
+    CONSOLE_FONT_SIZE.set(prefs.getInt("CONSOLE_FONT_SIZE", CONSOLE_FONT_SIZE.get()));
   }
 
   /** Toggles and saves show symbol table setting. */
@@ -130,6 +138,30 @@ public final class Settings {
   public static void toggleDarkMode() {
     DARK_MODE.set(!DARK_MODE.get());
     prefs.putBoolean("DARK_MODE", DARK_MODE.get());
+  }
+
+  /** Increments code font size. */
+  public static void incCodeFontSize() {
+    CODE_FONT_SIZE.set(Math.min(CODE_FONT_SIZE.get() + 1, 72));
+    prefs.putInt("CODE_FONT_SIZE", CODE_FONT_SIZE.get());
+  }
+
+  /** Decrements code font size. */
+  public static void decCodeFontSize() {
+    CODE_FONT_SIZE.set(Math.max(CODE_FONT_SIZE.get() - 1, 10));
+    prefs.putInt("CODE_FONT_SIZE", CODE_FONT_SIZE.get());
+  }
+
+  /** Increments console font size. */
+  public static void incConsoleFontSize() {
+    CONSOLE_FONT_SIZE.set(Math.min(CONSOLE_FONT_SIZE.get() + 1, 72));
+    prefs.putInt("CONSOLE_FONT_SIZE", CONSOLE_FONT_SIZE.get());
+  }
+
+  /** Decrements console font size. */
+  public static void decConsoleFontSize() {
+    CONSOLE_FONT_SIZE.set(Math.max(CONSOLE_FONT_SIZE.get() - 1, 10));
+    prefs.putInt("CONSOLE_FONT_SIZE", CONSOLE_FONT_SIZE.get());
   }
 
   /**
