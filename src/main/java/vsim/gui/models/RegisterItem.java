@@ -41,6 +41,8 @@ public final class RegisterItem extends RecursiveTreeObject<RegisterItem> implem
   private int mode;
   /** register int value */
   private int intValue;
+  /** if register has changed */
+  private boolean updated;
 
   /** register mnemonic */
   private final SimpleStringProperty mnemonic;
@@ -59,6 +61,7 @@ public final class RegisterItem extends RecursiveTreeObject<RegisterItem> implem
   public RegisterItem(String mnemonic, String number, int value) {
     mode = HEX;
     intValue = value;
+    updated = false;
     this.mnemonic = new SimpleStringProperty(mnemonic);
     this.number = new SimpleStringProperty(number);
     this.value = new SimpleStringProperty(getValue(value));
@@ -101,6 +104,15 @@ public final class RegisterItem extends RecursiveTreeObject<RegisterItem> implem
   }
 
   /**
+   * Verifies if the register has been updated.
+   *
+   * @return {@code true} if register has been updated, {@code false} if not
+   */
+  public boolean updated() {
+    return updated;
+  }
+
+  /**
    * Updates display mode.
    *
    * @param mode new display mode
@@ -113,9 +125,14 @@ public final class RegisterItem extends RecursiveTreeObject<RegisterItem> implem
   /** {@inheritDoc} */
   @Override
   public void propertyChange(PropertyChangeEvent e) {
-    if (e.getPropertyName().equals(mnemonic.get()) && !mnemonic.get().equals("zero")) {
-      intValue = (int) e.getNewValue();
-      value.set(getValue(intValue));
+    if (e.getPropertyName().equals(mnemonic.get())) {
+      updated = true;
+      if (!mnemonic.get().equals("zero")) {
+        intValue = (int) e.getNewValue();
+        value.set(getValue(intValue));
+      }
+    } else {
+      updated = false;
     }
   }
 

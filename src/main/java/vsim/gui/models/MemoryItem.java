@@ -51,6 +51,9 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
   /** display mode */
   private int mode;
 
+  /** if memory cell has changed */
+  private boolean updated;
+
   /** memory item address */
   private final SimpleStringProperty address;
   /** memory item byte 0 */
@@ -78,6 +81,7 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
     intByte1 = byte1;
     intByte2 = byte2;
     intByte3 = byte3;
+    updated = false;
     this.address = new SimpleStringProperty(String.format("0x%08x", address));
     this.byte0 = new SimpleStringProperty(String.format("%02x", byte0));
     this.byte1 = new SimpleStringProperty(String.format("%02x", byte1));
@@ -201,20 +205,33 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
     return byte3.get();
   }
 
+  /**
+   * Verifies if the memory cell has been updated.
+   *
+   * @return {@code true} if memory cell has been updated, {@code false} if not
+   */
+  public boolean updated() {
+    return updated;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void propertyChange(PropertyChangeEvent e) {
     int addr = Data.atoi(e.getPropertyName());
     if (addr == intAddress) {
+      updated = true;
       intByte0 = (int) e.getNewValue();
       byte0.set(getByte(intByte0));
     } else if (addr == (intAddress + 1)) {
+      updated = true;
       intByte1 = (int) e.getNewValue();
       byte1.set(getByte(intByte1));
     } else if (addr == (intAddress + 2)) {
+      updated = true;
       intByte2 = (int) e.getNewValue();
       byte2.set(getByte(intByte2));
     } else if (addr == (intAddress + 3)) {
+      updated = true;
       intByte3 = (int) e.getNewValue();
       byte3.set(getByte(intByte3));
     }
