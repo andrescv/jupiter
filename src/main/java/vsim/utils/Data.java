@@ -210,7 +210,8 @@ public final class Data {
    * @return parsed int number
    */
   public static int atoi(String number) {
-    if (number != null && !number.equals("")) {
+    if (number != null && !number.trim().equals("")) {
+      number = number.trim();
       if (number.matches("0[xX][0-9a-fA-F]+"))
         return Integer.parseUnsignedInt(number.substring(2), 16);
       else if (number.matches("0[bB][01]+"))
@@ -228,7 +229,8 @@ public final class Data {
    * @return parsed float number
    */
   public static float atof(String number) {
-    if (number != null && !number.equals("")) {
+    if (number != null && !number.trim().equals("")) {
+      number = number.trim();
       if (number.matches("0[xX][0-9a-fA-F]+"))
         return Float.intBitsToFloat(Integer.parseUnsignedInt(number.substring(2), 16));
       else if (number.matches("0[bB][01]+"))
