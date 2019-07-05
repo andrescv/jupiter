@@ -151,13 +151,12 @@ public final class Memory {
    * @param value the byte value to store
    */
   public synchronized void privStoreByte(int address, int value) {
-    if (memory.containsKey(address) && (memory.get(address) != ((byte) (value & Data.BYTE_MASK)))) {
+    if (memory.containsKey(address)) {
       diff.put(address, memory.get(address));
-      pcs.firePropertyChange(String.format("0x%08x", address), (int) memory.get(address), value);
-    } else if (!memory.containsKey(address)) {
+    } else {
       diff.put(address, (byte) 0);
-      pcs.firePropertyChange(String.format("0x%08x", address), 0, value);
     }
+    pcs.firePropertyChange(String.format("0x%08x", address), "memory", value);
     memory.put(address, (byte) (value & Data.BYTE_MASK));
   }
 

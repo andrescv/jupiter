@@ -86,7 +86,7 @@ public abstract class RegisterFile {
       Register reg = rf.get(prefix + i);
       int old = reg.getValue();
       reg.reset();
-      pcs.firePropertyChange(reg.getMnemonic(), old, reg.getValue());
+      pcs.firePropertyChange(reg.getMnemonic(), "reg", reg.getValue());
     }
   }
 
@@ -97,7 +97,7 @@ public abstract class RegisterFile {
    */
   public void restore(HashMap<String, Integer> values) {
     for (String key : values.keySet()) {
-      rf.get(key).setValue(values.get(key));
+      setRegister(key, values.get(key));
     }
   }
 
@@ -113,10 +113,8 @@ public abstract class RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("invalid register: " + (prefix + number));
     // save previous register value in diff
-    if (value != reg.getValue()) {
-      diff.put(prefix + number, reg.getValue());
-      pcs.firePropertyChange(reg.getMnemonic(), reg.getValue(), value);
-    }
+    diff.put(prefix + number, reg.getValue());
+    pcs.firePropertyChange(reg.getMnemonic(), "reg", value);
     reg.setValue(value);
   }
 
@@ -132,10 +130,8 @@ public abstract class RegisterFile {
     if (reg == null)
       throw new IllegalArgumentException("invalid register: " + name);
     // save previous register value in diff
-    if (value != reg.getValue()) {
-      diff.put(name, reg.getValue());
-      pcs.firePropertyChange(reg.getMnemonic(), reg.getValue(), value);
-    }
+    diff.put(name, reg.getValue());
+    pcs.firePropertyChange(reg.getMnemonic(), "reg", value);
     reg.setValue(value);
   }
 
