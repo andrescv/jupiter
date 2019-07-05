@@ -30,6 +30,7 @@ import javafx.scene.layout.VBox;
 import com.jfoenix.controls.JFXTabPane;
 
 import vsim.Logger;
+import vsim.gui.Settings;
 import vsim.gui.components.EditorTab;
 import vsim.gui.dialogs.*;
 import vsim.utils.FS;
@@ -51,7 +52,6 @@ public final class Editor {
   /** editor vbox */
   @FXML private VBox editorVBox;
 
-
   /**
    * Initializes V-Sim's GUI editor controller.
    *
@@ -65,8 +65,16 @@ public final class Editor {
     });
     newFile();
     updateStatusBar(getSelectedTab());
+    Settings.USER_DIR.addListener((e, o, n) -> updateStatusBar(getSelectedTab()));
     editorTabPane.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> updateStatusBar((EditorTab) n));
     findReplaceDialog = new FindReplaceDialog(this);
+  }
+
+  /** Removes find and replace dialog. */
+  public void removeFindReplaceDialog() {
+    if (editorVBox.getChildren().contains(findReplaceDialog)) {
+      editorVBox.getChildren().remove(1);
+    }
   }
 
   /**
@@ -79,21 +87,77 @@ public final class Editor {
   }
 
   /**
-   * Returns editor VBox.
-   *
-   * @return editor VBox
-   */
-  public VBox getEditorVBox() {
-    return editorVBox;
-  }
-
-  /**
    * Returns editor tab pane.
    *
    * @return editor tab pane
    */
   public JFXTabPane getEditorTabPane() {
     return editorTabPane;
+  }
+
+  /**
+   * Determines if all open tabs are saved.
+   *
+   * @return {@code true} if all tabs are saved, {@code false} otherwise
+   */
+  protected boolean allSaved() {
+    if (Settings.ASSEMBLE_ONLY_OPEN.get()) {
+      for (Tab openTab : editorTabPane.getTabs()) {
+        EditorTab tab = (EditorTab) openTab;
+        if (tab.untitled() || tab.modified() || !tab.getPath().toFile().exists()) {
+          return false;
+        }
+      }
+      return true;
+    } else if (Settings.ASSEMBLE_ALL.get()) {
+      for (Tab openTab : editorTabPane.getTabs()) {
+        EditorTab tab = (EditorTab) openTab;
+        if (!tab.untitled() && tab.getPath().toFile().exists()) {
+          String p = tab.getPath().toFile().getAbsolutePath();
+          String d = Settings.USER_DIR.get();
+          if (p.startsWith(d) && tab.modified()) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } else {
+      EditorTab tab = getSelectedTab();
+      if (tab == null) {
+        return true;
+      } if (tab.untitled() || tab.modified() || !tab.getPath().toFile().exists()) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  /**
+   * Returns all files to assemble.
+   *
+   * @return all files to assemble.
+   */
+  protected ArrayList<Path> getPaths() {
+    ArrayList<Path> files = new ArrayList<>();
+    if (Settings.ASSEMBLE_ONLY_OPEN.get()) {
+      for (Tab openTab : editorTabPane.getTabs()) {
+        files.add(((EditorTab) openTab).getPath());
+      }
+    } else if (Settings.ASSEMBLE_ALL.get()) {
+      try {
+        files = FS.ls(FS.toPath(Settings.USER_DIR.get()));
+      } catch (IOException e) {
+        Logger.warning("could not get files in dir: " + Settings.USER_DIR.get());
+      }
+    } else {
+      EditorTab tab = getSelectedTab();
+      if (tab != null) {
+        files.add(tab.getPath());
+      }
+    }
+    files.trimToSize();
+    return files;
   }
 
   /** Adds a new untitled file. */
@@ -347,7 +411,14 @@ public final class Editor {
    */
   private void updateStatusBar(EditorTab tab) {
     if (tab != null) {
-      file.textProperty().bind(tab.textProperty());
+      file.textProperty().bind(Bindings.createStringBinding(
+        () -> {
+          Path dir = FS.toPath(Settings.USER_DIR.get());
+          Path path = tab.getPath();
+          return (path != null) ? dir.relativize(path).toString() : tab.getName();
+        },
+        tab.textProperty()
+      ));
       lineAndCol.textProperty().bind(Bindings.createStringBinding(
         () -> {
           int l = tab.getTextEditor().getCurrentParagraph() + 1;
