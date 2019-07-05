@@ -20,6 +20,7 @@ package vsim.asm;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import vsim.Logger;
 import vsim.exc.AssemblerException;
 import vsim.utils.Data;
 
@@ -35,64 +36,69 @@ public final class Assembler {
    * @throws AssemblerException if an error occurs during assembly phase
    */
   public static ArrayList<Program> assemble(ArrayList<Path> files) throws AssemblerException {
-    ArrayList<Program> programs = new ArrayList<>(files.size());
-    // parse files
-    for (Path file : files) {
-      Program program = new Program(file);
-      program.parse();
-      programs.add(program);
-    }
-    // set program that contains start label at first position
-    if (programs.size() > 1) {
-      int index = -1;
-      for (int i = 0; i < programs.size(); i++) {
-        if (programs.get(i).hasEntryPoint()) {
-          index = i;
-          break;
+    if (files != null && files.size() > 0) {
+      ArrayList<Program> programs = new ArrayList<>(files.size());
+      // parse files
+      for (Path file : files) {
+        Program program = new Program(file);
+        program.parse();
+        programs.add(program);
+      }
+      // set program that contains start label at first position
+      if (programs.size() > 1) {
+        int index = -1;
+        for (int i = 0; i < programs.size(); i++) {
+          if (programs.get(i).hasEntryPoint()) {
+            index = i;
+            break;
+          }
+        }
+        if (index != -1) {
+          programs.add(0, programs.remove(index));
         }
       }
-      if (index != -1) {
-        programs.add(0, programs.remove(index));
+      // check symbols
+      for (Program program : programs) {
+        program.check();
       }
+      // add tail call to start label
+      if (programs.get(0).hasEntryPoint()) {
+        programs.get(0).addTailCallToEntryPoint();
+      }
+      // assign start addresses
+      int address = Data.TEXT;
+      // set .text start
+      for (Program program : programs) {
+        program.setTextStart(address);
+        address += program.text().size() * Data.WORD_LENGTH;
+      }
+      // set .rodata start
+      for (Program program : programs) {
+        program.setRodataStart(address);
+        address += program.rodata().size();
+        address = Data.alignToWordBoundary(address);
+      }
+      // set .bss start
+      for (Program program : programs) {
+        program.setBssStart(address);
+        address += program.bss().size();
+        address = Data.alignToWordBoundary(address);
+      }
+      // set .data start
+      for (Program program : programs) {
+        program.setDataStart(address);
+        address += program.bss().size();
+        address = Data.alignToWordBoundary(address);
+      }
+      // generate machine code
+      for (Program program : programs) {
+        program.build();
+      }
+      return programs;
+    } else {
+      Logger.error("no RISC-V files passed...");
+      throw new AssemblerException("simulation halted due to assembly errors");
     }
-    // check symbols
-    for (Program program : programs) {
-      program.check();
-    }
-    // add tail call to start label
-    if (programs.get(0).hasEntryPoint()) {
-      programs.get(0).addTailCallToEntryPoint();
-    }
-    // assign start addresses
-    int address = Data.TEXT;
-    // set .text start
-    for (Program program : programs) {
-      program.setTextStart(address);
-      address += program.text().size() * Data.WORD_LENGTH;
-    }
-    // set .rodata start
-    for (Program program : programs) {
-      program.setRodataStart(address);
-      address += program.rodata().size();
-      address = Data.alignToWordBoundary(address);
-    }
-    // set .bss start
-    for (Program program : programs) {
-      program.setBssStart(address);
-      address += program.bss().size();
-      address = Data.alignToWordBoundary(address);
-    }
-    // set .data start
-    for (Program program : programs) {
-      program.setDataStart(address);
-      address += program.bss().size();
-      address = Data.alignToWordBoundary(address);
-    }
-    // generate machine code
-    for (Program program : programs) {
-      program.build();
-    }
-    return programs;
   }
 
 }
