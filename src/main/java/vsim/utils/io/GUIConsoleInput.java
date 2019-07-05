@@ -32,6 +32,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
 
 import vsim.gui.Status;
 import vsim.utils.Data;
+import vsim.utils.IO;
 
 
 /** GUI input. */
@@ -138,7 +139,7 @@ public final class GUIConsoleInput implements Input {
   public int read() {
     waitForResponse();
     if (inputText == null) {
-      area.appendText(Data.EOL);
+      IO.stdout().println();
       return 0;
     } else if (inputText.equals("")) {
       return (int) Data.EOL.charAt(0);
@@ -152,7 +153,7 @@ public final class GUIConsoleInput implements Input {
   public String readLine() {
     waitForResponse();
     if (inputText == null) {
-      area.appendText(Data.EOL);
+      IO.stdout().println();
       return "";
     } else {
       return inputText;

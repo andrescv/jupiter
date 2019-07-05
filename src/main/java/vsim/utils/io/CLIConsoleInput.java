@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import vsim.utils.Data;
+import vsim.utils.IO;
 
 
 /** CLI input. */
@@ -46,7 +47,7 @@ public final class CLIConsoleInput implements Input {
     try {
       String data = in.readLine();
       if (data == null) {
-        System.out.println();
+        IO.stdout().println();
         return 0;
       } else if (data.equals("")) {
         return (int) Data.EOL.charAt(0);
@@ -64,7 +65,7 @@ public final class CLIConsoleInput implements Input {
     try {
       String data = in.readLine();
       if (data == null) {
-        System.out.println();
+        IO.stdout().println();
         return "";
       }
       return data;
