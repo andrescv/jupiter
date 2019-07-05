@@ -1,70 +1,70 @@
 .code-area {
   -fx-font-size: 20;
-  -fx-background-color: #212121;
+  -fx-background-color: #222222;
   -fx-font-family: 'Ubuntu Mono';
 }
 
 .code-area .selection {
-  -fx-fill: #3b3b3b !important;
+  -fx-fill: rgba(230, 42, 25, 0.3) !important;
 }
 
 .code-area .lineno {
   -fx-font-family: monospace;
   -fx-font-weight: normal;
   -fx-font-style: normal;
-  -fx-text-fill: #666666;
-  -fx-background-color: #242424;
+  -fx-text-fill: rgba(171, 179, 186, 0.5);
+  -fx-background-color: #262626;
 }
 
 .code-area .caret {
-  -fx-stroke: #009688;
+  -fx-stroke: rgba(200, 200, 200, 0.8);
 }
 
 .code-area .paragraph-box:has-caret {
-  -fx-background-color: #1b1b1b;
+  -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
 .code-area .syntax {
-  -fx-fill: #b2ccd6;
+  -fx-fill: #abb3ba;
 }
 
 .code-area .directive {
-  -fx-fill: #82aaff;
+  -fx-fill: #66d9ef;
 }
 
 .code-area .keyword {
-  -fx-fill: #c792ea;
+  -fx-fill: #f92672;
 }
 
 .code-area .lbl {
-  -fx-fill: #f78c6a;
+  -fx-fill: #fc9867;
 }
 
 .code-area .register {
-  -fx-fill: #dddddd;
+  -fx-fill: #fd971f;
 }
 
 .code-area .identifier {
-  -fx-fill: #ffcb6b;
+  -fx-fill: #b0ec38;
 }
 
 .code-area .number {
-  -fx-fill: #f07178;
+  -fx-fill: #ae81ff;
 }
 
 .code-area .comment {
-  -fx-fill: #545454;
+  -fx-fill: rgba(171, 179, 186, 0.5);
 }
 
 .code-area .string {
-  -fx-fill: #c3e88d;
+  -fx-fill: #e6db74;
 }
 
 .code-area .stringb {
-  -fx-fill: #89ddf3;
+  -fx-fill: #e91f24;
 }
 
 .code-area .error {
-  -fx-fill: red;
+  -fx-fill: #e62a19;
   -fx-font-style: italic;
 }

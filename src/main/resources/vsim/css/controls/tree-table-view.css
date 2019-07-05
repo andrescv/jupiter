@@ -1,0 +1,93 @@
+.tree-table-cell {
+  -fx-alignment: CENTER;
+  -fx-font-family: 'Anonymous Pro Bold';
+  -fx-font-size: 15;
+}
+
+.jfx-tree-table-view > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected {
+  -fx-background-color: transparent;
+  -fx-table-cell-border-color: transparent;
+  -fx-text-fill: #333333;
+}
+
+.jfx-tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected {
+  -fx-background-color: transparent;
+  -fx-table-cell-border-color: transparent;
+  -fx-text-fill: #333333;
+}
+
+.jfx-tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell {
+  -fx-text-fill: #333333;
+}
+
+.jfx-tree-table-view .tree-table-row-cell:pc .tree-table-cell,
+.jfx-tree-table-view .tree-table-row-cell:updated .tree-table-cell {
+  -fx-background-color: #d8d8d8;
+}
+
+.tree-table-row-cell .jfx-text-field {
+  -fx-alignment: CENTER;
+}
+
+.tree-table-row-cell .check-box {
+  -unchecked-color: #5a5a5a;
+  -checked-color: -fx-secondary;
+  -fx-cursor: HAND;
+}
+
+.tree-table-row-cell .check-box:disabled {
+  -fx-opacity: 1.0;
+}
+
+.tree-table-row-cell .check-box .box-container {
+  -fx-shape: "M 400 100 L 400 100 A 50 50 0 1 1 400 250 A 50 50 0 1 1 400 100 ";
+  -fx-padding: 10;
+}
+
+.tree-table-row-cell .check-box .box,
+.tree-table-row-cell .check-box:indeterminate .box,
+.tree-table-row-cell .check-box:indeterminate:selected .box {
+  -fx-pref-width: 18;
+  -fx-pref-height: 18;
+  -fx-min-width: -fx-pref-width;
+  -fx-max-width: -fx-pref-width;
+  -fx-min-height: -fx-pref-height;
+  -fx-max-height: -fx-pref-height;
+  -fx-background-color: TRANSPARENT;
+  -fx-background-radius: 2;
+  -fx-border-color: -unchecked-color;
+  -fx-border-style: solid;
+  -fx-border-radius: 2;
+  -fx-border-width: 2;
+}
+
+.tree-table-row-cell .check-box:selected .box {
+  -fx-border-color: -checked-color;
+  -fx-background-color: -checked-color;
+}
+
+.tree-table-row-cell .check-box:selected .mark {
+  -fx-shape: "M384 690l452-452 60 60-512 512-238-238 60-60z";
+  -fx-max-width: 15;
+  -fx-max-height: 12;
+  -fx-background-color: #ffffff;
+  -fx-border-color: #ffffff;
+  -fx-border-width: 2;
+  -fx-border-radius: 2;
+}
+
+.tree-table-row-cell .check-box .indeterminate-mark {
+  -fx-background-color: -checked-color;
+  -fx-background-radius: 2;
+  -fx-border-width: 0;
+  -fx-max-width: 10;
+  -fx-max-height: 10;
+}
+
+.tree-table-row-cell .check-box .indeterminate-mark {
+  -fx-background-color: -checked-color;
+  -fx-background-radius: 2;
+  -fx-border-width: 0;
+  -fx-max-width: 10;
+  -fx-max-height: 10;
+}
