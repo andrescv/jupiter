@@ -107,7 +107,7 @@ public final class FindReplaceDialog extends AnchorPane {
     find.setOnAction(e -> find());
     replace.setOnAction(e -> replace());
     replaceAll.setOnAction(e -> replaceAll());
-
+    close.setOnAction(e -> controller.removeFindReplaceDialog());
     // perform a search if find text field change
     findText.textProperty().addListener((e, o, n) -> search());
     // perform a search if case sensitive checkbox selected property changes
