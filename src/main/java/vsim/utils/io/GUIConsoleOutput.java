@@ -17,40 +17,58 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils.io;
 
-import java.io.PrintStream;
+import javafx.application.Platform;
+
+import org.fxmisc.richtext.InlineCssTextArea;
+
+import vsim.utils.Data;
 
 
-/** CLI output. */
-public final class CmdOutput implements Output {
+/** GUI console output. */
+public final class GUIConsoleOutput implements Output {
 
-  /** PrintStream instance */
-  private final PrintStream out;
+  /** GUI text area */
+  private final InlineCssTextArea area;
 
   /**
-   * Creates a new command line output from a print stream.
+   * Creates a new GUI console output.
    *
-   * @param ps PrintStream (e.g System.out, System.err)
+   * @param area GUI text area
    */
-  public CmdOutput(PrintStream ps) {
-    out = ps;
+  public GUIConsoleOutput(InlineCssTextArea area) {
+    this.area = area;
   }
 
   /** {@inheritDoc} */
   @Override
   public void print(String txt) {
-    out.print(txt);
+    appendText(txt);
   }
 
   /** {@inheritDoc} */
   @Override
   public void println(String txt) {
-    out.println(txt);
+    appendText(txt + Data.EOL);
   }
 
   /** {@inheritDoc} */
   @Override
   public void println() {
-    out.println();
+    appendText(Data.EOL);
+  }
+
+  /**
+   * Appends text to text area.
+   *
+   * @param txt text to append
+   */
+  private void appendText(String txt) {
+    Platform.runLater(() -> {
+      area.moveTo(area.getLength());
+      int pos = area.getLength();
+      area.appendText(txt);
+      area.setStyle(pos, area.getLength(), "-fx-fill: #222222;");
+    });
   }
 
 }

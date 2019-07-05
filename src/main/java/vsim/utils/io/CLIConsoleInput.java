@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import vsim.utils.Data;
+
 
 /** CLI input. */
-public final class CmdInput implements Input {
+public final class CLIConsoleInput implements Input {
 
   /** BufferedReader instance */
   private final BufferedReader in;
@@ -34,7 +36,7 @@ public final class CmdInput implements Input {
    *
    * @param is InputStream (e.g System.in)
    */
-  public CmdInput(InputStream is) {
+  public CLIConsoleInput(InputStream is) {
     in = new BufferedReader(new InputStreamReader(is));
   }
 
@@ -46,10 +48,11 @@ public final class CmdInput implements Input {
       if (data == null) {
         System.out.println();
         return 0;
+      } else if (data.equals("")) {
+        return (int) Data.EOL.charAt(0);
+      } else {
+        return (int) data.charAt(0);
       }
-      if (data.equals(""))
-        return 0;
-      return (int) data.charAt(0);
     } catch (IOException e) {
       return 0;
     }

@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.utils;
 
-import vsim.utils.io.CmdInput;
-import vsim.utils.io.CmdOutput;
+import vsim.utils.io.CLIConsoleInput;
+import vsim.utils.io.CLIConsoleOutput;
 import vsim.utils.io.Input;
 import vsim.utils.io.Output;
 
@@ -27,18 +27,18 @@ import vsim.utils.io.Output;
 public final class IO {
 
   /** command line standard input */
-  private static Input stdin = new CmdInput(System.in);
+  private static Input stdin = new CLIConsoleInput(System.in);
   /** command line standard output */
-  private static Output stdout = new CmdOutput(System.out);
+  private static Output stdout = new CLIConsoleOutput(System.out);
   /** command line standard error */
-  private static Output stderr = new CmdOutput(System.err);
+  private static Output stderr = new CLIConsoleOutput(System.err);
 
   /**
    * Sets standard input.
    *
    * @param stdin new standard input;
    */
-  public static void setStdout(Input stdin) {
+  public static void setStdin(Input stdin) {
     IO.stdin = stdin;
   }
 
