@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui;
 
+import java.nio.file.Path;
 import java.util.prefs.Preferences;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -36,8 +37,8 @@ public final class Settings {
   /** show symbol table setting */
   public static final SimpleBooleanProperty SHOW_ST = new SimpleBooleanProperty(false);
 
-  /** popup dialog for input ecalls setting */
-  public static final SimpleBooleanProperty POPUP_DIALOG = new SimpleBooleanProperty(false);
+  /** assemble only open files setting */
+  public static final SimpleBooleanProperty ASSEMBLE_ONLY_OPEN = new SimpleBooleanProperty(false);
 
   /** assemble all files in current directory setting */
   public static final SimpleBooleanProperty ASSEMBLE_ALL = new SimpleBooleanProperty(false);
@@ -65,7 +66,7 @@ public final class Settings {
   public static void load() {
     USER_DIR.set(prefs.get("USER_DIR", USER_DIR.get()));
     SHOW_ST.set(prefs.getBoolean("SHOW_ST", SHOW_ST.get()));
-    POPUP_DIALOG.set(prefs.getBoolean("POPUP_DIALOG", POPUP_DIALOG.get()));
+    ASSEMBLE_ONLY_OPEN.set(prefs.getBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN.get()));
     ASSEMBLE_ALL.set(prefs.getBoolean("ASSEMBLE_ALL", ASSEMBLE_ALL.get()));
     ASSEMBLER_WARNINGS.set(prefs.getBoolean("ASSEMBLER_WARNINGS", ASSEMBLER_WARNINGS.get()));
     PERMIT_PSEUDOS.set(prefs.getBoolean("PERMIT_PSEUDOS", PERMIT_PSEUDOS.get()));
@@ -81,15 +82,23 @@ public final class Settings {
     prefs.putBoolean("SHOW_ST", SHOW_ST.get());
   }
 
-  /** Toggles and saves popup dialog setting. */
-  public static void togglePopupDialog() {
-    POPUP_DIALOG.set(!POPUP_DIALOG.get());
-    prefs.putBoolean("POPUP_DIALOG", POPUP_DIALOG.get());
+  /** Toggles and saves assemble all setting. */
+  public static void toggleAssembleOnlyOpen() {
+    ASSEMBLE_ONLY_OPEN.set(!ASSEMBLE_ONLY_OPEN.get());
+    if (ASSEMBLE_ONLY_OPEN.get()) {
+      ASSEMBLE_ALL.set(false);
+      prefs.putBoolean("ASSEMBLE_ALL", false);
+    }
+    prefs.putBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN.get());
   }
 
   /** Toggles and saves assemble all setting. */
   public static void toggleAssembleAll() {
     ASSEMBLE_ALL.set(!ASSEMBLE_ALL.get());
+    if (ASSEMBLE_ALL.get()) {
+      ASSEMBLE_ONLY_OPEN.set(false);
+      prefs.putBoolean("ASSEMBLE_ONLY_OPEN", false);
+    }
     prefs.putBoolean("ASSEMBLE_ALL", ASSEMBLE_ALL.get());
   }
 
@@ -128,9 +137,11 @@ public final class Settings {
    *
    * @param dir new user directory
    */
-  public static void setUserDir(String dir) {
-    USER_DIR.set(dir);
-    prefs.put("USER_DIR", USER_DIR.get());
+  public static void setUserDir(Path dir) {
+    if (dir != null) {
+      USER_DIR.set(dir.toFile().getAbsolutePath());
+      prefs.put("USER_DIR", USER_DIR.get());
+    }
   }
 
   /**

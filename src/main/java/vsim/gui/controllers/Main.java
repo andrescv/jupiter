@@ -21,7 +21,9 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -35,9 +37,16 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
 
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.InlineCssTextArea;
+
+import vsim.gui.Icons;
 import vsim.gui.Settings;
 import vsim.gui.Status;
 import vsim.gui.dialogs.*;
+import vsim.utils.IO;
+import vsim.utils.io.GUIConsoleInput;
+import vsim.utils.io.GUIConsoleOutput;
 
 
 /** V-Sim GUI main controller. */
@@ -46,14 +55,19 @@ public final class Main {
   /** main stage */
   protected Stage stage;
 
+  /** if assembling */
+  private SimpleBooleanProperty assembling;
+
   /** about dialog */
   private AboutDialog aboutDialog;
   /** close dialog */
   private CloseDialog closeDialog;
-  /** save dialog */
-  private SaveDialog saveDialog;
+  /** directory chooser */
+  private DirectoryDialog directoryDialog;
   /** file chooser */
   private FileDialog fileDialog;
+  /** save dialog */
+  private SaveDialog saveDialog;
 
   /** snackbar */
   private JFXSnackbar snackbar;
@@ -76,11 +90,13 @@ public final class Main {
   @FXML private Tab editorTab;
   /** simulator tab */
   @FXML private Tab simulatorTab;
+  /** console tab */
+  @FXML private Tab consoleTab;
 
   /** show symbol table setting check box */
   @FXML private JFXCheckBox showSymbolTable;
-  /** popup dialog for input ecalls setting check box */
-  @FXML private JFXCheckBox popupDialog;
+  /** assemble only open files setting check box */
+  @FXML private JFXCheckBox assembleOnly;
   /** assemble all files in directory setting check box */
   @FXML private JFXCheckBox assembleAll;
   /** assembler warnings are consider errors setting check box */
@@ -104,6 +120,8 @@ public final class Main {
   @FXML private MenuItem newFile;
   /** open file menu item */
   @FXML private MenuItem openFile;
+  /** change project folder menu item */
+  @FXML private MenuItem changeProjectFolder;
   /** save menu item */
   @FXML private MenuItem save;
   /** save as menu item */
@@ -153,48 +171,13 @@ public final class Main {
     this.stage = stage;
     // set loading state
     loading(false);
+    // create assembling property
+    assembling = new SimpleBooleanProperty(false);
     // init other controllers
     editorController.initialize(this);
     simulatorController.initialize(this);
-    // add bindings
-    simulatorTab.disableProperty().bind(Bindings.not(Status.READY));
-    editorTab.disableProperty().bind(Status.RUNNING);
-    showSymbolTable.selectedProperty().bind(Settings.SHOW_ST);
-    popupDialog.selectedProperty().bind(Settings.POPUP_DIALOG);
-    assembleAll.selectedProperty().bind(Settings.ASSEMBLE_ALL);
-    assemblerWarnings.selectedProperty().bind(Settings.ASSEMBLER_WARNINGS);
-    permitPseudos.selectedProperty().bind(Settings.PERMIT_PSEUDOS);
-    selfModifyingCode.selectedProperty().bind(Settings.SELF_MODIFYING);
-    autoIndent.selectedProperty().bind(Settings.AUTO_INDENT);
-    darkMode.selectedProperty().bind(Settings.DARK_MODE);
-    tabSize2.selectedProperty().bind(Bindings.equal(2, Settings.TAB_SIZE));
-    tabSize4.selectedProperty().bind(Bindings.equal(4, Settings.TAB_SIZE));
-    tabSize8.selectedProperty().bind(Bindings.equal(8, Settings.TAB_SIZE));
-    // disable some file menu items if there are no tabs open
-    ReadOnlyBooleanProperty editorSelected = editorTab.selectedProperty();
-    ReadOnlyBooleanProperty simulatorSelected = simulatorTab.selectedProperty();
-    BooleanBinding fileCond = Bindings.or(Bindings.isEmpty(editorController.getEditorTabPane().getTabs()), simulatorSelected);
-    newFile.disableProperty().bind(simulatorSelected);
-    openFile.disableProperty().bind(simulatorSelected);
-    save.disableProperty().bind(fileCond);
-    saveAs.disableProperty().bind(fileCond);
-    saveAll.disableProperty().bind(fileCond);
-    close.disableProperty().bind(fileCond);
-    closeAll.disableProperty().bind(fileCond);
-    undo.disableProperty().bind(fileCond);
-    redo.disableProperty().bind(fileCond);
-    cut.disableProperty().bind(fileCond);
-    copy.disableProperty().bind(fileCond);
-    paste.disableProperty().bind(fileCond);
-    selectAll.disableProperty().bind(fileCond);
-    findAndReplace.disableProperty().bind(fileCond);
-    assemble.disableProperty().bind(Status.READY);
-    run.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
-    step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
-    backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
-    stop.disableProperty().bind(Bindings.or(Bindings.not(Status.RUNNING), Bindings.or(editorSelected, Status.EXIT)));
-    reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorSelected, Status.EXIT)));
-    clearAllBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
+    // init controls
+    initControls();
   }
 
   /**
@@ -219,6 +202,15 @@ public final class Main {
   }
 
   /**
+   * Sets assembling state.
+   *
+   * @param state new state
+   */
+  protected void assembling(boolean state) {
+    assembling.set(state);
+  }
+
+  /**
    * Returns V-Sim about dialog.
    *
    * @return about dialog
@@ -240,6 +232,18 @@ public final class Main {
       closeDialog = new CloseDialog(stage);
     }
     return closeDialog;
+  }
+
+  /**
+   * Returns V-Sim directory chooser dialog.
+   *
+   * @return directory chooser dialog
+   */
+  protected DirectoryDialog directoryDialog() {
+    if (directoryDialog == null) {
+      directoryDialog = new DirectoryDialog(stage);
+    }
+    return directoryDialog;
   }
 
   /**
@@ -291,6 +295,11 @@ public final class Main {
   /** Calls editor {@code openFile} method. */
   @FXML private void openFile() {
     editorController.openFile();
+  }
+
+  /** */
+  @FXML private void changeProjectFolder() {
+    Settings.setUserDir(directoryDialog().open("Change Project Folder"));
   }
 
   /** Calls editor {@code save} method. */
@@ -398,9 +407,9 @@ public final class Main {
     Settings.toggleShowSymbolTable();
   }
 
-  /** Calls settings {@code togglePopupDialog} method. */
-  @FXML private void popupDialog() {
-    Settings.togglePopupDialog();
+  /** Calls settings {@code toggleAssembleOnlyOpen} method. */
+  @FXML private void assembleOnly() {
+    Settings.toggleAssembleOnlyOpen();
   }
 
   /** Calls settings {@code toggleAssembleAll} method. */
@@ -456,6 +465,79 @@ public final class Main {
   /** Shows V-Sim about dialog. */
   @FXML private void about() {
     aboutDialog().show();
+  }
+
+  /** Initializes controls. */
+  private void initControls() {
+    // add main tab pane listener
+    mainTabPane.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> {
+      if (n == editorTab) {
+        Status.READY.set(false);
+      }
+    });
+    // add bindings
+    simulatorTab.disableProperty().bind(Bindings.not(Status.READY));
+    editorTab.disableProperty().bind(Status.RUNNING);
+    showSymbolTable.selectedProperty().bind(Settings.SHOW_ST);
+    assembleOnly.selectedProperty().bind(Settings.ASSEMBLE_ONLY_OPEN);
+    assembleAll.selectedProperty().bind(Settings.ASSEMBLE_ALL);
+    assemblerWarnings.selectedProperty().bind(Settings.ASSEMBLER_WARNINGS);
+    permitPseudos.selectedProperty().bind(Settings.PERMIT_PSEUDOS);
+    selfModifyingCode.selectedProperty().bind(Settings.SELF_MODIFYING);
+    autoIndent.selectedProperty().bind(Settings.AUTO_INDENT);
+    darkMode.selectedProperty().bind(Settings.DARK_MODE);
+    tabSize2.selectedProperty().bind(Bindings.equal(2, Settings.TAB_SIZE));
+    tabSize4.selectedProperty().bind(Bindings.equal(4, Settings.TAB_SIZE));
+    tabSize8.selectedProperty().bind(Bindings.equal(8, Settings.TAB_SIZE));
+    // disable some file menu items if there are no tabs open
+    ReadOnlyBooleanProperty editorSelected = editorTab.selectedProperty();
+    ReadOnlyBooleanProperty simulatorSelected = simulatorTab.selectedProperty();
+    BooleanBinding fileCond = Bindings.or(Bindings.isEmpty(editorController.getEditorTabPane().getTabs()), simulatorSelected);
+    newFile.disableProperty().bind(simulatorSelected);
+    openFile.disableProperty().bind(simulatorSelected);
+    changeProjectFolder.disableProperty().bind(simulatorSelected);
+    save.disableProperty().bind(fileCond);
+    saveAs.disableProperty().bind(fileCond);
+    saveAll.disableProperty().bind(fileCond);
+    close.disableProperty().bind(fileCond);
+    closeAll.disableProperty().bind(fileCond);
+    undo.disableProperty().bind(fileCond);
+    redo.disableProperty().bind(fileCond);
+    cut.disableProperty().bind(fileCond);
+    copy.disableProperty().bind(fileCond);
+    paste.disableProperty().bind(fileCond);
+    selectAll.disableProperty().bind(fileCond);
+    findAndReplace.disableProperty().bind(fileCond);
+    assemble.disableProperty().bind(Bindings.or(Status.READY, assembling));
+    run.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    step.disableProperty().bind(Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT)));
+    backstep.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(Status.RUNNING, Bindings.or(editorSelected, Status.EXIT))));
+    stop.disableProperty().bind(Bindings.or(Bindings.not(Status.RUNNING), Bindings.or(editorSelected, Status.EXIT)));
+    reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorSelected, Status.EXIT)));
+    clearAllBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
+    // console tab
+    InlineCssTextArea console = new InlineCssTextArea();
+    console.setId("console");
+    // clear option
+    MenuItem clear = new MenuItem("clear");
+    clear.setOnAction(e -> console.replaceText(0, console.getLength(), ""));
+    clear.setGraphic(Icons.get("clear"));
+    // copy option
+    MenuItem copy = new MenuItem("copy");
+    copy.setOnAction(e -> console.copy());
+    copy.setGraphic(Icons.get("copy"));
+    // select all option
+    MenuItem selectAll = new MenuItem("select all");
+    selectAll.setOnAction(e -> console.selectAll());
+    selectAll.setGraphic(Icons.get("select"));
+    // set context menu with this options
+    ContextMenu menu = new ContextMenu();
+    menu.getItems().addAll(clear, copy, selectAll);
+    console.setContextMenu(menu);
+    IO.setStdin(new GUIConsoleInput(console));
+    IO.setStdout(new GUIConsoleOutput(console));
+    IO.setStderr(new GUIConsoleOutput(console));
+    consoleTab.setContent(new VirtualizedScrollPane<>(console));
   }
 
 }
