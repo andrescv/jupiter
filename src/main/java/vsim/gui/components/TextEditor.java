@@ -23,7 +23,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.ScrollEvent;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -34,6 +37,7 @@ import org.fxmisc.wellbehaved.event.InputMap;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.reactfx.Subscription;
 
+import vsim.gui.Icons;
 import vsim.gui.Settings;
 import vsim.gui.highlighting.Lexer;
 import vsim.gui.highlighting.Token;
@@ -53,6 +57,8 @@ public final class TextEditor extends CodeArea {
   private Subscription subscription;
   /** tab size change listener */
   private ChangeListener<Number> tabListener;
+  /** font size change listener */
+  private ChangeListener<Number> fszListener;
 
   /**
    * Creates a new text editor with a default text content.
@@ -63,6 +69,8 @@ public final class TextEditor extends CodeArea {
     super();
     // set tab size
     setTabSize();
+    // set font size
+    setFontSize();
     // set text
     lastText = text;
     replaceText(0, 0, text);
@@ -110,9 +118,48 @@ public final class TextEditor extends CodeArea {
             e -> replaceSelection(tabSize))
       )
     );
+    // scroll listener
+    addEventFilter(ScrollEvent.SCROLL, e -> {
+      if (e.isControlDown()) {
+        if (e.getDeltaY() > 0)
+          Settings.incCodeFontSize();
+        else if (e.getDeltaY() < 0)
+          Settings.decCodeFontSize();
+        e.consume();
+      }
+    });
     // add bindings
     tabListener = (e, o, n) -> setTabSize();
+    fszListener = (e, o, n) -> setFontSize();
+    Settings.CODE_FONT_SIZE.addListener(fszListener);
     Settings.TAB_SIZE.addListener(tabListener);
+    // undo option
+    MenuItem undo = new MenuItem("Undo");
+    undo.setOnAction(e -> undo());
+    undo.setGraphic(Icons.get("undo"));
+    // redo option
+    MenuItem redo = new MenuItem("Redo");
+    redo.setOnAction(e -> redo());
+    redo.setGraphic(Icons.get("redo"));
+    // cut
+    MenuItem cut = new MenuItem("Cut");
+    cut.setOnAction(e -> cut());
+    cut.setGraphic(Icons.get("cut"));
+    // copy
+    MenuItem copy = new MenuItem("Copy");
+    copy.setOnAction(e -> copy());
+    copy.setGraphic(Icons.get("copy"));
+    // paste
+    MenuItem paste = new MenuItem("Paste");
+    paste.setOnAction(e -> paste());
+    paste.setGraphic(Icons.get("paste"));
+    // select all
+    MenuItem selectAll = new MenuItem("Select All");
+    selectAll.setOnAction(e -> selectAll());
+    selectAll.setGraphic(Icons.get("select"));
+    ContextMenu menu = new ContextMenu();
+    menu.getItems().addAll(undo, redo, cut, copy, paste, selectAll);
+    setContextMenu(menu);
   }
 
   /** Creates a new empty text editor. */
@@ -141,6 +188,7 @@ public final class TextEditor extends CodeArea {
   public void close() {
     subscription.unsubscribe();
     Settings.TAB_SIZE.removeListener(tabListener);
+    Settings.CODE_FONT_SIZE.removeListener(fszListener);
   }
 
   /**
@@ -181,6 +229,11 @@ public final class TextEditor extends CodeArea {
     for (int i = 0; i < Settings.TAB_SIZE.get(); i++) {
       tabSize += " ";
     }
+  }
+
+  /** Sets editor font size. */
+  private void setFontSize() {
+    setStyle(String.format("-fx-font-size: %d;", Settings.CODE_FONT_SIZE.get()));
   }
 
   /**
