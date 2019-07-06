@@ -40,6 +40,10 @@ public final class Memory {
   private int heap;
   /** heap start pointer */
   private int heapStart;
+  /** if .rodata segment exists */
+  private boolean hasRodata;
+  /** if .text segment exists */
+  private boolean hasText;
 
   /** all allocated bytes */
   private final HashMap<Integer, Byte> memory;
@@ -54,12 +58,16 @@ public final class Memory {
     memory = new HashMap<>();
     diff = new HashMap<>();
     pcs = new PropertyChangeSupport(this);
+    hasRodata = false;
+    hasText = false;
   }
 
   /** Clears all the allocated bytes from memory. */
   public void reset() {
     memory.clear();
     diff.clear();
+    hasRodata = false;
+    hasText = false;
   }
 
   /**
@@ -87,12 +95,16 @@ public final class Memory {
    * @param rodataStart where rodata segment starts
    * @param rodataEnd where rodata segment ends
    * @param heapStart where heap segment starts
+   * @param hasRodata if {@code true}, .rodata segment exists
+   * @param hasText if {@code true}, .text segment exists
    */
-  public void setLayout(int textEnd, int rodataStart, int rodataEnd, int heapStart) {
+  public void setLayout(int textEnd, int rodataStart, int rodataEnd, int heapStart, boolean hasRodata, boolean hasText) {
     this.textEnd = textEnd;
     this.rodataStart = rodataStart;
     this.rodataEnd = rodataEnd;
     this.heapStart = heapStart;
+    this.hasRodata = hasRodata;
+    this.hasText = hasText;
     heap = heapStart;
   }
 
@@ -410,10 +422,10 @@ public final class Memory {
     if (Data.inRange(address, Data.RESERVED_HIGH_START, Data.RESERVED_HIGH_END))
       return false;
     // text segment
-    if (Data.inRange(address, Data.TEXT, textEnd))
+    if (hasText && Data.inRange(address, Data.TEXT, textEnd))
       return false;
     // read only data ?
-    return !(!read && Data.inRange(address, rodataStart, rodataEnd));
+    return !(!read && hasRodata && Data.inRange(address, rodataStart, rodataEnd));
   }
 
 }
