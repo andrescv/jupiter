@@ -109,6 +109,7 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
     this.byte1.set(getByte(byte1));
     this.byte2.set(getByte(byte2));
     this.byte3.set(getByte(byte3));
+    updated = false;
   }
 
   /**
@@ -234,6 +235,8 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
       updated = true;
       intByte3 = (int) e.getNewValue();
       byte3.set(getByte(intByte3));
+    } else {
+      updated = false;
     }
   }
 
