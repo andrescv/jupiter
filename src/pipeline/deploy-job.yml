@@ -18,4 +18,4 @@ jobs:
         tasks: 'dist'
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: '$(System.DefaultWorkingDirectory)/build/distributions/V-Sim-${{ parameters.version }}-${{ parameters.platform }}.zip'
+        pathToPublish: './build/distributions/V-Sim-${{ parameters.version }}-${{ parameters.platform }}.zip'

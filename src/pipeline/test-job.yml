@@ -13,7 +13,11 @@ jobs:
         jdkVersionOption: '1.11'
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        tasks: 'build'
+        tasks: 'codecov'
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'JaCoCo'
+        summaryFileLocation: './build/reports/jacoco/test/jacocoTestReport.xml'
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'

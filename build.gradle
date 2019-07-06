@@ -64,6 +64,13 @@ test {
   }
 }
 
+// jacoco configuration
+jacocoTestReport {
+  reports {
+    xml.enabled true
+  }
+}
+
 // spotless configuration
 spotless {
   java {
@@ -80,6 +87,12 @@ spotless {
 task dist {
   dependsOn clean, jlinkZip
   description "Calls clean and then jlinkZip"
+}
+
+// code coverage task
+task codecov {
+  dependsOn build, jacocoTestReport
+  description "Calls build and then jacocoTestReport"
 }
 
 // java source and target compatibility
