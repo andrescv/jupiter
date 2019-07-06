@@ -1,6 +1,7 @@
 // project plugins
 plugins {
   id 'java'
+  id 'jacoco'
   id 'com.diffplug.gradle.spotless' version '3.23.1'
   id 'org.openjfx.javafxplugin' version '0.0.7'
   id 'org.beryx.jlink' version '2.11.1'
