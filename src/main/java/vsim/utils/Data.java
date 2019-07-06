@@ -160,7 +160,10 @@ public final class Data {
    * @return true if the value is in the range, false if not
    */
   public static boolean inRange(int value, int low, int high) {
-    return !(value < low || value > high);
+    long v = Integer.toUnsignedLong(value);
+    long l = Integer.toUnsignedLong(low);
+    long h = Integer.toUnsignedLong(high);
+    return ((v - l) & 0xffffffffL) <= ((h - l) & 0xffffffffL);
   }
 
   /**
@@ -170,7 +173,7 @@ public final class Data {
    * @return true if the value is a valid half value, false if not
    */
   public static boolean validHalf(int value) {
-    return ((value & ~HALF_MASK) == 0) || inRange(value, HALF_MIN_VALUE, HALF_MAX_VALUE);
+    return inRange(value, HALF_MIN_VALUE, HALF_MAX_VALUE);
   }
 
   /**
@@ -180,7 +183,7 @@ public final class Data {
    * @return true if the value is a valid byte value, false if not
    */
   public static boolean validByte(int value) {
-    return ((value & ~BYTE_MASK) == 0) || inRange(value, BYTE_MIN_VALUE, BYTE_MAX_VALUE);
+    return inRange(value, BYTE_MIN_VALUE, BYTE_MAX_VALUE);
   }
 
   /**
