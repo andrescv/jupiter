@@ -43,12 +43,15 @@ public final class LinkedProgram {
   private int rodataStart;
   /** .rodata end */
   private int rodataEnd;
+  /** if .rodata segment exists */
+  private boolean hasRodata;
 
   /** Creates a new and empty linked program. */
   protected LinkedProgram() {
     text = new HashMap<>();
     data = new ArrayList<>();
     state = new State();
+    hasRodata = false;
   }
 
   /**
@@ -84,6 +87,7 @@ public final class LinkedProgram {
   /** Sets .rodata end address. */
   protected void rodataEnd() {
     rodataEnd = rodataStart + data.size() - 1;
+    hasRodata = data.size() > 0;
   }
 
   /** Loads program in memory. */
@@ -101,7 +105,7 @@ public final class LinkedProgram {
       address++;
     }
     // set memory layout
-    state.memory().setLayout(rodataStart - 1, rodataStart, rodataEnd, address);
+    state.memory().setLayout(rodataStart - 1, rodataStart, rodataEnd, address, hasRodata, text.size() > 0);
   }
 
   /**
