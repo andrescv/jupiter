@@ -83,12 +83,6 @@ spotless {
   }
 }
 
-// distribution task
-task dist {
-  dependsOn clean, jlinkZip
-  description "Calls clean and then jlinkZip"
-}
-
 // code coverage task
 task codecov {
   dependsOn build, jacocoTestReport
