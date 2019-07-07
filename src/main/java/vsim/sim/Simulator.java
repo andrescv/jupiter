@@ -20,6 +20,7 @@ package vsim.sim;
 import vsim.Globals;
 import vsim.Logger;
 import vsim.State;
+import vsim.VSim;
 import vsim.asm.stmts.Statement;
 import vsim.exc.*;
 import vsim.linker.LinkedProgram;
@@ -53,10 +54,10 @@ public final class Simulator {
         (new Debugger(program, false)).debug();
         break;
       } catch (HaltException e) {
-        System.exit(e.getCode());
+        VSim.exit(e.getCode());
       } catch (SimulationException e) {
         Logger.error(e.getMessage());
-        System.exit(1);
+        VSim.exit(1);
       }
     }
   }

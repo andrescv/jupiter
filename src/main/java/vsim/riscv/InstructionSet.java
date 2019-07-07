@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vsim.Logger;
+import vsim.VSim;
 import vsim.asm.stmts.*;
 import vsim.riscv.instructions.*;
 import vsim.utils.IO;
@@ -84,7 +85,7 @@ public final class InstructionSet {
       }
     } catch (Exception e) {
       Logger.error("could not load RISC-V instruction set");
-      System.exit(1);
+      VSim.exit(1);
     }
   }
 

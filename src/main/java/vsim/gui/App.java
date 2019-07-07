@@ -26,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import vsim.Logger;
+import vsim.VSim;
 import vsim.gui.controllers.Main;
 
 
@@ -52,7 +53,7 @@ public final class App extends Application {
       stage.toFront();
     } catch (IOException e) {
       Logger.error("could not load V-Sim GUI");
-      System.exit(1);
+      VSim.exit(1);
     }
   }
 
