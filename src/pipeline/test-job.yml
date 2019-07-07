@@ -19,19 +19,3 @@ jobs:
         codeCoverageTool: 'JaCoCo'
         summaryFileLocation: './build/reports/jacoco/test/jacocoTestReport.xml'
         reportDirectory: './build/reports/jacoco/test/html'
-    - task: Gradle@2
-      inputs:
-        gradleWrapperFile: 'gradlew'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.11'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        tasks: 'jlink'
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.x'
-        architecture: 'x64'
-    - task: PythonScript@0
-      inputs:
-        scriptSource: 'filePath'
-        scriptPath: './src/scripts/rvtests.py'
