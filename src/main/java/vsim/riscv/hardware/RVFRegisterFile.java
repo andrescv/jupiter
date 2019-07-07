@@ -97,17 +97,17 @@ public final class RVFRegisterFile extends RegisterFile {
   /** {@inheritDoc} */
   @Override
   public void print() {
-    String fmt = "%s%s (%s)%s[%s] {~= %.6f}";
+    String fmt = "%s%s (%s)%s[0x%08x] {~= %.6f}";
     // include all registers in out string
     for (int i = 0; i < size; i++) {
       Register reg = rf.get(prefix + i);
       String number = prefix + i;
       String space1 = (i >= 10) ? "" : " ";
       int length = reg.getMnemonic().length();
-      String space2 = (length == 4) ? " " : ((length == 3) ? "  " : "   ");
+      String space2 = (length == 4) ? " " : "  ";
       String mnemonic = reg.getMnemonic();
       float value = Float.intBitsToFloat(reg.getValue());
-      IO.stdout().println(String.format(fmt, number, space1, mnemonic, space2, reg.toString(), value));
+      IO.stdout().println(String.format(fmt, number, space1, mnemonic, space2, reg.getValue(), value));
     }
   }
 
@@ -117,11 +117,11 @@ public final class RVFRegisterFile extends RegisterFile {
     Register reg = rf.get(name);
     if (reg == null)
       throw new IllegalArgumentException("Invalid Register: " + name);
-    String fmt = "%s (%s) [%s] {~= %.6f}";
+    String fmt = "%s (%s) [0x%08X] {~= %.6f}";
     String number = prefix + reg.getNumber();
     String mnemonic = reg.getMnemonic();
     float value = Float.intBitsToFloat(reg.getValue());
-    IO.stdout().println(String.format(fmt, number, mnemonic, reg.toString(), value));
+    IO.stdout().println(String.format(fmt, number, mnemonic, reg.getValue(), value));
   }
 
 }
