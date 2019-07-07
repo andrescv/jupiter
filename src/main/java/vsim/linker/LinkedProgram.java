@@ -94,8 +94,7 @@ public final class LinkedProgram {
   public void load() {
     int address = Data.TEXT;
     // load code
-    for (Integer addr : text.keySet()) {
-      assert addr == address;
+    for (int i = 0; i < text.size(); i++) {
       state.memory().privStoreWord(address, text.get(address).code().bits());
       address += Data.WORD_LENGTH;
     }
