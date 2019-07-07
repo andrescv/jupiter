@@ -23,6 +23,7 @@ import java.util.HashMap;
 import vsim.Globals;
 import vsim.Logger;
 import vsim.State;
+import vsim.VSim;
 import vsim.asm.stmts.Statement;
 import vsim.exc.*;
 import vsim.linker.LinkedProgram;
@@ -89,7 +90,7 @@ public final class Debugger {
       if (args[0].equals("help") || args[0].equals("?")) {
         help();
       } else if (args[0].equals("exit") || args[0].equals("quit") || args[0].equals("q")) {
-        System.exit(0);
+        VSim.exit(0);
       } else if (args[0].equals("!")) {
         interpret(prev);
       } else if (args[0].equals("memory")) {

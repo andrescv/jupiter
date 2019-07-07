@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import vsim.Flags;
 import vsim.Logger;
+import vsim.VSim;
 import vsim.asm.Assembler;
 import vsim.exc.*;
 import vsim.linker.Linker;
@@ -45,10 +46,10 @@ public final class Loader {
       }
     } catch (AssemblerException e) {
       Logger.error(e.getMessage());
-      System.exit(1);
+      VSim.exit(1);
     } catch (LinkerException e) {
       Logger.error(e.getMessage());
-      System.exit(1);
+      VSim.exit(1);
     }
   }
 

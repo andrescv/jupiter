@@ -21,6 +21,9 @@ package vsim;
 /** Command line flags. */
 public final class Flags {
 
+  /** exit with System.exit */
+  public static boolean EXIT = true;
+
   /** if running in GUI mode **/
   public static boolean GUI = false;
 
@@ -50,5 +53,6 @@ public final class Flags {
 
   /** dump static data option path value */
   public static String DATA = null;
+
 
 }

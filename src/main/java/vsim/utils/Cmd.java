@@ -27,6 +27,7 @@ import java.util.HashMap;
 import vsim.Flags;
 import vsim.Globals;
 import vsim.Logger;
+import vsim.VSim;
 
 
 /** Command line parser utility. */
@@ -214,47 +215,47 @@ public final class Cmd {
           title();
           Logger.warning("invalid history size: " + cmd.getOptionValue("--hist") + Data.EOL);
           help();
-          System.exit(1);
+          VSim.exit(1);
         }
       }
       title();
       // help message
       if (cmd.hasOption("--help")) {
         help();
-        System.exit(0);
+        VSim.exit(0);
       }
       // online documentation
       if (cmd.hasOption("--docs")) {
         try {
           Desktop.getDesktop().browse(new URI(Globals.HELP));
-          System.exit(0);
+          VSim.exit(0);
         } catch (Exception ex) {
           Logger.warning("could not open online docs, go to: " + Globals.HELP);
-          System.exit(0);
+          VSim.exit(0);
         }
       }
       // simulator version
       if (cmd.hasOption("--version")) {
         version();
-        System.exit(0);
+        VSim.exit(0);
       }
       // simulator license
       if (cmd.hasOption("--license")) {
         license();
-        System.exit(0);
+        VSim.exit(0);
       }
       // check file size
       if (files.size() == 0) {
         Logger.error("no RISC-V assembly files were passed" + Data.EOL);
         help();
-        System.exit(1);
+        VSim.exit(1);
       }
       return files;
     } catch (IllegalArgumentException e) {
       title();
       Logger.error(e.getMessage() + Data.EOL);
       help();
-      System.exit(1);
+      VSim.exit(1);
     }
     return null;
   }

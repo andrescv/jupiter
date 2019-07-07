@@ -42,4 +42,17 @@ public final class VSim {
     }
   }
 
+  /**
+   * Quits V-Sim simulator
+   *
+   * @param code exit code
+   */
+  public static void exit(int code) {
+    if (Flags.EXIT) {
+      System.exit(code);
+    } else {
+      throw new RuntimeException(String.format("V-Sim(%d)", code));
+    }
+  }
+
 }
