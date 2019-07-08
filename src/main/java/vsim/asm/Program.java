@@ -414,6 +414,19 @@ public final class Program {
   }
 
   /**
+   * Adds a new i-type shift statement in .text segment.
+   *
+   * @param line program line number
+   * @param mnemonic statement mnemonic
+   * @param rd destination register
+   * @param rs1 register source 1
+   * @param shamt shift amount
+   */
+  protected void addShift(int line, String mnemonic, int rd, int rs1, int shamt) {
+    add(new Shift(file, line, mnemonic, rd, rs1, shamt));
+  }
+
+  /**
    * Adds a new s-type statement in .text segment.
    *
    * @param line program line number
