@@ -3035,10 +3035,10 @@ class CUP$Parser$actions {
     int rs1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
     int rs1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
     Integer rs1 = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-    int immleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-    int immright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-    Integer imm = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-     program.addIType(ileft, (String) i, rd, rs1, imm, -1);
+    int shamtleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+    int shamtright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+    Integer shamt = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+     program.addShift(ileft, (String) i, rd, rs1, shamt);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("rv32i",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3056,10 +3056,10 @@ class CUP$Parser$actions {
     int rs1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
     int rs1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
     Integer rs1 = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-    int immleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-    int immright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-    Integer imm = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-     program.addIType(ileft, (String) i, rd, rs1, imm, -1);
+    int shamtleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+    int shamtright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+    Integer shamt = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+     program.addShift(ileft, (String) i, rd, rs1, shamt);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("rv32i",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3077,10 +3077,10 @@ class CUP$Parser$actions {
     int rs1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
     int rs1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
     Integer rs1 = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-    int immleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-    int immright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-    Integer imm = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-     program.addIType(ileft, (String) i, rd, rs1, imm, -1);
+    int shamtleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+    int shamtright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+    Integer shamt = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+     program.addShift(ileft, (String) i, rd, rs1, shamt);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("rv32i",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

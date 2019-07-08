@@ -297,12 +297,12 @@ rv32i       ::= I_LUI:i xreg:rd delimiter imm:imm
                 {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
               | I_ANDI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
                 {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
-              | I_SLLI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
-                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
-              | I_SRLI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
-                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
-              | I_SRAI:i xreg:rd delimiter xreg:rs1 delimiter imm:imm
-                {: program.addIType(ileft, (String) i, rd, rs1, imm, -1); :}
+              | I_SLLI:i xreg:rd delimiter xreg:rs1 delimiter imm:shamt
+                {: program.addShift(ileft, (String) i, rd, rs1, shamt); :}
+              | I_SRLI:i xreg:rd delimiter xreg:rs1 delimiter imm:shamt
+                {: program.addShift(ileft, (String) i, rd, rs1, shamt); :}
+              | I_SRAI:i xreg:rd delimiter xreg:rs1 delimiter imm:shamt
+                {: program.addShift(ileft, (String) i, rd, rs1, shamt); :}
               | I_ADD:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
                 {: program.addRType(ileft, (String) i, rd, rs1, rs2); :}
               | I_SUB:i xreg:rd delimiter xreg:rs1 delimiter xreg:rs2
