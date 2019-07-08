@@ -76,7 +76,7 @@ abstract class SType extends Instruction {
     int rs1 = code.get(InstructionField.RS1);
     int rs2 = code.get(InstructionField.RS2);
     int imm = Data.imm(code, Format.S);
-    return String.format("%s x%d, x%d, %d", op, rs2, rs1, imm);
+    return String.format("%s x%d, x%d, %d", op, rs1, rs2, imm);
   }
 
 }
