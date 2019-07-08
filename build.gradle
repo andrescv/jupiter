@@ -69,6 +69,20 @@ jacocoTestReport {
   reports {
     xml.enabled true
   }
+  afterEvaluate {
+    classDirectories.from = files(classDirectories.files.collect {
+      fileTree(
+        dir: it,
+        exclude: [
+          // exclude gui package
+          'vsim/gui/*',
+          // exclude jlex and jcup classes
+          'vsim/asm/Lexer.class',
+          'vsim/asm/Parser.class',
+          'vsim/asm/Parser$CUP$Parser$actions.class'
+        ])
+    })
+  }
 }
 
 // spotless configuration
