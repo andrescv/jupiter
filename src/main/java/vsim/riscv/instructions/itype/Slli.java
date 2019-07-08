@@ -18,6 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 import vsim.State;
+import vsim.riscv.instructions.Format;
+import vsim.riscv.instructions.InstructionField;
+import vsim.riscv.instructions.MachineCode;
+import vsim.utils.Data;
 
 
 /** RISC-V slli (Shift Left Logical Immediate) instruction. */
@@ -50,6 +54,18 @@ public final class Slli extends IType {
   @Override
   protected int compute(State state, int rs1, int imm) {
     return rs1 << (imm & 0x1f);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String disassemble(MachineCode code) {
+    String op = getMnemonic();
+    int rd = code.get(InstructionField.RD);
+    int rs1 = code.get(InstructionField.RS1);
+    int imm = Data.imm(code, Format.I) & 0x1f;
+    return String.format("%s x%d, x%d, %d", op, rd, rs1, imm);
   }
 
 }
