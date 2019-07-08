@@ -190,7 +190,7 @@ public final class Program {
         int address = ref.resolve(0);
         for (int i = 0; i < Data.WORD_LENGTH; i++) {
           byte b = (byte) ((address >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK);
-          data.set(index, b);
+          data.set(index + i, b);
         }
       } catch (Exception e) { }
     }
@@ -201,7 +201,7 @@ public final class Program {
         int address = ref.resolve(0);
         for (int i = 0; i < Data.WORD_LENGTH; i++) {
           byte b = (byte) ((address >>> (i * Data.BYTE_LENGTH_BITS)) & Data.BYTE_MASK);
-          rodata.set(index, b);
+          rodata.set(index + i, b);
         }
       } catch (Exception e) { }
     }
