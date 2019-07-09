@@ -3326,7 +3326,7 @@ class CUP$Parser$actions {
     int ileft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
     int iright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
     Object i = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-
+     program.addIType(ileft, (String) i, 0, 0, 0, -1);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("rv32i",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
