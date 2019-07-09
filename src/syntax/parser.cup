@@ -154,7 +154,7 @@ instruction ::= rv32i
               | pseudos:p
                 {:
                   if (Flags.BARE) {
-                    program.addError("-b flag used, no pseudos available", pleft);
+                    program.addError("bare machine, no pseudos available", pleft);
                   }
                 :}
               ;

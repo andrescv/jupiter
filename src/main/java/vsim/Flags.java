@@ -54,5 +54,4 @@ public final class Flags {
   /** dump static data option path value */
   public static String DATA = null;
 
-
 }
