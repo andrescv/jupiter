@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
 
 import com.jfoenix.controls.JFXTabPane;
@@ -51,6 +53,8 @@ public final class Editor {
   @FXML private Label lineAndCol;
   /** editor vbox */
   @FXML private VBox editorVBox;
+  /** editor tree view */
+  @FXML private TreeView<String> tree;
 
   /**
    * Initializes V-Sim's GUI editor controller.
@@ -104,7 +108,7 @@ public final class Editor {
     if (Settings.ASSEMBLE_ONLY_OPEN.get()) {
       for (Tab openTab : editorTabPane.getTabs()) {
         EditorTab tab = (EditorTab) openTab;
-        if (tab.untitled() || tab.modified() || !tab.getPath().toFile().exists()) {
+        if (tab.untitled() || tab.modified() || !tab.getFile().exists()) {
           return false;
         }
       }
@@ -112,8 +116,8 @@ public final class Editor {
     } else if (Settings.ASSEMBLE_ALL.get()) {
       for (Tab openTab : editorTabPane.getTabs()) {
         EditorTab tab = (EditorTab) openTab;
-        if (!tab.untitled() && tab.getPath().toFile().exists()) {
-          String p = tab.getPath().toFile().getAbsolutePath();
+        if (!tab.untitled() && tab.getFile().exists()) {
+          String p = tab.getFile().getAbsolutePath();
           String d = Settings.USER_DIR.get();
           if (p.startsWith(d) && tab.modified()) {
             return false;
@@ -125,7 +129,7 @@ public final class Editor {
       EditorTab tab = getSelectedTab();
       if (tab == null) {
         return true;
-      } if (tab.untitled() || tab.modified() || !tab.getPath().toFile().exists()) {
+      } if (tab.untitled() || tab.modified() || !tab.getFile().exists()) {
         return false;
       } else {
         return true;
@@ -138,22 +142,22 @@ public final class Editor {
    *
    * @return all files to assemble.
    */
-  protected ArrayList<Path> getPaths() {
-    ArrayList<Path> files = new ArrayList<>();
+  protected ArrayList<File> getFiles() {
+    ArrayList<File> files = new ArrayList<>();
     if (Settings.ASSEMBLE_ONLY_OPEN.get()) {
       for (Tab openTab : editorTabPane.getTabs()) {
-        files.add(((EditorTab) openTab).getPath());
+        files.add(((EditorTab) openTab).getFile());
       }
     } else if (Settings.ASSEMBLE_ALL.get()) {
       try {
-        files = FS.ls(FS.toPath(Settings.USER_DIR.get()));
+        files = FS.ls(FS.toFile(Settings.USER_DIR.get()));
       } catch (IOException e) {
         Logger.warning("could not get files in dir: " + Settings.USER_DIR.get());
       }
     } else {
       EditorTab tab = getSelectedTab();
       if (tab != null) {
-        files.add(tab.getPath());
+        files.add(tab.getFile());
       }
     }
     files.trimToSize();
@@ -176,7 +180,7 @@ public final class Editor {
   protected void openFile() {
     mainController.editor();
     FileDialog dialog = mainController.fileDialog();
-    Path file = dialog.open("Open RISC-V File");
+    File file = dialog.open("Open RISC-V File");
     if (file != null) {
       try {
         EditorTab tab = null;
@@ -185,7 +189,7 @@ public final class Editor {
         for (Tab openTab : editorTabPane.getTabs()) {
           EditorTab t = (EditorTab) openTab;
           // a tab pointing to this file already exits
-          if (t.getPath() != null && FS.equals(t.getPath(), file)) {
+          if (t.getFile() != null && FS.equals(t.getFile(), file)) {
             tab = t;
             break;
           }
@@ -225,9 +229,9 @@ public final class Editor {
   protected void saveAs() {
     EditorTab tab = getSelectedTab();
     FileDialog chooser = mainController.fileDialog();
-    Path file = chooser.save("Save RISC-V File As...", tab.getName());
+    File file = chooser.save("Save RISC-V File As...", tab.getName());
     if (file != null) {
-      Path old = tab.getPath();
+      File old = tab.getFile();
       try {
         tab.setPath(file);
         tab.save();
@@ -357,7 +361,7 @@ public final class Editor {
       try {
         if (tab.untitled()) {
           FileDialog dialog = mainController.fileDialog();
-          Path file = dialog.save("Save RISC-V File", tab.getName());
+          File file = dialog.save("Save RISC-V File", tab.getName());
           if (file != null) {
             tab.setPath(file);
           } else {
@@ -369,7 +373,7 @@ public final class Editor {
           closeTab(tab);
         }
       } catch (IOException e) {
-        Logger.warning("could not save file: " + tab.getPath());
+        Logger.warning("could not save file: " + tab.getFile());
       }
     }
   }
@@ -414,8 +418,11 @@ public final class Editor {
       file.textProperty().bind(Bindings.createStringBinding(
         () -> {
           Path dir = FS.toPath(Settings.USER_DIR.get());
-          Path path = tab.getPath();
-          return (path != null) ? dir.relativize(path).toString() : tab.getName();
+          File file = tab.getFile();
+          if (file != null) {
+            return dir.relativize(file.toPath()).toString();
+          }
+          return tab.getName();
         },
         tab.textProperty()
       ));

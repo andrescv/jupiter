@@ -17,7 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.sim;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import vsim.Globals;
@@ -226,13 +227,13 @@ public final class Debugger {
   /** Pretty prints local symbol table. */
   private void locals() {
     int maxWidth = -1;
-    for (Path path : Globals.local.keySet()) {
+    for (File path : Globals.local.keySet()) {
       for (String label : Globals.local.get(path).labels()) {
         maxWidth = Math.max(maxWidth, label.length());
       }
     }
     String fmt = "%" + maxWidth + "s -> 0x%08x";
-    for (Path path : Globals.local.keySet()) {
+    for (File path : Globals.local.keySet()) {
       IO.stdout().println(path.toString() + ":");
       for (String label : Globals.local.get(path).labels()) {
         IO.stdout().print(String.format(fmt, label, Globals.local.get(path).getSymbol(label).getAddress()));
@@ -405,20 +406,24 @@ public final class Debugger {
     String basic = Globals.iset.get(stmt.mnemonic()).disassemble(stmt.code());
     // get source line
     String source = null;
-    Path file = stmt.getFile();
+    File file = stmt.getFile();
     int line = stmt.getLine();
-    if (file != null && line > 0) {
-      source = FS.getLine(file, line);
-      fmt = (source != null) ? fmt + " > %s" : fmt;
-      source = (source == null) ? basic : source;
-      // remove comments
-      source = source.replaceAll("[;#].*", "");
-      // normalize whitespace (tabs, spaces)
-      source = source.replaceAll("( |\t)+", " ");
-      // normalize commas
-      source = source.replaceAll("( )?,( )?", ", ");
-      // trim whitespace
-      source = source.trim();
+    if (line > 0) {
+      try {
+        source = FS.getLine(file, line);
+        fmt = (source != null) ? fmt + " > %s" : fmt;
+        source = (source == null) ? basic : source;
+        // remove comments
+        source = source.replaceAll("[;#].*", "");
+        // normalize whitespace (tabs, spaces)
+        source = source.replaceAll("( |\t)+", " ");
+        // normalize commas
+        source = source.replaceAll("( )?,( )?", ", ");
+        // trim whitespace
+        source = source.trim();
+      } catch (IOException e) {
+        source = basic;
+      }
     } else {
       source = basic;
     }

@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 
 import vsim.Logger;
@@ -35,11 +35,11 @@ public final class Assembler {
    * @return list of RISC-V unlinked programs
    * @throws AssemblerException if an error occurs during assembly phase
    */
-  public static ArrayList<Program> assemble(ArrayList<Path> files) throws AssemblerException {
+  public static ArrayList<Program> assemble(ArrayList<File> files) throws AssemblerException {
     if (files != null && files.size() > 0) {
       ArrayList<Program> programs = new ArrayList<>(files.size());
       // parse files
-      for (Path file : files) {
+      for (File file : files) {
         Program program = new Program(file);
         program.parse();
         programs.add(program);

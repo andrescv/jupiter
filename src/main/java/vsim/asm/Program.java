@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,7 +37,7 @@ import vsim.utils.FS;
 public final class Program {
 
   /** program file path */
-  private final Path file;
+  private final File file;
 
   /** program current segment */
   private Segment segment;
@@ -86,7 +86,7 @@ public final class Program {
    *
    * @param program file path
    */
-  protected Program(Path file) {
+  protected Program(File file) {
     this.file = file;
     // initial values
     segment = Segment.TEXT;
@@ -114,7 +114,7 @@ public final class Program {
   /** Parses program. */
   protected void parse() throws AssemblerException {
     try {
-      (new Parser(new Lexer(new FileReader(file.toFile())), this)).parse();
+      (new Parser(new Lexer(new FileReader(file)), this)).parse();
     } catch (FileNotFoundException e) {
       addError("file not found: '" + file + "'");
     } catch (IOException e) {
@@ -828,9 +828,9 @@ public final class Program {
    * @param col source column number
    */
   protected void addError(String msg, int line, int col) {
-    String sourceLine = FS.getLine(file, line);
-    String error = String.format("asm::%d:%d: %s", line, col, msg);
-    if (sourceLine != null) {
+    try {
+      String sourceLine = FS.getLine(file, line);
+      String error = String.format("asm::%d:%d: %s", line, col, msg);
       sourceLine = sourceLine.replace("\t", " ");
       sourceLine = sourceLine.replaceAll("[;#].*", "").replaceAll("\\s+$", "");
       String pointer = "";
@@ -839,8 +839,10 @@ public final class Program {
       }
       pointer += "^";
       error += Data.EOL + Data.EOL + " > " + sourceLine + Data.EOL + "   " + pointer;
+      addError(error);
+    } catch (IOException e) {
+      addError(String.format("asm::%d:%d: %s", line, col, msg));
     }
-    addError(error);
   }
 
   /**
@@ -850,14 +852,16 @@ public final class Program {
    * @param line source line number
    */
   protected void addError(String msg, int line) {
-    String sourceLine = FS.getLine(file, line);
-    String error = String.format("asm::%d: %s", line, msg);
-    if (sourceLine != null) {
+    try {
+      String sourceLine = FS.getLine(file, line);
+      String error = String.format("asm::%d: %s", line, msg);
       sourceLine = sourceLine.replace("\t", " ");
       sourceLine = sourceLine.replaceAll("[;#].*", "").replaceAll("\\s+$", "");
       error += Data.EOL + Data.EOL + " > " + sourceLine;
+      addError(error);
+    } catch (IOException e) {
+      addError(String.format("asm::%d: %s", line, msg));
     }
-    addError(error);
   }
 
   /**
@@ -868,8 +872,8 @@ public final class Program {
    * @param token token to find
    */
   protected void addError(String msg, int line, String token) {
-    String sourceLine = FS.getLine(file, line);
-    if (sourceLine != null) {
+    try {
+      String sourceLine = FS.getLine(file, line);
       int col = sourceLine.indexOf(token) + 1;
       sourceLine = sourceLine.replace("\t", " ");
       sourceLine = sourceLine.replaceAll("[;#].*", "").replaceAll("\\s+$", "");
@@ -880,7 +884,7 @@ public final class Program {
       pointer += "^";
       String error = String.format("asm::%d:%d: %s%s%s > %s", line, col, msg, Data.EOL, Data.EOL, sourceLine);
       addError(error + Data.EOL + "   " + pointer);
-    } else {
+    } catch (IOException e) {
       addError(String.format("asm::%d: %s", line, msg));
     }
   }

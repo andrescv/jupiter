@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.gui.dialogs;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -48,11 +47,11 @@ public final class FileDialog {
    *
    * @param title dialog title
    */
-  public Path open(String title) {
+  public File open(String title) {
     chooser.setTitle(title);
     File f = chooser.showOpenDialog(stage);
     if (f != null) {
-      return f.toPath();
+      return f;
     }
     return null;
   }
@@ -63,12 +62,12 @@ public final class FileDialog {
    * @param title dialog title
    * @param filename initial file name
    */
-  public Path save(String title, String filename) {
+  public File save(String title, String filename) {
     chooser.setTitle(title);
     chooser.setInitialFileName(filename);
     File f = chooser.showSaveDialog(stage);
     if (f != null) {
-      return f.toPath();
+      return f;
     }
     return null;
   }

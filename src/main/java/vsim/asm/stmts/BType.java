@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm.stmts;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.Globals;
 import vsim.asm.Relocation;
@@ -49,7 +49,7 @@ public final class BType extends Statement {
    * @param rs2 register source 2
    * @param offset target offset (label or immediate)
    */
-  public BType(Path file, int line, String mnemonic, int rs1, int rs2, Object offset) {
+  public BType(File file, int line, String mnemonic, int rs1, int rs2, Object offset) {
     super(file, line, mnemonic);
     this.rs1 = rs1;
     this.rs2 = rs2;

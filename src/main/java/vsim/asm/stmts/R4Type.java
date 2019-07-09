@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm.stmts;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.Globals;
 import vsim.exc.AssemblerException;
@@ -49,7 +49,7 @@ public final class R4Type extends Statement {
    * @param rs2 register source 2
    * @param rs3 register source 3
    */
-  public R4Type(Path file, int line, String mnemonic, int rd, int rs1, int rs2, int rs3) {
+  public R4Type(File file, int line, String mnemonic, int rd, int rs1, int rs2, int rs3) {
     super(file, line, mnemonic);
     this.rd = rd;
     this.rs1 = rs1;

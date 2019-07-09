@@ -19,12 +19,12 @@ package vsim.utils;
 
 import static java.nio.file.StandardOpenOption.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.stream.Stream;
-
 
 
 /**  Basic file system operations. */
@@ -47,9 +46,11 @@ public final class FS {
    * @return true if success, false if an error occurs while creating the new file
    * @throws IOException if an I/O error occurs
    */
-  public static void create(Path file) throws IOException {
-    if (!Files.exists(file)) {
-      Files.createFile(file);
+  public static boolean create(File file) throws IOException {
+    if (file.isFile()) {
+      return file.createNewFile();
+    } else {
+      return file.mkdirs();
     }
   }
 
@@ -58,11 +59,12 @@ public final class FS {
    *
    * @param file file to delete
    * @return true if success, false if an error occurs while deleting
-   * @throws IOException if an I/O error occurs
    */
-  public static void delete(Path file) throws IOException {
-    if (!Files.exists(file)) {
-      Files.delete(file);
+  public static boolean delete(File file) {
+    try {
+      return file.delete();
+    } catch (SecurityException e) {
+      return false;
     }
   }
 
@@ -77,52 +79,60 @@ public final class FS {
   }
 
   /**
+   * Converts a String url to File.
+   *
+   * @param url String url
+   * @return converted url to File
+   */
+  public static File toFile(String url) {
+    return new File(url);
+  }
+
+  /**
    * Writes text to a file.
    *
    * @param file file path
    * @param text text to write
-   * @return true if success, false if an error occurs while writing
    * @throws IOException if an I/O error occurs
    */
-  public static boolean write(Path file, String text) throws IOException {
+  public static void write(File file, String text) throws IOException {
     create(file);
     StandardOpenOption[] opts = new StandardOpenOption[] { WRITE, TRUNCATE_EXISTING };
-    Files.write(file, text.getBytes(), opts);
-    return true;
+    Files.write(file.toPath(), text.getBytes(), opts);
   }
 
   /**
    * Reads a file.
    *
    * @param file file to read
-   * @return file text content, or null if an error occurs while reading the file
+   * @return file text content
    * @throws IOException if an I/O error occurs
    */
-  public static String read(Path file) throws IOException {
-    FileInputStream fis = new FileInputStream(file.toFile());
-    byte[] data = new byte[(int) file.toFile().length()];
+  public static String read(File file) throws IOException {
+    FileInputStream fis = new FileInputStream(file);
+    byte[] data = new byte[(int) file.length()];
     fis.read(data);
     fis.close();
     return new String(data);
   }
 
   /**
-   * List directory files recursively.
+   * List all assembly files in directory recursively.
    *
-   * @param dir directory
+   * @param directory directory path
    * @return list of all files inside the given directory
    * @throws IOException if an I/O error occurs
    */
-  public static ArrayList<Path> ls(Path dir) throws IOException {
-    ArrayList<Path> files = new ArrayList<>();
-    if (Files.isDirectory(dir)) {
+  public static ArrayList<File> ls(File directory) throws IOException {
+    ArrayList<File> files = new ArrayList<>();
+    if (directory.isDirectory()) {
       HashSet<FileVisitOption> visitOpts = new HashSet<FileVisitOption>(Arrays.asList(FileVisitOption.FOLLOW_LINKS));
-      Files.walkFileTree(dir, visitOpts, Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+      Files.walkFileTree(directory.toPath(), visitOpts, Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          String p = file.toString();
-          if (attrs.isRegularFile() && (p.endsWith(".s") || p.endsWith(".asm"))) {
-            files.add(file);
+          File f = file.toFile();
+          if (isAssemblyFile(f)) {
+            files.add(f);
           }
           return FileVisitResult.CONTINUE;
         }
@@ -147,45 +157,23 @@ public final class FS {
    *
    * @param file file path
    * @param line line number to get
-   * @return line String or null if an error occurs
+   * @return line String
+   * @throws IOException if an I/O error occurs
    */
-  public static String getLine(Path file, int number) {
-    try {
-      Stream<String> lines = Files.lines(file);
-      return lines.skip(number - 1).findFirst().get();
-    } catch (IOException e) {
-      return null;
-    }
+  public static String getLine(File file, int number) throws IOException {
+    Stream<String> lines = Files.lines(file.toPath());
+    return lines.skip(number - 1).findFirst().get();
   }
 
   /**
-   * Returns true if the given path is a directory, false if not.
-   *
-   * @param path path to verify
-   * @return true if the given path is a directory, false if not
-   */
-  public static boolean isDirectory(Path path, LinkOption ...fl) {
-    return Files.isDirectory(path, fl);
-  }
-
-  /**
-   * Returns true if the given path is a hidden path, false if not.
-   *
-   * @param path path to verify
-   * @return true if the given path is a hidden path, false if not
-   */
-  public static boolean isHidden(Path path) {
-    return path.toFile().isHidden();
-  }
-
-  /**
-   * Returns true if the given path is a regular file, false if not.
+   * Verifies if the given path is a regular assembly file.
    *
    * @param path path to verify
    * @return true if the given path is a regular file, false if not
    */
-  public static boolean isRegularFile(Path file) {
-    return Files.isRegularFile(file);
+  public static boolean isAssemblyFile(File file) {
+    String name = file.getName();
+    return file.isFile() && !file.isHidden() && (name.endsWith(".s") || name.endsWith(".asm"));
   }
 
   /**
@@ -195,22 +183,20 @@ public final class FS {
    * @param b second path to verify
    * @return {@code true} if paths are equal, {@code false} if not
    */
-  public static boolean equals(Path a, Path b) {
-    String f1 = a.toFile().getAbsolutePath();
-    String f2 = b.toFile().getAbsolutePath();
-    return f1.equals(f2);
+  public static boolean equals(File a, File b) {
+    return a.getAbsolutePath().equals(b.getAbsolutePath());
   }
 
   /**
    * Verifies if a path is already in the given list of paths.
    *
-   * @param path path to check
-   * @param paths list of paths
+   * @param file path to check
+   * @param files list of paths
    * @return true if the given path is already in the given list of paths, false if not
    */
-  public static boolean contains(Path path, ArrayList<Path> paths) {
-    for (Path other : paths) {
-      if (equals(path, other)) {
+  public static boolean contains(File file, ArrayList<File> files) {
+    for (File other : files) {
+      if (equals(file, other)) {
         return true;
       }
     }

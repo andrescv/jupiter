@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm.stmts;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.Globals;
 import vsim.asm.Relocation;
@@ -49,7 +49,7 @@ public final class IType extends Statement {
    * @param rs1 register source 1
    * @param imm immediate
    */
-  public IType(Path file, int line, String mnemonic, int rd, int rs1, Object imm) {
+  public IType(File file, int line, String mnemonic, int rd, int rs1, Object imm) {
     super(file, line, mnemonic);
     this.rd = rd;
     this.rs1 = rs1;

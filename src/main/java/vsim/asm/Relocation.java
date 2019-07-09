@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.Globals;
 import vsim.exc.RelocationException;
@@ -41,7 +41,7 @@ public final class Relocation {
   public static final int DEFAULT = 5;
 
   /** relocation file path */
-  private final Path file;
+  private final File file;
   /** relocation type */
   private final int type;
   /** relocation target */
@@ -53,7 +53,7 @@ public final class Relocation {
    * @param type relocation type
    * @param target relocation target
    */
-  public Relocation(Path file, int type, String target) {
+  public Relocation(File file, int type, String target) {
     this.file = file;
     this.type = type;
     this.target = target;

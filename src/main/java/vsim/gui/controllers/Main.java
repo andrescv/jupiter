@@ -17,11 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import java.awt.Desktop;
+import java.net.URI;
+
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -41,6 +45,8 @@ import com.jfoenix.controls.JFXTabPane;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
 
+import vsim.Globals;
+import vsim.Logger;
 import vsim.gui.Icons;
 import vsim.gui.Settings;
 import vsim.gui.Status;
@@ -460,7 +466,20 @@ public final class Main {
 
   /** Shows V-Sim help. */
   @FXML private void help() {
-
+    Task<Void> showHelp = new Task<Void>() {
+      @Override
+      protected Void call() {
+        try {
+          Desktop.getDesktop().browse(new URI(Globals.HELP));
+        } catch (Exception ex) {
+          Logger.warning("could not open online docs, go to: " + Globals.HELP);
+        }
+        return null;
+      }
+    };
+    Thread t = new Thread(showHelp);
+    t.setDaemon(true);
+    t.start();
   }
 
   /** Shows V-Sim about dialog. */
