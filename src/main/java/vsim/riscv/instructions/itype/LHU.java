@@ -31,7 +31,7 @@ public final class LHU extends Instruction {
 
   /** Creates a new lhu instruction. */
   public LHU() {
-    super(Format.I, "lb", 0b0000011, 0b101, 0b0000000);
+    super(Format.I, "lhu", 0b0000011, 0b101, 0b0000000);
   }
 
   /** {@inheritDoc} */
