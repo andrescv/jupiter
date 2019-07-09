@@ -328,6 +328,7 @@ rv32i       ::= I_LUI:i xreg:rd delimiter imm:imm
               | I_EBREAK:i
                 {: program.addIType(ileft, (String) i, 0, 0, 1, -1); :}
               |  I_FENCE:i
+                {: program.addIType(ileft, (String) i, 0, 0, 0, -1); :}
              ;
 
 rv32zicsr   ::= I_CSRRW:i xreg:rd delimiter imm:csr delimiter xreg:rs1
