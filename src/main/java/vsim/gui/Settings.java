@@ -24,6 +24,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import vsim.Flags;
+
 
 /** V-Sim GUI settings. */
 public final class Settings {
@@ -52,6 +54,9 @@ public final class Settings {
   /** self-modifying code setting */
   public static final SimpleBooleanProperty SELF_MODIFYING = new SimpleBooleanProperty(false);
 
+  /** global start label setting */
+  public static final SimpleStringProperty START = new SimpleStringProperty("__start");
+
   /** editor auto indent setting */
   public static final SimpleBooleanProperty AUTO_INDENT = new SimpleBooleanProperty(true);
 
@@ -77,11 +82,17 @@ public final class Settings {
     ASSEMBLER_WARNINGS.set(prefs.getBoolean("ASSEMBLER_WARNINGS", ASSEMBLER_WARNINGS.get()));
     PERMIT_PSEUDOS.set(prefs.getBoolean("PERMIT_PSEUDOS", PERMIT_PSEUDOS.get()));
     SELF_MODIFYING.set(prefs.getBoolean("SELF_MODIFYING", SELF_MODIFYING.get()));
+    START.set(prefs.get("START", START.get()));
     AUTO_INDENT.set(prefs.getBoolean("AUTO_INDENT", AUTO_INDENT.get()));
     DARK_MODE.set(prefs.getBoolean("DARK_MODE", DARK_MODE.get()));
     TAB_SIZE.set(prefs.getInt("TAB_SIZE", TAB_SIZE.get()));
     CODE_FONT_SIZE.set(prefs.getInt("CODE_FONT_SIZE", CODE_FONT_SIZE.get()));
     CONSOLE_FONT_SIZE.set(prefs.getInt("CONSOLE_FONT_SIZE", CONSOLE_FONT_SIZE.get()));
+    // set flags
+    Flags.BARE = !PERMIT_PSEUDOS.get();
+    Flags.EXTRICT = ASSEMBLER_WARNINGS.get();
+    Flags.SELF_MODIFYING = SELF_MODIFYING.get();
+    Flags.START = START.get();
   }
 
   /** Toggles and saves show symbol table setting. */
@@ -113,18 +124,21 @@ public final class Settings {
   /** Toggles and saves assembler warnings setting. */
   public static void toggleAssemblerWarnings() {
     ASSEMBLER_WARNINGS.set(!ASSEMBLER_WARNINGS.get());
+    Flags.EXTRICT = ASSEMBLER_WARNINGS.get();
     prefs.putBoolean("ASSEMBLER_WARNINGS", ASSEMBLER_WARNINGS.get());
   }
 
   /** Toggles and saves permit pseudos setting. */
   public static void togglePermitPseudos() {
     PERMIT_PSEUDOS.set(!PERMIT_PSEUDOS.get());
+    Flags.BARE = !PERMIT_PSEUDOS.get();
     prefs.putBoolean("PERMIT_PSEUDOS", PERMIT_PSEUDOS.get());
   }
 
   /** Toggles and saves self-modifying code setting. */
   public static void toggleSelfModifyingCode() {
     SELF_MODIFYING.set(!SELF_MODIFYING.get());
+    Flags.SELF_MODIFYING = SELF_MODIFYING.get();
     prefs.putBoolean("SELF_MODIFYING", SELF_MODIFYING.get());
   }
 
@@ -162,6 +176,17 @@ public final class Settings {
   public static void decConsoleFontSize() {
     CONSOLE_FONT_SIZE.set(Math.max(CONSOLE_FONT_SIZE.get() - 1, 10));
     prefs.putInt("CONSOLE_FONT_SIZE", CONSOLE_FONT_SIZE.get());
+  }
+
+  /**
+   * Sets global start label setting.
+   *
+   * @param label new start label
+   */
+  public static void setStartLabel(String label) {
+    START.set(label);
+    Flags.START = label;
+    prefs.put("START", START.get());
   }
 
   /**
