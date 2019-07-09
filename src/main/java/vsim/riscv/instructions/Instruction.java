@@ -25,19 +25,31 @@ import vsim.exc.SimulationException;
 public abstract class Instruction {
 
   /** instruction format */
-  private Format format;
+  private final Format format;
   /** instruction mnemonic */
-  private String mnemonic;
+  private final String mnemonic;
+  /** instruction opcode */
+  private final int opcode;
+  /** instruction funct3 */
+  private final int funct3;
+  /** instruction funct7 */
+  private final int funct7;
 
   /**
    * Creates a new abstract instruction.
    *
    * @param format the format of the instruction
    * @param mnemonic the instruction mnemonic
+   * @param opcode instruction opcode field
+   * @param funct3 instruction funct3 field
+   * @param funct7 instruction funct7 field
    */
-  protected Instruction(Format format, String mnemonic) {
+  protected Instruction(Format format, String mnemonic, int opcode, int funct3, int funct7) {
     this.format = format;
     this.mnemonic = mnemonic;
+    this.opcode = opcode;
+    this.funct3 = funct3;
+    this.funct7 = funct7;
   }
 
   /**
@@ -72,7 +84,7 @@ public abstract class Instruction {
    * @return the instruction opcode field
    */
   public int getOpCode() {
-    return 0;
+    return opcode;
   }
 
   /**
@@ -81,7 +93,7 @@ public abstract class Instruction {
    * @return the instruction funct3 field
    */
   public int getFunct3() {
-    return 0;
+    return funct3;
   }
 
   /**
@@ -90,7 +102,7 @@ public abstract class Instruction {
    * @return the instruction funct7 field
    */
   public int getFunct7() {
-    return 0;
+    return funct7;
   }
 
   /**
