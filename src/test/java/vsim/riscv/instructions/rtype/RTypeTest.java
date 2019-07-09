@@ -52,7 +52,7 @@ public class RTypeTest {
     assertEquals("rem x5, x24, x17", Globals.iset.get("rem").disassemble(new MachineCode(0x031C62B3)));
     assertEquals("sltu x5, x5, x6", Globals.iset.get("sltu").disassemble(new MachineCode(0x0062B2B3)));
     assertEquals("sra x5, x6, x7", Globals.iset.get("sra").disassemble(new MachineCode(0x407352B3)));
-    assertEquals("fsqrt.s f10, f1, f0", Globals.iset.get("fsqrt.s").disassemble(new MachineCode(0x5800f553)));
+    assertEquals("fsqrt.s f10, f1", Globals.iset.get("fsqrt.s").disassemble(new MachineCode(0x5800f553)));
     assertEquals("slt x10, x12, x13", Globals.iset.get("slt").disassemble(new MachineCode(0x00D62533)));
     assertEquals("fsub.s f0, f1, f2", Globals.iset.get("fsub.s").disassemble(new MachineCode(0x08208053)));
     assertEquals("fmul.s f2, f3, f4", Globals.iset.get("fmul.s").disassemble(new MachineCode(0x10418153)));

@@ -30,7 +30,7 @@ public final class FNMADDS extends Instruction {
 
   /** Creates a new fnmadd.s instruction. */
   public FNMADDS() {
-    super(Format.R4, "fmnadd.s", 0b1001111, 0b111, 0b0000000);
+    super(Format.R4, "fnmadd.s", 0b1001111, 0b111, 0b0000000);
   }
 
   /** {@inheritDoc} */

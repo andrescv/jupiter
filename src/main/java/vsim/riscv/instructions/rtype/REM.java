@@ -41,7 +41,7 @@ public final class REM extends Instruction {
     if (rs2 != 0) {
       state.xregfile().setRegister(code.get(InstructionField.RD), rs1 % rs2);
     } else {
-      state.xregfile().setRegister(code.get(InstructionField.RD), -1);
+      state.xregfile().setRegister(code.get(InstructionField.RD), rs1);
     }
     state.xregfile().incProgramCounter();
   }

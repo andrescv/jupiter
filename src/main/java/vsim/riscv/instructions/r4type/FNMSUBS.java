@@ -30,7 +30,7 @@ public final class FNMSUBS extends Instruction {
 
   /** Creates a new fnmsub.s instruction. */
   public FNMSUBS() {
-    super(Format.R4, "fmnsub.s", 0b1001011, 0b111, 0b0000000);
+    super(Format.R4, "fnmsub.s", 0b1001011, 0b111, 0b0000000);
   }
 
   /** {@inheritDoc} */

@@ -50,7 +50,7 @@ public final class FLW extends Instruction {
     int rd = code.get(InstructionField.RD);
     int rs1 = code.get(InstructionField.RS1);
     int imm = Data.imm(code, Format.I);
-    return String.format("flw f%d, x%d, %d", op, rd, rs1, imm);
+    return String.format("flw f%d, x%d, %d", rd, rs1, imm);
   }
 
 }

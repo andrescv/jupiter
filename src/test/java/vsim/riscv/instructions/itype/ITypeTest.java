@@ -30,8 +30,8 @@ public class ITypeTest {
 
   @Test
   void testIType() {
-    assertEquals("ebreak x0, x0, 1", Globals.iset.get("ebreak").disassemble(new MachineCode(0x00100073)));
-    assertEquals("ecall x0, x0, 0", Globals.iset.get("ecall").disassemble(new MachineCode(0x00000073)));
+    assertEquals("ebreak", Globals.iset.get("ebreak").disassemble(new MachineCode(0x00100073)));
+    assertEquals("ecall", Globals.iset.get("ecall").disassemble(new MachineCode(0x00000073)));
     assertEquals("srai x10, x5, 1", Globals.iset.get("srai").disassemble(new MachineCode(0x4012D513)));
     assertEquals("jalr x1, x1, 0", Globals.iset.get("jalr").disassemble(new MachineCode(0x000080E7)));
     assertEquals("sltiu x7, x6, 20", Globals.iset.get("sltiu").disassemble(new MachineCode(0x01433393)));

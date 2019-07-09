@@ -46,7 +46,7 @@ public final class FSQRTS extends Instruction {
   public String disassemble(MachineCode code) {
     int rd = code.get(InstructionField.RD);
     int rs1 = code.get(InstructionField.RS1);
-    return String.format("fsub.s f%d, f%d", rd, rs1);
+    return String.format("fsqrt.s f%d, f%d", rd, rs1);
   }
 
 }
