@@ -1581,7 +1581,7 @@ class CUP$Parser$actions {
     Object p = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 
                   if (Flags.BARE) {
-                    program.addError("-b flag used, no pseudos available", pleft);
+                    program.addError("bare machine, no pseudos available", pleft);
                   }
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("instruction",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
