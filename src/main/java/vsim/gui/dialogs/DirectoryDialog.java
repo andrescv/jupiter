@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.gui.dialogs;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -49,12 +48,12 @@ public final class DirectoryDialog {
    *
    * @param title dialog title
    */
-  public Path open(String title) {
+  public File open(String title) {
     chooser.setTitle(title);
     chooser.setInitialDirectory(new File(Settings.USER_DIR.get()));
     File f = chooser.showDialog(stage);
     if (f != null) {
-      return f.toPath();
+      return f;
     }
     return null;
   }

@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.components;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import javafx.scene.control.Tab;
 
@@ -35,7 +35,7 @@ public final class EditorTab extends Tab {
   private static int UNTITLED = 1;
 
   /** file path */
-  private Path file;
+  private File file;
   /** tab name */
   private String name;
   /** untitled number */
@@ -50,12 +50,12 @@ public final class EditorTab extends Tab {
    *
    * @throws IOException if an I/O error occurs
    */
-  public EditorTab(Path file) throws IOException {
+  public EditorTab(File file) throws IOException {
     super();
     this.file = file;
     closed = false;
     untitled = -1;
-    name = file.toFile().getName();
+    name = file.getName();
     setText(name);
     // create new text editor
     textEditor = new TextEditor(FS.read(file));
@@ -84,10 +84,10 @@ public final class EditorTab extends Tab {
    *
    * @param file new file path
    */
-  public void setPath(Path file) {
+  public void setPath(File file) {
     this.file = file;
     untitled = -1;
-    name = file.toFile().getName();
+    name = file.getName();
     setText(name);
     updateIcon();
   }
@@ -98,10 +98,10 @@ public final class EditorTab extends Tab {
    * @param file file to open
    * @throws IOException if an I/O error occurs
    */
-  public void open(Path file) throws IOException {
+  public void open(File file) throws IOException {
     this.file = file;
     untitled = -1;
-    name = file.toFile().getName();
+    name = file.getName();
     setText(name);
     textEditor.load(FS.read(file));
   }
@@ -141,7 +141,7 @@ public final class EditorTab extends Tab {
    *
    * @return file path
    */
-  public Path getPath() {
+  public File getFile() {
     return file;
   }
 

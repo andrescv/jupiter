@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm.stmts;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.Globals;
 import vsim.asm.Relocation;
@@ -46,7 +46,7 @@ public final class JType extends Statement {
    * @param rd destination register
    * @param offset jump offset
    */
-  public JType(Path file, int line, String mnemonic, int rd, Object offset) {
+  public JType(File file, int line, String mnemonic, int rd, Object offset) {
     super(file, line, mnemonic);
     this.rd = rd;
     this.offset = offset;

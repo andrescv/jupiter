@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.prefs.Preferences;
 
 import javafx.beans.property.SimpleBooleanProperty;
@@ -194,9 +194,9 @@ public final class Settings {
    *
    * @param dir new user directory
    */
-  public static void setUserDir(Path dir) {
+  public static void setUserDir(File dir) {
     if (dir != null) {
-      USER_DIR.set(dir.toFile().getAbsolutePath());
+      USER_DIR.set(dir.getAbsolutePath());
       prefs.put("USER_DIR", USER_DIR.get());
     }
   }

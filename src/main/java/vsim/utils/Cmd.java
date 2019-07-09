@@ -18,9 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.utils;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -122,11 +122,11 @@ public final class Cmd {
    * @return a list of assembly files passed in command line arguments
    * @throws IllegalArgumentException if some command line argument is invalid
    */
-  private ArrayList<Path> parseArgs(String[] args) {
+  private ArrayList<File> parseArgs(String[] args) {
     ArrayList<String> flags = new ArrayList<>();
     ArrayList<Integer> pos = new ArrayList<>();
     ArrayList<Integer> ignore = new ArrayList<>();
-    ArrayList<Path> files = new ArrayList<>();
+    ArrayList<File> files = new ArrayList<>();
     HashMap<Integer, String> posToValue = new HashMap<>();
     // check flags and values
     for (int i = 0; i < args.length; i++) {
@@ -160,21 +160,20 @@ public final class Cmd {
     for (Integer index : posToValue.keySet()) {
       if (!ignore.contains(index)) {
         String filename = posToValue.get(index);
-        Path file = FS.toPath(filename);
-        if (FS.isDirectory(file)) {
+        File file = FS.toFile(filename);
+        if (file.isDirectory()) {
           try {
-            for (Path path : FS.ls(file)) {
-              String p = path.toString();
-              if (!FS.contains(path, files)) {
-                files.add(path);
+            for (File f : FS.ls(file)) {
+              if (!FS.contains(f, files)) {
+                files.add(f);
               } else {
-                throw new IllegalArgumentException("passed duplicated file: " + path);
+                throw new IllegalArgumentException("passed duplicated file: " + f);
               }
             }
           } catch (IOException e) {
             throw new IllegalArgumentException("could not search files in dir: " + file);
           }
-        } else if (FS.isRegularFile(file) && (filename.endsWith(".s") || filename.endsWith(".asm"))) {
+        } else if (FS.isAssemblyFile(file)) {
           if (!FS.contains(file, files)) {
             files.add(file);
           } else {
@@ -195,10 +194,10 @@ public final class Cmd {
    * @param args Command line arguments
    * @return A list of paths representing the assembly files (*.s or *.asm) passed.
    */
-  public static ArrayList<Path> parse(String[] args) {
+  public static ArrayList<File> parse(String[] args) {
     try {
       // parse command line arguments
-      ArrayList<Path> files = cmd.parseArgs(args);
+      ArrayList<File> files = cmd.parseArgs(args);
       // set simulator flags
       Flags.TITLE = !cmd.hasOption("--no-title");
       Flags.BARE = cmd.hasOption("--bare");

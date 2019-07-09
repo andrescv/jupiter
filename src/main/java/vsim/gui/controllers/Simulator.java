@@ -17,7 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 
 import javafx.application.Platform;
@@ -180,7 +181,7 @@ public final class Simulator {
         Globals.local.clear();
         if (mainController.editorController.allSaved()) {
           try {
-            program = Linker.link(Assembler.assemble(mainController.editorController.getPaths()));
+            program = Linker.link(Assembler.assemble(mainController.editorController.getFiles()));
             program.load();
             setText();
             setState();
@@ -487,21 +488,25 @@ public final class Simulator {
       String basic = Globals.iset.get(stmt.mnemonic()).disassemble(stmt.code());
       // get source line
       String source = null;
-      Path file = stmt.getFile();
+      File file = stmt.getFile();
       int line = stmt.getLine();
-      if (file != null && line > 0) {
-        // get source from file
-        source = FS.getLine(file, line);
-        // use basic code if necessary
-        source = (source == null) ? basic : source;
-        // remove comments
-        source = source.replaceAll("[;#].*", "");
-        // normalize whitespace (tabs, spaces)
-        source = source.replaceAll("( |\t)+", " ");
-        // normalize commas
-        source = source.replaceAll("( )?,( )?", ", ");
-        // trim whitespace
-        source = source.trim();
+      if (line > 0) {
+        try {
+          // get source from file
+          source = FS.getLine(file, line);
+          // use basic code if necessary
+          source = (source == null) ? basic : source;
+          // remove comments
+          source = source.replaceAll("[;#].*", "");
+          // normalize whitespace (tabs, spaces)
+          source = source.replaceAll("( |\t)+", " ");
+          // normalize commas
+          source = source.replaceAll("( )?,( )?", ", ");
+          // trim whitespace
+          source = source.trim();
+        } catch (IOException e) {
+          source = basic;
+        }
       } else {
         source = basic;
       }
@@ -553,6 +558,7 @@ public final class Simulator {
       rviTable.setRoot(new RecursiveTreeItem<>(xlist, RecursiveTreeObject::getChildren));
       rvfTable.setRoot(new RecursiveTreeItem<>(flist, RecursiveTreeObject::getChildren));
       memoryTable.setRoot(new RecursiveTreeItem<>(mlist, RecursiveTreeObject::getChildren));
+      segment.getSelectionModel().select(0);
       setSegment("text");
     });
   }

@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.asm.stmts;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import vsim.exc.AssemblerException;
 import vsim.riscv.instructions.MachineCode;
@@ -27,7 +27,7 @@ import vsim.riscv.instructions.MachineCode;
 public abstract class Statement {
 
   /** statement file path */
-  protected final Path file;
+  protected final File file;
   /** statement line number */
   protected final int line;
   /** statement mnemonic, e.g add */
@@ -42,7 +42,7 @@ public abstract class Statement {
    * @param line statement line number
    * @param mnemonic statement mnemonic
    */
-  protected Statement(Path file, int line, String mnemonic) {
+  protected Statement(File file, int line, String mnemonic) {
     this.file = file;
     this.line = line;
     this.mnemonic = mnemonic;
@@ -82,7 +82,7 @@ public abstract class Statement {
    *
    * @return statement file path
    */
-  public Path getFile() {
+  public File getFile() {
     return file;
   }
 

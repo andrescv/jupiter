@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.sim;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 
 import vsim.Flags;
@@ -36,7 +36,7 @@ public final class Loader {
    *
    * @param files RISC-V assembly files
    */
-  public static void load(ArrayList<Path> files) {
+  public static void load(ArrayList<File> files) {
     try {
       // debug or simulate ?
       if (Flags.DEBUG) {
