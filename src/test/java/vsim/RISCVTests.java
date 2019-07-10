@@ -19,9 +19,8 @@ package vsim;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -38,10 +37,10 @@ public class RISCVTests {
    *
    * @param file assembly file to simulate
    */
-  private void run(Path file) {
-    ArrayList<Path> files = new ArrayList<>(1);
+  private void run(File file) {
+    ArrayList<File> files = new ArrayList<>(1);
     files.add(file);
-    assertEquals(files.get(0).toFile().exists(), true);
+    assertEquals(files.get(0).exists(), true);
     try {
       // user runtime exception for exit
       Flags.EXIT = false;
@@ -57,7 +56,7 @@ public class RISCVTests {
 
   @Test
   public void testSimulator() throws IOException {
-    for (Path file : FS.ls(Paths.get("./src/test/riscv-tests"))) {
+    for (File file : FS.ls(FS.toFile("./src/test/riscv-tests"))) {
       run(file);
     }
   }
