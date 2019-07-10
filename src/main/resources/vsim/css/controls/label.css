@@ -19,3 +19,11 @@
   -fx-text-fill: #ddd;
   -fx-font-weight: bold
 }
+
+.label.root {
+  -fx-font-family: 'Montserrat SemiBold';
+  -fx-font-size: 14;
+  -fx-background-color: #242424;
+  -fx-padding: 12 0 12 12;
+  -fx-text-fill: #ffffff;
+}
