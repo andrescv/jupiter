@@ -56,6 +56,13 @@
   ECALL
   FLW
   EBREAK
+  FENCE
+  CSRRC
+  CSRRS
+  CSRRW
+  CSRRCI
+  CSRRSI
+  CSRRWI
 :vsim.riscv.instructions.stype
   SB
   SH

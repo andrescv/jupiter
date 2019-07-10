@@ -8,13 +8,13 @@
 }
 
 .split-pane:vertical > .split-pane-divider {
- -fx-background-color: -fx-primary-dark;
+ -fx-background-color: #1d1e1e;
  -fx-padding: 0 1px 0 1px;
- -fx-border-color: -fx-primary-dark;
+ -fx-border-color: #1d1e1e;
 }
 
 .split-pane:horizontal > .split-pane-divider {
-  -fx-background-color: -fx-primary-dark;
+  -fx-background-color: #1d1e1e;
   -fx-padding: 0 1px 0 1px;
-  -fx-border-color: -fx-primary-dark;
+  -fx-border-color: #1d1e1e;
 }

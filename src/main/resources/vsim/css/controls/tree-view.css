@@ -1,0 +1,35 @@
+.tree-view {
+  -fx-background-color: #242424;
+}
+
+.tree-cell {
+  -fx-background-color: #242424;
+  -fx-font-family: 'Montserrat SemiBold';
+  -fx-font-size: 14;
+  -fx-text-fill: #a7a7a7;
+  -fx-font-size: 13;
+}
+
+.tree-cell:selected {
+  -fx-background-color: #3e3e3e;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow  {
+  -fx-background-color: #a7a7a7;
+}
+
+.tree-cell:selected:expanded > .tree-disclosure-node > .arrow  {
+  -fx-background-color: #DADADA;
+}
+
+.tree-cell:selected {
+  -fx-text-fill: #DADADA;
+}
+
+.tree-cell:selected > .tree-disclosure-node > .arrow  {
+  -fx-background-color: #DADADA;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: #a7a7a7;
+}
