@@ -20,52 +20,60 @@ package vsim.utils;
 import static java.nio.file.StandardOpenOption.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
 
 
 /**  Basic file system operations. */
 public final class FS {
 
+  /** valid RISC-V assembly files extensions. */
+  public static final String[] extensions = {".s", ".asm"};
+
   /**
    * Creates a new empty file.
    *
-   * @param file filename
-   * @return true if success, false if an error occurs while creating the new file
+   * @param file file to create
    * @throws IOException if an I/O error occurs
    */
-  public static boolean create(File file) throws IOException {
-    if (file.isFile()) {
-      return file.createNewFile();
-    } else {
-      return file.mkdirs();
-    }
+  public static void createFile(File file) throws IOException {
+    FileUtils.touch(file);
+  }
+
+  /**
+   * Creates a new directory and if necessary all the parent directories.
+   *
+   * @param directory directory to create
+   * @throws IOException if an I/O error occurs
+   */
+  public static void createDirectory(File directory) throws IOException {
+    FileUtils.forceMkdir(directory);
   }
 
   /**
    * Deletes a file.
    *
    * @param file file to delete
-   * @return true if success, false if an error occurs while deleting
+   * @throws IOException if an I/O error occurs
    */
-  public static boolean delete(File file) {
-    try {
-      return file.delete();
-    } catch (SecurityException e) {
-      return false;
-    }
+  public static void deleteFile(File file) throws IOException {
+    FileUtils.forceDelete(file);
+  }
+
+  /**
+   * Deletes a directory recursively.
+   *
+   * @param directory directory to delete.
+   * @throws IOException if an I/O error occurs
+   */
+  public static void deleteDirectory(File directory) throws IOException {
+    FileUtils.deleteDirectory(directory);
   }
 
   /**
@@ -96,9 +104,7 @@ public final class FS {
    * @throws IOException if an I/O error occurs
    */
   public static void write(File file, String text) throws IOException {
-    create(file);
-    StandardOpenOption[] opts = new StandardOpenOption[] { WRITE, TRUNCATE_EXISTING };
-    Files.write(file.toPath(), text.getBytes(), opts);
+    FileUtils.write(file, text, "utf-8", false);
   }
 
   /**
@@ -109,11 +115,7 @@ public final class FS {
    * @throws IOException if an I/O error occurs
    */
   public static String read(File file) throws IOException {
-    FileInputStream fis = new FileInputStream(file);
-    byte[] data = new byte[(int) file.length()];
-    fis.read(data);
-    fis.close();
-    return new String(data);
+    return FileUtils.readFileToString(file, "utf-8");
   }
 
   /**
@@ -121,35 +123,9 @@ public final class FS {
    *
    * @param directory directory path
    * @return list of all files inside the given directory
-   * @throws IOException if an I/O error occurs
    */
-  public static ArrayList<File> ls(File directory) throws IOException {
-    ArrayList<File> files = new ArrayList<>();
-    if (directory.isDirectory()) {
-      HashSet<FileVisitOption> visitOpts = new HashSet<FileVisitOption>(Arrays.asList(FileVisitOption.FOLLOW_LINKS));
-      Files.walkFileTree(directory.toPath(), visitOpts, Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          File f = file.toFile();
-          if (isAssemblyFile(f)) {
-            files.add(f);
-          }
-          return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult visitFileFailed(Path file, IOException e) throws IOException {
-          return FileVisitResult.SKIP_SUBTREE;
-        }
-
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-          return FileVisitResult.CONTINUE;
-        }
-      });
-    }
-    files.trimToSize();
-    return files;
+  public static ArrayList<File> ls(File directory) {
+    return new ArrayList<>(FileUtils.listFiles(directory, extensions, true));
   }
 
   /**

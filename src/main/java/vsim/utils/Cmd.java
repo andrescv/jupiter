@@ -19,7 +19,6 @@ package vsim.utils;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -162,16 +161,12 @@ public final class Cmd {
         String filename = posToValue.get(index);
         File file = FS.toFile(filename);
         if (file.isDirectory()) {
-          try {
-            for (File f : FS.ls(file)) {
-              if (!FS.contains(f, files)) {
-                files.add(f);
-              } else {
-                throw new IllegalArgumentException("passed duplicated file: " + f);
-              }
+          for (File f : FS.ls(file)) {
+            if (!FS.contains(f, files)) {
+              files.add(f);
+            } else {
+              throw new IllegalArgumentException("passed duplicated file: " + f);
             }
-          } catch (IOException e) {
-            throw new IllegalArgumentException("could not search files in dir: " + file);
           }
         } else if (FS.isAssemblyFile(file)) {
           if (!FS.contains(file, files)) {
