@@ -79,6 +79,27 @@ public final class EditorTab extends Tab {
     textEditor.textProperty().addListener((e, o, n) -> handleChanges());
   }
 
+  /** Checks external deletion of file. */
+  public void externalDelete() {
+    if (file != null && !file.exists() && textEditor.getText().length() != 0 && getGraphic() == null) {
+      setGraphic(Icons.get("dot", 12, 12));
+    }
+  }
+
+  /** Checks external modification of file. */
+  public void externalModify() {
+    if (file != null) {
+      try {
+        String text = FS.read(file);
+        if (!text.equals(textEditor.getText())) {
+          textEditor.load(text);
+        }
+      } catch (IOException e) {
+        // just ignore external modification
+      }
+    }
+  }
+
   /**
    * Sets tab file path.
    *
@@ -99,11 +120,8 @@ public final class EditorTab extends Tab {
    * @throws IOException if an I/O error occurs
    */
   public void open(File file) throws IOException {
-    this.file = file;
-    untitled = -1;
-    name = file.getName();
-    setText(name);
     textEditor.load(FS.read(file));
+    setPath(file);
   }
 
   /**
@@ -117,6 +135,19 @@ public final class EditorTab extends Tab {
       textEditor.save();
       setText(name);
       updateIcon();
+    }
+  }
+
+  /**
+   * Saves text editor's content to a file.
+   *
+   * @param file file to save
+   * @throws IOException if an I/O error occurs
+   */
+  public void save(File file) throws IOException {
+    if (file != null) {
+      FS.write(file, textEditor.getText());
+      setPath(file);
     }
   }
 
@@ -153,7 +184,6 @@ public final class EditorTab extends Tab {
   public boolean untitled() {
     return untitled != -1;
   }
-
 
   /**
    * Verifies if the tab has been modified.

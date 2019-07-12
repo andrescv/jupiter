@@ -334,7 +334,7 @@ public final class Main {
 
   /** */
   @FXML private void changeProjectFolder() {
-    Settings.setUserDir(directoryDialog().open("Change Project Folder"));
+    editorController.changeProjectFolder();
   }
 
   /** Calls editor {@code save} method. */

@@ -1,31 +1,31 @@
 .code-area {
   -fx-font-size: 20;
-  -fx-background-color: #222222;
+  -fx-background-color: #fafafa;
   -fx-font-family: 'Ubuntu Mono';
 }
 
 .code-area .selection {
-  -fx-fill: rgba(230, 42, 25, 0.3) !important;
+  -fx-fill: #e5e5e6 !important;
 }
 
 .code-area .lineno {
   -fx-font-family: monospace;
   -fx-font-weight: normal;
   -fx-font-style: normal;
-  -fx-text-fill: rgba(171, 179, 186, 0.5);
-  -fx-background-color: #262626;
+  -fx-text-fill: #9d9d9f;
+  -fx-background-color: #e5e5e6;
 }
 
 .code-area .caret {
-  -fx-stroke: rgba(200, 200, 200, 0.8);
+  -fx-stroke: #526fff;
 }
 
 .code-area .paragraph-box:has-caret {
-  -fx-background-color: rgba(0, 0, 0, 0.1);
+  -fx-background-color: rgba(56, 58, 66, 0.05);
 }
 
 .code-area .syntax {
-  -fx-fill: #abb3ba;
+  -fx-fill: #383a42;
 }
 
 .code-area .directive {
@@ -33,38 +33,107 @@
 }
 
 .code-area .keyword {
-  -fx-fill: #f92672;
+  -fx-fill: #a626a4;
 }
 
 .code-area .lbl {
-  -fx-fill: #fc9867;
+  -fx-fill: #ff6188;
 }
 
 .code-area .register {
-  -fx-fill: #fd971f;
+  -fx-fill: #e45649;
 }
 
 .code-area .identifier {
-  -fx-fill: #b0ec38;
+  -fx-fill: #0184bc;
 }
 
 .code-area .number {
-  -fx-fill: #ae81ff;
+  -fx-fill: #986801;
 }
 
 .code-area .comment {
-  -fx-fill: rgba(171, 179, 186, 0.5);
+  -fx-fill: #a0a1a7;
 }
 
 .code-area .string {
-  -fx-fill: #e6db74;
+  -fx-fill: #50a14f;
 }
 
 .code-area .stringb {
-  -fx-fill: #e91f24;
+  -fx-fill: #0184bc;
 }
 
 .code-area .error {
+  -fx-fill: #ff1414;
+  -fx-font-style: italic;
+}
+
+.code-area:dark {
+  -fx-background-color: #222222;
+}
+
+.code-area:dark .selection {
+  -fx-fill: rgba(230, 42, 25, 0.3) !important;
+}
+
+.code-area:dark .lineno {
+  -fx-font-family: monospace;
+  -fx-font-weight: normal;
+  -fx-font-style: normal;
+  -fx-text-fill: rgba(171, 179, 186, 0.5);
+  -fx-background-color: #262626;
+}
+
+.code-area:dark .caret {
+  -fx-stroke: rgba(200, 200, 200, 0.8);
+}
+
+.code-area:dark .paragraph-box:has-caret {
+  -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.code-area:dark .syntax {
+  -fx-fill: #abb3ba;
+}
+
+.code-area:dark .directive {
+  -fx-fill: #66d9ef;
+}
+
+.code-area:dark .keyword {
+  -fx-fill: #f92672;
+}
+
+.code-area:dark .lbl {
+  -fx-fill: #fc9867;
+}
+
+.code-area:dark .register {
+  -fx-fill: #fd971f;
+}
+
+.code-area:dark .identifier {
+  -fx-fill: #b0ec38;
+}
+
+.code-area:dark .number {
+  -fx-fill: #ae81ff;
+}
+
+.code-area:dark .comment {
+  -fx-fill: rgba(171, 179, 186, 0.5);
+}
+
+.code-area:dark .string {
+  -fx-fill: #e6db74;
+}
+
+.code-area:dark .stringb {
+  -fx-fill: #e91f24;
+}
+
+.code-area:dark .error {
   -fx-fill: #e62a19;
   -fx-font-style: italic;
 }
