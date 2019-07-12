@@ -69,10 +69,14 @@ public final class Main {
   private AboutDialog aboutDialog;
   /** close dialog */
   private CloseDialog closeDialog;
+  /** delete dialog */
+  private DeleteDialog deleteDialog;
   /** directory chooser */
   private DirectoryDialog directoryDialog;
   /** file chooser */
   private FileDialog fileDialog;
+  /** path dialog */
+  private PathDialog pathDialog;
   /** save dialog */
   private SaveDialog saveDialog;
 
@@ -242,6 +246,18 @@ public final class Main {
   }
 
   /**
+   * Returns V-Sim delete dialog.
+   *
+   * @return delete dialog
+   */
+  protected DeleteDialog deleteDialog() {
+    if (deleteDialog == null) {
+      deleteDialog = new DeleteDialog(stage);
+    }
+    return deleteDialog;
+  }
+
+  /**
    * Returns V-Sim directory chooser dialog.
    *
    * @return directory chooser dialog
@@ -263,6 +279,18 @@ public final class Main {
       fileDialog = new FileDialog(stage);
     }
     return fileDialog;
+  }
+
+  /**
+   * Returns V-Sim path dialog.
+   *
+   * @return path dialog
+   */
+  protected PathDialog pathDialog() {
+    if (pathDialog == null) {
+      pathDialog = new PathDialog(stage);
+    }
+    return pathDialog;
   }
 
   /**
