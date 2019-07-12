@@ -12,7 +12,7 @@
    <children>
       <VBox>
          <children>
-            <SplitPane dividerPositions="0.20" VBox.vgrow="ALWAYS">
+            <SplitPane dividerPositions="0.2" VBox.vgrow="ALWAYS">
                <items>
                   <VBox maxWidth="300.0" minWidth="220.0" prefWidth="220.0" SplitPane.resizableWithParent="false">
                      <children>

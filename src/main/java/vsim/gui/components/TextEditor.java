@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javafx.beans.value.ChangeListener;
+import javafx.css.PseudoClass;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -59,6 +60,8 @@ public final class TextEditor extends CodeArea {
   private ChangeListener<Number> tabListener;
   /** font size change listener */
   private ChangeListener<Number> fszListener;
+  /** dark mode listener */
+  private ChangeListener<Boolean> darkListener;
 
   /**
    * Creates a new text editor with a default text content.
@@ -71,6 +74,8 @@ public final class TextEditor extends CodeArea {
     setTabSize();
     // set font size
     setFontSize();
+    // set dark mode
+    setDarkMode();
     // set text
     lastText = text;
     replaceText(0, 0, text);
@@ -131,8 +136,10 @@ public final class TextEditor extends CodeArea {
     // add bindings
     tabListener = (e, o, n) -> setTabSize();
     fszListener = (e, o, n) -> setFontSize();
+    darkListener = (e, o, n) -> setDarkMode();
     Settings.CODE_FONT_SIZE.addListener(fszListener);
     Settings.TAB_SIZE.addListener(tabListener);
+    Settings.DARK_MODE.addListener(darkListener);
     // undo option
     MenuItem undo = new MenuItem("Undo");
     undo.setOnAction(e -> undo());
@@ -189,6 +196,7 @@ public final class TextEditor extends CodeArea {
     subscription.unsubscribe();
     Settings.TAB_SIZE.removeListener(tabListener);
     Settings.CODE_FONT_SIZE.removeListener(fszListener);
+    Settings.DARK_MODE.removeListener(darkListener);
   }
 
   /**
@@ -234,6 +242,11 @@ public final class TextEditor extends CodeArea {
   /** Sets editor font size. */
   private void setFontSize() {
     setStyle(String.format("-fx-font-size: %d;", Settings.CODE_FONT_SIZE.get()));
+  }
+
+  /** Sets editor dark mode. */
+  private void setDarkMode() {
+    pseudoClassStateChanged(PseudoClass.getPseudoClass("dark"), Settings.DARK_MODE.get());
   }
 
   /**

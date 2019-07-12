@@ -34,7 +34,7 @@ import org.apache.commons.io.FileUtils;
 public final class FS {
 
   /** valid RISC-V assembly files extensions. */
-  public static final String[] extensions = {".s", ".asm"};
+  public static final String[] extensions = {"s", "asm"};
 
   /**
    * Creates a new empty file.
@@ -44,6 +44,27 @@ public final class FS {
    */
   public static void createFile(File file) throws IOException {
     FileUtils.touch(file);
+  }
+
+  /**
+   * Moves a file.
+   *
+   * @param src the file to be moved
+   * @param dest the destination file
+   * @throws IOException if an I/O error occurs
+   */
+  public static void moveFile(File src, File dest) throws IOException {
+    FileUtils.moveFile(src, dest);
+  }
+
+  /**
+   * Deletes a file.
+   *
+   * @param file file to delete
+   * @throws IOException if an I/O error occurs
+   */
+  public static void deleteFile(File file) throws IOException {
+    FileUtils.forceDelete(file);
   }
 
   /**
@@ -57,13 +78,13 @@ public final class FS {
   }
 
   /**
-   * Deletes a file.
+   * Moves a directory.
    *
-   * @param file file to delete
-   * @throws IOException if an I/O error occurs
+   * @param src the directory to be moved.
+   * @param dest the destination directory
    */
-  public static void deleteFile(File file) throws IOException {
-    FileUtils.forceDelete(file);
+  public static void moveDirectory(File src, File dest) throws IOException {
+    FileUtils.moveDirectory(src, dest);
   }
 
   /**
@@ -161,6 +182,15 @@ public final class FS {
    */
   public static boolean equals(File a, File b) {
     return a.getAbsolutePath().equals(b.getAbsolutePath());
+  }
+
+  /**
+   * Returns a human-readable version of the file size, where the input represents a specific file to measure.
+   *
+   * @param file file to measure
+   */
+  public static String sizeToDisplay(File file) {
+    return FileUtils.byteCountToDisplaySize(FileUtils.sizeOfAsBigInteger(file));
   }
 
   /**
