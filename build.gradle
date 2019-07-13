@@ -43,8 +43,6 @@ jlink {
     name = 'vsim'
     jvmArgs = [
       '--add-exports',
-      'vsim/vsim.gui=javafx.graphics',
-      '--add-exports',
       'javafx.graphics/com.sun.javafx.application=vsim',
       '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
@@ -67,7 +65,7 @@ test {
   }
 }
 
-// configure javac
+// javac configuration
 compileJava {
   options.compilerArgs += ['--add-exports', 'javafx.graphics/com.sun.javafx.application=vsim']
 }
