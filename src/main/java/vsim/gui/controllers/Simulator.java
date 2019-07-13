@@ -104,50 +104,50 @@ public final class Simulator {
   @FXML private JFXComboBox<Label> segment;
 
   /** RVI tree table view */
-  @FXML protected JFXTreeTableView<RegisterItem> rviTable;
+  @FXML private JFXTreeTableView<RegisterItem> rviTable;
   /** RVI mnemonic tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rviMnemonic;
+  @FXML private TreeTableColumn<RegisterItem, String> rviMnemonic;
   /** RVI number tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rviNumber;
+  @FXML private TreeTableColumn<RegisterItem, String> rviNumber;
   /** RVI value tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rviValue;
+  @FXML private TreeTableColumn<RegisterItem, String> rviValue;
 
   /** RVF tree table view */
-  @FXML protected JFXTreeTableView<RegisterItem> rvfTable;
+  @FXML private JFXTreeTableView<RegisterItem> rvfTable;
   /** RVF mnemonic tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rvfMnemonic;
+  @FXML private TreeTableColumn<RegisterItem, String> rvfMnemonic;
   /** RVF number tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rvfNumber;
+  @FXML private TreeTableColumn<RegisterItem, String> rvfNumber;
   /** RVF value tree table column */
-  @FXML protected TreeTableColumn<RegisterItem, String> rvfValue;
+  @FXML private TreeTableColumn<RegisterItem, String> rvfValue;
 
   /** memory tree table view */
-  @FXML protected JFXTreeTableView<MemoryItem> memoryTable;
+  @FXML private JFXTreeTableView<MemoryItem> memoryTable;
   /** memory address tree table column */
-  @FXML protected TreeTableColumn<MemoryItem, String> memoryAddress;
+  @FXML private TreeTableColumn<MemoryItem, String> memoryAddress;
   /** memory +0 tree table column */
-  @FXML protected TreeTableColumn<MemoryItem, String> memoryOffset0;
+  @FXML private TreeTableColumn<MemoryItem, String> memoryOffset0;
   /** memory +1 tree table column */
-  @FXML protected TreeTableColumn<MemoryItem, String> memoryOffset1;
+  @FXML private TreeTableColumn<MemoryItem, String> memoryOffset1;
   /** memory +2 tree table column */
-  @FXML protected TreeTableColumn<MemoryItem, String> memoryOffset2;
+  @FXML private TreeTableColumn<MemoryItem, String> memoryOffset2;
   /** memory +3 tree table column */
-  @FXML protected TreeTableColumn<MemoryItem, String> memoryOffset3;
+  @FXML private TreeTableColumn<MemoryItem, String> memoryOffset3;
 
   /** text tree table extension */
   private TextTableExt textExt;
   /** text tree table view */
-  @FXML protected JFXTreeTableView<StatementItem> textTable;
+  @FXML private JFXTreeTableView<StatementItem> textTable;
   /** text bkpt tree table column */
-  @FXML protected TreeTableColumn<StatementItem, Boolean> textBkpt;
+  @FXML private TreeTableColumn<StatementItem, Boolean> textBkpt;
   /** text address tree table column */
-  @FXML protected TreeTableColumn<StatementItem, String> textAddress;
+  @FXML private TreeTableColumn<StatementItem, String> textAddress;
   /** text code tree table column */
-  @FXML protected TreeTableColumn<StatementItem, String> textCode;
+  @FXML private TreeTableColumn<StatementItem, String> textCode;
   /** text basic tree table column */
-  @FXML protected TreeTableColumn<StatementItem, String> textBasic;
+  @FXML private TreeTableColumn<StatementItem, String> textBasic;
   /** text source tree table column */
-  @FXML protected TreeTableColumn<StatementItem, String> textSource;
+  @FXML private TreeTableColumn<StatementItem, String> textSource;
 
   /** Creates a new Simulator controller. */
   public Simulator() {

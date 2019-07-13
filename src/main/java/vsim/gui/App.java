@@ -25,6 +25,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import com.sun.javafx.application.LauncherImpl;
+
 import vsim.Logger;
 import vsim.VSim;
 import vsim.gui.controllers.Main;
@@ -33,28 +35,38 @@ import vsim.gui.controllers.Main;
 /** V-Sim GUI application. */
 public final class App extends Application {
 
+  /** scenen */
+  private Scene scene;
+  /** main controller */
+  private Main controller;
+
   /** {@inheritDoc} */
   @Override
-  public void start(Stage stage) {
+  public void init() {
     try {
-      // create scene
+      // load file
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/vsim/fxml/Main.fxml"));
       Parent root = loader.load();
-      Main controller = loader.getController();
-      controller.initialize(stage);
-      Scene scene = new Scene(root, 1024, 800);
-      // add styles
+      controller = loader.getController();
+      // create scene
+      scene = new Scene(root, 1024, 800);
+      // set styles
       scene.getStylesheets().addAll(getClass().getResource("/vsim/css/vsim.css").toExternalForm());
-      // set stage
-      stage.setTitle("V-Sim");
-      stage.getIcons().add(Icons.favicon());
-      stage.setScene(scene);
-      stage.show();
-      stage.toFront();
     } catch (IOException e) {
       Logger.error("could not load V-Sim GUI");
       VSim.exit(1);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void start(Stage stage) {
+    stage.setTitle("V-Sim");
+    stage.getIcons().add(Icons.favicon());
+    controller.setStage(stage);
+    stage.setScene(scene);
+    stage.show();
+    stage.toFront();
   }
 
   /**
@@ -66,7 +78,7 @@ public final class App extends Application {
     System.setProperty("prism.lcdtext", "false");
     Settings.load();
     Fonts.load();
-    launch(args);
+    LauncherImpl.launchApplication(App.class, Splash.class, args);
   }
 
 }
