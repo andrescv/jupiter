@@ -45,6 +45,8 @@ jlink {
       '--add-exports',
       'vsim/vsim.gui=javafx.graphics',
       '--add-exports',
+      'javafx.graphics/com.sun.javafx.application=vsim',
+      '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
       '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
@@ -63,6 +65,11 @@ test {
   testLogging {
     events 'passed', 'skipped', 'failed'
   }
+}
+
+// configure javac
+compileJava {
+  options.compilerArgs += ['--add-exports', 'javafx.graphics/com.sun.javafx.application=vsim']
 }
 
 // jacoco configuration

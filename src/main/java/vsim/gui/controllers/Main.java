@@ -19,6 +19,8 @@ package vsim.gui.controllers;
 
 import java.awt.Desktop;
 import java.net.URI;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -27,6 +29,7 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -57,10 +60,10 @@ import vsim.utils.io.GUIConsoleOutput;
 
 
 /** V-Sim GUI main controller. */
-public final class Main {
+public final class Main implements Initializable {
 
   /** main stage */
-  protected Stage stage;
+  private Stage stage;
 
   /** if assembling */
   private SimpleBooleanProperty assembling;
@@ -172,14 +175,10 @@ public final class Main {
   /** clear all breakpoints menu item */
   @FXML private MenuItem clearAllBreakpoints;
 
-  /**
-   * Initializes V-Sim's GUI main controller.
-   *
-   * @param stage main stage
-   */
-  public void initialize(Stage stage) {
-    // save primary stage
-    this.stage = stage;
+
+  /** {@inheritDoc} */
+  @Override
+  public void initialize(URL url, ResourceBundle resourceBundle) {
     // set loading state
     loading(false);
     // create assembling property
@@ -189,6 +188,25 @@ public final class Main {
     simulatorController.initialize(this);
     // init controls
     initControls();
+  }
+
+  /**
+   * Sets controller stage.
+   *
+   * @param stage main stage
+   */
+  public void setStage(Stage stage) {
+    // save primary stage
+    this.stage = stage;
+    stage.setOnCloseRequest(e -> {
+      e.consume();
+      editorController.quit();
+    });
+  }
+
+  /** Closes main stage. */
+  protected void closeStage() {
+    stage.close();
   }
 
   /**

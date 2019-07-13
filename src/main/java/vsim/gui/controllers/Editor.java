@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.gui.controllers;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -38,20 +40,18 @@ import javafx.scene.layout.VBox;
 
 import com.jfoenix.controls.JFXTabPane;
 
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-
 import vsim.Logger;
+import vsim.gui.DirWatcher;
 import vsim.gui.Icons;
 import vsim.gui.Settings;
 import vsim.gui.components.EditorTab;
 import vsim.gui.components.TreeFileItem;
 import vsim.gui.dialogs.FindReplaceDialog;
-import vsim.utils.DirWatcher;
 import vsim.utils.FS;
 
 
 /** V-Sim GUI editor controller. */
-public final class Editor extends FileAlterationListenerAdaptor {
+public final class Editor implements PropertyChangeListener {
 
   /** Expanded tab lookup */
   private static final Hashtable<String, Boolean> EXPANDED = new Hashtable<String, Boolean>();
@@ -86,10 +86,6 @@ public final class Editor extends FileAlterationListenerAdaptor {
    */
   protected void initialize(Main mainController) {
     this.mainController = mainController;
-    mainController.stage.setOnCloseRequest(e -> {
-      e.consume();
-      quit();
-    });
     newFile();
     updateStatusBar(getSelectedTab());
     Settings.USER_DIR.addListener((e, o, n) -> updateStatusBar(getSelectedTab()));
@@ -207,24 +203,12 @@ public final class Editor extends FileAlterationListenerAdaptor {
   protected void changeProjectFolder() {
     mainController.editor();
     File directory = mainController.directoryDialog().open("Change Project Folder");
-    final Editor controller = this;
-    Thread th = new Thread(new Task<Void>() {
-      /** {@inheritDoc} */
-      public Void call() {
-        if (directory != null) {
-          Settings.setUserDir(directory);
-          watcher.stop();
-          watcher = new DirWatcher(50);
-          watcher.watch(directory, controller);
-          watcher.start();
-          EXPANDED.clear();
-          Platform.runLater(() -> updateTree());
-        }
-        return null;
-      }
-    });
-    th.setDaemon(true);
-    th.start();
+    if (directory != null) {
+      Settings.setUserDir(directory);
+      EXPANDED.clear();
+      Platform.runLater(() -> updateTree());
+      DirWatcher.start(this);
+    }
   }
 
   /** Saves current selected tab. */
@@ -284,7 +268,7 @@ public final class Editor extends FileAlterationListenerAdaptor {
       switch (mainController.closeDialog().get()) {
         case 0:
           (new ArrayList<Tab>(editorTabPane.getTabs())).forEach(e -> closeTab((EditorTab) e));
-          mainController.stage.close();
+          mainController.closeStage();
         case 1:
           ArrayList<Tab> tabs = new ArrayList<>(editorTabPane.getTabs());
           for (Tab openTab : tabs) {
@@ -294,12 +278,12 @@ public final class Editor extends FileAlterationListenerAdaptor {
               return;
             }
           }
-          mainController.stage.close();
+          mainController.closeStage();
         default:
           break;
       }
     } else {
-      mainController.stage.close();
+      mainController.closeStage();
     }
   }
 
@@ -452,8 +436,6 @@ public final class Editor extends FileAlterationListenerAdaptor {
       } else {
         closeTab(tab);
       }
-    } else if (tab == null && editorTabPane.getTabs().size() == 0) {
-      mainController.stage.close();
     }
   }
 
@@ -716,20 +698,8 @@ public final class Editor extends FileAlterationListenerAdaptor {
         }
       }
     });
-    final Editor controller = this;
     Platform.runLater(() -> updateTree());
-    // initi watcher
-    Thread th = new Thread(new Task<Void>() {
-      /** {@inheritDoc} */
-      public Void call() {
-        watcher = new DirWatcher(50);
-        watcher.watch(FS.toFile(Settings.USER_DIR.get()), controller);
-        watcher.start();
-        return null;
-      }
-    });
-    th.setDaemon(true);
-    th.start();
+    DirWatcher.start(this);
   }
 
   /** Updates tree root. */
@@ -739,22 +709,16 @@ public final class Editor extends FileAlterationListenerAdaptor {
     });
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onDirectoryCreate(File file) {
+  private void onDirectoryCreate(File file) {
     updateTree();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onDirectoryDelete(File file) {
+  private void onDirectoryDelete(File file) {
     updateTree();
     EXPANDED.remove(file.getAbsolutePath());
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onFileChange(File file) {
+  private void onFileChange(File file) {
     // code for processing change event
     updateTree();
     for (Tab openTab : editorTabPane.getTabs()) {
@@ -766,15 +730,11 @@ public final class Editor extends FileAlterationListenerAdaptor {
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onFileCreate(File file) {
+  private void onFileCreate(File file) {
     updateTree();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onFileDelete(File file) {
+  private void onFileDelete(File file) {
     updateTree();
     for (Tab openTab : editorTabPane.getTabs()) {
       EditorTab tab = (EditorTab) openTab;
@@ -782,6 +742,31 @@ public final class Editor extends FileAlterationListenerAdaptor {
         Platform.runLater(() -> tab.externalDelete());
         return;
       }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void propertyChange(PropertyChangeEvent e) {
+    switch (e.getPropertyName()) {
+      case "create_dir":
+        onDirectoryCreate((File) e.getNewValue());
+        break;
+      case "create_file":
+        onFileCreate((File) e.getNewValue());
+        break;
+      case "delete_dir":
+        onDirectoryDelete((File) e.getNewValue());
+        break;
+      case "delete_file":
+        onFileDelete((File) e.getNewValue());
+        break;
+      case "modify_file":
+        onFileChange((File) e.getNewValue());
+        break;
+      default:
+        updateTree();
+        break;
     }
   }
 

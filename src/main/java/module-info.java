@@ -15,6 +15,7 @@ module vsim {
   requires java.cup.runtime;
 
   exports vsim;
+  opens vsim.gui to javafx.fxml;
   opens vsim.gui.models to javafx.base;
   opens vsim.gui.controllers to javafx.fxml;
 }
