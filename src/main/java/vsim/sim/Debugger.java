@@ -264,7 +264,6 @@ public final class Debugger {
         history.saveMemAndRegs(program.getState());
       } catch (BreakpointException e) {
         // nothing here :]
-        program.getState().xregfile().incProgramCounter();
       } catch (HaltException e) {
         terminated = true;
         IO.stdout().println();
@@ -312,7 +311,6 @@ public final class Debugger {
             breakpoints.put(pc, true);
           }
         } catch (BreakpointException e) {
-          state.xregfile().incProgramCounter();
           breakpoints.put(pc, true);
         } catch (HaltException e) {
           terminated = true;
