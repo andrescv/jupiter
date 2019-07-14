@@ -17,18 +17,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
+import java.io.File;
+
 
 /** Command line flags. */
 public final class Flags {
 
-  /** exit with System.exit */
+  /** exit with System.exit option */
   public static boolean EXIT = true;
 
-  /** if running in GUI mode **/
-  public static boolean GUI = false;
+  /** show help message option */
+  public static boolean HELP = false;
 
-  /** show V-Sim title option */
-  public static boolean TITLE = true;
+  /** show version option */
+  public static boolean VERSION = false;
+
+  /** show license option */
+  public static boolean LICENSE = false;
 
   /** bare machine mode (no pseudos) option */
   public static boolean BARE = false;
@@ -49,9 +54,9 @@ public final class Flags {
   public static int HIST_SIZE = 2000;
 
   /** dump code option path value */
-  public static String CODE = null;
+  public static File DUMP = null;
 
-  /** dump static data option path value */
-  public static String DATA = null;
+  /** dump format */
+  public static String DUMP_FORMAT = "hex";
 
 }

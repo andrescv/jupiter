@@ -19,6 +19,7 @@ repositories {
 dependencies {
   compile 'commons-io:commons-io:2.6'
   compile 'com.jfoenix:jfoenix:9.0.8'
+  compile 'commons-cli:commons-cli:1.4'
   compile files('lib/java-cup-11b-runtime.jar')
   compile 'org.fxmisc.richtext:richtextfx:0.10.1'
   testCompile 'org.junit.jupiter:junit-jupiter-api:5.4.2'
