@@ -39,8 +39,6 @@ public final class ECALL extends Instruction {
   @Override
   public void execute(MachineCode code, State state) throws SimulationException {
     handler(state);
-    int rs1 = state.xregfile().getRegister(code.get(InstructionField.RS1));
-    state.xregfile().setRegister(code.get(InstructionField.RD), 0);
     state.xregfile().incProgramCounter();
   }
 
