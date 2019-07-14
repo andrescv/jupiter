@@ -227,14 +227,14 @@ public final class Debugger {
   /** Pretty prints local symbol table. */
   private void locals() {
     int maxWidth = -1;
-    for (File path : Globals.local.keySet()) {
+    for (String path : Globals.local.keySet()) {
       for (String label : Globals.local.get(path).labels()) {
         maxWidth = Math.max(maxWidth, label.length());
       }
     }
     String fmt = "%" + maxWidth + "s -> 0x%08x";
-    for (File path : Globals.local.keySet()) {
-      IO.stdout().println(path.toString() + ":");
+    for (String path : Globals.local.keySet()) {
+      IO.stdout().println(path + ":");
       for (String label : Globals.local.get(path).labels()) {
         IO.stdout().print(String.format(fmt, label, Globals.local.get(path).getSymbol(label).getAddress()));
         if (Globals.globl.contains(label)) {

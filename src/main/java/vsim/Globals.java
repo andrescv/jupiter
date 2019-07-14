@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim;
 
-import java.io.File;
 import java.util.HashMap;
 
 import vsim.asm.SymbolTable;
@@ -43,6 +42,6 @@ public final class Globals {
   public static final SymbolTable globl = new SymbolTable();
 
   /** Local symbol table */
-  public static final HashMap<File, SymbolTable> local = new HashMap<>();
+  public static final HashMap<String, SymbolTable> local = new HashMap<>();
 
 }

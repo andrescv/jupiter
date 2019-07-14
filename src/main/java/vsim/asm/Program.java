@@ -131,7 +131,7 @@ public final class Program {
    * @throws AssemblerException if an error occurs while checking symbols
    */
   protected void check() throws AssemblerException {
-    Globals.local.put(file, local);
+    Globals.local.put(file.getAbsolutePath(), local);
     for (String global : globals.keySet()) {
       Symbol sym = local.getSymbol(global);
       if (sym != null && !Globals.globl.contains(global)) {
