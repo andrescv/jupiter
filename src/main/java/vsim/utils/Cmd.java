@@ -56,7 +56,8 @@ public final class Cmd {
     options.addOption(Option.builder().longOpt("start").hasArg().build());
     options.addOption(Option.builder().longOpt("hist").hasArg().build());
     options.addOption(Option.builder("g").longOpt("debug").build());
-    options.addOption(Option.builder("d").longOpt("dump").hasArg().build());
+    options.addOption(Option.builder().longOpt("dump-code").hasArg().build());
+    options.addOption(Option.builder().longOpt("dump-data").hasArg().build());
     options.addOption(Option.builder().longOpt("format").hasArg().build());
     ArrayList<File> files = new ArrayList<>();
     try {
@@ -82,18 +83,11 @@ public final class Cmd {
           VSim.exit(1);
         }
       }
-      if (cmd.hasOption("dump")) {
-        Flags.DUMP = new File(cmd.getOptionValue("dump"));
+      if (cmd.hasOption("dump-code")) {
+        Flags.DUMP_CODE = new File(cmd.getOptionValue("dump-code"));
       }
-      if (cmd.hasOption("format")) {
-        String format = cmd.getOptionValue("format");
-        if (format.equals("hex") || format.equals("bin")) {
-          Flags.DUMP_FORMAT = format;
-        } else {
-          title(true, false);
-          Logger.error("invalid dump format: " + format);
-          VSim.exit(1);
-        }
+      if (cmd.hasOption("dump-data")) {
+        Flags.DUMP_DATA = new File(cmd.getOptionValue("dump-data"));
       }
       // set files
       for (String arg : cmd.getArgs()) {
@@ -168,19 +162,19 @@ public final class Cmd {
       title(true, false);
       IO.stdout().println("usage: vsim [options] <files>");
       IO.stdout().println(Data.EOL + "[General Options]");
-      IO.stdout().println("  -h, --help             show V-Sim help message");
-      IO.stdout().println("  -v, --version          show V-Sim version");
-      IO.stdout().println("  -l, --license          show V-Sim license");
+      IO.stdout().println("  -h, --help              show V-Sim help message");
+      IO.stdout().println("  -v, --version           show V-Sim version");
+      IO.stdout().println("  -l, --license           show V-Sim license");
       IO.stdout().println(Data.EOL + "[Simulator Options]");
-      IO.stdout().println("  -b, --bare             bare machine (no pseudo-ops)");
-      IO.stdout().println("  -s, --self             enable self-modifying code");
-      IO.stdout().println("  -e, --extrict          assembler warnings are consider errors");
-      IO.stdout().println("  -g, --debug            start debugger");
-      IO.stdout().println("      --start  <label>   set global start label (default: __start)");
-      IO.stdout().println("      --hist   <size>    maximum number of backstep operations that can be taken");
+      IO.stdout().println("  -b, --bare              bare machine (no pseudo-ops)");
+      IO.stdout().println("  -s, --self              enable self-modifying code");
+      IO.stdout().println("  -e, --extrict           assembler warnings are consider errors");
+      IO.stdout().println("  -g, --debug             start debugger");
+      IO.stdout().println("      --start    <label>  set global start label (default: __start)");
+      IO.stdout().println("      --hist      <size>  maximum number of backstep operations that can be taken");
       IO.stdout().println(Data.EOL + "[Dump Options]");
-      IO.stdout().println("  -d, --dump   <file>    dump generated machine code to a file");
-      IO.stdout().println("      --format <format>  dump format (hex|bin) (default: hex)");
+      IO.stdout().println("      --dump-code <file>  dump generated machine code to a file");
+      IO.stdout().println("      --dump-data <file>  dump static data to a file");
       IO.stdout().println();
       IO.stdout().println("Please report issues at https://github.com/andrescv/V-Sim/issues");
       // exit simulator

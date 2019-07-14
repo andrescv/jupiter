@@ -34,6 +34,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableColumn.CellEditEvent;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -54,6 +55,7 @@ import vsim.linker.LinkedProgram;
 import vsim.linker.Linker;
 import vsim.sim.History;
 import vsim.utils.Data;
+import vsim.utils.Dump;
 import vsim.utils.FS;
 
 
@@ -346,6 +348,34 @@ public final class Simulator {
     });
     th.setDaemon(true);
     th.start();
+  }
+
+  /** Dumps generated machine code. */
+  @FXML private void dumpCode() {
+    ExtensionFilter filter = new ExtensionFilter("All Files", "*");
+    File file = mainController.fileDialog().save("Dump Machine Code", "code.txt", filter);
+    if (file != null) {
+      try {
+        Dump.dumpCode(file, program);
+        Logger.info("machine code dumped to file: " + file);
+      } catch (IOException e) {
+        Logger.warning("could not dump machine code to file: " + file);
+      }
+    }
+  }
+
+  /** Dumps static data. */
+  @FXML private void dumpData() {
+    ExtensionFilter filter = new ExtensionFilter("All Files", "*");
+    File file = mainController.fileDialog().save("Dump Static Data", "data.txt", filter);
+    if (file != null) {
+      try {
+        Dump.dumpData(file, program);
+        Logger.info("static data dumped to file: " + file);
+      } catch (IOException e) {
+        Logger.warning("could not dump static data to file: " + file);
+      }
+    }
   }
 
   /** Clears all breakpoints. */

@@ -53,10 +53,10 @@ public final class Flags {
   /** history size */
   public static int HIST_SIZE = 2000;
 
-  /** dump code option path value */
-  public static File DUMP = null;
+  /** dump code option file */
+  public static File DUMP_CODE = null;
 
-  /** dump format */
-  public static String DUMP_FORMAT = "hex";
+  /** dump static data option file */
+  public static File DUMP_DATA = null;
 
 }

@@ -152,6 +152,15 @@ public final class LinkedProgram {
   }
 
   /**
+   * Returns static data.
+   *
+   * @return static data
+   */
+  public ArrayList<Byte> data() {
+    return data;
+  }
+
+  /**
    * Returns next program statement.
    *
    * @return next program statement
