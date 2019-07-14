@@ -405,15 +405,6 @@
                   </Menu>
                 <Menu mnemonicParsing="false" text="_Help">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#help" text="Help">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../img/icons/help.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </MenuItem>
                     <MenuItem mnemonicParsing="false" onAction="#about" text="About">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
