@@ -17,15 +17,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.linker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import vsim.Flags;
 import vsim.Globals;
+import vsim.Logger;
+import vsim.VSim;
 import vsim.asm.Program;
 import vsim.asm.Segment;
 import vsim.asm.Symbol;
-import vsim.asm.stmts.*;
+import vsim.asm.stmts.Statement;
 import vsim.exc.LinkerException;
+import vsim.utils.Dump;
 
 
 /** V-Sim linker. */
@@ -71,6 +75,28 @@ public final class Linker {
           lp.add(b);
         }
         lp.align();
+      }
+      // dump
+      if (Flags.DUMP_CODE != null || Flags.DUMP_DATA != null) {
+        // machine code
+        if (Flags.DUMP_CODE != null) {
+          try {
+            Dump.dumpCode(Flags.DUMP_CODE, lp);
+            Logger.info("code dumped to file: " + Flags.DUMP_CODE);
+          } catch (IOException e) {
+            Logger.warning("could not dump code to file: " + Flags.DUMP_CODE);
+          }
+        }
+        // static data
+        if (Flags.DUMP_DATA != null) {
+          try {
+            Dump.dumpData(Flags.DUMP_DATA, lp);
+            Logger.info("static data dumped to file: " + Flags.DUMP_DATA);
+          } catch (IOException e) {
+            Logger.warning("could not dump static data to file: " + Flags.DUMP_DATA);
+          }
+        }
+        VSim.exit(0);
       }
       return lp;
     } else if (start != null) {

@@ -67,7 +67,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="dumpCode" styleClass="code-btn" text="">
+                        <JFXButton fx:id="dumpCode" onAction="#dumpCode" styleClass="code-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -76,7 +76,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="dumpData" styleClass="data-btn" text="">
+                        <JFXButton fx:id="dumpData" onAction="#dumpData" styleClass="data-btn" text="">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

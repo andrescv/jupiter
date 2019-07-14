@@ -72,4 +72,26 @@ public final class FileDialog {
     return null;
   }
 
+  /**
+   * Shows save file dialog.
+   *
+   * @param title dialog title
+   * @param filename initial file name
+   */
+  public File save(String title, String filename, ExtensionFilter ...filters) {
+    chooser.setTitle(title);
+    chooser.setInitialFileName(filename);
+    chooser.getExtensionFilters().clear();
+    for (ExtensionFilter filter : filters) {
+      chooser.getExtensionFilters().add(filter);
+    }
+    File f = chooser.showSaveDialog(stage);
+    chooser.getExtensionFilters().clear();
+    chooser.getExtensionFilters().add(new ExtensionFilter("RISC-V Files", "*.s", "*.asm"));
+    if (f != null) {
+      return f;
+    }
+    return null;
+  }
+
 }
