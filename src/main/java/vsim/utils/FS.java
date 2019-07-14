@@ -170,7 +170,7 @@ public final class FS {
    */
   public static boolean isAssemblyFile(File file) {
     String name = file.getName();
-    return file.isFile() && !file.isHidden() && (name.endsWith(".s") || name.endsWith(".asm"));
+    return file.isFile() && (name.endsWith(".s") || name.endsWith(".asm"));
   }
 
   /**
