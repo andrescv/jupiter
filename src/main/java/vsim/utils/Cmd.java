@@ -69,8 +69,9 @@ public final class Cmd {
       Flags.VERSION = cmd.hasOption("version");
       Flags.LICENSE = cmd.hasOption("license");
       Flags.BARE = cmd.hasOption("bare");
-      Flags.SELF_MODIFYING = cmd.hasOption("self");
+      Flags.DEBUG = cmd.hasOption("debug");
       Flags.EXTRICT = cmd.hasOption("extrict");
+      Flags.SELF_MODIFYING = cmd.hasOption("self");
       if (cmd.hasOption("start")) {
         Flags.START = cmd.getOptionValue("start");
       }
