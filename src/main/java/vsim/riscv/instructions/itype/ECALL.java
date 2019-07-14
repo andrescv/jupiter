@@ -23,7 +23,6 @@ import vsim.State;
 import vsim.exc.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
 
 
