@@ -19,6 +19,8 @@ package vsim.gui.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import javafx.application.Platform;
@@ -30,6 +32,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableColumn.CellEditEvent;
@@ -38,6 +41,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -48,6 +52,7 @@ import vsim.asm.Assembler;
 import vsim.asm.stmts.Statement;
 import vsim.exc.*;
 import vsim.gui.Icons;
+import vsim.gui.Settings;
 import vsim.gui.Status;
 import vsim.gui.components.*;
 import vsim.gui.models.*;
@@ -86,6 +91,12 @@ public final class Simulator {
   private final History history;
   /** list of breakpoints */
   private final Hashtable<Integer, Boolean> breakpoints;
+
+  /** hardware tab pane */
+  @FXML private JFXTabPane hardware;
+
+  /** ST tab */
+  @FXML private Tab symbolTableTab;
 
   /** run button */
   @FXML private JFXButton run;
@@ -136,6 +147,13 @@ public final class Simulator {
   /** memory +3 tree table column */
   @FXML private TreeTableColumn<MemoryItem, String> memoryOffset3;
 
+  /** RVF tree table view */
+  @FXML private JFXTreeTableView<SymbolItem> symbolTable;
+  /** RVF mnemonic tree table column */
+  @FXML private TreeTableColumn<SymbolItem, String> symbolTableName;
+  /** RVF number tree table column */
+  @FXML private TreeTableColumn<SymbolItem, String> symbolTableAddress;
+
   /** text tree table extension */
   private TextTableExt textExt;
   /** text tree table view */
@@ -165,6 +183,7 @@ public final class Simulator {
   protected void initialize(Main mainController) {
     this.mainController = mainController;
     initControls();
+    Settings.SHOW_ST.addListener((e, o, n) -> symbolTable());
   }
 
   /** Assembles RISC-V files. */
@@ -186,6 +205,7 @@ public final class Simulator {
             program = Linker.link(Assembler.assemble(mainController.editorController.getFiles()));
             program.load();
             setText();
+            setSymbolTable();
             setState();
             Status.READY.set(true);
             Platform.runLater(() -> mainController.simulator());
@@ -440,6 +460,13 @@ public final class Simulator {
     memoryOffset1.setOnEditCommit(e -> updateMemory(e, 1));
     memoryOffset2.setOnEditCommit(e -> updateMemory(e, 2));
     memoryOffset3.setOnEditCommit(e -> updateMemory(e, 3));
+    // symbol table
+    memoryTable.setRowFactory(p -> new MemoryRow());
+    symbolTableName.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
+    symbolTableAddress.setCellValueFactory(new TreeItemPropertyValueFactory<>("address"));
+    symbolTableName.setCellFactory(p -> new DisplayCell<>());
+    symbolTableAddress.setCellFactory(p -> new DisplayCell<>());
+    symbolTable();
     // text
     textTable.setRowFactory(p -> new TextRow(program.getState()));
     textBkpt.setCellValueFactory(new TreeItemPropertyValueFactory<>("bkpt"));
@@ -558,6 +585,23 @@ public final class Simulator {
       pc += Data.WORD_LENGTH;
     }
     Platform.runLater(() -> textTable.setRoot(new RecursiveTreeItem<>(tlist, RecursiveTreeObject::getChildren)));
+  }
+
+  /** Sets simulator text table. */
+  private void setSymbolTable() {
+    ArrayList<String> symFiles = new ArrayList<String>(Globals.local.keySet());
+    Collections.sort(symFiles);
+    ObservableList<SymbolItem> list = FXCollections.observableArrayList();
+    for (String file : symFiles) {
+      list.add(new SymbolItem(FS.toFile(file)));
+      ArrayList<SymbolItem> other = new ArrayList<>();
+      for (String name : Globals.local.get(file).labels()) {
+        other.add(new SymbolItem(name, Globals.local.get(file).getSymbol(name).getAddress()));
+      }
+      Collections.sort(other);
+      other.forEach(e -> list.add(e));
+    }
+    Platform.runLater(() -> symbolTable.setRoot(new RecursiveTreeItem<>(list, RecursiveTreeObject::getChildren)));
   }
 
   /** Sets simulator state tables. */
@@ -732,6 +776,21 @@ public final class Simulator {
         }
       }
     });
+  }
+
+  /** Shows/hides symbol table. */
+  private void symbolTable() {
+    if (Settings.SHOW_ST.get()) {
+      if (!hardware.getTabs().contains(symbolTableTab)) {
+        hardware.getTabs().add(symbolTableTab);
+      }
+    } else {
+      Tab selected = hardware.getSelectionModel().getSelectedItem();
+      hardware.getTabs().remove(symbolTableTab);
+      if (selected == symbolTableTab) {
+        hardware.getSelectionModel().select(0);
+      }
+    }
   }
 
 }

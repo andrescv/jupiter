@@ -104,7 +104,7 @@
                   </JFXTreeTableView>
                </children>
             </VBox>
-            <JFXTabPane maxWidth="340.0" minWidth="305.0" prefHeight="667.0" prefWidth="320.0" styleClass="hardware">
+            <JFXTabPane fx:id="hardware" maxWidth="340.0" minWidth="305.0" prefHeight="667.0" prefWidth="320.0" styleClass="hardware">
                <tabs>
                   <Tab text="RVI">
                      <content>
@@ -178,6 +178,19 @@
                               </HBox>
                            </children>
                         </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="symbolTableTab" text="ST">
+                     <content>
+                        <JFXTreeTableView fx:id="symbolTable" showRoot="false" style="-fx-background-insets: 0;">
+                           <columns>
+                              <TreeTableColumn fx:id="symbolTableName" prefWidth="75.0" sortable="false" text="Symbol" />
+                              <TreeTableColumn fx:id="symbolTableAddress" prefWidth="75.0" text="Address" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </JFXTreeTableView>
                      </content>
                   </Tab>
                </tabs>

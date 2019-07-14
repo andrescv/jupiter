@@ -30,7 +30,9 @@ public final class DisplayCell<S, T> extends TreeTableCell<S, T> {
     super.updateItem(item, empty);
     if (item != null) {
       setText(item.toString());
-      setTooltip(new Tooltip(item.toString()));
+      if (!item.toString().equals("")) {
+        setTooltip(new Tooltip(item.toString()));
+      }
     }
   }
 

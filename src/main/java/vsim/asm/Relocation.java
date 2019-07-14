@@ -41,7 +41,7 @@ public final class Relocation {
   public static final int DEFAULT = 5;
 
   /** relocation file path */
-  private final File file;
+  private final String file;
   /** relocation type */
   private final int type;
   /** relocation target */
@@ -54,7 +54,7 @@ public final class Relocation {
    * @param target relocation target
    */
   public Relocation(File file, int type, String target) {
-    this.file = file;
+    this.file = file.getAbsolutePath();
     this.type = type;
     this.target = target;
   }
