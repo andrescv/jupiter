@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -29,7 +30,7 @@ import vsim.riscv.instructions.MachineCode;
 public class ITypeTest {
 
   @Test
-  void testIType() {
+  void testDisassemble() {
     assertEquals("ebreak", Globals.iset.get("ebreak").disassemble(new MachineCode(0x00100073)));
     assertEquals("ecall", Globals.iset.get("ecall").disassemble(new MachineCode(0x00000073)));
     assertEquals("srai x10, x5, 1", Globals.iset.get("srai").disassemble(new MachineCode(0x4012D513)));
@@ -47,6 +48,45 @@ public class ITypeTest {
     assertEquals("xori x8, x9, 10", Globals.iset.get("xori").disassemble(new MachineCode(0x00A4C413)));
     assertEquals("addi x6, x0, 10", Globals.iset.get("addi").disassemble(new MachineCode(0x00A00313)));
     assertEquals("flw f5, x0, 5", Globals.iset.get("flw").disassemble(new MachineCode(0x00502287)));
+    assertEquals("lhu x10, x2, 0", Globals.iset.get("lhu").disassemble(new MachineCode(0x00015503)));
+    assertEquals("fence", Globals.iset.get("fence").disassemble(new MachineCode(0x0000000F)));
+    assertEquals("csrrw x5, 10, x2", Globals.iset.get("csrrw").disassemble(new MachineCode(0x00A112F3)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("jalr", 0b1100111, 0b000, 0b0000000);
+    fieldsTest("lb", 0b0000011, 0b000, 0b0000000);
+    fieldsTest("lh", 0b0000011, 0b001, 0b0000000);
+    fieldsTest("lw", 0b0000011, 0b010, 0b0000000);
+    fieldsTest("lbu", 0b0000011, 0b100, 0b0000000);
+    fieldsTest("lhu", 0b0000011, 0b101, 0b0000000);
+    fieldsTest("addi", 0b0010011, 0b000, 0b0000000);
+    fieldsTest("slti", 0b0010011, 0b010, 0b0000000);
+    fieldsTest("sltiu", 0b0010011, 0b011, 0b0000000);
+    fieldsTest("xori", 0b0010011, 0b100, 0b0000000);
+    fieldsTest("ori", 0b0010011, 0b110, 0b0000000);
+    fieldsTest("andi", 0b0010011, 0b111, 0b0000000);
+    fieldsTest("slli", 0b0010011, 0b001, 0b0000000);
+    fieldsTest("srli", 0b0010011, 0b101, 0b0000000);
+    fieldsTest("srai", 0b0010011, 0b101, 0b0100000);
+    fieldsTest("fence", 0b0001111, 0b000, 0b0000000);
+    fieldsTest("ecall", 0b1110011, 0b000, 0b0000000);
+    fieldsTest("ebreak", 0b1110011, 0b000, 0b0000000);
+    fieldsTest("csrrw", 0b1110011, 0b001, 0b0000000);
+    fieldsTest("csrrs", 0b1110011, 0b010, 0b0000000);
+    fieldsTest("csrrc", 0b1110011, 0b011, 0b0000000);
+    fieldsTest("csrrwi", 0b1110011, 0b101, 0b0000000);
+    fieldsTest("csrrsi", 0b1110011, 0b110, 0b0000000);
+    fieldsTest("csrrci", 0b1110011, 0b111, 0b0000000);
+    fieldsTest("flw", 0b0000111, 0b010, 0b0000000);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode, int funct3, int funct7) {
+    assertEquals(Format.I, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(funct3, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(funct7, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
