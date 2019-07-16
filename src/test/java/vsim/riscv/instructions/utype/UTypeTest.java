@@ -30,7 +30,7 @@ import vsim.riscv.instructions.MachineCode;
 public class UTypeTest {
 
   @Test
-  void testUType() {
+  void testDisassemble() {
     assertEquals("auipc x6, 0", Globals.iset.get("auipc").disassemble(new MachineCode(0x00000317)));
     assertEquals("lui x1, 524288", Globals.iset.get("lui").disassemble(new MachineCode(0x800000B7)));
     assertEquals("lui x0, 524288", Globals.iset.get("lui").disassemble(new MachineCode(0x80000037)));
