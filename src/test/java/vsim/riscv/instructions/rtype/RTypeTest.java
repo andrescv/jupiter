@@ -86,6 +86,14 @@ public class RTypeTest {
     fieldsTest("divu", 0b0110011, 0b101, 0b0000001);
     fieldsTest("rem", 0b0110011, 0b110, 0b0000001);
     fieldsTest("remu", 0b0110011, 0b111, 0b0000001);
+    fieldsTest("fsgnj.s", 0b1010011, 0b000, 0b0010000);
+    fieldsTest("fsgnjn.s", 0b1010011, 0b001, 0b0010000);
+    fieldsTest("fsgnjx.s", 0b1010011, 0b010, 0b0010000);
+    fieldsTest("fmin.s", 0b1010011, 0b000, 0b0010100);
+    fieldsTest("fmax.s", 0b1010011, 0b001, 0b0010100);
+    fieldsTest("feq.s", 0b1010011, 0b010, 0b1010000);
+    fieldsTest("flt.s", 0b1010011, 0b001, 0b1010000);
+    fieldsTest("fle.s", 0b1010011, 0b000, 0b1010000);
   }
 
   private void fieldsTest(String mnemonic, int opcode, int funct3, int funct7) {
