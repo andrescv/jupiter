@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -32,6 +33,18 @@ public class JTypeTest {
   void testJType() {
     assertEquals("jal x4, 16", Globals.iset.get("jal").disassemble(new MachineCode(0x0100026F)));
     assertEquals("jal x0, 24", Globals.iset.get("jal").disassemble(new MachineCode(0x0180006F)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("jal", 0b1101111);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode) {
+    assertEquals(Format.J, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
