@@ -30,7 +30,7 @@ import vsim.riscv.instructions.MachineCode;
 public class JTypeTest {
 
   @Test
-  void testJType() {
+  void testDisassemble() {
     assertEquals("jal x4, 16", Globals.iset.get("jal").disassemble(new MachineCode(0x0100026F)));
     assertEquals("jal x0, 24", Globals.iset.get("jal").disassemble(new MachineCode(0x0180006F)));
   }

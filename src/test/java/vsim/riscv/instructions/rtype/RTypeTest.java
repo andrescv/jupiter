@@ -30,7 +30,7 @@ import vsim.riscv.instructions.MachineCode;
 public class RTypeTest {
 
   @Test
-  void testRType() {
+  void testDisassemble() {
     assertEquals("fcvt.wu.s x10, f0", Globals.iset.get("fcvt.wu.s").disassemble(new MachineCode(0xC0000553)));
     assertEquals("fcvt.w.s x8, f8", Globals.iset.get("fcvt.w.s").disassemble(new MachineCode(0xC0040453)));
     assertEquals("flt.s x5, f1, f2", Globals.iset.get("flt.s").disassemble(new MachineCode(0xA02092D3)));
