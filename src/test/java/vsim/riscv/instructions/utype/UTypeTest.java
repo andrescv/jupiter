@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -34,6 +35,19 @@ public class UTypeTest {
     assertEquals("lui x1, 524288", Globals.iset.get("lui").disassemble(new MachineCode(0x800000B7)));
     assertEquals("lui x0, 524288", Globals.iset.get("lui").disassemble(new MachineCode(0x80000037)));
     assertEquals("auipc x10, 65536", Globals.iset.get("auipc").disassemble(new MachineCode(0x10000517)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("lui", 0b0110111);
+    fieldsTest("auipc", 0b0010111);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode) {
+    assertEquals(Format.U, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
