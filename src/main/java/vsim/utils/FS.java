@@ -129,6 +129,17 @@ public final class FS {
   }
 
   /**
+   * Writes bytes to a file.
+   *
+   * @param file file path
+   * @param bytes bytes to write
+   * @throws IOException if an I/O error occurs
+   */
+  public static void writeBytes(File file, byte[] bytes) throws IOException {
+    FileUtils.writeByteArrayToFile(file, bytes);
+  }
+
+  /**
    * Reads a file.
    *
    * @param file file to read
@@ -137,6 +148,17 @@ public final class FS {
    */
   public static String read(File file) throws IOException {
     return FileUtils.readFileToString(file, "utf-8");
+  }
+
+  /**
+   * Reads a file to a byte array.
+   *
+   * @param file file to read
+   * @return array of bytes
+   * @throws IOException if an I/O error occurs
+   */
+  public static byte[] readBytes(File file) throws IOException {
+    return FileUtils.readFileToByteArray(file);
   }
 
   /**

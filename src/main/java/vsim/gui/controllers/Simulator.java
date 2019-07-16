@@ -255,7 +255,6 @@ public final class Simulator {
               breakpoints.put(pc, true);
             }
           } catch (BreakpointException e) {
-            program.getState().xregfile().incProgramCounter();
             breakpoints.put(pc, true);
           } catch (HaltException e) {
             Status.EXIT.set(true);
@@ -301,7 +300,6 @@ public final class Simulator {
           history.saveMemAndRegs(program.getState());
         } catch (BreakpointException e) {
           // nothing here :]
-          program.getState().xregfile().incProgramCounter();
         } catch (HaltException e) {
           Status.EXIT.set(true);
           if (e.getCode() != 0) {
