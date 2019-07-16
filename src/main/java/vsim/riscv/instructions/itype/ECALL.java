@@ -17,13 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.itype;
 
-import static vsim.riscv.Ecall.handler;
-
 import vsim.State;
 import vsim.exc.SimulationException;
+import vsim.riscv.Syscall;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
-import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -38,9 +36,7 @@ public final class ECALL extends Instruction {
   /** {@inheritDoc} */
   @Override
   public void execute(MachineCode code, State state) throws SimulationException {
-    handler(state);
-    int rs1 = state.xregfile().getRegister(code.get(InstructionField.RS1));
-    state.xregfile().setRegister(code.get(InstructionField.RD), 0);
+    Syscall.handler(state);
     state.xregfile().incProgramCounter();
   }
 

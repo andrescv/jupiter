@@ -50,7 +50,6 @@ public final class Simulator {
         Statement stmt = program.next();
         Globals.iset.get(stmt.mnemonic()).execute(stmt.code(), state);
       } catch (BreakpointException e) {
-        state.xregfile().incProgramCounter();
         (new Debugger(program, false)).debug();
         break;
       } catch (HaltException e) {

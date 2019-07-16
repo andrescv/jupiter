@@ -36,7 +36,9 @@ public final class EBREAK extends Instruction {
   /** {@inheritDoc} */
   @Override
   public void execute(MachineCode code, State state) throws SimulationException {
-    throw new BreakpointException(state.xregfile().getProgramCounter());
+    int pc = state.xregfile().getProgramCounter();
+    state.xregfile().incProgramCounter();
+    throw new BreakpointException(pc);
   }
 
   /** {@inheritDoc} */

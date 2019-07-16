@@ -26,46 +26,69 @@ import vsim.utils.IO;
 
 
 /** Contains methods that implement common environmental calls. */
-public final class Ecall {
+public final class Syscall {
 
-  // SPIM ecall codes
+  /** print int ecall code */
   private static final int PRINT_INT = 1;
+  /** print float ecall code */
   private static final int PRINT_FLOAT = 2;
+  /** print string ecall code */
   private static final int PRINT_STRING = 4;
+  /** read int ecall code */
   private static final int READ_INT = 5;
+  /** read float ecall code */
   private static final int READ_FLOAT = 6;
+  /** read string ecall code */
   private static final int READ_STRING = 8;
+  /** sbrk ecall code */
   private static final int SBRK = 9;
+  /** exit ecall code */
   private static final int EXIT = 10;
+  /** print char ecall code */
   private static final int PRINT_CHAR = 11;
+  /** read char ecall code */
   private static final int READ_CHAR = 12;
+  /** open ecall code */
   private static final int OPEN = 13;
+  /** read ecall code */
   private static final int READ = 14;
+  /** write ecall code */
   private static final int WRITE = 15;
-  private static final int CLOSE = 16;
-  private static final int EXIT2 = 17;
-  // V-Sim ecall codes
-  private static final int SLEEP = 18;
-  private static final int CWD = 19;
-  private static final int TIME = 20;
-  private static final int PRINT_HEX = 21;
-  private static final int PRINT_BIN = 22;
-  private static final int PRINT_USGN = 23;
-  private static final int SET_SEED = 24;
-  private static final int RAND_INT = 25;
-  private static final int RAND_INT_RNG = 26;
-  private static final int RAND_FLOAT = 27;
+  /** lseek ecall code */
+  private static final int LSEEK = 16;
+  /** close ecall code */
+  private static final int CLOSE = 17;
+  /** exit2 ecall code */
+  private static final int EXIT2 = 18;
+  /** sleep ecall code */
+  private static final int SLEEP = 19;
+  /** cwd ecall code */
+  private static final int CWD = 20;
+  /** time ecall code */
+  private static final int TIME = 21;
+  /** print hex ecall code */
+  private static final int PRINT_HEX = 22;
+  /** print binary ecall code */
+  private static final int PRINT_BIN = 23;
+  /** print unsigned ecall code */
+  private static final int PRINT_USGN = 24;
+  /** set seed ecall code */
+  private static final int SET_SEED = 25;
+  /** rand int ecall code */
+  private static final int RAND_INT = 26;
+  /** rand int range ecall code */
+  private static final int RAND_INT_RNG = 27;
+  /** rand float ecall code */
+  private static final int RAND_FLOAT = 28;
 
   /** random number generator */
   private static final Random RNG = new Random();
 
   /**
-   * This method is used to simulate the ecall instruction, it is called in
-   * {@link vsim.riscv.instructions.itype.Ecall#compute} to handle the ecall request. First obtains the syscall code
-   * from register a0 and then tries to match this code with the available syscalls. If the code does not match an
-   * available syscall a warning is generated.
+   * Handles ecall instruction.
    *
-   * @throws SimulationException if some exception occur while handling environmental call
+   * @param state program state
+   * @throws SimulationException if an error occurs while handling ecall
    */
   public static void handler(State state) throws SimulationException {
     // match ecall code
@@ -109,6 +132,9 @@ public final class Ecall {
       case WRITE:
         write(state);
         break;
+      case LSEEK:
+        lseek(state);
+        break;
       case CLOSE:
         close(state);
         break;
@@ -150,19 +176,31 @@ public final class Ecall {
     }
   }
 
-  /** Implements the PRINT_INT ecall. */
+  /**
+   * Implements the PRINT_INT ecall.
+   *
+   * @param state program state
+   */
   private static void printInt(State state) {
     int num = state.xregfile().getRegister("a1");
     IO.stdout().print(Integer.toString(num));
   }
 
-  /** Implements the PRINT_FLOAT ecall. */
+  /**
+   * Implements the PRINT_FLOAT ecall.
+   *
+   * @param state program state
+   */
   private static void printFloat(State state) {
     float num = state.fregfile().getRegister("fa0");
     IO.stdout().print(Float.toString(num));
   }
 
-  /** Implements the PRINT_STRING ecall. */
+  /**
+   * Implements the PRINT_STRING ecall.
+   *
+   * @param state program state
+   */
   private static void printString(State state) throws SimulationException {
     int buffer = state.xregfile().getRegister("a1");
     // 65684
@@ -175,7 +213,11 @@ public final class Ecall {
     IO.stdout().print(s.toString());
   }
 
-  /** Implements the READ_INT ecall. */
+  /**
+   * Implements the READ_INT ecall.
+   *
+   * @param state program state
+   */
   private static void readInt(State state) throws SimulationException {
     try {
       state.xregfile().setRegister("a0", IO.readInt());
@@ -184,7 +226,11 @@ public final class Ecall {
     }
   }
 
-  /** Implements the READ_FLOAT ecall. */
+  /**
+   * Implements the READ_FLOAT ecall.
+   *
+   * @param state program state
+   */
   private static void readFloat(State state) throws SimulationException {
     try {
       state.fregfile().setRegister("fa0", IO.readFloat());
@@ -193,7 +239,11 @@ public final class Ecall {
     }
   }
 
-  /** Implements the READ_STRING ecall. */
+  /**
+   * Implements the READ_STRING ecall.
+   *
+   * @param state program state
+   */
   private static void readString(State state) throws SimulationException {
     int buffer = state.xregfile().getRegister("a1");
     int length = Math.max(state.xregfile().getRegister("a2") - 1, 0);
@@ -206,7 +256,11 @@ public final class Ecall {
     state.memory().storeByte(buffer, 0);
   }
 
-  /** Implements SBRK ecall. */
+  /**
+   * Implements SBRK ecall.
+   *
+   * @param state program state
+   */
   private static void sbrk(State state) throws SimulationException {
     int numBytes = state.xregfile().getRegister("a1");
     if (numBytes >= 0) {
@@ -222,42 +276,102 @@ public final class Ecall {
     throw new HaltException(0);
   }
 
-  /** Implements PRINT_CHAR ecall. */
+  /**
+   * Implements PRINT_CHAR ecall.
+   *
+   * @param state program state
+   */
   private static void printChar(State state) {
     IO.stdout().print((char) state.xregfile().getRegister("a1") + "");
   }
 
-  /** Implements READ_CHAR ecall. */
+  /**
+   * Implements READ_CHAR ecall.
+   *
+   * @param state program state
+   */
   private static void readChar(State state) {
     state.xregfile().setRegister("a0", IO.readChar());
   }
 
-  /** Implements OPEN ecall. */
-  private static void open(State state) {
-
+  /**
+   * Implements OPEN ecall.
+   *
+   * @param state program state
+   */
+  private static void open(State state) throws SimulationException{
+    int buffer = state.xregfile().getRegister("a1");
+    int oflags = state.xregfile().getRegister("a2");
+    state.xregfile().setRegister("a0", VirtualFS.open(buffer, oflags, state));
   }
 
-  /** Implements READ ecall. */
-  private static void read(State state) {
-
+  /**
+   * Implements READ ecall.
+   *
+   * @param state program state
+   */
+  private static void read(State state) throws SimulationException {
+    int fd = state.xregfile().getRegister("a1");
+    int buffer = state.xregfile().getRegister("a2");
+    int nbytes = state.xregfile().getRegister("a3");
+    if (nbytes > 0) {
+      state.xregfile().setRegister("a0", VirtualFS.read(fd, buffer, nbytes, state));
+    } else {
+      throw new SimulationException("ecall: number of bytes should be > 0");
+    }
   }
 
-  /** Implements WRITE ecall. */
-  private static void write(State state) {
-
+  /**
+   * Implements WRITE ecall.
+   *
+   * @param state program state
+   */
+  private static void write(State state) throws SimulationException {
+    int fd = state.xregfile().getRegister("a1");
+    int buffer = state.xregfile().getRegister("a2");
+    int nbytes = state.xregfile().getRegister("a3");
+    if (nbytes > 0) {
+      state.xregfile().setRegister("a0", VirtualFS.write(fd, buffer, nbytes, state));
+    } else {
+      throw new SimulationException("ecall: number of bytes should be > 0");
+    }
   }
 
-  /** Implements CLOSE ecall. */
+  /**
+   * Implements LSEEK ecall.
+   *
+   * @param state program state
+   */
+  private static void lseek(State state) throws SimulationException {
+    int fd = state.xregfile().getRegister("a1");
+    int offset = state.xregfile().getRegister("a2");
+    int whence = state.xregfile().getRegister("a3");
+    state.xregfile().setRegister("a0", VirtualFS.lseek(fd, offset, whence));
+  }
+
+  /**
+   * Implements CLOSE ecall.
+   *
+   * @param state program state
+   */
   private static void close(State state) {
-
+    state.xregfile().setRegister("a0", VirtualFS.close(state.xregfile().getRegister("a1")));
   }
 
-  /** Implements EXIT2 ecall. */
+  /**
+   * Implements EXIT2 ecall.
+   *
+   * @param state program state
+   */
   private static void exit2(State state) throws SimulationException {
     throw new HaltException(state.xregfile().getRegister("a1"));
   }
 
-  /** Implements SLEEP ecall. */
+  /**
+   * Implements SLEEP ecall.
+   *
+   * @param state program state
+   */
   private static void sleep(State state) throws SimulationException {
     int millis = state.xregfile().getRegister("a1");
     if (millis >= 0) {
@@ -269,7 +383,11 @@ public final class Ecall {
     }
   }
 
-  /** Implements CWD ecall. */
+  /**
+   * Implements CWD ecall.
+   *
+   * @param state program state
+   */
   private static void cwd(State state) throws SimulationException {
     String path = System.getProperty("user.dir");
     int buffer = state.xregfile().getRegister("a1");
@@ -279,46 +397,78 @@ public final class Ecall {
     state.memory().storeByte(buffer, 0);
   }
 
-  /** Implements TIME ecall. */
+  /**
+   * Implements TIME ecall.
+   *
+   * @param state program state
+   */
   private static void time(State state) {
     long time = System.currentTimeMillis();
     state.xregfile().setRegister("a1", (int) (time >>> Data.WORD_LENGTH_BITS));
     state.xregfile().setRegister("a0", (int) (time & 0xffffffffL));
   }
 
-  /** Implements PRINT_HEX ecall. */
+  /**
+   * Implements PRINT_HEX ecall.
+   *
+   * @param state program state
+   */
   private static void printHex(State state) {
     IO.stdout().print(String.format("0x%08x", state.xregfile().getRegister("a1")));
   }
 
-  /** Implements the PRINT_BIN syscall. */
+  /**
+   * Implements the PRINT_BIN syscall.
+   *
+   * @param state program state
+   */
   private static void printBin(State state) {
     IO.stdout().print(String.format("0b%32s", Integer.toBinaryString(state.xregfile().getRegister("a1"))).replace(' ', '0'));
   }
 
-  /** Implements the PRINT_USGN syscall. */
+  /**
+   * Implements the PRINT_USGN syscall.
+   *
+   * @param state program state
+   */
   private static void printUsgn(State state) {
     IO.stdout().print(Long.toString(Integer.toUnsignedLong(state.xregfile().getRegister("a1"))));
   }
 
-  /** Implements the SET_SEED syscall. */
+  /**
+   * Implements the SET_SEED syscall.
+   *
+   * @param state program state
+   */
   private static void setSeed(State state) {
     RNG.setSeed(state.xregfile().getRegister("a1"));
   }
 
-  /** Implements the RAND_INT syscall. */
+  /**
+   * Implements the RAND_INT syscall.
+   *
+   * @param state program state
+   */
   private static void randInt(State state) {
     state.xregfile().setRegister("a0", RNG.nextInt());
   }
 
-  /** Implements the RAND_INT_RNG syscall. */
+  /**
+   * Implements the RAND_INT_RNG syscall.
+   *
+   * @param state program state
+   */
   private static void randIntRng(State state) {
     int min = state.xregfile().getRegister("a1");
     int max = state.xregfile().getRegister("a2");
     state.xregfile().setRegister("a0", RNG.nextInt((max - min) + 1) + min);
   }
 
-  /** Implements the RAND_FLOAT syscall. */
+  /**
+   * Implements the RAND_FLOAT syscall.
+   *
+   * @param state program state
+   */
   private static void randFloat(State state) {
     state.fregfile().setRegister("fa0", RNG.nextFloat());
   }

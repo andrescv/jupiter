@@ -47,7 +47,7 @@ public final class CSRRC extends Instruction {
     int rd = code.get(InstructionField.RD);
     int rs1 = code.get(InstructionField.RS1);
     int csr = Data.imm(code, Format.I) & 0xfff;
-    return String.format("csrrc x%d, %d, %d", rd, csr, rs1);
+    return String.format("csrrc x%d, %d, x%d", rd, csr, rs1);
   }
 
 }
