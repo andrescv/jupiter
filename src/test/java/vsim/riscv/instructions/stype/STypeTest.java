@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -29,13 +30,28 @@ import vsim.riscv.instructions.MachineCode;
 public class STypeTest {
 
   @Test
-  void testSType() {
+  void testDisassemble() {
     assertEquals("sw x2, x10, 0", Globals.iset.get("sw").disassemble(new MachineCode(0x00A12023)));
     assertEquals("sh x10, x5, -12", Globals.iset.get("sh").disassemble(new MachineCode(0xFE551A23)));
     assertEquals("sb x5, x6, 4", Globals.iset.get("sb").disassemble(new MachineCode(0x00628223)));
     assertEquals("fsw x2, f0, 0", Globals.iset.get("fsw").disassemble(new MachineCode(0x00012027)));
     assertEquals("fsw x2, f8, 13", Globals.iset.get("fsw").disassemble(new MachineCode(0x008126A7)));
     assertEquals("fsw x10, f6, -2", Globals.iset.get("fsw").disassemble(new MachineCode(0xFE652F27)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("sb", 0b0100011, 0b000);
+    fieldsTest("sh", 0b0100011, 0b001);
+    fieldsTest("sw", 0b0100011, 0b010);
+    fieldsTest("fsw", 0b0100111, 0b010);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode, int funct3) {
+    assertEquals(Format.S, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(funct3, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
