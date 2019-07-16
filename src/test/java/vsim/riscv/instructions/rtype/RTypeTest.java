@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -64,6 +65,34 @@ public class RTypeTest {
     assertEquals("and x20, x21, x22", Globals.iset.get("and").disassemble(new MachineCode(0x016AFA33)));
     assertEquals("mul x23, x24, x25", Globals.iset.get("mul").disassemble(new MachineCode(0x039C0BB3)));
     assertEquals("add x26, x27, x28", Globals.iset.get("add").disassemble(new MachineCode(0x01CD8D33)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("add", 0b0110011, 0b000, 0b0000000);
+    fieldsTest("sub", 0b0110011, 0b000, 0b0100000);
+    fieldsTest("sll", 0b0110011, 0b001, 0b0000000);
+    fieldsTest("slt", 0b0110011, 0b010, 0b0000000);
+    fieldsTest("sltu", 0b0110011, 0b011, 0b0000000);
+    fieldsTest("xor", 0b0110011, 0b100, 0b0000000);
+    fieldsTest("srl", 0b0110011, 0b101, 0b0000000);
+    fieldsTest("sra", 0b0110011, 0b101, 0b0100000);
+    fieldsTest("or", 0b0110011, 0b110, 0b0000000);
+    fieldsTest("mul", 0b0110011, 0b000, 0b0000001);
+    fieldsTest("mulh", 0b0110011, 0b001, 0b0000001);
+    fieldsTest("mulhsu", 0b0110011, 0b010, 0b0000001);
+    fieldsTest("mulhu", 0b0110011, 0b011, 0b0000001);
+    fieldsTest("div", 0b0110011, 0b100, 0b0000001);
+    fieldsTest("divu", 0b0110011, 0b101, 0b0000001);
+    fieldsTest("rem", 0b0110011, 0b110, 0b0000001);
+    fieldsTest("remu", 0b0110011, 0b111, 0b0000001);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode, int funct3, int funct7) {
+    assertEquals(Format.R, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(funct3, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(funct7, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
