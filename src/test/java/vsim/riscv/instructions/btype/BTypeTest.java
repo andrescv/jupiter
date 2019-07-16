@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import vsim.Globals;
+import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.MachineCode;
 
 
@@ -29,13 +30,30 @@ import vsim.riscv.instructions.MachineCode;
 public class BTypeTest {
 
   @Test
-  void testBType() {
+  void testDisassemble() {
     assertEquals("bne x5, x10, -4", Globals.iset.get("bne").disassemble(new MachineCode(0xFEA29EE3)));
     assertEquals("beq x5, x10, -20", Globals.iset.get("beq").disassemble(new MachineCode(0xFEA286E3)));
     assertEquals("bge x6, x10, -12", Globals.iset.get("bge").disassemble(new MachineCode(0xFEA35AE3)));
     assertEquals("bgeu x30, x17, -28", Globals.iset.get("bgeu").disassemble(new MachineCode(0xFF1F72E3)));
     assertEquals("blt x28, x11, -20", Globals.iset.get("blt").disassemble(new MachineCode(0xFEBE46E3)));
     assertEquals("bltu x6, x16, -36", Globals.iset.get("bltu").disassemble(new MachineCode(0xFD036EE3)));
+  }
+
+  @Test
+  void testFields() {
+    fieldsTest("beq", 0b1100011, 0b000);
+    fieldsTest("bne", 0b1100011, 0b001);
+    fieldsTest("blt", 0b1100011, 0b100);
+    fieldsTest("bge", 0b1100011, 0b101);
+    fieldsTest("bltu", 0b1100011, 0b110);
+    fieldsTest("bgeu", 0b1100011, 0b111);
+  }
+
+  private void fieldsTest(String mnemonic, int opcode, int funct3) {
+    assertEquals(Format.B, Globals.iset.get(mnemonic).getFormat());
+    assertEquals(opcode, Globals.iset.get(mnemonic).getOpCode());
+    assertEquals(funct3, Globals.iset.get(mnemonic).getFunct3());
+    assertEquals(0, Globals.iset.get(mnemonic).getFunct7());
   }
 
 }
