@@ -54,12 +54,12 @@ public final class Syscall {
   private static final int READ = 14;
   /** write ecall code */
   private static final int WRITE = 15;
-  /** lseek ecall code */
-  private static final int LSEEK = 16;
   /** close ecall code */
-  private static final int CLOSE = 17;
+  private static final int CLOSE = 16;
   /** exit2 ecall code */
-  private static final int EXIT2 = 18;
+  private static final int EXIT2 = 17;
+  /** lseek ecall code */
+  private static final int LSEEK = 18;
   /** sleep ecall code */
   private static final int SLEEP = 19;
   /** cwd ecall code */
