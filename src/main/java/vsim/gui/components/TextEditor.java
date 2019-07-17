@@ -81,6 +81,9 @@ public final class TextEditor extends CodeArea {
     replaceText(0, 0, text);
     getUndoManager().forgetHistory();
     setStyleSpans(0, computeHighlighting());
+    moveTo(0);
+    requestFollowCaret();
+    requestFocus();
     // line number
     setParagraphGraphicFactory(LineNumberFactory.get(this));
     // syntax highlighting
@@ -184,6 +187,9 @@ public final class TextEditor extends CodeArea {
     replaceText(0, getText().length(), text);
     setStyleSpans(0, computeHighlighting());
     getUndoManager().forgetHistory();
+    moveTo(0);
+    requestFollowCaret();
+    requestFocus();
   }
 
   /** Mark current text as last text. */
