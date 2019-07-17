@@ -30,6 +30,7 @@ import vsim.Flags;
 import vsim.Globals;
 import vsim.Logger;
 import vsim.VSim;
+import vsim.riscv.hardware.Cache.ReplacePolicy;
 
 
 /** Command line parser utility. */
@@ -56,6 +57,10 @@ public final class Cmd {
     options.addOption(Option.builder().longOpt("start").hasArg().build());
     options.addOption(Option.builder().longOpt("hist").hasArg().build());
     options.addOption(Option.builder("g").longOpt("debug").build());
+    options.addOption(Option.builder().longOpt("assoc").hasArg().build());
+    options.addOption(Option.builder().longOpt("block-size").hasArg().build());
+    options.addOption(Option.builder().longOpt("num-blocks").hasArg().build());
+    options.addOption(Option.builder().longOpt("policy").hasArg().build());
     options.addOption(Option.builder().longOpt("dump-code").hasArg().build());
     options.addOption(Option.builder().longOpt("dump-data").hasArg().build());
     options.addOption(Option.builder().longOpt("format").hasArg().build());
@@ -74,6 +79,11 @@ public final class Cmd {
       Flags.SELF_MODIFYING = cmd.hasOption("self");
       if (cmd.hasOption("start")) {
         Flags.START = cmd.getOptionValue("start");
+        if (!Flags.START.matches("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?)")) {
+          title(true, false);
+          Logger.error("invalid global start label: " + Flags.START);
+          VSim.exit(1);
+        }
       }
       if (cmd.hasOption("hist")) {
         try {
@@ -82,6 +92,70 @@ public final class Cmd {
           title(true, false);
           Logger.error("invalid history size: " + cmd.getOptionValue("hist"));
           VSim.exit(1);
+        }
+      }
+      if (cmd.hasOption("block-size")) {
+        String size = cmd.getOptionValue("block-size");
+        try {
+          Flags.CACHE_BLOCK_SIZE = Data.atoi(size);
+          if (!Data.isPowerOf2(Flags.CACHE_BLOCK_SIZE)) {
+            title(true, false);
+            Logger.error("invalid cache block size '" + size + "' should be a power of 2");
+            VSim.exit(1);
+          }
+        } catch (NumberFormatException e) {
+          title(true, false);
+          Logger.error("invalid cache block size: " + size);
+          VSim.exit(1);
+        }
+      }
+      if (cmd.hasOption("num-blocks")) {
+        String num = cmd.getOptionValue("num-blocks");
+        try {
+          Flags.CACHE_NUM_BLOCKS = Data.atoi(num);
+          if (!Data.isPowerOf2(Flags.CACHE_NUM_BLOCKS)) {
+            title(true, false);
+            Logger.error("invalid number of cache blocks '" + num + "' should be a power of 2");
+            VSim.exit(1);
+          }
+        } catch (NumberFormatException e) {
+          title(true, false);
+          Logger.error("invalid number of cache blocks: " + num);
+          VSim.exit(1);
+        }
+      }
+      if (cmd.hasOption("assoc")) {
+        String assoc = cmd.getOptionValue("assoc");
+        try {
+          Flags.CACHE_ASSOCIATIVITY = Data.atoi(assoc);
+          if (!Data.isPowerOf2(Flags.CACHE_NUM_BLOCKS) || Flags.CACHE_ASSOCIATIVITY > Flags.CACHE_NUM_BLOCKS) {
+            title(true, false);
+            int num = Flags.CACHE_NUM_BLOCKS;
+            Logger.error("invalid cache associativity '" + assoc + "' should be a power of 2 and <= " + num);
+            VSim.exit(1);
+          }
+        } catch (NumberFormatException e) {
+          title(true, false);
+          Logger.error("invalid cache associativity: " + assoc);
+          VSim.exit(1);
+        }
+      }
+      if (cmd.hasOption("policy")) {
+        String policy = cmd.getOptionValue("policy").toLowerCase();
+        switch (policy) {
+          case "lru":
+            Flags.CACHE_REPLACE_POLICY = ReplacePolicy.LRU;
+            break;
+          case "fifo":
+            Flags.CACHE_REPLACE_POLICY = ReplacePolicy.FIFO;
+            break;
+          case "rand":
+            Flags.CACHE_REPLACE_POLICY = ReplacePolicy.RAND;
+            break;
+          default:
+            title(true, false);
+            Logger.error("invalid cache block replace policy: " + policy);
+            VSim.exit(1);
         }
       }
       if (cmd.hasOption("dump-code")) {
@@ -163,19 +237,24 @@ public final class Cmd {
       title(true, false);
       IO.stdout().println("usage: vsim [options] <files>");
       IO.stdout().println(Data.EOL + "[General Options]");
-      IO.stdout().println("  -h, --help              show V-Sim help message and exit");
-      IO.stdout().println("  -v, --version           show V-Sim version");
-      IO.stdout().println("  -l, --license           show V-Sim license");
+      IO.stdout().println("  -h, --help               show V-Sim help message and exit");
+      IO.stdout().println("  -v, --version            show V-Sim version");
+      IO.stdout().println("  -l, --license            show V-Sim license");
       IO.stdout().println(Data.EOL + "[Simulator Options]");
-      IO.stdout().println("  -b, --bare              bare machine (no pseudo-instructions)");
-      IO.stdout().println("  -s, --self              enable self-modifying code");
-      IO.stdout().println("  -e, --extrict           assembler warnings are consider errors");
-      IO.stdout().println("  -g, --debug             start debugger");
-      IO.stdout().println("      --start <label>     set global start label (default: __start)");
-      IO.stdout().println("      --hist <size>       history size for debugging");
+      IO.stdout().println("  -b, --bare               bare machine (no pseudo-instructions)");
+      IO.stdout().println("  -s, --self               enable self-modifying code");
+      IO.stdout().println("  -e, --extrict            assembler warnings are consider errors");
+      IO.stdout().println("  -g, --debug              start debugger");
+      IO.stdout().println("      --start <label>      set global start label (default: __start)");
+      IO.stdout().println("      --hist <size>        history size for debugging");
+      IO.stdout().println(Data.EOL + "[Cache Options]");
+      IO.stdout().println("      --assoc <assoc>      cache associativity as a power of 2 (default: 1)");
+      IO.stdout().println("      --block-size <size>  cache block size as a power of 2 (default: 16)");
+      IO.stdout().println("      --num-blocks <num>   number of cache blocks as a power of 2 (default: 4)");
+      IO.stdout().println("      --policy <policy>    cache block replace policy (LRU|FIFO|RAND) (default: LRU)");
       IO.stdout().println(Data.EOL + "[Dump Options]");
-      IO.stdout().println("      --dump-code <file>  dump generated machine code to a file");
-      IO.stdout().println("      --dump-data <file>  dump static data to a file");
+      IO.stdout().println("      --dump-code <file>   dump generated machine code to a file");
+      IO.stdout().println("      --dump-data <file>   dump static data to a file");
       IO.stdout().println();
       IO.stdout().println("Please report issues at https://github.com/andrescv/V-Sim/issues");
       // exit simulator

@@ -24,11 +24,14 @@ import vsim.VSim;
 import vsim.asm.stmts.Statement;
 import vsim.exc.*;
 import vsim.linker.LinkedProgram;
+import vsim.utils.IO;
 
 
 /** V-Sim simulator. */
 public final class Simulator {
 
+  /** program history */
+  private final History history;
   /** linked program */
   private final LinkedProgram program;
 
@@ -40,6 +43,7 @@ public final class Simulator {
   public Simulator(LinkedProgram program) {
     this.program = program;
     program.load();
+    history = new History();
   }
 
   /** Simulates a RISC-V program. */
@@ -47,12 +51,21 @@ public final class Simulator {
     State state = program.getState();
     while (true) {
       try {
+        // get next statement
         Statement stmt = program.next();
+        // save PC and heap pointer
+        history.savePCAndHeap(state);
+        // execute
         Globals.iset.get(stmt.mnemonic()).execute(stmt.code(), state);
+        // save memory and register files
+        history.saveMemAndRegs(state);
       } catch (BreakpointException e) {
-        (new Debugger(program, false)).debug();
+        (new Debugger(program, history)).debug();
         break;
       } catch (HaltException e) {
+        state.memory().cache().stats();
+        IO.stdout().println();
+        Logger.info(String.format("exit(%d)", e.getCode()));
         VSim.exit(e.getCode());
       } catch (SimulationException e) {
         Logger.error(e.getMessage());

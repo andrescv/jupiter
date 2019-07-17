@@ -49,16 +49,29 @@ public final class Debugger {
   private boolean terminated;
 
   /**
-   * Creates a debugger.
+   * Creates a debugger and loads the program.
    *
    * @param program linked program to debug
-   * @param load load program in memory
    */
-  public Debugger(LinkedProgram program, boolean load) {
+  public Debugger(LinkedProgram program) {
     this.program = program;
     breakpoints = new HashMap<>();
     history = new History();
-    if (load) program.load();
+    program.load();
+    terminated = false;
+    clear();
+  }
+
+  /**
+   * Creates a debugger with a program already loaded.
+   *
+   * @param program linked program to debug
+   * @param history program history
+   */
+  public Debugger(LinkedProgram program, History history) {
+    this.program = program;
+    this.history = history;
+    breakpoints = new HashMap<>();
     terminated = false;
     clear();
   }
@@ -267,9 +280,12 @@ public final class Debugger {
       } catch (HaltException e) {
         terminated = true;
         IO.stdout().println();
+        program.getState().memory().cache().stats();
+        IO.stdout().println();
         Logger.info(String.format("exit(%d)", e.getCode()));
       } catch (SimulationException e) {
         terminated = true;
+        IO.stdout().println();
         Logger.error(e.getMessage());
       }
     } else {
@@ -315,10 +331,13 @@ public final class Debugger {
         } catch (HaltException e) {
           terminated = true;
           IO.stdout().println();
+          program.getState().memory().cache().stats();
+          IO.stdout().println();
           Logger.info(String.format("exit(%d)", e.getCode()));
           break;
         } catch (SimulationException e) {
           terminated = true;
+          IO.stdout().println();
           Logger.error(e.getMessage());
         }
       }
@@ -417,6 +436,8 @@ public final class Debugger {
         source = source.replaceAll("( |\t)+", " ");
         // normalize commas
         source = source.replaceAll("( )?,( )?", ", ");
+        // remove labels
+        source = source.replaceAll("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?):", "");
         // trim whitespace
         source = source.trim();
       } catch (IOException e) {

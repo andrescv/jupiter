@@ -126,6 +126,15 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
   }
 
   /**
+   * Returns item int address.
+   *
+   * @return memory int address
+   */
+  public int getIntAddress() {
+    return intAddress;
+  }
+
+  /**
    * Returns the address shown in the Address column.
    *
    * @return address property
@@ -218,25 +227,27 @@ public final class MemoryItem extends RecursiveTreeObject<MemoryItem> implements
   /** {@inheritDoc} */
   @Override
   public void propertyChange(PropertyChangeEvent e) {
+    String op = (String) e.getOldValue();
     int addr = Data.atoi(e.getPropertyName());
-    if (addr == intAddress) {
-      updated = true;
-      intByte0 = (int) e.getNewValue();
-      byte0.set(getByte(intByte0));
-    } else if (addr == (intAddress + 1)) {
-      updated = true;
-      intByte1 = (int) e.getNewValue();
-      byte1.set(getByte(intByte1));
-    } else if (addr == (intAddress + 2)) {
-      updated = true;
-      intByte2 = (int) e.getNewValue();
-      byte2.set(getByte(intByte2));
-    } else if (addr == (intAddress + 3)) {
-      updated = true;
-      intByte3 = (int) e.getNewValue();
-      byte3.set(getByte(intByte3));
-    } else {
-      updated = false;
+    if (op.equals("store")) {
+      if (addr == intAddress) {
+        updated = true;
+        intByte0 = (int) e.getNewValue();
+        byte0.set(getByte(intByte0));
+      } else if (addr == (intAddress + 1)) {
+        updated = true;
+        intByte1 = (int) e.getNewValue();
+        byte1.set(getByte(intByte1));
+      } else if (addr == (intAddress + 2)) {
+        updated = true;
+        intByte2 = (int) e.getNewValue();
+        byte2.set(getByte(intByte2));
+      } else if (addr == (intAddress + 3)) {
+        updated = true;
+        intByte3 = (int) e.getNewValue();
+      } else {
+        updated = false;
+      }
     }
   }
 

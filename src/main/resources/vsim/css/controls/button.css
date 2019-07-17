@@ -5,6 +5,14 @@
   -fx-font-size: 14;
 }
 
+.jfx-button.plus {
+  -fx-background-color: #66bb6a;
+}
+
+.jfx-button.minus {
+  -fx-background-color: #ef5350;
+}
+
 .jfx-button.run-btn {
   -fx-background-color: #388e3c;
 }

@@ -19,8 +19,10 @@ package vsim.riscv.hardware;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import vsim.asm.stmts.Statement;
 import vsim.exc.InvalidAddressException;
 import vsim.utils.Data;
 import vsim.utils.IO;
@@ -49,6 +51,8 @@ public final class Memory {
   private final HashMap<Integer, Byte> memory;
   /** memory diff */
   private HashMap<Integer, Byte> diff;
+  /** cache simulator */
+  private final Cache cache;
 
   /** property change support */
   private final PropertyChangeSupport pcs;
@@ -60,6 +64,7 @@ public final class Memory {
     pcs = new PropertyChangeSupport(this);
     hasRodata = false;
     hasText = false;
+    cache = new Cache();
   }
 
   /** Clears all the allocated bytes from memory. */
@@ -68,6 +73,7 @@ public final class Memory {
     diff.clear();
     hasRodata = false;
     hasText = false;
+    cache.reset();
   }
 
   /**
@@ -162,14 +168,54 @@ public final class Memory {
    * @param address address where the byte value will be stored
    * @param value the byte value to store
    */
-  public synchronized void privStoreByte(int address, int value) {
+  public synchronized void store(int address, int value) {
     if (memory.containsKey(address)) {
       diff.put(address, memory.get(address));
     } else {
       diff.put(address, (byte) 0);
     }
-    pcs.firePropertyChange(String.format("0x%08x", address), "memory", value);
+    pcs.firePropertyChange(String.format("0x%08x", address), "store", value);
     memory.put(address, (byte) (value & Data.BYTE_MASK));
+  }
+
+  /**
+   * Stores text segment generated machine code in memory.
+   *
+   * @param text array of statements
+   */
+  public void storeText(ArrayList<Statement> text) {
+    int address = Data.TEXT;
+    for (Statement stmt : text) {
+      int code = stmt.code().bits();
+      store(address, code);
+      store(address + Data.BYTE_LENGTH, code >> Data.BYTE_LENGTH_BITS);
+      store(address + 2 * Data.BYTE_LENGTH, code >> (2 * Data.BYTE_LENGTH_BITS));
+      store(address + 3 * Data.BYTE_LENGTH, code >> (3 * Data.BYTE_LENGTH_BITS));
+      address += Data.WORD_LENGTH;
+    }
+  }
+
+  /**
+   * Stores static segment bytes in memory.
+   *
+   * @param address static segment start address
+   * @param data array of bytes
+   */
+  public void storeStatic(int address, ArrayList<Byte> data) {
+    for (Byte b : data) {
+      store(address++, b);
+    }
+  }
+
+  /**
+   * Stores a byte at the given address without checks.
+   *
+   * @param address address where the byte value will be stored
+   * @param value the byte value to store
+   */
+  public void privStoreByte(int address, int value) {
+    cache.storeByte(address);
+    store(address, value);
   }
 
   /**
@@ -180,11 +226,23 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public void storeByte(int address, int value) throws InvalidAddressException {
-    if (checkAddress(address, false)) {
+    if (check(address, false)) {
       privStoreByte(address, value);
     } else {
       throw new InvalidAddressException(address, false);
     }
+  }
+
+  /**
+   * Stores a half at the given address without checks.
+   *
+   * @param address address where the half value will be stored
+   * @param value the half value to store
+   */
+  public void privStoreHalf(int address, int value) {
+    cache.storeHalf(address);
+    store(address, value);
+    store(address + Data.BYTE_LENGTH, value >>> Data.BYTE_LENGTH_BITS);
   }
 
   /**
@@ -195,19 +253,25 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public void storeHalf(int address, int value) throws InvalidAddressException {
-    storeByte(address, value);
-    storeByte(address + Data.BYTE_LENGTH, value >> Data.BYTE_LENGTH_BITS);
+    if (check(address, false) && check(address + Data.BYTE_LENGTH, false)) {
+      privStoreHalf(address, value);
+    } else {
+      throw new InvalidAddressException(address, false);
+    }
   }
 
   /**
-   * Stores a half at the given address without checks.
+   * Stores a word at the given address without checks.
    *
-   * @param address address where the half value will be stored
-   * @param value the half value to store
+   * @param address address where the word value will be stored
+   * @param value the word value to store
    */
-  public void privStoreHalf(int address, int value) {
-    privStoreByte(address, value);
-    privStoreByte(address + Data.BYTE_LENGTH, value >> Data.BYTE_LENGTH_BITS);
+  public void privStoreWord(int address, int value) {
+    cache.storeWord(address);
+    store(address, value);
+    store(address + Data.BYTE_LENGTH, value >>> Data.BYTE_LENGTH_BITS);
+    store(address + 2 * Data.BYTE_LENGTH, value >>> (2 * Data.BYTE_LENGTH_BITS));
+    store(address + 3 * Data.BYTE_LENGTH, value >>> (3 * Data.BYTE_LENGTH_BITS));
   }
 
   /**
@@ -218,19 +282,28 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public void storeWord(int address, int value) throws InvalidAddressException {
-    storeHalf(address, value);
-    storeHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
+    if (check(address, false) && check(address + Data.BYTE_LENGTH, false)
+        && check(address + 2 * Data.BYTE_LENGTH, false) && check(address + 3 * Data.BYTE_LENGTH, false)) {
+      privStoreWord(address, value);
+    } else {
+      throw new InvalidAddressException(address, false);
+    }
   }
 
   /**
-   * Stores a word at the given address without checks.
-   *
-   * @param address address where the word value will be stored
-   * @param value the word value to store
+  * Loads an unsigned byte from memory at the given address without checks.
+  *
+  * @param address memory address where the unsigned byte value will be loaded
+  * @return the unsigned byte value from memory
    */
-  public void privStoreWord(int address, int value) {
-    privStoreHalf(address, value);
-    privStoreHalf(address + Data.HALF_LENGTH, value >> Data.HALF_LENGTH_BITS);
+  public synchronized int load(int address) {
+    if (!memory.containsKey(address)) {
+      pcs.firePropertyChange(String.format("0x%08x", address), "load", 0x0);
+      return 0x0;
+    }
+    int value = ((int) memory.get(address)) & Data.BYTE_MASK;
+    pcs.firePropertyChange(String.format("0x%08x", address), "load", value);
+    return value;
   }
 
   /**
@@ -240,10 +313,8 @@ public final class Memory {
    * @return the unsigned byte value from memory
    */
   public int privLoadByteUnsigned(int address) {
-    if (!memory.containsKey(address)) {
-      return 0x0;
-    }
-    return ((int) memory.get(address)) & Data.BYTE_MASK;
+    cache.loadByte(address);
+    return load(address);
   }
 
   /**
@@ -254,10 +325,21 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public int loadByteUnsigned(int address) throws InvalidAddressException {
-    if (checkAddress(address, true)) {
+    if (check(address, true)) {
       return privLoadByteUnsigned(address);
-    } else
+    } else {
       throw new InvalidAddressException(address, true);
+    }
+  }
+
+  /**
+   * Loads a byte from memory at the given address without checks.
+   *
+   * @param address memory address where the byte value will be loaded
+   * @return the byte value from memory
+   */
+  public int privLoadByte(int address) {
+    return Data.signExtendByte(privLoadByteUnsigned(address));
   }
 
   /**
@@ -272,13 +354,16 @@ public final class Memory {
   }
 
   /**
-   * Loads a byte from memory at the given address without checks.
+   * Loads an unsigned half from memory at the given address without checks.
    *
-   * @param address memory address where the byte value will be loaded
-   * @return the byte value from memory
+   * @param address memory address where the unsigned half value will be loaded
+   * @return the unsgined half value from memory
    */
-  public int privLoadByte(int address) {
-    return Data.signExtendByte(privLoadByteUnsigned(address));
+  public int privLoadHalfUnsigned(int address) {
+    cache.loadHalf(address);
+    int loByte = load(address);
+    int hiByte = load(address + Data.BYTE_LENGTH);
+    return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
   }
 
   /**
@@ -289,21 +374,21 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public int loadHalfUnsigned(int address) throws InvalidAddressException {
-    int loByte = loadByteUnsigned(address);
-    int hiByte = loadByteUnsigned(address + Data.BYTE_LENGTH);
-    return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
+    if (check(address, true) && check(address + Data.BYTE_LENGTH, true)) {
+      return privLoadHalfUnsigned(address);
+    } else {
+      throw new InvalidAddressException(address, true);
+    }
   }
 
   /**
-   * Loads an unsigned half from memory at the given address without checks.
+   * Loads a half from memory at the given address without checks.
    *
-   * @param address memory address where the unsigned half value will be loaded
-   * @return the unsgined half value from memory
+   * @param address memory address where the half value will be loaded
+   * @return the half value from memory
    */
-  public int privLoadHalfUnsigned(int address) {
-    int loByte = privLoadByteUnsigned(address);
-    int hiByte = privLoadByteUnsigned(address + Data.BYTE_LENGTH);
-    return (hiByte << Data.BYTE_LENGTH_BITS) | loByte;
+  public int privLoadHalf(int address) {
+    return Data.signExtendHalf(privLoadHalfUnsigned(address));
   }
 
   /**
@@ -318,13 +403,20 @@ public final class Memory {
   }
 
   /**
-   * Loads a half from memory at the given address without checks.
+   * Loads a word from memory at the given address without checks.
    *
-   * @param address memory address where the half value will be loaded
-   * @return the half value from memory
+   * @param address memory address where the word value will be loaded
+   * @return the word value from memory
    */
-  public int privLoadHalf(int address) {
-    return Data.signExtendHalf(privLoadHalfUnsigned(address));
+  public int privLoadWord(int address) {
+    cache.loadWord(address);
+    int byte0 = load(address);
+    int byte1 = load(address + Data.BYTE_LENGTH);
+    int loHalf =  (byte1 << Data.BYTE_LENGTH_BITS) | byte0;
+    int byte2 = load(address + 2 * Data.BYTE_LENGTH);
+    int byte3 = load(address + 3 * Data.BYTE_LENGTH);
+    int hiHalf = (byte3 << Data.BYTE_LENGTH_BITS) | byte2;
+    return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
   }
 
   /**
@@ -335,21 +427,12 @@ public final class Memory {
    * @throws InvalidAddressException if the address is invalid
    */
   public int loadWord(int address) throws InvalidAddressException {
-    int loHalf = loadHalfUnsigned(address);
-    int hiHalf = loadHalfUnsigned(address + Data.HALF_LENGTH);
-    return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
-  }
-
-  /**
-   * Loads a word from memory at the given address without checks.
-   *
-   * @param address memory address where the word value will be loaded
-   * @return the word value from memory
-   */
-  public int privLoadWord(int address) {
-    int loHalf = privLoadHalfUnsigned(address);
-    int hiHalf = privLoadHalfUnsigned(address + Data.HALF_LENGTH);
-    return (hiHalf << Data.HALF_LENGTH_BITS) | loHalf;
+    if (check(address, true) && check(address + Data.BYTE_LENGTH, true)
+        && check(address + 2 * Data.BYTE_LENGTH, true) && check(address + 3 * Data.BYTE_LENGTH, true)) {
+      return privLoadWord(address);
+    } else {
+      throw new InvalidAddressException(address, false);
+    }
   }
 
   /**
@@ -409,13 +492,22 @@ public final class Memory {
   }
 
   /**
+   * Returns cache simulator.
+   *
+   * @return cache simulator
+   */
+  public Cache cache() {
+    return cache;
+  }
+
+  /**
    * Checks if the given address is a valid store address.
    *
    * @param address the address to check
    * @param read true = check for reading, false = check for writing
    * @return true if the address is valid, false otherwise.
    */
-  private boolean checkAddress(int address, boolean read) {
+  public boolean check(int address, boolean read) {
     // reserved memory ?
     if (Data.inRange(address, Data.RESERVED_LOW_START, Data.RESERVED_LOW_END))
       return false;

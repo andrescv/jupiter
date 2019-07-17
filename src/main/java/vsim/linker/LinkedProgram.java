@@ -92,17 +92,10 @@ public final class LinkedProgram {
 
   /** Loads program in memory. */
   public void load() {
-    int address = Data.TEXT;
-    // load code
-    for (int i = 0; i < text.size(); i++) {
-      state.memory().privStoreWord(address, text.get(address).code().bits());
-      address += Data.WORD_LENGTH;
-    }
-    // load data
-    for (Byte b : data) {
-      state.memory().privStoreByte(address, b);
-      address++;
-    }
+    state.memory().storeText(statements());
+    int address = Data.TEXT + Data.WORD_LENGTH * text.size();
+    state.memory().storeStatic(address, data);
+    address += data.size();
     // set memory layout
     state.memory().setLayout(rodataStart - 1, rodataStart, rodataEnd, address, hasRodata, text.size() > 0);
   }

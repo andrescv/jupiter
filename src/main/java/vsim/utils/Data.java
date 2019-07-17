@@ -245,6 +245,16 @@ public final class Data {
   }
 
   /**
+   * Verifies if the given value is a power of 2.
+   *
+   * @param value the value to verify
+   * @return true if the given value is a power of 2, false if not
+   */
+  public static boolean isPowerOf2(int value) {
+    return value != 0 && ((value & (value - 1)) == 0);
+  }
+
+  /**
    * Returns the immediate value from machine code given a instruction format.
    *
    * @param code machine code to extract the immediate value

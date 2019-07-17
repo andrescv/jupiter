@@ -25,6 +25,32 @@
   -fx-background-color: #d8d8d8;
 }
 
+.jfx-tree-table-view.cache .tree-table-row-cell:hit .tree-table-cell {
+  -fx-background-color: #00D2B0;
+}
+
+.jfx-tree-table-view.cache .tree-table-row-cell:miss .tree-table-cell {
+  -fx-background-color: #FF4751;
+}
+
+.jfx-tree-table-view.cache .tree-table-row-cell .tree-table-cell {
+  -fx-border-width: 0 0 1 0;
+  -fx-border-color: #F3F3F3;
+}
+
+.jfx-tree-table-view.cache .tree-table-row-cell:empty .tree-table-cell {
+  -fx-border-width: 0 0 0 0;
+  -fx-border-color: #F3F3F3;
+}
+
+.jfx-tree-table-view.cache .column-header .label {
+  -fx-padding: 8 0 8 0;
+}
+
+.jfx-tree-table-view.cache .tree-table-cell {
+  -fx-pref-height: 12px;
+}
+
 .tree-table-row-cell .jfx-text-field {
   -fx-alignment: CENTER;
 }
