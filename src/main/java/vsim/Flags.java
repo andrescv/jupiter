@@ -19,6 +19,8 @@ package vsim;
 
 import java.io.File;
 
+import vsim.riscv.hardware.Cache.ReplacePolicy;
+
 
 /** Command line flags. */
 public final class Flags {
@@ -49,6 +51,18 @@ public final class Flags {
 
   /** start label */
   public static String START = "__start";
+
+  /** cache associativity */
+  public static int CACHE_ASSOCIATIVITY = 1;
+
+  /** cache block size */
+  public static int CACHE_BLOCK_SIZE = 16;
+
+  /** cache number of blocks */
+  public static int CACHE_NUM_BLOCKS = 4;
+
+  /** cache replace policy */
+  public static ReplacePolicy CACHE_REPLACE_POLICY = ReplacePolicy.LRU;
 
   /** history size */
   public static int HIST_SIZE = 2000;

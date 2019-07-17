@@ -40,7 +40,7 @@ public final class Loader {
     try {
       // debug or simulate ?
       if (Flags.DEBUG) {
-        (new Debugger(Linker.link(Assembler.assemble(files)), true)).debug();
+        (new Debugger(Linker.link(Assembler.assemble(files)))).debug();
       } else {
         (new Simulator(Linker.link(Assembler.assemble(files)))).simulate();
       }

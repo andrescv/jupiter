@@ -2,3 +2,14 @@
   -fx-text-fill: #eee;
   -jfx-focus-color: -fx-secondary-light;
 }
+
+.jfx-text-field.cache {
+  -fx-cursor: DEFAULT;
+  -fx-text-fill: #fff;
+  -jfx-focus-color: -fx-secondary-light;
+  -jfx-unfocus-color: -fx-secondary-light;
+}
+
+.jfx-text-field.cache > .input-focused-line {
+  -fx-pref-height: 1px;
+}

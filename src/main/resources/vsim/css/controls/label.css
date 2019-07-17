@@ -8,6 +8,11 @@
   -fx-text-fill: #ffffff;
 }
 
+.label.cache {
+  -fx-font-family: 'Montserrat SemiBold';
+  -fx-text-fill: #ffffff;
+}
+
 .label.status-bar-labels {
   -fx-font-size: 14;
   -fx-text-fill: #eee;

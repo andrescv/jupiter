@@ -21,9 +21,39 @@ import javafx.scene.control.Tooltip;
 
 import com.jfoenix.controls.cells.editors.base.GenericEditableTreeTableCell;
 
+import vsim.State;
+import vsim.gui.models.MemoryItem;
+
 
 /** Custom editable tree table cell. */
 public final class EditableCell<S, T> extends GenericEditableTreeTableCell<S, T> {
+
+  /** program state */
+  private State state;
+
+  /**
+   * Creates a new editable cell.
+   *
+   * @param state program state
+   */
+  public EditableCell(State state) {
+    super();
+    this.state = state;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void startEdit() {
+    S item = (S) getTreeTableRow().getItem();
+    if (item instanceof MemoryItem) {
+      MemoryItem mitem = (MemoryItem) item;
+      if (!isEmpty() && state.memory().check(mitem.getIntAddress(), false)) {
+        super.startEdit();
+      }
+    } else {
+      super.startEdit();
+    }
+  }
 
   /** {@inheritDoc} */
   @Override

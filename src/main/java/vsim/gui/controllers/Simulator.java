@@ -42,10 +42,12 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
+import vsim.Flags;
 import vsim.Globals;
 import vsim.Logger;
 import vsim.asm.Assembler;
@@ -58,6 +60,7 @@ import vsim.gui.components.*;
 import vsim.gui.models.*;
 import vsim.linker.LinkedProgram;
 import vsim.linker.Linker;
+import vsim.riscv.hardware.Cache.ReplacePolicy;
 import vsim.sim.History;
 import vsim.utils.Data;
 import vsim.utils.Dump;
@@ -112,9 +115,26 @@ public final class Simulator {
   @FXML private JFXButton dumpCode;
   /** dump data button */
   @FXML private JFXButton dumpData;
+  /** associativity plus button */
+  @FXML private JFXButton assocPlusBtn;
+  /** associativity minus button */
+  @FXML private JFXButton assocMinusBtn;
 
   /** segment combobox */
   @FXML private JFXComboBox<Label> segment;
+  /** cache map combobox */
+  @FXML private JFXComboBox<Label> cacheMap;
+  /** cache policy combobox */
+  @FXML private JFXComboBox<Label> cachePolicy;
+
+  /** block size text field */
+  @FXML private JFXTextField blockSize;
+  /** num blocks text field */
+  @FXML private JFXTextField numBlocks;
+  /** associativity text fiefld */
+  @FXML private JFXTextField assoc;
+  /** cache size text field */
+  @FXML private JFXTextField cacheSize;
 
   /** RVI tree table view */
   @FXML private JFXTreeTableView<RegisterItem> rviTable;
@@ -153,6 +173,11 @@ public final class Simulator {
   @FXML private TreeTableColumn<SymbolItem, String> symbolTableName;
   /** RVF number tree table column */
   @FXML private TreeTableColumn<SymbolItem, String> symbolTableAddress;
+
+  /** Cache tree table view */
+  @FXML private JFXTreeTableView<CacheItem> cacheTable;
+  /** RVF mnemonic tree table column */
+  @FXML private TreeTableColumn<CacheItem, String> cacheBlocks;
 
   /** text tree table extension */
   private TextTableExt textExt;
@@ -258,9 +283,8 @@ public final class Simulator {
             breakpoints.put(pc, true);
           } catch (HaltException e) {
             Status.EXIT.set(true);
-            if (e.getCode() != 0) {
-              Logger.info(String.format(Data.EOL + "exit(%d)", e.getCode()));
-            }
+            program.getState().memory().cache().stats();
+            Platform.runLater(() -> mainController.toast(String.format("exit(%d)", e.getCode()), 2500));
             break;
           } catch (SimulationException e) {
             Status.EXIT.set(true);
@@ -302,9 +326,7 @@ public final class Simulator {
           // nothing here :]
         } catch (HaltException e) {
           Status.EXIT.set(true);
-          if (e.getCode() != 0) {
-            Logger.info(String.format(Data.EOL + "exit(%d)", e.getCode()));
-          }
+          Platform.runLater(() -> mainController.toast(String.format("exit(%d)", e.getCode()), 2500));
         } catch (SimulationException e) {
           Status.EXIT.set(true);
           Logger.error(e.getMessage());
@@ -358,6 +380,7 @@ public final class Simulator {
         program.getState().reset();
         program.load();
         updateMemoryCells();
+        updateCacheOrganization();
         refreshTables();
         Status.EXIT.set(false);
         Status.EMPTY.set(true);
@@ -423,6 +446,52 @@ public final class Simulator {
     updateMemoryCells();
   }
 
+  /** Increments cache block size. */
+  @FXML private synchronized void blockSizePlus() {
+    Flags.CACHE_BLOCK_SIZE *= 2;
+    program.getState().memory().cache().setBlockSize(Flags.CACHE_BLOCK_SIZE);
+    updateCacheOrganization();
+  }
+
+  /** Decrements cache block size. */
+  @FXML private synchronized void blockSizeMinus() {
+    Flags.CACHE_BLOCK_SIZE /= 2;
+    Flags.CACHE_BLOCK_SIZE = Math.max(Flags.CACHE_BLOCK_SIZE, 1);
+    program.getState().memory().cache().setBlockSize(Flags.CACHE_BLOCK_SIZE);
+    updateCacheOrganization();
+  }
+
+  /** Increments number of cache blocks. */
+  @FXML private synchronized void numBlocksPlus() {
+    Flags.CACHE_NUM_BLOCKS *= 2;
+    program.getState().memory().cache().setNumBlocks(Flags.CACHE_NUM_BLOCKS);
+    updateCacheOrganization();
+  }
+
+  /** Decrements number of cache blocks. */
+  @FXML private synchronized void numBlocksMinus() {
+    Flags.CACHE_NUM_BLOCKS /= 2;
+    Flags.CACHE_NUM_BLOCKS = Math.max(Flags.CACHE_NUM_BLOCKS, 1);
+    program.getState().memory().cache().setNumBlocks(Flags.CACHE_NUM_BLOCKS);
+    updateCacheOrganization();
+  }
+
+  /** Increments cache associativity. */
+  @FXML private synchronized void assocPlus() {
+    Flags.CACHE_ASSOCIATIVITY *= 2;
+    program.getState().memory().cache().setAssociativity(Flags.CACHE_ASSOCIATIVITY);
+    Flags.CACHE_ASSOCIATIVITY = program.getState().memory().cache().getAssociativity();
+    updateCacheOrganization();
+  }
+
+  /** Decrements cache associativity. */
+  @FXML private synchronized void assocMinus() {
+    Flags.CACHE_ASSOCIATIVITY /= 2;
+    Flags.CACHE_ASSOCIATIVITY = Math.max(Flags.CACHE_ASSOCIATIVITY, 1);
+    program.getState().memory().cache().setAssociativity(Flags.CACHE_ASSOCIATIVITY);
+    updateCacheOrganization();
+  }
+
   /** Initializes tree table views. */
   private void initControls() {
     // rvi
@@ -432,7 +501,7 @@ public final class Simulator {
     rviValue.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     rviMnemonic.setCellFactory(p -> new DisplayCell<>());
     rviNumber.setCellFactory(p -> new DisplayCell<>());
-    rviValue.setCellFactory(p -> new EditableCell<>());
+    rviValue.setCellFactory(p -> new EditableCell<>(program.getState()));
     rviValue.setOnEditCommit(e -> updateXReg(e));
     // rvf
     rvfTable.setRowFactory(p -> new RegFileRow());
@@ -441,7 +510,7 @@ public final class Simulator {
     rvfValue.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     rvfMnemonic.setCellFactory(p -> new DisplayCell<>());
     rvfNumber.setCellFactory(p -> new DisplayCell<>());
-    rvfValue.setCellFactory(p -> new EditableCell<>());
+    rvfValue.setCellFactory(p -> new EditableCell<>(program.getState()));
     rvfValue.setOnEditCommit(e -> updateFReg(e));
     // memory
     memoryTable.setRowFactory(p -> new MemoryRow());
@@ -450,14 +519,18 @@ public final class Simulator {
     memoryOffset1.setCellValueFactory(new TreeItemPropertyValueFactory<>("byte1"));
     memoryOffset2.setCellValueFactory(new TreeItemPropertyValueFactory<>("byte2"));
     memoryOffset3.setCellValueFactory(new TreeItemPropertyValueFactory<>("byte3"));
-    memoryOffset0.setCellFactory(p -> new EditableCell<>());
-    memoryOffset1.setCellFactory(p -> new EditableCell<>());
-    memoryOffset2.setCellFactory(p -> new EditableCell<>());
-    memoryOffset3.setCellFactory(p -> new EditableCell<>());
+    memoryOffset0.setCellFactory(p -> new EditableCell<>(program.getState()));
+    memoryOffset1.setCellFactory(p -> new EditableCell<>(program.getState()));
+    memoryOffset2.setCellFactory(p -> new EditableCell<>(program.getState()));
+    memoryOffset3.setCellFactory(p -> new EditableCell<>(program.getState()));
     memoryOffset0.setOnEditCommit(e -> updateMemory(e, 0));
     memoryOffset1.setOnEditCommit(e -> updateMemory(e, 1));
     memoryOffset2.setOnEditCommit(e -> updateMemory(e, 2));
     memoryOffset3.setOnEditCommit(e -> updateMemory(e, 3));
+    // cache table
+    cacheTable.setRowFactory(p -> new CacheRow());
+    cacheBlocks.setCellValueFactory(new TreeItemPropertyValueFactory<>("state"));
+    cacheBlocks.setCellFactory(p -> new DisplayCell<>());
     // symbol table
     memoryTable.setRowFactory(p -> new MemoryRow());
     symbolTableName.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
@@ -490,6 +563,15 @@ public final class Simulator {
     reset.setTooltip(new Tooltip("Reset"));
     dumpCode.setTooltip(new Tooltip("Dump Code"));
     dumpData.setTooltip(new Tooltip("Dump Data"));
+    // cache combos
+    cacheMap.getItems().addAll(new Label("Direct Mapped"), new Label("N-Way Set Assoc"), new Label("Fully Assoc"));
+    cacheMap.getSelectionModel().select(0);
+    cacheMap.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> setCacheMap(n.getText()));
+    cachePolicy.getItems().addAll(new Label("LRU"), new Label("FIFO"), new Label("RAND"));
+    cachePolicy.getSelectionModel().select(0);
+    cachePolicy.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> setCachePolicy(n.getText()));
+    assocPlusBtn.setDisable(true);
+    assocMinusBtn.setDisable(true);
     // memory combo box
     segment.getItems().addAll(new Label("text"), new Label("data"), new Label("stack"), new Label("heap"));
     segment.getSelectionModel().select(0);
@@ -557,6 +639,8 @@ public final class Simulator {
           source = source.replaceAll("( |\t)+", " ");
           // normalize commas
           source = source.replaceAll("( )?,( )?", ", ");
+          // remove labels
+          source = source.replaceAll("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?):", "");
           // trim whitespace
           source = source.trim();
         } catch (IOException e) {
@@ -618,14 +702,15 @@ public final class Simulator {
     });
     mlist = FXCollections.observableArrayList();
     for (int i = START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++) {
-      int offset0 = program.getState().memory().privLoadByteUnsigned(i);
-      int offset1 = program.getState().memory().privLoadByteUnsigned(i + 1);
-      int offset2 = program.getState().memory().privLoadByteUnsigned(i + 2);
-      int offset3 = program.getState().memory().privLoadByteUnsigned(i + 3);
+      int offset0 = program.getState().memory().load(i);
+      int offset1 = program.getState().memory().load(i + 1);
+      int offset2 = program.getState().memory().load(i + 2);
+      int offset3 = program.getState().memory().load(i + 3);
       MemoryItem item = new MemoryItem(i, offset0, offset1, offset2, offset3);
       program.getState().memory().addObserver(item);
       mlist.add(item);
     }
+    updateCacheOrganization();
     Platform.runLater(() -> {
       rviTable.setRoot(new RecursiveTreeItem<>(xlist, RecursiveTreeObject::getChildren));
       rvfTable.setRoot(new RecursiveTreeItem<>(flist, RecursiveTreeObject::getChildren));
@@ -672,23 +757,20 @@ public final class Simulator {
   private void updateMemory(CellEditEvent<MemoryItem, String> e, int offset) {
     try {
       int addr = START - e.getTreeTablePosition().getRow() * Data.WORD_LENGTH + offset;
-      program.getState().memory().storeByte(addr, Data.atoi(e.getNewValue()));
+      program.getState().memory().store(addr, Data.atoi(e.getNewValue()));
     } catch (NumberFormatException ex) {
       memoryTable.refresh();
       mainController.toast(String.format("Invalid byte value: %s", e.getNewValue()), 3000);
-    } catch (InvalidAddressException ex) {
-      memoryTable.refresh();
-      mainController.toast(ex.getMessage(), 3000);
     }
   }
 
   /** Updates memory cells. */
   private void updateMemoryCells() {
     for (int i = START, j = 0; j < ROWS; i -= Data.WORD_LENGTH, j++) {
-      int offset0 = program.getState().memory().privLoadByteUnsigned(i);
-      int offset1 = program.getState().memory().privLoadByteUnsigned(i + 1);
-      int offset2 = program.getState().memory().privLoadByteUnsigned(i + 2);
-      int offset3 = program.getState().memory().privLoadByteUnsigned(i + 3);
+      int offset0 = program.getState().memory().load(i);
+      int offset1 = program.getState().memory().load(i + 1);
+      int offset2 = program.getState().memory().load(i + 2);
+      int offset3 = program.getState().memory().load(i + 3);
       mlist.get(j).update(i, offset0, offset1, offset2, offset3);
     }
   }
@@ -749,6 +831,54 @@ public final class Simulator {
     updateMemoryCells();
   }
 
+  /**
+   * Sets cache map policy.
+   *
+   * @param map new cache map policy
+   */
+  private void setCacheMap(String map) {
+    switch (map) {
+      case "Direct Mapped":
+        Flags.CACHE_ASSOCIATIVITY = 1;
+        program.getState().memory().cache().setAssociativity(1);
+        assocPlusBtn.setDisable(true);
+        assocMinusBtn.setDisable(true);
+        updateCacheOrganization();
+        break;
+      case "N-Way Set Assoc":
+        assocPlusBtn.setDisable(false);
+        assocMinusBtn.setDisable(false);
+        updateCacheOrganization();
+        break;
+      default:
+        Flags.CACHE_ASSOCIATIVITY = Flags.CACHE_NUM_BLOCKS;
+        program.getState().memory().cache().setAssociativity(Flags.CACHE_ASSOCIATIVITY);
+        assocPlusBtn.setDisable(true);
+        assocMinusBtn.setDisable(true);
+        updateCacheOrganization();
+        break;
+    }
+  }
+
+  /**
+   * Sets cache policy.
+   *
+   * @param policy new cache policy
+   */
+  private void setCachePolicy(String policy) {
+    switch (policy) {
+      case "LRU":
+        program.getState().memory().cache().setReplacePolicy(ReplacePolicy.LRU);
+        break;
+      case "FIFO":
+        program.getState().memory().cache().setReplacePolicy(ReplacePolicy.FIFO);
+        break;
+      default:
+        program.getState().memory().cache().setReplacePolicy(ReplacePolicy.RAND);
+        break;
+    }
+  }
+
   /** Refreshes simulator tables. */
   private void refreshTables() {
     Platform.runLater(() -> {
@@ -756,6 +886,26 @@ public final class Simulator {
       rvfTable.refresh();
       memoryTable.refresh();
       textTable.refresh();
+      cacheTable.refresh();
+    });
+  }
+
+  /** Updates cache organization. */
+  private void updateCacheOrganization() {
+    Platform.runLater(() -> {
+      blockSize.setText(String.format("%d", program.getState().memory().cache().getBlockSize()));
+      numBlocks.setText(String.format("%d", program.getState().memory().cache().getNumBlocks()));
+      assoc.setText(String.format("%d", program.getState().memory().cache().getAssociativity()));
+      cacheSize.setText(String.format("%d", program.getState().memory().cache().getCacheSize()));
+      ObservableList<CacheItem> clist = FXCollections.observableArrayList();
+      int size = program.getState().memory().cache().getNumBlocks();
+      for (int i = 0; i < size; i++) {
+        CacheItem item = new CacheItem(i);
+        program.getState().memory().cache().addObserver(item);
+        clist.add(item);
+      }
+      cacheTable.setRoot(new RecursiveTreeItem<>(clist, RecursiveTreeObject::getChildren));
+      cacheTable.refresh();
     });
   }
 
