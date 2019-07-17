@@ -29,7 +29,7 @@ dependencies {
 
 // javafx modules
 javafx {
-  version = '11.0.2'
+  version = '12.0.1'
   modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }
 
@@ -43,8 +43,6 @@ jlink {
   launcher {
     name = 'vsim'
     jvmArgs = [
-      '--add-exports',
-      'javafx.graphics/com.sun.javafx.application=vsim',
       '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
       '--add-exports',
@@ -64,11 +62,6 @@ test {
   testLogging {
     events 'passed', 'skipped', 'failed'
   }
-}
-
-// javac configuration
-compileJava {
-  options.compilerArgs += ['--add-exports', 'javafx.graphics/com.sun.javafx.application=vsim']
 }
 
 // jacoco configuration
