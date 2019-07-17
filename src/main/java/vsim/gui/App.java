@@ -24,61 +24,43 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import com.sun.javafx.application.LauncherImpl;
+import javafx.stage.StageStyle;
 
 import vsim.Logger;
 import vsim.VSim;
-import vsim.gui.controllers.Main;
 
 
 /** V-Sim GUI application. */
 public final class App extends Application {
 
-  /** scenen */
-  private Scene scene;
-  /** main controller */
-  private Main controller;
-
   /** {@inheritDoc} */
   @Override
-  public void init() {
+  public void start(Stage stage) {
     try {
-      // load file
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/vsim/fxml/Main.fxml"));
-      Parent root = loader.load();
-      controller = loader.getController();
-      // create scene
-      scene = new Scene(root, 1024, 800);
-      // set styles
-      scene.getStylesheets().addAll(getClass().getResource("/vsim/css/vsim.css").toExternalForm());
+      // load splash
+      Parent root = FXMLLoader.load(getClass().getResource("/vsim/fxml/Splash.fxml"));
+      // create scene and add styles
+      Scene scene = new Scene(root, 500, 274);
+      scene.getStylesheets().addAll(getClass().getResource("/vsim/css/splash.css").toExternalForm());
+      // set stage
+      stage.setScene(scene);
+      stage.setResizable(false);
+      stage.initStyle(StageStyle.UNDECORATED);
+      stage.getIcons().add(Icons.favicon());
+      stage.toFront();
+      stage.show();
     } catch (IOException e) {
       Logger.error("could not load V-Sim GUI");
       VSim.exit(1);
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void start(Stage stage) {
-    stage.setTitle("V-Sim");
-    stage.getIcons().add(Icons.favicon());
-    controller.setStage(stage);
-    stage.setScene(scene);
-    stage.show();
-    stage.toFront();
-  }
-
-  /**
-   * Loads V-Sim GUI application.
-   *
-   * @param args command line arguments
-   */
-  public static void load(String[] args) {
+  /** Loads V-Sim GUI application. */
+  public static void load() {
     System.setProperty("prism.lcdtext", "false");
     Settings.load();
     Fonts.load();
-    LauncherImpl.launchApplication(App.class, Splash.class, args);
+    launch(new String[]{});
   }
 
 }

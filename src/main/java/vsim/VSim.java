@@ -38,7 +38,7 @@ public final class VSim {
       Loader.load(Cmd.parse(args));
     } else if (!GraphicsEnvironment.isHeadless()) {
       // GUI mode
-      App.load(args);
+      App.load();
     }
   }
 
