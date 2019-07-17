@@ -145,7 +145,7 @@
                         </JFXTabPane>
                      </content>
                   </Tab>
-                  <Tab text="Mem">
+                  <Tab text="Memory">
                      <content>
                         <VBox>
                            <children>
