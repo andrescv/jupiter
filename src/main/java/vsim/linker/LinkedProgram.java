@@ -22,11 +22,11 @@ import java.util.HashMap;
 
 import vsim.Flags;
 import vsim.Globals;
-import vsim.State;
 import vsim.asm.stmts.Statement;
 import vsim.exc.NonInstructionException;
 import vsim.exc.SimulationException;
 import vsim.riscv.instructions.MachineCode;
+import vsim.sim.State;
 import vsim.utils.Data;
 
 

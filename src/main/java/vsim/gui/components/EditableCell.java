@@ -21,8 +21,8 @@ import javafx.scene.control.Tooltip;
 
 import com.jfoenix.controls.cells.editors.base.GenericEditableTreeTableCell;
 
-import vsim.State;
 import vsim.gui.models.MemoryItem;
+import vsim.sim.State;
 
 
 /** Custom editable tree table cell. */

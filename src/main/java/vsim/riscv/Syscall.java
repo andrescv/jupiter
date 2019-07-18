@@ -19,8 +19,8 @@ package vsim.riscv;
 
 import java.util.Random;
 
-import vsim.State;
 import vsim.exc.*;
+import vsim.sim.State;
 import vsim.utils.Data;
 import vsim.utils.IO;
 

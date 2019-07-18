@@ -17,12 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 package vsim.riscv.instructions.r4type;
 
-import vsim.State;
 import vsim.exc.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.InstructionField;
 import vsim.riscv.instructions.MachineCode;
+import vsim.sim.State;
 
 
 /** RISC-V fnmsub.s (Floating-point Fused Negative Multiply-Subtract, Single-Precision) instruction. */
