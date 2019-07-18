@@ -20,9 +20,9 @@ package vsim.gui.components;
 import javafx.css.PseudoClass;
 import javafx.scene.control.TreeTableRow;
 
-import vsim.State;
 import vsim.gui.Status;
 import vsim.gui.models.StatementItem;
+import vsim.sim.State;
 import vsim.utils.Data;
 
 

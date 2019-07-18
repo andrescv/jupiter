@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import vsim.Globals;
 import vsim.Logger;
-import vsim.State;
 import vsim.VSim;
 import vsim.asm.stmts.Statement;
 import vsim.exc.*;

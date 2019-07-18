@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 package vsim.riscv.instructions.itype;
 
 
-import vsim.State;
 import vsim.exc.SimulationException;
 import vsim.riscv.instructions.Format;
 import vsim.riscv.instructions.Instruction;
 import vsim.riscv.instructions.MachineCode;
+import vsim.sim.State;
 
 
 /** RISC-V fence (Fence Memory and I/O) instruction. */

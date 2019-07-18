@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vsim.Logger;
-import vsim.State;
 import vsim.exc.SimulationException;
+import vsim.sim.State;
 import vsim.utils.FS;
 import vsim.utils.IO;
 

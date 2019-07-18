@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vsim.Flags;
-import vsim.State;
 
 
 /** V-Sim program state history */
