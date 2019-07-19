@@ -500,6 +500,9 @@ public final class Cache {
     for (Integer t : cache.keySet()) {
       cache.get(t).reset();
     }
+    for (int i = 0; i < state.size(); i++) {
+      state.set(i, "empty");
+    }
     for (int i = 0; i < numBlocks; i++) {
       pcs.firePropertyChange("empty", "reset", i);
     }
@@ -586,6 +589,18 @@ public final class Cache {
    */
   public int getAccesses() {
     return accesses;
+  }
+
+  /**
+   * Returns the hit rate.
+   *
+   * @return hit rate
+   */
+  public float getHitRate() {
+    if (accesses != 0) {
+      return ((float) hits) / accesses;
+    }
+    return 0.0f;
   }
 
   /**
