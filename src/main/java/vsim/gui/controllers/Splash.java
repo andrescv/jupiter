@@ -88,7 +88,7 @@ public final class Splash implements Initializable {
         } catch (InterruptedException e) {
           // nothing here :]
         }
-        Platform.runLater(() -> msg.setText("complete"));
+        Platform.runLater(() -> msg.setText("load completed"));
         // wait a little bit more x)
         try {
           Thread.sleep(500);
