@@ -77,6 +77,7 @@ public class CloseDialog extends JFXAlert<Void> {
     // set alert
     setContent(layout);
     initModality(Modality.NONE);
+    setOverlayClose(false);
     setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
     // save actions
     save.setOnAction(e -> save());
