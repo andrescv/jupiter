@@ -27,7 +27,7 @@ import vsim.riscv.InstructionSet;
 public final class Globals {
 
   /** V-Sim simulator version */
-  public static final String VERSION = "v3.0.0";
+  public static final String VERSION = "v3.0";
 
   /** V-Sim simulator license and copyright */
   public static final String LICENSE = "Copyright (c) 2018-2019 Andrés Castellanos";

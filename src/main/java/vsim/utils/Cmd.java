@@ -207,7 +207,7 @@ public final class Cmd {
       IO.stdout().println("RISC-V Assembler & Runtime Simulator");
       // print version ?
       if (Flags.VERSION) {
-        IO.stdout().println("              " + Globals.VERSION);
+        IO.stdout().println("               " + Globals.VERSION);
       }
       // print license ?
       if (Flags.LICENSE) {
