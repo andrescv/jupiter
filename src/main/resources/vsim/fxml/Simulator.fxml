@@ -152,10 +152,10 @@
                               <JFXTreeTableView fx:id="memoryTable" editable="true" showRoot="false" style="-fx-background-insets: 0;" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TreeTableColumn fx:id="memoryAddress" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" text="Address" />
-                                    <TreeTableColumn fx:id="memoryOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
-                                    <TreeTableColumn fx:id="memoryOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
-                                    <TreeTableColumn fx:id="memoryOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
                                     <TreeTableColumn fx:id="memoryOffset3" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+3" />
+                                    <TreeTableColumn fx:id="memoryOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
+                                    <TreeTableColumn fx:id="memoryOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
+                                    <TreeTableColumn fx:id="memoryOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -250,7 +250,7 @@
                                     </AnchorPane>
                                     <AnchorPane layoutX="20.0" layoutY="62.0">
                                        <children>
-                                          <Label layoutY="16.0" styleClass="cache" text="Associativity:" />
+                                          <Label layoutX="33.0" layoutY="16.0" styleClass="cache" text="Associativity:" />
                                           <JFXTextField fx:id="assoc" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
                                           <JFXButton fx:id="assocPlusBtn" layoutX="129.0" layoutY="7.0" onAction="#assocPlus" styleClass="plus" text="">
                                              <graphic>
