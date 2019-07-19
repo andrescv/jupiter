@@ -67,6 +67,7 @@ public final class PathDialog extends JFXAlert<Void> {
     // set alert
     setContent(layout);
     initModality(Modality.NONE);
+    setOverlayClose(false);
     setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
     // enter actions
     text.setOnKeyPressed(e -> {

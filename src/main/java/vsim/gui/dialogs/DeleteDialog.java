@@ -73,6 +73,7 @@ public final class DeleteDialog extends JFXAlert<Void> {
     /// set alert
     setContent(layout);
     initModality(Modality.NONE);
+    setOverlayClose(false);
     setAnimation(JFXAlertAnimation.CENTER_ANIMATION);
     // save actions
     delete.setOnAction(e -> delete());
