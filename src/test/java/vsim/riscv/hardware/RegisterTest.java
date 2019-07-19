@@ -15,14 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.hardware;
+package jvpiter.riscv.hardware;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
 
-/** vsim.riscv.hardware.Register tests. */
+/** jvpiter.riscv.hardware.Register tests. */
 public class RegisterTest {
 
   @Test

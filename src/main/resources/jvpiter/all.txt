@@ -1,0 +1,87 @@
+:jvpiter.riscv.instructions.rtype
+  ADD
+  SUB
+  SLL
+  SLT
+  SLTU
+  XOR
+  SRL
+  SRA
+  OR
+  AND
+  DIV
+  DIVU
+  MUL
+  MULH
+  MULHU
+  MULHSU
+  REM
+  REMU
+  FMVWX
+  FMVXW
+  FCVTSW
+  FCVTSWU
+  FCVTWS
+  FCVTWUS
+  FADDS
+  FSUBS
+  FMULS
+  FDIVS
+  FSQRTS
+  FSGNJS
+  FSGNJNS
+  FSGNJXS
+  FEQS
+  FLTS
+  FLES
+  FCLASSS
+  FMINS
+  FMAXS
+:jvpiter.riscv.instructions.itype
+  JALR
+  LB
+  LH
+  LW
+  LBU
+  LHU
+  ADDI
+  SLTI
+  SLTIU
+  XORI
+  ORI
+  ANDI
+  SLLI
+  SRLI
+  SRAI
+  ECALL
+  FLW
+  EBREAK
+  FENCE
+  CSRRC
+  CSRRS
+  CSRRW
+  CSRRCI
+  CSRRSI
+  CSRRWI
+:jvpiter.riscv.instructions.stype
+  SB
+  SH
+  SW
+  FSW
+:jvpiter.riscv.instructions.btype
+  BEQ
+  BGE
+  BGEU
+  BLT
+  BLTU
+  BNE
+:jvpiter.riscv.instructions.utype
+  AUIPC
+  LUI
+:jvpiter.riscv.instructions.jtype
+  JAL
+:jvpiter.riscv.instructions.r4type
+  FMADDS
+  FMSUBS
+  FNMADDS
+  FNMSUBS

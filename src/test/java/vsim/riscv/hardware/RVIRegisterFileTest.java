@@ -15,17 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.hardware;
+package jvpiter.riscv.hardware;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import vsim.utils.Data;
+import jvpiter.utils.Data;
 
 
-/** vsim.riscv.hardware.RVIRegisterFile tests. */
+/** jvpiter.riscv.hardware.RVIRegisterFile tests. */
 public class RVIRegisterFileTest {
 
   @Test

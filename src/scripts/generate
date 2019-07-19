@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
 # remove old files
-rm -f src/main/java/vsim/asm/Lexer.java
-rm -f src/main/java/vsim/asm/Parser.java
-rm -f src/main/java/vsim/asm/Token.java
-rm -f src/main/java/vsim/gui/highlighting/Lexer.java
+rm -f src/main/java/jvpiter/asm/Lexer.java
+rm -f src/main/java/jvpiter/asm/Parser.java
+rm -f src/main/java/jvpiter/asm/Token.java
+rm -f src/main/java/jvpiter/gui/highlighting/Lexer.java
 
 # generate lexer and parser
-java -jar lib/jflex-full-1.7.0.jar src/syntax/lexer.flex -d src/main/java/vsim/asm
-java -jar lib/jflex-full-1.7.0.jar src/syntax/highlighter.flex -d src/main/java/vsim/gui/highlighting
-java -jar lib/java-cup-11b.jar -parser Parser -symbols Token -destdir src/main/java/vsim/asm src/syntax/parser.cup
+java -jar lib/jflex-full-1.7.0.jar src/syntax/lexer.flex -d src/main/java/jvpiter/asm
+java -jar lib/jflex-full-1.7.0.jar src/syntax/highlighter.flex -d src/main/java/jvpiter/gui/highlighting
+java -jar lib/java-cup-11b.jar -parser Parser -symbols Token -destdir src/main/java/jvpiter/asm src/syntax/parser.cup

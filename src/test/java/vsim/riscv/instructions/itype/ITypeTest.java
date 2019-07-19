@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.instructions.itype;
+package jvpiter.riscv.instructions.itype;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import vsim.Globals;
-import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
+import jvpiter.Globals;
+import jvpiter.riscv.instructions.Format;
+import jvpiter.riscv.instructions.MachineCode;
 
 
-/** vsim.riscv.instructions.itype tests. */
+/** jvpiter.riscv.instructions.itype tests. */
 public class ITypeTest {
 
   @Test

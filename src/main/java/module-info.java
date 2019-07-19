@@ -1,5 +1,5 @@
-/** V-Sim module */
-module vsim {
+/** Jvpiter module */
+module jvpiter {
   requires java.base;
   requires java.prefs;
   requires java.desktop;
@@ -14,10 +14,10 @@ module vsim {
   requires com.jfoenix;
   requires java.cup.runtime;
 
-  exports vsim;
-  exports vsim.gui to javafx.graphics;
+  exports jvpiter;
+  exports jvpiter.gui to javafx.graphics;
 
-  opens vsim.gui to javafx.fxml;
-  opens vsim.gui.models to javafx.base;
-  opens vsim.gui.controllers to javafx.fxml;
+  opens jvpiter.gui to javafx.fxml;
+  opens jvpiter.gui.models to javafx.base;
+  opens jvpiter.gui.controllers to javafx.fxml;
 }

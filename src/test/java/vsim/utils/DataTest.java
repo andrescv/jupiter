@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.utils;
+package jvpiter.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
+import jvpiter.riscv.instructions.Format;
+import jvpiter.riscv.instructions.MachineCode;
 
 
-/** vsim.utils.Data tests. */
+/** jvpiter.utils.Data tests. */
 public class DataTest {
 
   @Test

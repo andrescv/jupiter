@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.hardware;
+package jvpiter.riscv.hardware;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,11 +24,11 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
-import vsim.exc.InvalidAddressException;
-import vsim.utils.Data;
+import jvpiter.exc.InvalidAddressException;
+import jvpiter.utils.Data;
 
 
-/** vsim.riscv.hardware.Memory tests. */
+/** jvpiter.riscv.hardware.Memory tests. */
 public class MemoryTest {
 
   private static int textEnd = Data.TEXT + 20 * Data.WORD_LENGTH - 1;

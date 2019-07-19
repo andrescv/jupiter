@@ -31,4 +31,4 @@ jobs:
         tasks: 'jlinkZip'
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: './build/distributions/V-Sim-${{ parameters.version }}-${{ parameters.platform }}.zip'
+        pathToPublish: './build/distributions/Jvpiter-${{ parameters.version }}-${{ parameters.platform }}.zip'
