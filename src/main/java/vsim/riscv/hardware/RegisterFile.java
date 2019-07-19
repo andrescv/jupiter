@@ -97,7 +97,10 @@ public abstract class RegisterFile {
    */
   public void restore(HashMap<String, Integer> values) {
     for (String key : values.keySet()) {
-      setRegister(key, values.get(key));
+      Register reg = rf.get(key);
+      int value = values.get(key);
+      pcs.firePropertyChange(reg.getMnemonic(), "reg", value);
+      reg.setValue(value);
     }
   }
 

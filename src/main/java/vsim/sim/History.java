@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vsim.Flags;
+import vsim.riscv.hardware.Cache.CacheBackup;
 
 
 /** V-Sim program state history */
@@ -36,6 +37,8 @@ public final class History {
   private final ArrayList<HashMap<String, Integer>> rviHist;
   /** rvf register file history */
   private final ArrayList<HashMap<String, Integer>> rvfHist;
+  /** cache history */
+  private final ArrayList<CacheBackup> cacheHist;
 
   /** Creates a new history. */
   public History() {
@@ -44,6 +47,7 @@ public final class History {
     memHist = new ArrayList<>();
     rviHist = new ArrayList<>();
     rvfHist = new ArrayList<>();
+    cacheHist = new ArrayList<>();
   }
 
   /**
@@ -63,7 +67,7 @@ public final class History {
   }
 
   /**
-   * Stores memory and register files in history.
+   * Stores memory, cache and register files in history.
    *
    * @param state program state
    */
@@ -71,13 +75,16 @@ public final class History {
     memHist.add(state.memory().getDiff());
     rviHist.add(state.xregfile().getDiff());
     rvfHist.add(state.fregfile().getDiff());
+    cacheHist.add(state.memory().cache().getDiff());
     if (memHist.size() > Flags.HIST_SIZE) {
       memHist.remove(0);
       rviHist.remove(0);
       rvfHist.remove(0);
+      cacheHist.remove(0);
       memHist.trimToSize();
       rviHist.trimToSize();
       rvfHist.trimToSize();
+      cacheHist.trimToSize();
     }
   }
 
@@ -88,11 +95,12 @@ public final class History {
       state.xregfile().setProgramCounter(pcHist.remove(pcHist.size() - 1));
       state.memory().setHeapPointer(heapHist.remove(heapHist.size() - 1));
     }
-    // restore memory, rvi and rvf register files
+    // restore memory, cache, rvi and rvf register files
     if (!memHist.isEmpty()) {
       state.memory().restore(memHist.remove(memHist.size() - 1));
       state.xregfile().restore(rviHist.remove(rviHist.size() - 1));
       state.fregfile().restore(rvfHist.remove(rvfHist.size() - 1));
+      state.memory().cache().restore(cacheHist.remove(cacheHist.size() - 1));
     }
   }
 
@@ -103,6 +111,7 @@ public final class History {
     memHist.clear();
     rviHist.clear();
     rvfHist.clear();
+    cacheHist.clear();
   }
 
   /**
@@ -111,7 +120,8 @@ public final class History {
    * @return {@code true} if history is empty, false if not
    */
   public boolean empty() {
-    return pcHist.isEmpty() && heapHist.isEmpty() && memHist.isEmpty() && rviHist.isEmpty() && rvfHist.isEmpty();
+    return pcHist.isEmpty() && heapHist.isEmpty() && memHist.isEmpty()
+      && rviHist.isEmpty() && rvfHist.isEmpty() && cacheHist.isEmpty();
   }
 
 }

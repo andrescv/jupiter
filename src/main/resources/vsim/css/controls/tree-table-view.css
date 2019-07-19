@@ -25,6 +25,11 @@
   -fx-background-color: #d8d8d8;
 }
 
+.jfx-tree-table-view.cache .column-header-background {
+  visibility: hidden;
+  -fx-padding: -2em;
+}
+
 .jfx-tree-table-view.cache .tree-table-row-cell:hit .tree-table-cell {
   -fx-background-color: #00D2B0;
 }

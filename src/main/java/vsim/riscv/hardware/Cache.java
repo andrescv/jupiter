@@ -60,6 +60,15 @@ public final class Cache {
       age = 0;
     }
 
+    /** Clones cache block. */
+    private Block copy() {
+      Block block = new Block();
+      block.valid = valid;
+      block.tag = tag;
+      block.age = age;
+      return block;
+    }
+
     /** Resets cache block. */
     private void reset() {
       valid = false;
@@ -115,7 +124,7 @@ public final class Cache {
           return true;
         }
       }
-      int index = evict();
+      int index = evict(true);
       update(index, tag);
       MISS.add(index + set * size);
       return false;
@@ -137,7 +146,7 @@ public final class Cache {
           return true;
         }
       }
-      int index = evict();
+      int index = evict(false);
       MISS.add(index + set * size);
       return false;
     }
@@ -151,20 +160,17 @@ public final class Cache {
     private void update(int index, int tag) {
       Block block = blocks.get(index);
       block.tag = tag;
-      if (!block.valid) {
-        block.valid = true;
-      }
-      if (replacePol == ReplacePolicy.LRU) {
-        block.age = 1;
-      }
+      block.valid = true;
+      block.age = 1;
     }
 
     /**
      * Evicts a cache block.
      *
+     * @param read if true called from read, if false called from write
      * @return evicted block index
      */
-    private int evict() {
+    private int evict(boolean read) {
       for (int i = 0; i < size; i++) {
         Block block = blocks.get(i);
         if (!block.valid) {
@@ -188,16 +194,34 @@ public final class Cache {
         }
         return index;
       } else if (replacePol == ReplacePolicy.FIFO) {
-        int index = fifo.remove(0);
-        fifo.add(index);
+        int index = fifo.get(0);
+        if (read) {
+          fifo.remove(0);
+          fifo.add(index);
+        }
         return index;
       } else {
-        int index = 0;
-        if (size > 1) {
-          index = RNG.nextInt(size - 1);
+        if (fifo.size() == 0) {
+          fifo.add(RNG.nextInt(size));
+        }
+        int index = fifo.get(0);
+        if (read) {
+          fifo.remove(0);
         }
         return index;
       }
+    }
+
+    /** Clones cache set. */
+    public Set copy() {
+      Set set = new Set(this.set, size, replacePol);
+      for (int i = 0; i < size; i++) {
+        set.blocks.set(i, blocks.get(i).copy());
+      }
+      for (int i = 0; i < fifo.size(); i++) {
+        set.fifo.add(fifo.get(i));
+      }
+      return set;
     }
 
     /** Resets cache set. */
@@ -205,6 +229,42 @@ public final class Cache {
       fifo.clear();
       for (Block block : blocks) {
         block.reset();
+      }
+    }
+
+  };
+
+  /** Cache set backup. */
+  public static final class CacheBackup {
+
+    /** hits backup */
+    private final int hits;
+    /** accesses backup */
+    private final int accesses;
+    /** cache address */
+    private final int address;
+    /** Set backup */
+    private final HashMap<Integer, Set> cache;
+    /** blocks state */
+    private final ArrayList<String> state;
+
+    /**
+     * Creates a new cache backup.
+     *
+     * @param hits hits count
+     * @param accesses cache global accesses
+     */
+    private CacheBackup(int hits, int accesses, int address, HashMap<Integer, Set> cache, ArrayList<String> state) {
+      this.hits = hits;
+      this.accesses = accesses;
+      this.address = address;
+      this.cache = new HashMap<>();
+      this.state = new ArrayList<>();
+      for (int i = 0; i < state.size(); i++) {
+        this.state.add(state.get(i));
+      }
+      for (Integer key : cache.keySet()) {
+        this.cache.put(key, cache.get(key).copy());
       }
     }
 
@@ -235,7 +295,11 @@ public final class Cache {
   private final PropertyChangeSupport pcs;
 
   /** cache data */
-  private final HashMap<Integer, Set> cache;
+  private HashMap<Integer, Set> cache;
+  /** blocks state */
+  private ArrayList<String> state;
+  /** cache diff */
+  private CacheBackup diff;
 
   /** Creates a new cache simulator. */
   public Cache() {
@@ -246,6 +310,8 @@ public final class Cache {
     cacheSize = blockSize * numBlocks;
     replacePol = Flags.CACHE_REPLACE_POLICY;
     cache = new HashMap<>();
+    state = new ArrayList<>();
+    diff = null;
     setCache();
   }
 
@@ -326,10 +392,10 @@ public final class Cache {
    * @param address memory address
    */
   public void loadByte(int address) {
-    accesses++;
     if (read(address)) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
   }
 
@@ -339,12 +405,12 @@ public final class Cache {
    * @param address memory address
    */
   public void loadHalf(int address) {
-    accesses++;
     boolean byte0 = read(address);
     boolean byte1 = read(address + Data.BYTE_LENGTH);
     if (byte0 && byte1) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
   }
 
@@ -354,7 +420,6 @@ public final class Cache {
    * @param address memory address
    */
   public void loadWord(int address) {
-    accesses++;
     boolean byte0 = read(address);
     boolean byte1 = read(address + Data.BYTE_LENGTH);
     boolean byte2 = read(address + 2 * Data.BYTE_LENGTH);
@@ -362,6 +427,7 @@ public final class Cache {
     if (byte0 && byte1 && byte2 && byte3) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
   }
 
@@ -371,10 +437,10 @@ public final class Cache {
    * @param address memory address
    */
   public void storeByte(int address) {
-    accesses++;
     if (write(address)) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
   }
 
@@ -384,12 +450,12 @@ public final class Cache {
    * @param address memory address
    */
   public void storeHalf(int address) {
-    accesses++;
     boolean byte0 = write(address);
     boolean byte1 = write(address + Data.BYTE_LENGTH);
     if (byte0 && byte1) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
   }
 
@@ -399,7 +465,6 @@ public final class Cache {
    * @param address memory address
    */
   public void storeWord(int address) {
-    accesses++;
     boolean byte0 = write(address);
     boolean byte1 = write(address + Data.BYTE_LENGTH);
     boolean byte2 = write(address + 2 * Data.BYTE_LENGTH);
@@ -407,7 +472,25 @@ public final class Cache {
     if (byte0 && byte1 && byte2 && byte3) {
       hits++;
     }
+    accesses++;
     fireNotification(address);
+  }
+
+  /**
+   * Restores cache state.
+   *
+   * @param diff cache diff
+   */
+  public void restore(CacheBackup diff) {
+    if (diff != null) {
+      hits = diff.hits;
+      accesses = diff.accesses;
+      cache = diff.cache;
+      state = diff.state;
+      for (int i = 0; i < state.size(); i++) {
+        pcs.firePropertyChange(state.get(i), String.format("0x%08x", diff.address), i);
+      }
+    }
   }
 
   /** Resets cache. */
@@ -417,6 +500,20 @@ public final class Cache {
     for (Integer t : cache.keySet()) {
       cache.get(t).reset();
     }
+    for (int i = 0; i < numBlocks; i++) {
+      pcs.firePropertyChange("empty", "reset", i);
+    }
+  }
+
+  /**
+   * Gets the current diff of the cache.
+   *
+   * @return cache diff
+   */
+  public CacheBackup getDiff() {
+    CacheBackup old = diff;
+    diff = null;
+    return old;
   }
 
   /**
@@ -499,6 +596,9 @@ public final class Cache {
   private boolean read(int address) {
     int t = getTag(address);
     int i = getIndex(address);
+    if (diff == null) {
+      diff = new CacheBackup(hits, accesses, address, cache, state);
+    }
     return cache.get(i).load(t);
   }
 
@@ -510,6 +610,9 @@ public final class Cache {
   private boolean write(int address) {
     int t = getTag(address);
     int i = getIndex(address);
+    if (diff == null) {
+      diff = new CacheBackup(hits, accesses, address, cache, state);
+    }
     return cache.get(i).write(t);
   }
 
@@ -517,10 +620,12 @@ public final class Cache {
   private void fireNotification(int address) {
     for (Integer idx : HIT) {
       if (!MISS.contains(idx)) {
+        state.set(idx, "hit");
         pcs.firePropertyChange("hit", String.format("0x%08x", address), idx);
       }
     }
     for (Integer idx: MISS) {
+      state.set(idx, "miss");
       pcs.firePropertyChange("miss", String.format("0x%08x", address), idx);
     }
     HIT.clear();
@@ -531,6 +636,11 @@ public final class Cache {
   private void setCache() {
     // remove cache data
     cache.clear();
+    // clear state
+    state.clear();
+    for (int i = 0; i < numBlocks; i++) {
+      state.add("empty");
+    }
     // calculate number of blocks per set
     int numBlocksXSet = numBlocks / associativity;
     // calculate number of bits for index

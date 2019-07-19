@@ -204,7 +204,7 @@
                                        <children>
                                           <Label layoutY="16.0" styleClass="cache" text="Block Size (bytes):" />
                                           <JFXTextField fx:id="blockSize" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
-                                          <JFXButton layoutX="129.0" layoutY="7.0" onAction="#blockSizePlus" styleClass="plus" text="">
+                                          <JFXButton fx:id="blockSizePlusBtn" layoutX="129.0" layoutY="7.0" onAction="#blockSizePlus" styleClass="plus" text="">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -213,7 +213,7 @@
                                                 </ImageView>
                                              </graphic>
                                           </JFXButton>
-                                          <JFXButton layoutX="176.0" layoutY="7.0" onAction="#blockSizeMinus" styleClass="minus" text="">
+                                          <JFXButton fx:id="blockSizeMinusBtn" layoutX="176.0" layoutY="7.0" onAction="#blockSizeMinus" styleClass="minus" text="">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -228,7 +228,7 @@
                                        <children>
                                           <Label layoutY="19.0" styleClass="cache" text="Number of Blocks:" />
                                           <JFXTextField fx:id="numBlocks" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
-                                          <JFXButton layoutX="129.0" layoutY="7.0" onAction="#numBlocksPlus" styleClass="plus" text="">
+                                          <JFXButton fx:id="numBlocksPlusBtn" layoutX="129.0" layoutY="7.0" onAction="#numBlocksPlus" styleClass="plus" text="">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -237,7 +237,7 @@
                                                 </ImageView>
                                              </graphic>
                                           </JFXButton>
-                                          <JFXButton layoutX="176.0" layoutY="7.0" onAction="#numBlocksMinus" prefWidth="33.0" styleClass="minus" text="">
+                                          <JFXButton fx:id="numBlocksMinusBtn" layoutX="176.0" layoutY="7.0" onAction="#numBlocksMinus" prefWidth="33.0" styleClass="minus" text="">
                                              <graphic>
                                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>

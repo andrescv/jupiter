@@ -286,6 +286,8 @@ public final class Debugger {
         terminated = true;
         IO.stdout().println();
         Logger.error(e.getMessage());
+        IO.stdout().println();
+        Logger.info(String.format("exit(%d)", -1));
       }
     } else {
       Logger.info("program has finished running, use reset command to execute it again.");
@@ -295,8 +297,12 @@ public final class Debugger {
   /** Back to previous instruction. */
   private void backstep() {
     if (!terminated) {
-      history.restore(program.getState());
-      IO.stdout().println(String.format("PC = 0x%08x", program.getState().xregfile().getProgramCounter()));
+      if (!history.empty()) {
+        history.restore(program.getState());
+        IO.stdout().println(String.format("PC = 0x%08x", program.getState().xregfile().getProgramCounter()));
+      } else {
+        Logger.warning("backup history is empty");
+      }
     } else {
       Logger.info("program has finished running, use reset command to execute it again.");
     }
@@ -338,6 +344,8 @@ public final class Debugger {
           terminated = true;
           IO.stdout().println();
           Logger.error(e.getMessage());
+          IO.stdout().println();
+          Logger.info(String.format("exit(%d)", -1));
         }
       }
     } else {

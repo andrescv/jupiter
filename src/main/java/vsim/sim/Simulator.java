@@ -68,6 +68,8 @@ public final class Simulator {
         VSim.exit(e.getCode());
       } catch (SimulationException e) {
         Logger.error(e.getMessage());
+        IO.stdout().println();
+        Logger.info(String.format("exit(%d)", -1));
         VSim.exit(1);
       }
     }
