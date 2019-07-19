@@ -48,6 +48,8 @@ public final class Splash implements Initializable {
   @FXML private Label version;
   /** copyright label */
   @FXML private Label copyright;
+  /** copyright label */
+  @FXML private Label msg;
 
   /** Creates a new splash screen controller */
   public Splash() {
@@ -82,7 +84,14 @@ public final class Splash implements Initializable {
         });
         // wait a little bit
         try {
-          Thread.sleep(2000);
+          Thread.sleep(1500);
+        } catch (InterruptedException e) {
+          // nothing here :]
+        }
+        Platform.runLater(() -> msg.setText("complete"));
+        // wait a little bit more x)
+        try {
+          Thread.sleep(500);
         } catch (InterruptedException e) {
           // nothing here :]
         }
