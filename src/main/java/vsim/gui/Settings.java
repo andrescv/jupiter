@@ -40,6 +40,9 @@ public final class Settings {
   public static final SimpleBooleanProperty SHOW_ST = new SimpleBooleanProperty(false);
 
   /** assemble only open files setting */
+  public static final SimpleBooleanProperty ASSEMBLE_ONLY_SELECTED = new SimpleBooleanProperty(true);
+
+  /** assemble only open files setting */
   public static final SimpleBooleanProperty ASSEMBLE_ONLY_OPEN = new SimpleBooleanProperty(false);
 
   /** assemble all files in current directory setting */
@@ -77,6 +80,7 @@ public final class Settings {
   public static void load() {
     USER_DIR.set(prefs.get("USER_DIR", USER_DIR.get()));
     SHOW_ST.set(prefs.getBoolean("SHOW_ST", SHOW_ST.get()));
+    ASSEMBLE_ONLY_SELECTED.set(prefs.getBoolean("ASSEMBLE_ONLY_SELECTED", ASSEMBLE_ONLY_SELECTED.get()));
     ASSEMBLE_ONLY_OPEN.set(prefs.getBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN.get()));
     ASSEMBLE_ALL.set(prefs.getBoolean("ASSEMBLE_ALL", ASSEMBLE_ALL.get()));
     ASSEMBLER_WARNINGS.set(prefs.getBoolean("ASSEMBLER_WARNINGS", ASSEMBLER_WARNINGS.get()));
@@ -101,11 +105,25 @@ public final class Settings {
     prefs.putBoolean("SHOW_ST", SHOW_ST.get());
   }
 
-  /** Toggles and saves assemble all setting. */
+  /** Toggles and saves assemble only selected file setting. */
+  public static void toggleAssembleOnlySelected() {
+    ASSEMBLE_ONLY_SELECTED.set(!ASSEMBLE_ONLY_SELECTED.get());
+    if (ASSEMBLE_ONLY_SELECTED.get()) {
+      ASSEMBLE_ONLY_OPEN.set(false);
+      ASSEMBLE_ALL.set(false);
+      prefs.putBoolean("ASSEMBLE_ONLY_OPEN", false);
+      prefs.putBoolean("ASSEMBLE_ALL", false);
+    }
+    prefs.putBoolean("ASSEMBLE_ONLY_SELECTED", ASSEMBLE_ONLY_SELECTED.get());
+  }
+
+  /** Toggles and saves assemble only open files setting. */
   public static void toggleAssembleOnlyOpen() {
     ASSEMBLE_ONLY_OPEN.set(!ASSEMBLE_ONLY_OPEN.get());
     if (ASSEMBLE_ONLY_OPEN.get()) {
       ASSEMBLE_ALL.set(false);
+      ASSEMBLE_ONLY_SELECTED.set(false);
+      prefs.putBoolean("ASSEMBLE_ONLY_SELECTED", false);
       prefs.putBoolean("ASSEMBLE_ALL", false);
     }
     prefs.putBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN.get());
@@ -115,7 +133,9 @@ public final class Settings {
   public static void toggleAssembleAll() {
     ASSEMBLE_ALL.set(!ASSEMBLE_ALL.get());
     if (ASSEMBLE_ALL.get()) {
+      ASSEMBLE_ONLY_SELECTED.set(false);
       ASSEMBLE_ONLY_OPEN.set(false);
+      prefs.putBoolean("ASSEMBLE_ONLY_SELECTED", false);
       prefs.putBoolean("ASSEMBLE_ONLY_OPEN", false);
     }
     prefs.putBoolean("ASSEMBLE_ALL", ASSEMBLE_ALL.get());

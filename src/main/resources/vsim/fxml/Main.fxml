@@ -319,7 +319,12 @@
                            </graphic>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#assembleOnly" text="Assemble Only Open Files">
+                        <MenuItem mnemonicParsing="false" onAction="#assembleOnlySelected" text="Assemble Only Selected File">
+                           <graphic>
+                              <JFXCheckBox fx:id="assembleOnlySelected" disable="true" text="" />
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#assembleOnly" text="Assemble All Open Files">
                            <graphic>
                               <JFXCheckBox fx:id="assembleOnly" disable="true" text="" />
                            </graphic>
