@@ -1,4 +1,4 @@
-package vsim.asm;
+package jvpiter.asm;
 
 import java.util.HashMap;
 import java_cup.runtime.Symbol;

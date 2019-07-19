@@ -7,7 +7,7 @@ plugins {
   id 'org.beryx.jlink' version '2.11.1'
 }
 
-// V-Sim version
+// Jvpiter version
 version = '3.0'
 
 // dependencies repositories
@@ -33,15 +33,15 @@ javafx {
   modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }
 
-// V-Sim main class
-mainClassName = "vsim/vsim.VSim"
+// Jvpiter main class
+mainClassName = "jvpiter/jvpiter.Jvpiter"
 
 // jlink configuration
 jlink {
-  imageZip = project.file("${buildDir}/distributions/V-Sim-${version}-${javafx.platform.classifier}.zip")
+  imageZip = project.file("${buildDir}/distributions/Jvpiter-${version}-${javafx.platform.classifier}.zip")
   options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
   launcher {
-    name = 'vsim'
+    name = 'jvpiter'
     jvmArgs = [
       '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
@@ -50,7 +50,7 @@ jlink {
       '--add-exports',
       'javafx.graphics/com.sun.javafx.scene=com.jfoenix'
     ]
-    windowsScriptTemplate = file('gradle/jlink/vsim.bat')
+    windowsScriptTemplate = file('gradle/jlink/jvpiter.bat')
   }
   addExtraDependencies('javafx')
 }
@@ -75,11 +75,11 @@ jacocoTestReport {
         dir: it,
         exclude: [
           // exclude gui package
-          'vsim/gui/*',
+          'jvpiter/gui/*',
           // exclude jlex and jcup classes
-          'vsim/asm/Lexer.class',
-          'vsim/asm/Parser.class',
-          'vsim/asm/Parser$CUP$Parser$actions.class'
+          'jvpiter/asm/Lexer.class',
+          'jvpiter/asm/Parser.class',
+          'jvpiter/asm/Parser$CUP$Parser$actions.class'
         ])
     })
   }
@@ -89,7 +89,7 @@ jacocoTestReport {
 spotless {
   java {
     licenseHeaderFile 'gradle/spotless/HEADER'
-    importOrder 'java', 'javafx', 'com', 'org', 'vsim', ''
+    importOrder 'java', 'javafx', 'com', 'org', 'jvpiter'
     removeUnusedImports()
     trimTrailingWhitespace()
     indentWithSpaces(2)

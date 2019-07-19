@@ -1,4 +1,4 @@
-package vsim.gui.highlighting;
+package jvpiter.gui.highlighting;
 
 %%
 

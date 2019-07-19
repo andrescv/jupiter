@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package vsim.riscv.instructions.btype;
+package jvpiter.riscv.instructions.btype;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import vsim.Globals;
-import vsim.riscv.instructions.Format;
-import vsim.riscv.instructions.MachineCode;
+import jvpiter.Globals;
+import jvpiter.riscv.instructions.Format;
+import jvpiter.riscv.instructions.MachineCode;
 
 
-/** vsim.riscv.instructions.btype tests. */
+/** jvpiter.riscv.instructions.btype tests. */
 public class BTypeTest {
 
   @Test
