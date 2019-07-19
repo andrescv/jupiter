@@ -11,5 +11,9 @@
 }
 
 .jfx-text-field.cache > .input-focused-line {
-  -fx-pref-height: 1px;
+  -fx-pref-height: 0px;
+}
+
+.jfx-text-field.cache:focused > .input-focused-line {
+  -fx-pref-height: 0px;
 }

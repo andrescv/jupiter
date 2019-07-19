@@ -193,7 +193,7 @@
                   </Tab>
                   <Tab text="Cache">
                      <content>
-                        <VBox spacing="10.0">
+                        <VBox>
                            <children>
                               <VBox alignment="TOP_CENTER" spacing="5.0">
                                  <padding>
@@ -284,6 +284,27 @@
                                           <JFXComboBox fx:id="cachePolicy" layoutX="192.0" layoutY="13.0" prefHeight="26.0" prefWidth="100.0" />
                                        </children>
                                     </AnchorPane>
+                                    <VBox>
+                                       <children>
+                                          <AnchorPane>
+                                             <children>
+                                                <Label layoutX="27.0" layoutY="-1.0" styleClass="cache" text="Accesses" />
+                                                <Label layoutX="150.0" layoutY="-2.0" styleClass="cache" text="Hit Count" />
+                                                <Label layoutX="256.0" styleClass="cache" text="Rate" />
+                                             </children>
+                                          </AnchorPane>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <JFXTextField fx:id="accesses" alignment="CENTER" editable="false" styleClass="cache" />
+                                                <JFXTextField fx:id="hits" alignment="CENTER" editable="false" styleClass="cache" />
+                                                <JFXTextField fx:id="hitRate" alignment="CENTER" editable="false" prefHeight="26.0" prefWidth="90.0" styleClass="cache" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </VBox>
                                  </children>
                               </VBox>
                               <JFXTreeTableView fx:id="cacheTable" showRoot="false" style="-fx-background-insets: 0;" styleClass="cache" VBox.vgrow="ALWAYS">

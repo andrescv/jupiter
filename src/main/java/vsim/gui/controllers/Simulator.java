@@ -146,6 +146,12 @@ public final class Simulator {
   @FXML private JFXTextField assoc;
   /** cache size text field */
   @FXML private JFXTextField cacheSize;
+  /** cache size text field */
+  @FXML private JFXTextField accesses;
+  /** cache size text field */
+  @FXML private JFXTextField hits;
+  /** cache size text field */
+  @FXML private JFXTextField hitRate;
 
   /** RVI tree table view */
   @FXML private JFXTreeTableView<RegisterItem> rviTable;
@@ -243,7 +249,7 @@ public final class Simulator {
             setText();
             setSymbolTable();
             setState();
-            refreshTables();
+            refreshSim();
             scroll();
             Status.READY.set(true);
             Platform.runLater(() -> mainController.simulator());
@@ -272,7 +278,7 @@ public final class Simulator {
       protected Void call() {
         Status.RUNNING.set(true);
         mainController.loading(true);
-        refreshTables();
+        refreshSim();
         while (!isCancelled()) {
           int pc = program.getState().xregfile().getProgramCounter();
           try {
@@ -296,7 +302,6 @@ public final class Simulator {
             breakpoints.put(pc, true);
           } catch (HaltException e) {
             Status.EXIT.set(true);
-            program.getState().memory().cache().stats();
             Platform.runLater(() -> mainController.toast(String.format("exit(%d)", e.getCode()), 2500));
             break;
           } catch (SimulationException e) {
@@ -309,7 +314,7 @@ public final class Simulator {
         Status.RUNNING.set(false);
         Status.EMPTY.set(history.empty());
         mainController.loading(false);
-        refreshTables();
+        refreshSim();
         scroll();
         return null;
       }
@@ -349,7 +354,7 @@ public final class Simulator {
         Status.RUNNING.set(false);
         Status.EMPTY.set(history.empty());
         mainController.loading(false);
-        refreshTables();
+        refreshSim();
         scroll();
         return null;
       }
@@ -367,7 +372,7 @@ public final class Simulator {
         if (!history.empty()) {
           history.restore(program.getState());
           Status.EMPTY.set(history.empty());
-          refreshTables();
+          refreshSim();
           scroll();
         }
         return null;
@@ -396,7 +401,7 @@ public final class Simulator {
         program.load();
         updateMemoryCells();
         updateCacheOrganization();
-        refreshTables();
+        refreshSim();
         scroll();
         Status.EXIT.set(false);
         Status.EMPTY.set(true);
@@ -589,9 +594,11 @@ public final class Simulator {
     cacheMap.getItems().addAll(new Label("Direct Mapped"), new Label("N-Way Set Assoc"), new Label("Fully Assoc"));
     cacheMap.getSelectionModel().select(0);
     cacheMap.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> setCacheMap(n.getText()));
+    cacheMap.disableProperty().bind(Bindings.not(Status.EMPTY));
     cachePolicy.getItems().addAll(new Label("LRU"), new Label("FIFO"), new Label("RAND"));
     cachePolicy.getSelectionModel().select(0);
     cachePolicy.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> setCachePolicy(n.getText()));
+    cachePolicy.disableProperty().bind(Bindings.not(Status.EMPTY));
     // memory combo box
     segment.getItems().addAll(new Label("text"), new Label("data"), new Label("stack"), new Label("heap"));
     segment.getSelectionModel().select(0);
@@ -897,13 +904,16 @@ public final class Simulator {
   }
 
   /** Refreshes simulator tables. */
-  private void refreshTables() {
+  private void refreshSim() {
     Platform.runLater(() -> {
       rviTable.refresh();
       rvfTable.refresh();
       memoryTable.refresh();
       textTable.refresh();
       cacheTable.refresh();
+      accesses.setText(String.format("%d", program.getState().memory().cache().getAccesses()));
+      hits.setText(String.format("%d", program.getState().memory().cache().getHits()));
+      hitRate.setText(String.format("%.2f", program.getState().memory().cache().getHitRate()));
     });
   }
 
@@ -921,6 +931,9 @@ public final class Simulator {
         program.getState().memory().cache().addObserver(item);
         clist.add(item);
       }
+      accesses.setText("0");
+      hits.setText("0");
+      hitRate.setText("0.00");
       cacheTable.setRoot(new RecursiveTreeItem<>(clist, RecursiveTreeObject::getChildren));
       cacheTable.refresh();
     });
