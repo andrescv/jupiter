@@ -105,6 +105,8 @@ public final class Main implements Initializable {
   /** show symbol table setting check box */
   @FXML private JFXCheckBox showSymbolTable;
   /** assemble only open files setting check box */
+  @FXML private JFXCheckBox assembleOnlySelected;
+  /** assemble only open files setting check box */
   @FXML private JFXCheckBox assembleOnly;
   /** assemble all files in directory setting check box */
   @FXML private JFXCheckBox assembleAll;
@@ -456,6 +458,11 @@ public final class Main implements Initializable {
   }
 
   /** Calls settings {@code toggleAssembleOnlyOpen} method. */
+  @FXML private void assembleOnlySelected() {
+    Settings.toggleAssembleOnlySelected();
+  }
+
+  /** Calls settings {@code toggleAssembleOnlyOpen} method. */
   @FXML private void assembleOnly() {
     Settings.toggleAssembleOnlyOpen();
   }
@@ -522,6 +529,7 @@ public final class Main implements Initializable {
     simulatorTab.disableProperty().bind(Bindings.not(Status.READY));
     editorTab.disableProperty().bind(Status.RUNNING);
     showSymbolTable.selectedProperty().bind(Settings.SHOW_ST);
+    assembleOnlySelected.selectedProperty().bind(Settings.ASSEMBLE_ONLY_SELECTED);
     assembleOnly.selectedProperty().bind(Settings.ASSEMBLE_ONLY_OPEN);
     assembleAll.selectedProperty().bind(Settings.ASSEMBLE_ALL);
     assemblerWarnings.selectedProperty().bind(Settings.ASSEMBLER_WARNINGS);
