@@ -66,10 +66,13 @@ public final class CacheItem extends RecursiveTreeObject<CacheItem> implements P
   public void propertyChange(PropertyChangeEvent e) {
     int i = (int) e.getNewValue();
     if (i == index) {
-      if (e.getPropertyName().equals("hit")) {
-        state.set(String.format("(%d)  HIT ", index));
+      String op = e.getPropertyName();
+      if (op.equals("hit")) {
+        state.set(String.format("(%d) HIT", index));
+      } else if (op.equals("miss")) {
+        state.set(String.format("(%d) MISS", index));
       } else {
-        state.set(String.format("(%d)  MISS", index));
+        state.set(String.format("(%d) EMPTY", index));
       }
     }
   }

@@ -156,9 +156,9 @@ public final class Memory {
    *
    * @param diff diff between states
    */
-  public void restore(HashMap<Integer, Byte> diff) {
+  public synchronized void restore(HashMap<Integer, Byte> diff) {
     for (Integer key : diff.keySet()) {
-      privStoreByte(key, diff.get(key));
+      store(key, diff.get(key), false);
     }
   }
 
@@ -166,16 +166,27 @@ public final class Memory {
    * Stores a byte at the given address without checks.
    *
    * @param address address where the byte value will be stored
+   * @param save if {@code true} save previous value in diff
    * @param value the byte value to store
    */
-  public synchronized void store(int address, int value) {
-    if (memory.containsKey(address)) {
+  public synchronized void store(int address, int value, boolean save) {
+    if (save && memory.containsKey(address)) {
       diff.put(address, memory.get(address));
-    } else {
+    } else if (save) {
       diff.put(address, (byte) 0);
     }
     pcs.firePropertyChange(String.format("0x%08x", address), "store", value);
     memory.put(address, (byte) (value & Data.BYTE_MASK));
+  }
+
+  /**
+   * Stores a byte at the given address without checks. Saves the previous value in diff.
+   *
+   * @param address address where the byte value will be stored
+   * @param value the byte value to store
+   */
+  public synchronized void store(int address, int value) {
+    store(address, value, true);
   }
 
   /**
@@ -188,9 +199,9 @@ public final class Memory {
     for (Statement stmt : text) {
       int code = stmt.code().bits();
       store(address, code);
-      store(address + Data.BYTE_LENGTH, code >> Data.BYTE_LENGTH_BITS);
-      store(address + 2 * Data.BYTE_LENGTH, code >> (2 * Data.BYTE_LENGTH_BITS));
-      store(address + 3 * Data.BYTE_LENGTH, code >> (3 * Data.BYTE_LENGTH_BITS));
+      store(address + Data.BYTE_LENGTH, code >> Data.BYTE_LENGTH_BITS, false);
+      store(address + 2 * Data.BYTE_LENGTH, code >> (2 * Data.BYTE_LENGTH_BITS), false);
+      store(address + 3 * Data.BYTE_LENGTH, code >> (3 * Data.BYTE_LENGTH_BITS), false);
       address += Data.WORD_LENGTH;
     }
   }
@@ -203,7 +214,7 @@ public final class Memory {
    */
   public void storeStatic(int address, ArrayList<Byte> data) {
     for (Byte b : data) {
-      store(address++, b);
+      store(address++, b, false);
     }
   }
 

@@ -25,6 +25,7 @@ import java.util.Hashtable;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -73,6 +74,8 @@ public final class Simulator {
   /** number of memory cells to show in the GUI application */
   private static final int ROWS = 32;
 
+  private static final SimpleBooleanProperty ASSOC_DISABLE = new SimpleBooleanProperty(true);
+
   /** start address to generate memory cells */
   private static int START = Data.TEXT + (ROWS - 1) * Data.WORD_LENGTH;
 
@@ -115,6 +118,14 @@ public final class Simulator {
   @FXML private JFXButton dumpCode;
   /** dump data button */
   @FXML private JFXButton dumpData;
+  /** associativity plus button */
+  @FXML private JFXButton blockSizePlusBtn;
+  /** associativity minus button */
+  @FXML private JFXButton blockSizeMinusBtn;
+  /** associativity plus button */
+  @FXML private JFXButton numBlocksPlusBtn;
+  /** associativity minus button */
+  @FXML private JFXButton numBlocksMinusBtn;
   /** associativity plus button */
   @FXML private JFXButton assocPlusBtn;
   /** associativity minus button */
@@ -232,6 +243,8 @@ public final class Simulator {
             setText();
             setSymbolTable();
             setState();
+            refreshTables();
+            scroll();
             Status.READY.set(true);
             Platform.runLater(() -> mainController.simulator());
           } catch (AssemblerException e) {
@@ -289,14 +302,15 @@ public final class Simulator {
           } catch (SimulationException e) {
             Status.EXIT.set(true);
             Logger.error(e.getMessage());
+            Platform.runLater(() -> mainController.toast(String.format("exit(%d)", -1), 2500));
             break;
           }
         }
         Status.RUNNING.set(false);
         Status.EMPTY.set(history.empty());
         mainController.loading(false);
-        scroll();
         refreshTables();
+        scroll();
         return null;
       }
     };
@@ -330,12 +344,13 @@ public final class Simulator {
         } catch (SimulationException e) {
           Status.EXIT.set(true);
           Logger.error(e.getMessage());
+          Platform.runLater(() -> mainController.toast(String.format("exit(%d)", -1), 2500));
         }
         Status.RUNNING.set(false);
         Status.EMPTY.set(history.empty());
         mainController.loading(false);
-        scroll();
         refreshTables();
+        scroll();
         return null;
       }
     });
@@ -352,8 +367,8 @@ public final class Simulator {
         if (!history.empty()) {
           history.restore(program.getState());
           Status.EMPTY.set(history.empty());
-          scroll();
           refreshTables();
+          scroll();
         }
         return null;
       }
@@ -382,6 +397,7 @@ public final class Simulator {
         updateMemoryCells();
         updateCacheOrganization();
         refreshTables();
+        scroll();
         Status.EXIT.set(false);
         Status.EMPTY.set(true);
         return null;
@@ -563,6 +579,12 @@ public final class Simulator {
     reset.setTooltip(new Tooltip("Reset"));
     dumpCode.setTooltip(new Tooltip("Dump Code"));
     dumpData.setTooltip(new Tooltip("Dump Data"));
+    blockSizePlusBtn.disableProperty().bind(Bindings.not(Status.EMPTY));
+    blockSizeMinusBtn.disableProperty().bind(Bindings.not(Status.EMPTY));
+    numBlocksPlusBtn.disableProperty().bind(Bindings.not(Status.EMPTY));
+    numBlocksMinusBtn.disableProperty().bind(Bindings.not(Status.EMPTY));
+    assocPlusBtn.disableProperty().bind(Bindings.or(ASSOC_DISABLE, Bindings.not(Status.EMPTY)));
+    assocMinusBtn.disableProperty().bind(Bindings.or(ASSOC_DISABLE, Bindings.not(Status.EMPTY)));
     // cache combos
     cacheMap.getItems().addAll(new Label("Direct Mapped"), new Label("N-Way Set Assoc"), new Label("Fully Assoc"));
     cacheMap.getSelectionModel().select(0);
@@ -570,8 +592,6 @@ public final class Simulator {
     cachePolicy.getItems().addAll(new Label("LRU"), new Label("FIFO"), new Label("RAND"));
     cachePolicy.getSelectionModel().select(0);
     cachePolicy.getSelectionModel().selectedItemProperty().addListener((e, o, n) -> setCachePolicy(n.getText()));
-    assocPlusBtn.setDisable(true);
-    assocMinusBtn.setDisable(true);
     // memory combo box
     segment.getItems().addAll(new Label("text"), new Label("data"), new Label("stack"), new Label("heap"));
     segment.getSelectionModel().select(0);
@@ -841,20 +861,17 @@ public final class Simulator {
       case "Direct Mapped":
         Flags.CACHE_ASSOCIATIVITY = 1;
         program.getState().memory().cache().setAssociativity(1);
-        assocPlusBtn.setDisable(true);
-        assocMinusBtn.setDisable(true);
+        ASSOC_DISABLE.set(true);
         updateCacheOrganization();
         break;
       case "N-Way Set Assoc":
-        assocPlusBtn.setDisable(false);
-        assocMinusBtn.setDisable(false);
+        ASSOC_DISABLE.set(false);
         updateCacheOrganization();
         break;
       default:
         Flags.CACHE_ASSOCIATIVITY = Flags.CACHE_NUM_BLOCKS;
         program.getState().memory().cache().setAssociativity(Flags.CACHE_ASSOCIATIVITY);
-        assocPlusBtn.setDisable(true);
-        assocMinusBtn.setDisable(true);
+        ASSOC_DISABLE.set(true);
         updateCacheOrganization();
         break;
     }
