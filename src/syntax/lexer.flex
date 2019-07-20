@@ -1,4 +1,4 @@
-package jvpiter.asm;
+package jupiter.asm;
 
 import java.util.HashMap;
 import java_cup.runtime.Symbol;

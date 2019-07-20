@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter;
+package jupiter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import jvpiter.sim.Loader;
-import jvpiter.utils.FS;
+import jupiter.sim.Loader;
+import jupiter.utils.FS;
 
 
 /** RISC-V Tests */
@@ -50,7 +50,7 @@ public class RISCVTests {
       // simulate
       Loader.load(files);
     } catch (RuntimeException e) {
-      assertEquals("Jvpiter(0)", e.getMessage(), "failed: " + file.toString());
+      assertEquals("Jupiter(0)", e.getMessage(), "failed: " + file.toString());
     }
   }
 

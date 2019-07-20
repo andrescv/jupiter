@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="667.0" prefWidth="989.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jupiter.gui.controllers.Simulator">
+   <children>
+      <HBox styleClass="hbox-simulator">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <JFXButton fx:id="run" onAction="#run" styleClass="run-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/run.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="step" onAction="#step" styleClass="step-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/step.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="backstep" onAction="#backstep" styleClass="backstep-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/backstep.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="stop" onAction="#stop" styleClass="stop-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/stop.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="reset" onAction="#reset" styleClass="reset-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/reset.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="dumpCode" onAction="#dumpCode" styleClass="code-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/code.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="dumpData" onAction="#dumpData" styleClass="data-btn" text="">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/btns/data.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <padding>
+                        <Insets bottom="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <JFXTreeTableView fx:id="textTable" editable="true" showRoot="false" style="-fx-background-insets: 0;" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TreeTableColumn fx:id="textBkpt" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="Bkpt" />
+                        <TreeTableColumn fx:id="textAddress" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Address" />
+                        <TreeTableColumn fx:id="textCode" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Machine Code" />
+                        <TreeTableColumn fx:id="textBasic" editable="false" prefWidth="75.0" sortable="false" text="Basic Code" />
+                        <TreeTableColumn fx:id="textSource" editable="false" prefWidth="75.0" sortable="false" text="Source Code" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </JFXTreeTableView>
+               </children>
+            </VBox>
+            <JFXTabPane fx:id="hardware" maxWidth="340.0" minWidth="305.0" prefHeight="667.0" prefWidth="320.0" styleClass="hardware">
+               <tabs>
+                  <Tab text="Registers">
+                     <content>
+                        <JFXTabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                           <tabs>
+                              <Tab text="Integer (X)">
+                                 <content>
+                                    <JFXTreeTableView fx:id="rviTable" editable="true" showRoot="false" style="-fx-background-insets: 0;">
+                                       <columns>
+                                          <TreeTableColumn fx:id="rviMnemonic" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Mnemonic" />
+                                          <TreeTableColumn fx:id="rviNumber" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="Number" />
+                                          <TreeTableColumn fx:id="rviValue" maxWidth="151.0" minWidth="100.0" prefWidth="151.0" sortable="false" text="Value" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </JFXTreeTableView>
+                                 </content>
+                              </Tab>
+                              <Tab text="Floating (F)">
+                                 <content>
+                                    <JFXTreeTableView fx:id="rvfTable" editable="true" showRoot="false" style="-fx-background-insets: 0;">
+                                       <columns>
+                                          <TreeTableColumn fx:id="rvfMnemonic" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Mnemonic" />
+                                          <TreeTableColumn fx:id="rvfNumber" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="Number" />
+                                          <TreeTableColumn fx:id="rvfValue" maxWidth="151.0" minWidth="100.0" prefWidth="151.0" sortable="false" text="Value" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </JFXTreeTableView>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Memory">
+                     <content>
+                        <VBox>
+                           <children>
+                              <JFXTreeTableView fx:id="memoryTable" editable="true" showRoot="false" style="-fx-background-insets: 0;" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TreeTableColumn fx:id="memoryAddress" editable="false" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" text="Address" />
+                                    <TreeTableColumn fx:id="memoryOffset3" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+3" />
+                                    <TreeTableColumn fx:id="memoryOffset2" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+2" />
+                                    <TreeTableColumn fx:id="memoryOffset1" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+1" />
+                                    <TreeTableColumn fx:id="memoryOffset0" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="+0" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </JFXTreeTableView>
+                              <HBox alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <JFXComboBox fx:id="segment" />
+                                    <JFXButton onAction="#up" styleClass="up-btn" text="">
+                                       <graphic>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/icons/btns/up.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                    <JFXButton onAction="#down" styleClass="down-btn" text="">
+                                       <graphic>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/icons/btns/down.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="4.0" top="4.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab text="Cache">
+                     <content>
+                        <VBox>
+                           <children>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <children>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label layoutY="16.0" styleClass="cache" text="Block Size (bytes):" />
+                                          <JFXTextField fx:id="blockSize" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
+                                          <JFXButton fx:id="blockSizePlusBtn" layoutX="129.0" layoutY="7.0" onAction="#blockSizePlus" styleClass="plus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/plus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                          <JFXButton fx:id="blockSizeMinusBtn" layoutX="176.0" layoutY="7.0" onAction="#blockSizeMinus" styleClass="minus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/minus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane layoutX="20.0" layoutY="20.0">
+                                       <children>
+                                          <Label layoutY="19.0" styleClass="cache" text="Number of Blocks:" />
+                                          <JFXTextField fx:id="numBlocks" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
+                                          <JFXButton fx:id="numBlocksPlusBtn" layoutX="129.0" layoutY="7.0" onAction="#numBlocksPlus" styleClass="plus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/plus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                          <JFXButton fx:id="numBlocksMinusBtn" layoutX="176.0" layoutY="7.0" onAction="#numBlocksMinus" prefWidth="33.0" styleClass="minus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/minus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane layoutX="20.0" layoutY="62.0">
+                                       <children>
+                                          <Label layoutX="33.0" layoutY="16.0" styleClass="cache" text="Associativity:" />
+                                          <JFXTextField fx:id="assoc" alignment="CENTER" editable="false" layoutX="225.0" layoutY="11.0" prefHeight="26.0" prefWidth="68.0" styleClass="cache" />
+                                          <JFXButton fx:id="assocPlusBtn" layoutX="129.0" layoutY="7.0" onAction="#assocPlus" styleClass="plus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/plus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                          <JFXButton fx:id="assocMinusBtn" layoutX="176.0" layoutY="7.0" onAction="#assocMinus" styleClass="minus" text="">
+                                             <graphic>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../img/icons/btns/minus.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane layoutX="20.0" layoutY="62.0">
+                                       <children>
+                                          <Label layoutY="16.0" styleClass="cache" text="Cache Size (bytes):" />
+                                          <JFXTextField fx:id="cacheSize" alignment="CENTER" editable="false" layoutX="137.0" layoutY="10.0" prefHeight="26.0" prefWidth="156.0" styleClass="cache" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
+                                          <JFXComboBox fx:id="cacheMap" layoutY="13.0" prefHeight="26.0" prefWidth="184.0" />
+                                          <JFXComboBox fx:id="cachePolicy" layoutX="192.0" layoutY="13.0" prefHeight="26.0" prefWidth="100.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <VBox>
+                                       <children>
+                                          <AnchorPane>
+                                             <children>
+                                                <Label layoutX="27.0" layoutY="-1.0" styleClass="cache" text="Accesses" />
+                                                <Label layoutX="150.0" layoutY="-2.0" styleClass="cache" text="Hit Count" />
+                                                <Label layoutX="256.0" styleClass="cache" text="Rate" />
+                                             </children>
+                                          </AnchorPane>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <JFXTextField fx:id="accesses" alignment="CENTER" editable="false" styleClass="cache" />
+                                                <JFXTextField fx:id="hits" alignment="CENTER" editable="false" styleClass="cache" />
+                                                <JFXTextField fx:id="hitRate" alignment="CENTER" editable="false" prefHeight="26.0" prefWidth="90.0" styleClass="cache" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                              <JFXTreeTableView fx:id="cacheTable" showRoot="false" style="-fx-background-insets: 0;" styleClass="cache" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TreeTableColumn fx:id="cacheBlocks" editable="false" prefWidth="75.0" sortable="false" style="-fx-background-insets: 0;" text="Blocks" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </JFXTreeTableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="symbolTableTab" text="ST">
+                     <content>
+                        <JFXTreeTableView fx:id="symbolTable" showRoot="false" style="-fx-background-insets: 0;">
+                           <columns>
+                              <TreeTableColumn fx:id="symbolTableName" prefWidth="75.0" sortable="false" text="Symbol" />
+                              <TreeTableColumn fx:id="symbolTableAddress" prefWidth="75.0" text="Address" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </JFXTreeTableView>
+                     </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </children>
+      </HBox>
+   </children>
+</StackPane>

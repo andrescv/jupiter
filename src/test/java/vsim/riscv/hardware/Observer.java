@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter.riscv.hardware;
+package jupiter.riscv.hardware;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

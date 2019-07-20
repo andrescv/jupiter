@@ -20,7 +20,6 @@ jobs:
       inputs:
         codeCoverageTool: 'JaCoCo'
         summaryFileLocation: './build/reports/jacoco/test/jacocoTestReport.xml'
-        reportDirectory: './build/reports/jacoco/test/html'
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'
@@ -31,4 +30,4 @@ jobs:
         tasks: 'jlinkZip'
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: './build/distributions/Jvpiter-${{ parameters.version }}-${{ parameters.platform }}.zip'
+        pathToPublish: './build/distributions/Jupiter-${{ parameters.version }}-${{ parameters.platform }}.zip'

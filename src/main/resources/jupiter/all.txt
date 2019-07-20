@@ -1,0 +1,87 @@
+:jupiter.riscv.instructions.rtype
+  ADD
+  SUB
+  SLL
+  SLT
+  SLTU
+  XOR
+  SRL
+  SRA
+  OR
+  AND
+  DIV
+  DIVU
+  MUL
+  MULH
+  MULHU
+  MULHSU
+  REM
+  REMU
+  FMVWX
+  FMVXW
+  FCVTSW
+  FCVTSWU
+  FCVTWS
+  FCVTWUS
+  FADDS
+  FSUBS
+  FMULS
+  FDIVS
+  FSQRTS
+  FSGNJS
+  FSGNJNS
+  FSGNJXS
+  FEQS
+  FLTS
+  FLES
+  FCLASSS
+  FMINS
+  FMAXS
+:jupiter.riscv.instructions.itype
+  JALR
+  LB
+  LH
+  LW
+  LBU
+  LHU
+  ADDI
+  SLTI
+  SLTIU
+  XORI
+  ORI
+  ANDI
+  SLLI
+  SRLI
+  SRAI
+  ECALL
+  FLW
+  EBREAK
+  FENCE
+  CSRRC
+  CSRRS
+  CSRRW
+  CSRRCI
+  CSRRSI
+  CSRRWI
+:jupiter.riscv.instructions.stype
+  SB
+  SH
+  SW
+  FSW
+:jupiter.riscv.instructions.btype
+  BEQ
+  BGE
+  BGEU
+  BLT
+  BLTU
+  BNE
+:jupiter.riscv.instructions.utype
+  AUIPC
+  LUI
+:jupiter.riscv.instructions.jtype
+  JAL
+:jupiter.riscv.instructions.r4type
+  FMADDS
+  FMSUBS
+  FNMADDS
+  FNMSUBS
