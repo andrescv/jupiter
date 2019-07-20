@@ -28,11 +28,11 @@
 }
 
 .menu-bar .menu:hover .label {
-  -fx-text-fill: #333;
+  -fx-text-fill: #fff;
 }
 
 .menu-bar .menu:showing .label {
-  -fx-text-fill: #333;
+  -fx-text-fill: #fff;
 }
 
 .menu-bar .menu:showing .menu-item .label {
