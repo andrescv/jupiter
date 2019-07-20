@@ -7,10 +7,10 @@
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
   </a>
   <a href="https://dev.azure.com/andrescv/Jupiter">
-    <img src="https://dev.azure.com/andrescv/Jupiter/_apis/build/status/andrescv.V-Sim?branchName=master" alt="Azure Pipelines">
+    <img src="https://dev.azure.com/andrescv/Jupiter/_apis/build/status/andrescv.Jupiter?branchName=master" alt="Azure Pipelines">
   </a>
   <a href="https://dev.azure.com/andrescv/Jupiter">
-    <img src="https://img.shields.io/azure-devops/coverage/andrescv/Jupiter/3.svg" alt="Coverage" />
+    <img src="https://img.shields.io/azure-devops/coverage/andrescv/Jupiter/4.svg" alt="Coverage" />
   </a>
   <a href="https://github.com/andrescv/Jupiter/releases">
     <img src="https://img.shields.io/github/release/andrescv/Jupiter/all.svg" alt="Version">
