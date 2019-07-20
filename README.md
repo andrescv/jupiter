@@ -1,6 +1,6 @@
 <p align="center">
   <a href="">
-    <img src="./assets/jupiter.png" alt="Jupiter" width="400">
+    <img src="./docs/assets/images/jupiter.png" alt="Jupiter" width="400">
   </a>
   <br><br>
   <a href="https://github.com/andrescv/Jupiter/blob/master/LICENSE">
