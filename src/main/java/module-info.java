@@ -1,5 +1,5 @@
-/** Jvpiter module */
-module jvpiter {
+/** Jupiter module */
+module jupiter {
   requires java.base;
   requires java.prefs;
   requires java.desktop;
@@ -14,10 +14,10 @@ module jvpiter {
   requires com.jfoenix;
   requires java.cup.runtime;
 
-  exports jvpiter;
-  exports jvpiter.gui to javafx.graphics;
+  exports jupiter;
+  exports jupiter.gui to javafx.graphics;
 
-  opens jvpiter.gui to javafx.fxml;
-  opens jvpiter.gui.models to javafx.base;
-  opens jvpiter.gui.controllers to javafx.fxml;
+  opens jupiter.gui to javafx.fxml;
+  opens jupiter.gui.models to javafx.base;
+  opens jupiter.gui.controllers to javafx.fxml;
 }

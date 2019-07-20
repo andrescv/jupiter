@@ -1,11 +1,11 @@
-package jvpiter.asm;
+package jupiter.asm;
 
 import java.util.ArrayList;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.Scanner;
 
-import jvpiter.Flags;
-import jvpiter.utils.Data;
+import jupiter.Flags;
+import jupiter.utils.Data;
 
 
 parser code {:

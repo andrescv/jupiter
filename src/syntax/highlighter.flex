@@ -1,4 +1,4 @@
-package jvpiter.gui.highlighting;
+package jupiter.gui.highlighting;
 
 %%
 

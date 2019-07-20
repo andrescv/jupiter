@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter.riscv.hardware;
+package jupiter.riscv.hardware;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,10 +24,10 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
-import jvpiter.utils.Data;
+import jupiter.utils.Data;
 
 
-/** jvpiter.riscv.hardware.RegisterFile tests. */
+/** jupiter.riscv.hardware.RegisterFile tests. */
 public class RegisterFileTest {
 
   @Test

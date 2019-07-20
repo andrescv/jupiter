@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter.riscv.hardware;
+package jupiter.riscv.hardware;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 
-/** jvpiter.riscv.hardware.RVFRegisterFile tests. */
+/** jupiter.riscv.hardware.RVFRegisterFile tests. */
 public class RVFRegisterFileTest {
 
   @Test

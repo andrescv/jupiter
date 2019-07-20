@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter.utils;
+package jupiter.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import jvpiter.riscv.instructions.Format;
-import jvpiter.riscv.instructions.MachineCode;
+import jupiter.riscv.instructions.Format;
+import jupiter.riscv.instructions.MachineCode;
 
 
-/** jvpiter.utils.Data tests. */
+/** jupiter.utils.Data tests. */
 public class DataTest {
 
   @Test

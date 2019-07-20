@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 */
 
-package jvpiter.riscv.instructions.jtype;
+package jupiter.riscv.instructions.jtype;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import jvpiter.Globals;
-import jvpiter.riscv.instructions.Format;
-import jvpiter.riscv.instructions.MachineCode;
+import jupiter.Globals;
+import jupiter.riscv.instructions.Format;
+import jupiter.riscv.instructions.MachineCode;
 
 
-/** jvpiter.riscv.instructions.jtype tests. */
+/** jupiter.riscv.instructions.jtype tests. */
 public class JTypeTest {
 
   @Test
