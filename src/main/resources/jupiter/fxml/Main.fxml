@@ -334,12 +334,12 @@
                               <JFXCheckBox fx:id="assembleAll" disable="true" text="" />
                            </graphic>
                         </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#assemblerWarnings" text="Assembler Warnings Are Consider Errors">
                            <graphic>
                               <JFXCheckBox fx:id="assemblerWarnings" disable="true" text="" />
                            </graphic>
                         </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#permitPseudos" text="Permit Pseudoinstructions">
                            <graphic>
                               <JFXCheckBox fx:id="permitPseudos" disable="true" text="" />
