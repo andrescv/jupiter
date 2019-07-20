@@ -20,7 +20,6 @@ package jupiter.gui.components;
 import javafx.css.PseudoClass;
 import javafx.scene.control.TreeTableRow;
 
-import jupiter.gui.Status;
 import jupiter.gui.models.CacheItem;
 
 
@@ -31,7 +30,7 @@ public final class CacheRow extends TreeTableRow<CacheItem> {
   @Override
   public void updateItem(CacheItem item, boolean empty) {
     super.updateItem(item, empty);
-    if (empty || item == null || Status.RUNNING.get()) {
+    if (empty || item == null) {
       pseudoClassStateChanged(PseudoClass.getPseudoClass("hit"), false);
       pseudoClassStateChanged(PseudoClass.getPseudoClass("miss"), false);
     } else if (item != null && item.getState().indexOf("EMPTY") != -1) {
