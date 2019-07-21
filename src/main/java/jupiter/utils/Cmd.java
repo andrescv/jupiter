@@ -199,10 +199,11 @@ public final class Cmd {
    */
   private static void title(boolean force, boolean exit) {
     if (!PRINTED && (force || Flags.VERSION || Flags.LICENSE)) {
-      IO.stdout().println("        _   __    _____");
-      IO.stdout().println("       | | / /___/ __(_)_ _");
-      IO.stdout().println("       | |/ /___/\\ \\/ /  ' \\");
-      IO.stdout().println("       |___/   /___/_/_/_/_/");
+      IO.stdout().println("        __          _ __         ");
+      IO.stdout().println("    __ / /_ _____  (_) /____ ____");
+      IO.stdout().println("   / // / // / _ \\/ / __/ -_) __/");
+      IO.stdout().println("   \\___/\\_,_/ .__/_/\\__/\\__/_/");
+      IO.stdout().println("           /_/                   ");
       IO.stdout().println();
       IO.stdout().println("RISC-V Assembler & Runtime Simulator");
       // print version ?
