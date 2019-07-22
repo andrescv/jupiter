@@ -65,7 +65,7 @@ public final class Splash implements Initializable {
       /** {@inheritDoc} */
       @Override
       public Void call() {
-        final Scene scene = new Scene(new Pane(), 1024, 800);
+        final Scene scene = new Scene(new Pane(), 800, 600);
         Platform.runLater(() -> {
           try {
             // load file
@@ -101,6 +101,7 @@ public final class Splash implements Initializable {
           stage.setTitle("Jupiter");
           stage.getIcons().add(Icons.favicon());
           stage.setScene(scene);
+          stage.setMaximized(true);
           ((Stage) version.getScene().getWindow()).close();
           stage.toFront();
           stage.show();
