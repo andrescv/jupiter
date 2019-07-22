@@ -240,6 +240,7 @@ public final class Simulator {
         // reset simulator state
         breakpoints.clear();
         history.reset();
+        Status.reset();
         Globals.globl.reset();
         Globals.local.clear();
         if (mainController.editorController.allSaved()) {
