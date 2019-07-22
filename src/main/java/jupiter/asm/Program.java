@@ -31,6 +31,7 @@ import jupiter.asm.stmts.*;
 import jupiter.exc.*;
 import jupiter.utils.Data;
 import jupiter.utils.FS;
+import jupiter.utils.IO;
 
 
 /** RISC-V unlinked program. */
@@ -896,6 +897,7 @@ public final class Program {
    */
   private void report() throws AssemblerException {
     if (errors.size() != 0) {
+      IO.stderr().println(String.format("file '%s' has errors" + Data.EOL, file.getAbsolutePath()));
       for (String error : errors) {
         Logger.error(error + Data.EOL);
       }
