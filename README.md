@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="">
+  <a href="https://github.com/andrescv/Jupiter/">
     <img src="./docs/assets/images/jupiter.png" alt="Jupiter" width="400">
   </a>
   <br><br>
