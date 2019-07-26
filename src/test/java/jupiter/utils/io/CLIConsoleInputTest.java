@@ -45,7 +45,7 @@ public class CLIConsoleInputTest {
   }
 
   @Test
-  void testCLIConsoleOutput() throws IOException {
+  void testCLIConsoleInput() throws IOException {
     test("10" + Data.EOL, "10");
     test(Data.EOL, (int) Data.EOL.charAt(0));
     test("", "");
