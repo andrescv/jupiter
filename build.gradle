@@ -103,6 +103,25 @@ task codecov {
   description "Calls build and then jacocoTestReport"
 }
 
+// custom jar for development
+task devJar(type: Jar) {
+  baseName = 'Jupiter-dev'
+  manifest {
+    attributes (
+      'Main-Class': 'jupiter.Jupiter',
+      'Implementation-Title': 'Jupiter',
+      'Implementation-Version': version
+    )
+  }
+  // create fat jar
+  from {
+    configurations.runtimeClasspath.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
+  with jar
+}
+
 // java source and target compatibility
 sourceCompatibility = 11
 targetCompatibility = 11
