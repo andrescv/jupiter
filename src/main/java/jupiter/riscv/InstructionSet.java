@@ -174,7 +174,7 @@ public final class InstructionSet {
             return new IType("andi", code);
           case 0b001: // slli
             return new IType("slli", code);
-          case 0b101:
+          default:
             switch (code.get(InstructionField.FUNCT7)) {
               case 0b0000000: // srli
                 return new IType("srli", code);
@@ -183,8 +183,6 @@ public final class InstructionSet {
               default:
                 return null;
             }
-          default:
-            return null;
         }
       case 0b0110011: // r
         switch (code.get(InstructionField.FUNCT3)) {
@@ -267,12 +265,36 @@ public final class InstructionSet {
           default:
             return null;
         }
+      case 0b0001111:
+        switch (code.get(InstructionField.FUNCT3)) {
+          case 0b000:
+            return new IType("fence", code);
+          default:
+            return null;
+        }
       case 0b1110011:
-        switch (code.get(InstructionField.IMM_11_0)) {
-          case 0b000000000000: // ecall
-            return new IType("ecall", code);
-          case 0b000000000001: // ebreak
-            return new IType("ebreak", code);
+        switch (code.get(InstructionField.FUNCT3)) {
+          case 0b000:
+            switch (code.get(InstructionField.IMM_11_0)) {
+              case 0b000000000000: // ecall
+                return new IType("ecall", code);
+              case 0b000000000001: // ebreak
+                return new IType("ebreak", code);
+              default:
+                return null;
+            }
+          case 0b001:
+            return new IType("csrrw", code);
+          case 0b010:
+            return new IType("csrrs", code);
+          case 0b011:
+            return new IType("csrrc", code);
+          case 0b101:
+            return new IType("csrrwi", code);
+          case 0b110:
+            return new IType("csrrsi", code);
+          case 0b111:
+            return new IType("csrrci", code);
           default:
             return null;
         }
@@ -368,17 +390,6 @@ public final class InstructionSet {
       default:
         return null;
     }
-  }
-
-  /**
-   * Returns if the instruction set contains the given instruction mnemonic.
-   *
-   * @param mnemonic instruction mnemonic
-   * @return true if the instruction mnemonic is in the instruction set, false if not
-   */
-  public boolean contains(String mnemonic) {
-    String m = mnemonic.toLowerCase();
-    return instructions.containsKey(m) || pseudos.contains(m);
   }
 
 }
