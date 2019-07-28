@@ -51,6 +51,11 @@ public class ITypeTest {
     assertEquals("lhu x10, x2, 0", Globals.iset.get("lhu").disassemble(new MachineCode(0x00015503)));
     assertEquals("fence", Globals.iset.get("fence").disassemble(new MachineCode(0x0000000F)));
     assertEquals("csrrw x5, 10, x2", Globals.iset.get("csrrw").disassemble(new MachineCode(0x00A112F3)));
+    assertEquals("csrrs x5, 10, x2", Globals.iset.get("csrrs").disassemble(new MachineCode(0x00A122F3)));
+    assertEquals("csrrc x5, 10, x2", Globals.iset.get("csrrc").disassemble(new MachineCode(0x00A132F3)));
+    assertEquals("csrrwi x5, 10, 2", Globals.iset.get("csrrwi").disassemble(new MachineCode(0x00A152F3)));
+    assertEquals("csrrsi x5, 10, 2", Globals.iset.get("csrrsi").disassemble(new MachineCode(0x00A162F3)));
+    assertEquals("csrrci x5, 10, 2", Globals.iset.get("csrrci").disassemble(new MachineCode(0x00A172F3)));
   }
 
   @Test
