@@ -64,6 +64,85 @@ test04_data:
   .float 4294967300.000000
   .text
 
+test05:
+  li a1, 5
+  la a0, test05_data
+  flw f0, 0(a0)
+  li a3, 2147483647
+  fcvt.w.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test05_data:
+  .float 4294967300.000000
+  .text
+
+test06:
+  li a1, 6
+  la a0, test06_data
+  flw f0, 0(a0)
+  li a3, 2147483647
+  fcvt.w.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test06_data:
+  .float 0x7fffffff
+  .text
+
+
+test07:
+  li a1, 7
+  la a0, test07_data
+  flw f0, 0(a0)
+  li a3, 2147483647
+  fcvt.wu.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test07_data:
+  .float 4294967300.000000
+  .text
+
+test08:
+  li a1, 8
+  la a0, test08_data
+  flw f0, 0(a0)
+  li a3, 2147483647
+  fcvt.wu.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test08_data:
+  .float 0x7fffffff
+  .text
+
+test09:
+  li a1, 9
+  la a0, test09_data
+  flw f0, 0(a0)
+  li a3, 0
+  fcvt.wu.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test09_data:
+  .float 0xcf000001
+  .text
+
+test10:
+  li a1, 10
+  la a0, test10_data
+  flw f0, 0(a0)
+  li a3, 2147483647
+  fcvt.wu.s a0, f0
+  bne a0, a3, fail
+  .data
+  .align 2
+test10_data:
+  .float 0x4f000000
+  .text
+
 success:
   li a0, 10
   ecall

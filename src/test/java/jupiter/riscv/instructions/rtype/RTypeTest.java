@@ -52,11 +52,13 @@ public class RTypeTest {
     assertEquals("div x5, x6, x7", Globals.iset.get("div").disassemble(new MachineCode(0x027342B3)));
     assertEquals("rem x5, x24, x17", Globals.iset.get("rem").disassemble(new MachineCode(0x031C62B3)));
     assertEquals("sltu x5, x5, x6", Globals.iset.get("sltu").disassemble(new MachineCode(0x0062B2B3)));
+    assertEquals("srl x10, x5, x23", Globals.iset.get("srl").disassemble(new MachineCode(0x0172D533)));
     assertEquals("sra x5, x6, x7", Globals.iset.get("sra").disassemble(new MachineCode(0x407352B3)));
     assertEquals("fsqrt.s f10, f1", Globals.iset.get("fsqrt.s").disassemble(new MachineCode(0x5800f553)));
     assertEquals("slt x10, x12, x13", Globals.iset.get("slt").disassemble(new MachineCode(0x00D62533)));
     assertEquals("fsub.s f0, f1, f2", Globals.iset.get("fsub.s").disassemble(new MachineCode(0x08208053)));
     assertEquals("fmul.s f2, f3, f4", Globals.iset.get("fmul.s").disassemble(new MachineCode(0x10418153)));
+    assertEquals("fdiv.s f2, f3, f4", Globals.iset.get("fdiv.s").disassemble(new MachineCode(0x1841f153)));
     assertEquals("sll x10, x5, x8", Globals.iset.get("sll").disassemble(new MachineCode(0x00829533)));
     assertEquals("fadd.s f5, f6, f7", Globals.iset.get("fadd.s").disassemble(new MachineCode(0x007302D3)));
     assertEquals("xor x10, x11, x13", Globals.iset.get("xor").disassemble(new MachineCode(0x00D5C533)));
@@ -65,6 +67,8 @@ public class RTypeTest {
     assertEquals("and x20, x21, x22", Globals.iset.get("and").disassemble(new MachineCode(0x016AFA33)));
     assertEquals("mul x23, x24, x25", Globals.iset.get("mul").disassemble(new MachineCode(0x039C0BB3)));
     assertEquals("add x26, x27, x28", Globals.iset.get("add").disassemble(new MachineCode(0x01CD8D33)));
+    assertEquals("fmv.x.w x10, f0", Globals.iset.get("fmv.x.w").disassemble(new MachineCode(0xE0000553)));
+    assertEquals("fmv.w.x f0, x10", Globals.iset.get("fmv.w.x").disassemble(new MachineCode(0xf0050053)));
   }
 
   @Test
