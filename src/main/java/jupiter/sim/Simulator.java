@@ -62,11 +62,19 @@ public final class Simulator {
         (new Debugger(program, history)).debug();
         break;
       } catch (HaltException e) {
+        if (Globals.PRINT) {
+          IO.stdout().println();
+          IO.stdout().println();
+        };
         state.memory().cache().stats();
         IO.stdout().println();
         Logger.info(String.format("exit(%d)", e.getCode()));
         Jupiter.exit(e.getCode());
       } catch (SimulationException e) {
+        if (Globals.PRINT) {
+          IO.stdout().println();
+          IO.stdout().println();
+        };
         Logger.error(e.getMessage());
         IO.stdout().println();
         Logger.info(String.format("exit(%d)", -1));

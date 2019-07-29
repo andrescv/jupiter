@@ -44,4 +44,7 @@ public final class Globals {
   /** Local symbol table */
   public static final HashMap<String, SymbolTable> local = new HashMap<>();
 
+  /** If print syscalls are used */
+  public static boolean PRINT = false;
+
 }

@@ -278,13 +278,19 @@ public final class Debugger {
         // nothing here :]
       } catch (HaltException e) {
         terminated = true;
-        IO.stdout().println();
+        if (Globals.PRINT) {
+          IO.stdout().println();
+          IO.stdout().println();
+        };
         program.getState().memory().cache().stats();
         IO.stdout().println();
         Logger.info(String.format("exit(%d)", e.getCode()));
       } catch (SimulationException e) {
         terminated = true;
-        IO.stdout().println();
+        if (Globals.PRINT) {
+          IO.stdout().println();
+          IO.stdout().println();
+        };
         Logger.error(e.getMessage());
         IO.stdout().println();
         Logger.info(String.format("exit(%d)", -1));
@@ -335,14 +341,20 @@ public final class Debugger {
           breakpoints.put(pc, true);
         } catch (HaltException e) {
           terminated = true;
-          IO.stdout().println();
+          if (Globals.PRINT) {
+            IO.stdout().println();
+            IO.stdout().println();
+          };
           program.getState().memory().cache().stats();
           IO.stdout().println();
           Logger.info(String.format("exit(%d)", e.getCode()));
           break;
         } catch (SimulationException e) {
           terminated = true;
-          IO.stdout().println();
+          if (Globals.PRINT) {
+            IO.stdout().println();
+            IO.stdout().println();
+          };
           Logger.error(e.getMessage());
           IO.stdout().println();
           Logger.info(String.format("exit(%d)", -1));

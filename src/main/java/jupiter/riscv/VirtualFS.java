@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import jupiter.Globals;
 import jupiter.Logger;
 import jupiter.exc.SimulationException;
 import jupiter.sim.State;
@@ -191,6 +192,7 @@ public final class VirtualFS {
         return -1;
       case STDOUT:
       case STDERR:
+        Globals.PRINT = true;
         StringBuilder s = new StringBuilder(0);
         int wbytes = 0;
         for (int i = 0; i < nbytes; i++) {
