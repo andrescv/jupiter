@@ -123,15 +123,7 @@ public final class Program {
     } catch (Exception e) {
       addError("unexpected exception occurred while parsing file: '" + file + "'");
     }
-    report();
-  }
-
-  /**
-   * Checks symbols. This should be called after calling parse method.
-   *
-   * @throws AssemblerException if an error occurs while checking symbols
-   */
-  protected void check() throws AssemblerException {
+    // set globals
     Globals.local.put(file.getAbsolutePath(), local);
     for (String global : globals.keySet()) {
       Symbol sym = local.getSymbol(global);
@@ -145,6 +137,15 @@ public final class Program {
         addError("'" + global + "' declared global but not defined", line, global);
       }
     }
+    report();
+  }
+
+  /**
+   * Checks symbols. This should be called after calling parse method.
+   *
+   * @throws AssemblerException if an error occurs while checking symbols
+   */
+  protected void check() throws AssemblerException {
     // check relocation expansion
     for (Statement stmt : text) {
       try {
@@ -156,12 +157,8 @@ public final class Program {
     report();
   }
 
-  /**
-   * Generates machine code. This method should be called after calling check method.
-   *
-   * @throws AssemblerException if an error occurs while generating machine code
-   */
-  protected void build() throws AssemblerException {
+  /** Sets assembler symbols. This method should be called before build. */
+  protected void setSymbols() {
     // first reassign locals
     for (String label : local.labels()) {
       Symbol sym = local.getSymbol(label);
@@ -206,6 +203,14 @@ public final class Program {
         }
       } catch (Exception e) { }
     }
+  }
+
+  /**
+   * Generates machine code. This method should be called after calling check method.
+   *
+   * @throws AssemblerException if an error occurs while generating machine code
+   */
+  protected void build() throws AssemblerException {
     // generate machine code
     int pc = textStart;
     for (Statement stmt : text) {

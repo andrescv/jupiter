@@ -90,6 +90,10 @@ public final class Assembler {
         address += program.bss().size();
         address = Data.alignToWordBoundary(address);
       }
+      // set symbols
+      for (Program program : programs) {
+        program.setSymbols();
+      }
       // generate machine code
       for (Program program : programs) {
         program.build();
