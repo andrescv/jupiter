@@ -37,10 +37,13 @@ public class RISCVTests {
    *
    * @param file assembly file to simulate
    */
-  private void run(File file) {
-    ArrayList<File> files = new ArrayList<>(1);
-    files.add(file);
-    assertEquals(files.get(0).exists(), true);
+  private void run(File ...file) {
+    ArrayList<File> files = new ArrayList<>();
+    for (File f : file) {
+      assertEquals(f.exists(), true);
+      files.add(f);
+    }
+    files.trimToSize();
     try {
       // user runtime exception for exit
       Flags.EXIT = false;
@@ -59,6 +62,8 @@ public class RISCVTests {
     for (File file : FS.ls(FS.toFile("./src/test/riscv-tests"))) {
       run(file);
     }
+    // run a test with multiple files
+    run(FS.toFile("./src/test/others/print.s"), FS.toFile("./src/test/others/test.s"));
   }
 
 }
