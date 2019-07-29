@@ -383,7 +383,7 @@ public final class Cache {
   /** Prints cache stats */
   public void stats() {
     String fmt = "accesses: %d, hits: %d, misses: %d, hit rate: %.2f";
-    IO.stdout().println(String.format(fmt, accesses, hits, accesses - hits, (float)hits / accesses));
+    IO.stdout().println(String.format(fmt, accesses, hits, accesses - hits, getHitRate()));
   }
 
   /**
