@@ -19,6 +19,7 @@ package jupiter.riscv;
 
 import java.util.Random;
 
+import jupiter.Globals;
 import jupiter.exc.*;
 import jupiter.sim.State;
 import jupiter.utils.Data;
@@ -182,6 +183,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printInt(State state) {
+    Globals.PRINT = true;
     int num = state.xregfile().getRegister("a1");
     IO.stdout().print(Integer.toString(num));
   }
@@ -192,6 +194,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printFloat(State state) {
+    Globals.PRINT = true;
     float num = state.fregfile().getRegister("fa0");
     IO.stdout().print(Float.toString(num));
   }
@@ -202,6 +205,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printString(State state) throws SimulationException {
+    Globals.PRINT = true;
     int buffer = state.xregfile().getRegister("a1");
     // 65684
     StringBuilder s = new StringBuilder(0);
@@ -282,6 +286,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printChar(State state) {
+    Globals.PRINT = true;
     IO.stdout().print((char) state.xregfile().getRegister("a1") + "");
   }
 
@@ -414,6 +419,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printHex(State state) {
+    Globals.PRINT = true;
     IO.stdout().print(String.format("0x%08x", state.xregfile().getRegister("a1")));
   }
 
@@ -423,6 +429,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printBin(State state) {
+    Globals.PRINT = true;
     IO.stdout().print(String.format("0b%32s", Integer.toBinaryString(state.xregfile().getRegister("a1"))).replace(' ', '0'));
   }
 
@@ -432,6 +439,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void printUsgn(State state) {
+    Globals.PRINT = true;
     IO.stdout().print(Long.toString(Integer.toUnsignedLong(state.xregfile().getRegister("a1"))));
   }
 

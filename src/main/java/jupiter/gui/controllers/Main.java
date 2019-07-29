@@ -63,6 +63,9 @@ public final class Main implements Initializable {
   /** if assembling */
   private SimpleBooleanProperty assembling;
 
+  /** main console */
+  private InlineCssTextArea console;
+
   /** about dialog */
   private AboutDialog aboutDialog;
   /** close dialog */
@@ -204,6 +207,11 @@ public final class Main implements Initializable {
   /** Closes main stage. */
   protected void closeStage() {
     stage.close();
+  }
+
+  /** Clears console. */
+  protected void clearConsole() {
+    Platform.runLater(() -> console.replaceText(0, console.getLength(), ""));
   }
 
   /**
@@ -567,7 +575,7 @@ public final class Main implements Initializable {
     reset.disableProperty().bind(Bindings.or(Status.EMPTY, Bindings.or(editorSelected, Status.EXIT)));
     clearAllBreakpoints.disableProperty().bind(Bindings.or(Status.RUNNING, editorSelected));
     // console tab
-    InlineCssTextArea console = new InlineCssTextArea();
+    console = new InlineCssTextArea();
     console.setId("console");
     // clear option
     MenuItem clear = new MenuItem("clear");

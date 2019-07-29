@@ -243,6 +243,8 @@ public final class Simulator {
         Status.reset();
         Globals.globl.reset();
         Globals.local.clear();
+        Globals.PRINT = false;
+        mainController.clearConsole();
         if (mainController.editorController.allSaved()) {
           try {
             program = Linker.link(Assembler.assemble(mainController.editorController.getFiles()));
@@ -397,6 +399,7 @@ public final class Simulator {
       /** {@inheritDoc} */
       @Override
       public Void call() {
+        mainController.clearConsole();
         history.reset();
         program.getState().reset();
         program.load();
