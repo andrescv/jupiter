@@ -79,6 +79,7 @@ jacocoTestReport {
           // exclude jlex and jcup classes
           'jupiter/asm/Lexer.class',
           'jupiter/asm/Parser.class',
+          'jupiter/asm/Token.class',
           'jupiter/asm/Parser$CUP$Parser$actions.class'
         ])
     })
