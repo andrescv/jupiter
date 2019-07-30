@@ -51,10 +51,6 @@ finish:
   li a0, 1
   mv a1, t0
   ecall
-  # prints a newline
-  li a0, 11
-  li a1, '\n'
-  ecall
   # ends the program with status code 0
   li a0, 10
   ecall
