@@ -34,7 +34,7 @@ public class DataTest {
     assertEquals(Data.EOL, System.getProperty("line.separator"));
     assertEquals(Data.STACK_POINTER, 0xbffffff0);
     assertEquals(Data.GLOBAL_POINTER, 0x10008000);
-    assertEquals(Data.RESERVED_HIGH_START, 0xbffffff1);
+    assertEquals(Data.RESERVED_HIGH_START, 0xbffffff4);
     assertEquals(Data.RESERVED_HIGH_END, 0xffffffff);
     assertEquals(Data.RESERVED_LOW_START, 0x00000000);
     assertEquals(Data.RESERVED_LOW_END, 0x0000ffff);
