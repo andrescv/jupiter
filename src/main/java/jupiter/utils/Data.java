@@ -34,7 +34,7 @@ public final class Data {
   public static final int GLOBAL_POINTER = 0x10008000;
 
   /** represents the end address of the high reserved memory */
-  public static final int RESERVED_HIGH_START = 0xbffffff1;
+  public static final int RESERVED_HIGH_START = 0xbffffff4;
   /** represents the end address of the high reserved memory */
   public static final int RESERVED_HIGH_END = 0xffffffff;
   /** represents the start address of the low reserved memory */
