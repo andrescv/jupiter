@@ -133,6 +133,7 @@ lines       ::= line
 
 line        ::= stmt NEWLINE
               | NEWLINE
+              | error NEWLINE
               ;
 
 stmt        ::= label instruction
