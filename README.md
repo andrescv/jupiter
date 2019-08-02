@@ -25,7 +25,7 @@
 
 **Jupiter** is an open source and education-oriented RISC-V assembler and runtime simulator. It is written in Java 11 and capable of simulate all the instructions of the base integer ISA (`I` extension) plus the `M` and `F` extensions (**RV32IMF**), including all the pseudo-instructions described in the user-level instruction set manual<sup>1</sup>. It was developed taking into account that it could be used in various courses such as: _Computer Architecture, Compilers and Assembly Programming_.
 
-## Features
+### Features
 
 * **User Friendly**: Jupiter was designed focused in education and for all the people that are getting to know the RISC-V architecture. It places for priority the user experience. Jupiter has two modes of operation (_Command Line Interface_ and A _Graphical User Interface_) and both of these were developed to be intuitive and easy to use.
 
@@ -35,15 +35,15 @@
 
 * **Cross-platform**: Jupiter is available for **Linux** (_Ubuntu_), **macOS** and **Windows**.
 
-## Why this name, Jupiter ?
+### Why this name, Jupiter ?
 
 Traditionally other simulators of this type have used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**<sup>2</sup> or the Berkeley's web-based simulator **Venus**<sup>3</sup>. The name **Jupiter**<sup>4</sup> was chosen because this tradional reasons and also because this planet represents in some sort the number 5, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's<sup>5</sup>.
 
-## Contributing
+### Contributing
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/andrescv/Jupiter/issues/new).
 
-## Other great simulators
+### Other great simulators
 
 * [Venus](https://github.com/ThaumicMekanism/venusbackend): Berkeley's Web-based simulator originally developed by @kvakil and then updated and improved by @ThaumicMekanism.
 
@@ -53,7 +53,7 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 * [Spike](https://github.com/riscv/riscv-isa-sim): The original RISC-V ISA simulator that implements a functional model of one or more RISC-V harts.
 
-## References
+### References
 
 1. https://github.com/riscv/riscv-isa-manual
 2. http://courses.missouristate.edu/KenVollmar/mars/index.htm
@@ -61,6 +61,6 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 4. https://en.wikipedia.org/wiki/Jupiter
 5. https://en.wikipedia.org/wiki/DLX
 
-## Acknowledgments
+### Acknowledgments
 
 A big thank you to all the people working on the RISC-V project.
