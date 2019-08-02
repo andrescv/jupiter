@@ -23,12 +23,43 @@
   </a>
 </p>
 
-Jupiter is a simple assembler and runtime simulator inspired by _SPIM_ for programming in **RISC-V** assembly language and intended for educational purposes. One of the main goals was to make it functional and easy to use. Almost all the 32-bit base integer instruction set (`RV32I`) can be simulated, as well as the `M` and `F` extensions plus all the their respective pseudo-instructions. For the installation guide and a complete list of supported instructions, please visit the [docs](https://andrescv.github.io/Jupiter/) page.
+**Jupiter** is an open source and education-oriented RISC-V assembler and runtime simulator. It is written in Java 11 and capable of simulate all the instructions of the base integer ISA (`I` extension) plus the `M` and `F` extensions (**RV32IMF**), including all the pseudo-instructions described in the user-level instruction set manual. It was developed taking into account that it could be used in various courses such as: _Computer Architecture, Compilers and Assembly Programming_.
+
+## Features
+
+* **User Friendly**: Jupiter was designed focused in education and for all the people that are getting to know the RISC-V architecture. It places for priority the user experience. Jupiter has two modes of operation (_Command Line Interface_ and A _Graphical User Interface_) and both of these were developed to be intuitive and easy to use.
+
+* **Modularity**: Jupiter can assemble and simulate several files at once, not everything has to be one file of 1,000 lines of code. Simply one has to indicate by a global label what is the main starting point of the program. This permits modularity and enables the creation of projects and laboratories more easily.
+
+* **Feedback**: People using Jupiter gets feedback on what they are doing wrong :100:. The simulator shows errors of: syntax, when trying to access reserved memory or when trying to write to a read-only memory.
+
+* **Cross-platform**: Jupiter is available for **Linux** (_Ubuntu_), **macOS** and **Windows**.
+
+## Why this name, Jupiter ?
+
+Traditionally other simulators of this kind have been used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**[^1] or the Berkeley's web-based simulator .
+
+* **Venus**[^2]. The name **Jupiter**[^3] was chosen because this tradional reasons and also because this planet represents in some sort the number 5, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's[^4].
 
 ### Contributing
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/andrescv/Jupiter/issues/new).
 
+### Other great simulators
+
+* [Venus](https://github.com/ThaumicMekanism/venusbackend): Berkeley's Web-based simulator originally developed by @kvakil and then updated and improved by @ThaumicMekanism.
+
+* [RARS](https://github.com/TheThirdOne/rars): RISC-V Assembler and Runtime Simulator (RARS), based on the originally MARS simulator, but refactored for the RISC-V architecture by @TheThirdOne.
+
+* [Ripes](https://github.com/mortbopet/Ripes): A graphical 5-stage RISC-V pipeline simulator & assembly editor developed by @mortbopet
+
+* [Spike](https://github.com/riscv/riscv-isa-sim): The original RISC-V ISA simulator that implements a functional model of one or more RISC-V harts.
+
 ### Acknowledgments
 
 A big thank you to all the people working on the RISC-V project.
+
+[^1]: [http://courses.missouristate.edu/KenVollmar/mars/index.htm](http://courses.missouristate.edu/KenVollmar/mars/index.htm)
+[^2]: [https://github.com/kvakil/venus](https://github.com/kvakil/venus)
+[^3]: [https://en.wikipedia.org/wiki/Jupiter](https://en.wikipedia.org/wiki/Jupiter)
+[^4]: [https://en.wikipedia.org/wiki/DLX](https://en.wikipedia.org/wiki/DLX)
