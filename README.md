@@ -35,9 +35,19 @@
 
 * **Cross-platform**: Jupiter is available for **Linux** (_Ubuntu_), **macOS** and **Windows**.
 
+### Screenshots
+
+<p align="center">
+  <img src="./docs/assets/images/gui.png" alt="Jupiter GUI mode"/>
+</p>
+
+<p align="center">
+  <img src="./docs/assets/images/cli.png" alt="Jupiter CLI mode" />
+</p>
+
 ### Why this name, Jupiter ?
 
-Traditionally other simulators of this type have used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**<sup>2</sup> or the Berkeley's web-based simulator **Venus**<sup>3</sup>. The name **Jupiter**<sup>4</sup> was chosen because this tradional reasons and also because this planet represents in some sort the number 5, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's<sup>5</sup>.
+Traditionally other simulators of this type have used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**<sup>2</sup> or the Berkeley's web-based simulator **Venus**<sup>3</sup>. The name **Jupiter**<sup>4</sup> was chosen because of this tradional reasons and also because this planet represents in some sort the number **5**, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's<sup>5</sup>.
 
 ### Contributing
 
@@ -45,11 +55,11 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 ### Other great simulators
 
-* [Venus](https://github.com/ThaumicMekanism/venusbackend): Berkeley's Web-based simulator originally developed by @kvakil and then updated and improved by @ThaumicMekanism.
+* [Venus](https://github.com/ThaumicMekanism/venusbackend): Berkeley's Web-based simulator originally developed by [@kvakil](https://github.com/kvakil) and then updated and improved by [@ThaumicMekanism](https://github.com/ThaumicMekanism).
 
-* [RARS](https://github.com/TheThirdOne/rars): RISC-V Assembler and Runtime Simulator (RARS), based on the originally MARS simulator, but refactored for the RISC-V architecture by @TheThirdOne.
+* [RARS](https://github.com/TheThirdOne/rars): RISC-V Assembler and Runtime Simulator (RARS), based on the originally MARS simulator, but refactored for the RISC-V architecture by [@TheThirdOne](https://github.com/TheThirdOne).
 
-* [Ripes](https://github.com/mortbopet/Ripes): A graphical 5-stage RISC-V pipeline simulator & assembly editor developed by @mortbopet
+* [Ripes](https://github.com/mortbopet/Ripes): A graphical 5-stage RISC-V pipeline simulator & assembly editor developed by [@mortbopet](https://github.com/mortbopet).
 
 * [Spike](https://github.com/riscv/riscv-isa-sim): The original RISC-V ISA simulator that implements a functional model of one or more RISC-V harts.
 
