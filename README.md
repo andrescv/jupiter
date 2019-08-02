@@ -39,10 +39,12 @@
 
 <p align="center">
   <img src="./docs/assets/images/gui.png" alt="Jupiter GUI mode"/>
+  <strong>GUI Mode</strong>
 </p>
 
 <p align="center">
   <img src="./docs/assets/images/cli.png" alt="Jupiter CLI mode" />
+  <strong>CLI Mode</strong>
 </p>
 
 ### Why this name, Jupiter ?
@@ -63,6 +65,10 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 * [Spike](https://github.com/riscv/riscv-isa-sim): The original RISC-V ISA simulator that implements a functional model of one or more RISC-V harts.
 
+### Acknowledgments
+
+A big thank you to all the people working on the RISC-V project.
+
 ### References
 
 1. https://github.com/riscv/riscv-isa-manual
@@ -70,7 +76,3 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 3. https://github.com/kvakil/venus
 4. https://en.wikipedia.org/wiki/Jupiter
 5. https://en.wikipedia.org/wiki/DLX
-
-### Acknowledgments
-
-A big thank you to all the people working on the RISC-V project.
