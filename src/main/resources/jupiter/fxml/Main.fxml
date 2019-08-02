@@ -397,15 +397,6 @@
                               </ImageView>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Trap Handler">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../img/icons/trap.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </MenuItem>
                     </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="_Help">
