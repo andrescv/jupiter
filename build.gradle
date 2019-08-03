@@ -48,7 +48,9 @@ jlink {
       '--add-exports',
       'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
       '--add-exports',
-      'javafx.graphics/com.sun.javafx.scene=com.jfoenix'
+      'javafx.graphics/com.sun.javafx.scene=com.jfoenix',
+      '--add-exports',
+      'javafx.base/com.sun.javafx.event=com.jfoenix'
     ]
     windowsScriptTemplate = file('gradle/jlink/jupiter.bat')
   }
