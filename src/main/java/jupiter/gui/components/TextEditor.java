@@ -229,6 +229,7 @@ public final class TextEditor extends CodeArea {
       }
       insertText(getCurrentParagraph(), getCaretColumn(), spaces);
     }
+    requestFollowCaret();
   }
 
   /** Handles backspace event. */
