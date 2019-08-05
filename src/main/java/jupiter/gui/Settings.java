@@ -25,6 +25,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import jupiter.Flags;
+import jupiter.utils.FS;
 
 
 /** Jupiter GUI settings. */
@@ -97,6 +98,11 @@ public final class Settings {
     Flags.EXTRICT = ASSEMBLER_WARNINGS.get();
     Flags.SELF_MODIFYING = SELF_MODIFYING.get();
     Flags.START = START.get();
+    // ensure USER_DIR exists
+    if (!FS.toFile(USER_DIR.get()).exists()) {
+      USER_DIR.set(System.getProperty("user.dir"));
+      prefs.put("USER_DIR", USER_DIR.get());
+    }
   }
 
   /** Toggles and saves show symbol table setting. */
