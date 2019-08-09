@@ -35,11 +35,13 @@
   -fx-text-fill: #fff;
 }
 
-.menu-bar .menu:showing .menu-item .label {
+.menu-bar .menu:showing .menu-item .label,
+.menu-bar .menu:showing .menu .menu-item .label {
   -fx-text-fill: #333;
 }
 
-.menu-bar .menu:showing .menu-item:focused .label {
+.menu-bar .menu:showing .menu-item:focused .label,
+.menu-bar .menu:showing .menu .menu-item:focused .label {
   -fx-text-fill: #222;
 }
 
