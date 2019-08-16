@@ -388,7 +388,7 @@
                            </graphic>
                         </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Change Start Label">
+                        <MenuItem mnemonicParsing="false" text="Change Start Label" onAction="#changeStartLabel">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

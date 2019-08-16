@@ -77,7 +77,7 @@ public final class Main implements Initializable {
   /** file chooser */
   private FileDialog fileDialog;
   /** path dialog */
-  private PathDialog pathDialog;
+  private InputDialog inputDialog;
   /** save dialog */
   private SaveDialog saveDialog;
 
@@ -309,11 +309,11 @@ public final class Main implements Initializable {
    *
    * @return path dialog
    */
-  protected PathDialog pathDialog() {
-    if (pathDialog == null) {
-      pathDialog = new PathDialog(stage);
+  protected InputDialog inputDialog() {
+    if (inputDialog == null) {
+      inputDialog = new InputDialog(stage);
     }
-    return pathDialog;
+    return inputDialog;
   }
 
   /**
@@ -518,6 +518,14 @@ public final class Main implements Initializable {
   /** Calls settings {@code setTabSize(8)} method. */
   @FXML private void editorTabSize8() {
     Settings.setTabSize(8);
+  }
+
+  /** Calls settings {@code setStartLabel} method. */
+  @FXML private void changeStartLabel() {
+    String label = inputDialog().get("Enter new start label", Settings.START.get());
+    if (label != null) {
+      Settings.setStartLabel(label);
+    }
   }
 
   /** Shows Jupiter about dialog. */
