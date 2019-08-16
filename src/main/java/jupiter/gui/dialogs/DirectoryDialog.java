@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 import jupiter.gui.Settings;
 
 
-/** Jupiter file dialog. */
+/** Jupiter directory dialog. */
 public final class DirectoryDialog {
 
   /** dialog stage */
@@ -34,7 +34,7 @@ public final class DirectoryDialog {
   private final DirectoryChooser chooser;
 
   /**
-   * Creates a new file dialog.
+   * Creates a new directory dialog.
    *
    * @param stage dialog stage
    */
