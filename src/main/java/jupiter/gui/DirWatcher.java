@@ -91,6 +91,8 @@ public final class DirWatcher extends Task<Void> {
         // handle event
         if (kind == StandardWatchEventKinds.ENTRY_CREATE && file.isDirectory()) {
           pcs.firePropertyChange("create_dir", "create", file);
+          // register new keys
+          registerAll(file.toPath());
         } else if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
           pcs.firePropertyChange("create_file", "create", file);
         } else if (kind == StandardWatchEventKinds.ENTRY_DELETE && file.isDirectory()) {
