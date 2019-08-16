@@ -479,7 +479,7 @@ public final class Editor implements PropertyChangeListener {
   private void addFile() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
     String parent = item.getFile().getAbsolutePath();
-    File file = mainController.pathDialog().get("Enter the path for the new file", parent, true);
+    File file = mainController.inputDialog().getFile("Enter the path for the new file", parent, true);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -511,7 +511,7 @@ public final class Editor implements PropertyChangeListener {
   private void addFolder() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
     String parent = item.getFile().getAbsolutePath();
-    File directory = mainController.pathDialog().get("Enter the path for the new folder", parent, true);
+    File directory = mainController.inputDialog().getFile("Enter the path for the new folder", parent, true);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -537,7 +537,7 @@ public final class Editor implements PropertyChangeListener {
   private void renameFile() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
     String path = item.getFile().getAbsolutePath();
-    File file = mainController.pathDialog().get("Enter the path for the new file", path, false);
+    File file = mainController.inputDialog().getFile("Enter the path for the new file", path, false);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -581,7 +581,7 @@ public final class Editor implements PropertyChangeListener {
   private void renameFolder() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
     String path = item.getFile().getAbsolutePath();
-    File file = mainController.pathDialog().get("Enter the path for the new file", path, false);
+    File file = mainController.inputDialog().getFile("Enter the path for the new file", path, false);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
