@@ -478,7 +478,8 @@ public final class Editor implements PropertyChangeListener {
   /** Adds a new file from tree view. */
   private void addFile() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
-    File file = mainController.pathDialog().get("Enter the path for the new file", item.getFile());
+    String parent = item.getFile().getAbsolutePath();
+    File file = mainController.pathDialog().get("Enter the path for the new file", parent, true);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -509,7 +510,8 @@ public final class Editor implements PropertyChangeListener {
   /** Adds a new directory from tree view. */
   private void addFolder() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
-    File directory = mainController.pathDialog().get("Enter the path for the new folder", item.getFile());
+    String parent = item.getFile().getAbsolutePath();
+    File directory = mainController.pathDialog().get("Enter the path for the new folder", parent, true);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -534,7 +536,8 @@ public final class Editor implements PropertyChangeListener {
   /** Renames a file from tree view. */
   private void renameFile() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
-    File file = mainController.pathDialog().get("Enter the path for the new file", item.getFile());
+    String path = item.getFile().getAbsolutePath();
+    File file = mainController.pathDialog().get("Enter the path for the new file", path, false);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -577,7 +580,8 @@ public final class Editor implements PropertyChangeListener {
   /** Renames a folder from tree view. */
   private void renameFolder() {
     TreeFileItem item = (TreeFileItem) tree.getSelectionModel().getSelectedItem();
-    File file = mainController.pathDialog().get("Enter the path for the new file", item.getFile());
+    String path = item.getFile().getAbsolutePath();
+    File file = mainController.pathDialog().get("Enter the path for the new file", path, false);
     Thread th = new Thread(new Task<Void>() {
       /** {@inheritDoc} */
       public Void call() {
@@ -595,8 +599,10 @@ public final class Editor implements PropertyChangeListener {
             }
           }
           try {
+            EXPANDED.put(file.getAbsolutePath(), EXPANDED.get(item.getFile().getAbsolutePath()));
             FS.moveDirectory(item.getFile(), file);
           } catch (IOException e) {
+            EXPANDED.remove(file.getAbsolutePath());
             for (int i = 0; i < tabs.size(); i++) {
               final int index = i;
               Platform.runLater(() -> tabs.get(index).setPath(oldFiles.get(index)));
@@ -709,15 +715,30 @@ public final class Editor implements PropertyChangeListener {
     });
   }
 
+  /**
+   * Callback when a directory is created.
+   *
+   * @param file created directory
+   */
   private void onDirectoryCreate(File file) {
     updateTree();
   }
 
+  /**
+   * Callback when a directory is deleted.
+   *
+   * @param file deleted directory
+   */
   private void onDirectoryDelete(File file) {
     updateTree();
     EXPANDED.remove(file.getAbsolutePath());
   }
 
+  /**
+   * Callback when a file is changed.
+   *
+   * @param file changed file
+   */
   private void onFileChange(File file) {
     // code for processing change event
     updateTree();
@@ -730,10 +751,20 @@ public final class Editor implements PropertyChangeListener {
     }
   }
 
+  /**
+   * Callback when a file is created.
+   *
+   * @param file created file
+   */
   private void onFileCreate(File file) {
     updateTree();
   }
 
+  /**
+   * Callback when a file is modified.
+   *
+   * @param file modified file
+   */
   private void onFileDelete(File file) {
     updateTree();
     for (Tab openTab : editorTabPane.getTabs()) {

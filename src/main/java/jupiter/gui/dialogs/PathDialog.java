@@ -30,8 +30,6 @@ import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 
-import jupiter.gui.Settings;
-import jupiter.utils.FS;
 
 
 /** Jupiter GUI find/replace dialog. */
@@ -82,28 +80,29 @@ public final class PathDialog extends JFXAlert<Void> {
    * Shows path dialog and returns user input text.
    *
    * @param title dialog title
-   * @param directory file
+   * @param text initial path
+   * @param addFileSep if true add a file separator at the end
    * @return user input text
    */
-  public File get(String title, File directory) {
+  public File get(String title, String text, boolean addFileSep) {
     File file = null;
     // prepare dialog
-    String parent = FS.toPath(Settings.USER_DIR.get()).relativize(directory.toPath()).toString();
-    if (!parent.equals("") && !parent.endsWith(File.separator) && directory.isDirectory()) {
-      parent += File.separator;
+    if (addFileSep && !text.endsWith(File.separator)) {
+      this.text.setText(text + File.separator);
+    } else {
+      this.text.setText(text);
     }
-    text.setText(parent);
-    text.positionCaret(text.getLength());
-    text.requestFocus();
+    this.text.positionCaret(this.text.getLength());
+    this.text.requestFocus();
     this.title.setText(title);
     // wait for input
     showAndWait();
     // get data if enter pressed
-    if (enterPressed && text.getText().length() != 0) {
-      file = new File(text.getText());
+    if (enterPressed && this.text.getText().length() != 0) {
+      file = new File(this.text.getText());
     }
     // clear state
-    text.setText("");
+    this.text.setText("");
     enterPressed = false;
     return file;
   }
