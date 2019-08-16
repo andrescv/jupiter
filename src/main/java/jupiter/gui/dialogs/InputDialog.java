@@ -32,8 +32,8 @@ import com.jfoenix.controls.JFXTextField;
 
 
 
-/** Jupiter GUI find/replace dialog. */
-public final class PathDialog extends JFXAlert<Void> {
+/** Jupiter GUI input dialog. */
+public final class InputDialog extends JFXAlert<Void> {
 
   /** enter key combination */
   private static final KeyCodeCombination ENTER = new KeyCodeCombination(KeyCode.ENTER);
@@ -52,7 +52,7 @@ public final class PathDialog extends JFXAlert<Void> {
    *
    * @param stage dialog stage
    */
-  public PathDialog(Stage stage) {
+  public InputDialog(Stage stage) {
     super(stage);
     enterPressed = false;
     // set content
@@ -77,14 +77,14 @@ public final class PathDialog extends JFXAlert<Void> {
   }
 
   /**
-   * Shows path dialog and returns user input text.
+   * Shows input dialog and returns user input file.
    *
    * @param title dialog title
    * @param text initial path
    * @param addFileSep if true add a file separator at the end
-   * @return user input text
+   * @return user input path
    */
-  public File get(String title, String text, boolean addFileSep) {
+  public File getFile(String title, String text, boolean addFileSep) {
     File file = null;
     // prepare dialog
     if (addFileSep && !text.endsWith(File.separator)) {
@@ -105,6 +105,31 @@ public final class PathDialog extends JFXAlert<Void> {
     this.text.setText("");
     enterPressed = false;
     return file;
+  }
+
+  /**
+   * Shows input dialog and returns user input text.
+   *
+   * @param title dialog title
+   * @param text initial text
+   * @return user input text
+   */
+  public String get(String title, String text) {
+    this.text.setText(text);
+    this.text.positionCaret(this.text.getLength());
+    this.text.requestFocus();
+    this.title.setText(title);
+    // wait for input
+    showAndWait();
+    // get data if enter pressed
+    String data = null;
+    if (enterPressed && this.text.getText().length() != 0) {
+      data = this.text.getText();
+    }
+    // clear state
+    this.text.setText("");
+    enterPressed = false;
+    return data;
   }
 
 }
