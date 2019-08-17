@@ -47,6 +47,26 @@
   <strong>CLI Mode</strong>
 </p>
 
+### Installation
+Download the app image for your operating system and unzip the file:
+
+* [Jupiter v3.0 - Linux (Ubuntu)](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-linux.zip)
+* [Jupiter v3.0 - macOS](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-mac.zip)
+* [Jupiter v3.0 - Windows](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-win.zip)
+
+#### Running Jupiter on Linux or macOS
+
+```shell
+./image/bin/jupiter # for GUI mode
+./image/bin/jupiter [options] <files> # for CLI mode
+```
+
+#### Running Jupiter on Windows
+```shell
+image\bin\jupiter # for GUI mode
+image\bin\jupiter [options] <files> # for CLI mode
+```
+
 ### Why this name, Jupiter ?
 
 Traditionally other simulators of this type have used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**<sup>2</sup> or the Berkeley's web-based simulator **Venus**<sup>3</sup>. The name **Jupiter**<sup>4</sup> was chosen because of this tradional reasons and also because this planet represents in some sort the number **5**, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's<sup>5</sup>.
