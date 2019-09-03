@@ -52,6 +52,9 @@ public final class Flags {
   /** start label */
   public static String START = "__start";
 
+  /** enables cache simulation */
+  public static boolean CACHE_ENABLED = false;
+
   /** cache associativity */
   public static int CACHE_ASSOCIATIVITY = 1;
 

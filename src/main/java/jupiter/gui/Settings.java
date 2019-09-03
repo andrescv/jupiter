@@ -40,6 +40,9 @@ public final class Settings {
   /** show symbol table setting */
   public static final SimpleBooleanProperty SHOW_ST = new SimpleBooleanProperty(false);
 
+  /** enables cache setting */
+  public static final SimpleBooleanProperty CACHE_ENABLED = new SimpleBooleanProperty(true);
+
   /** assemble only open files setting */
   public static final SimpleBooleanProperty ASSEMBLE_ONLY_SELECTED = new SimpleBooleanProperty(true);
 
@@ -81,6 +84,7 @@ public final class Settings {
   public static void load() {
     USER_DIR.set(prefs.get("USER_DIR", USER_DIR.get()));
     SHOW_ST.set(prefs.getBoolean("SHOW_ST", SHOW_ST.get()));
+    CACHE_ENABLED.set(prefs.getBoolean("CACHE_ENABLED", CACHE_ENABLED.get()));
     ASSEMBLE_ONLY_SELECTED.set(prefs.getBoolean("ASSEMBLE_ONLY_SELECTED", ASSEMBLE_ONLY_SELECTED.get()));
     ASSEMBLE_ONLY_OPEN.set(prefs.getBoolean("ASSEMBLE_ONLY_OPEN", ASSEMBLE_ONLY_OPEN.get()));
     ASSEMBLE_ALL.set(prefs.getBoolean("ASSEMBLE_ALL", ASSEMBLE_ALL.get()));
@@ -98,6 +102,7 @@ public final class Settings {
     Flags.EXTRICT = ASSEMBLER_WARNINGS.get();
     Flags.SELF_MODIFYING = SELF_MODIFYING.get();
     Flags.START = START.get();
+    Flags.CACHE_ENABLED = CACHE_ENABLED.get();
     // ensure USER_DIR exists
     if (!FS.toFile(USER_DIR.get()).exists()) {
       USER_DIR.set(System.getProperty("user.dir"));
@@ -109,6 +114,13 @@ public final class Settings {
   public static void toggleShowSymbolTable() {
     SHOW_ST.set(!SHOW_ST.get());
     prefs.putBoolean("SHOW_ST", SHOW_ST.get());
+  }
+
+  /** Toggles and saves enable cache simulation setting. */
+  public static void toggleCacheEnabled() {
+    CACHE_ENABLED.set(!CACHE_ENABLED.get());
+    Flags.CACHE_ENABLED = CACHE_ENABLED.get();
+    prefs.putBoolean("CACHE_ENABLED", CACHE_ENABLED.get());
   }
 
   /** Toggles and saves assemble only selected file setting. */

@@ -382,8 +382,11 @@ public final class Cache {
 
   /** Prints cache stats */
   public void stats() {
-    String fmt = "accesses: %d, hits: %d, misses: %d, hit rate: %.2f";
-    IO.stdout().println(String.format(fmt, accesses, hits, accesses - hits, getHitRate()));
+    if (Flags.CACHE_ENABLED) {
+      String fmt = "accesses: %d, hits: %d, misses: %d, hit rate: %.2f";
+      IO.stdout().println(String.format(fmt, accesses, hits, accesses - hits, getHitRate()));
+      IO.stdout().println();
+    }
   }
 
   /**
@@ -392,11 +395,13 @@ public final class Cache {
    * @param address memory address
    */
   public void loadByte(int address) {
-    if (read(address)) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      if (read(address)) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**
@@ -405,13 +410,15 @@ public final class Cache {
    * @param address memory address
    */
   public void loadHalf(int address) {
-    boolean byte0 = read(address);
-    boolean byte1 = read(address + Data.BYTE_LENGTH);
-    if (byte0 && byte1) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      boolean byte0 = read(address);
+      boolean byte1 = read(address + Data.BYTE_LENGTH);
+      if (byte0 && byte1) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**
@@ -420,15 +427,17 @@ public final class Cache {
    * @param address memory address
    */
   public void loadWord(int address) {
-    boolean byte0 = read(address);
-    boolean byte1 = read(address + Data.BYTE_LENGTH);
-    boolean byte2 = read(address + 2 * Data.BYTE_LENGTH);
-    boolean byte3 = read(address + 3 * Data.BYTE_LENGTH);
-    if (byte0 && byte1 && byte2 && byte3) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      boolean byte0 = read(address);
+      boolean byte1 = read(address + Data.BYTE_LENGTH);
+      boolean byte2 = read(address + 2 * Data.BYTE_LENGTH);
+      boolean byte3 = read(address + 3 * Data.BYTE_LENGTH);
+      if (byte0 && byte1 && byte2 && byte3) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**
@@ -437,11 +446,13 @@ public final class Cache {
    * @param address memory address
    */
   public void storeByte(int address) {
-    if (write(address)) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      if (write(address)) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**
@@ -450,13 +461,15 @@ public final class Cache {
    * @param address memory address
    */
   public void storeHalf(int address) {
-    boolean byte0 = write(address);
-    boolean byte1 = write(address + Data.BYTE_LENGTH);
-    if (byte0 && byte1) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      boolean byte0 = write(address);
+      boolean byte1 = write(address + Data.BYTE_LENGTH);
+      if (byte0 && byte1) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**
@@ -465,15 +478,17 @@ public final class Cache {
    * @param address memory address
    */
   public void storeWord(int address) {
-    boolean byte0 = write(address);
-    boolean byte1 = write(address + Data.BYTE_LENGTH);
-    boolean byte2 = write(address + 2 * Data.BYTE_LENGTH);
-    boolean byte3 = write(address + 3 * Data.BYTE_LENGTH);
-    if (byte0 && byte1 && byte2 && byte3) {
-      hits++;
+    if (Flags.CACHE_ENABLED) {
+      boolean byte0 = write(address);
+      boolean byte1 = write(address + Data.BYTE_LENGTH);
+      boolean byte2 = write(address + 2 * Data.BYTE_LENGTH);
+      boolean byte3 = write(address + 3 * Data.BYTE_LENGTH);
+      if (byte0 && byte1 && byte2 && byte3) {
+        hits++;
+      }
+      accesses++;
+      fireNotification(address);
     }
-    accesses++;
-    fireNotification(address);
   }
 
   /**

@@ -407,6 +407,7 @@ public final class Simulator {
         updateCacheOrganization();
         refreshSim();
         scroll();
+        Globals.PRINT = false;
         Status.EXIT.set(false);
         Status.EMPTY.set(true);
         return null;
