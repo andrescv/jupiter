@@ -87,7 +87,7 @@ public final class Assembler {
       // set .data start
       for (Program program : programs) {
         program.setDataStart(address);
-        address += program.bss().size();
+        address += program.data().size();
         address = Data.alignToWordBoundary(address);
       }
       // set symbols
