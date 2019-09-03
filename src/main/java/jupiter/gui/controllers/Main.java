@@ -107,6 +107,8 @@ public final class Main implements Initializable {
 
   /** show symbol table setting check box */
   @FXML private JFXCheckBox showSymbolTable;
+  /** enable cache simulation */
+  @FXML private JFXCheckBox cacheEnabled;
   /** assemble only open files setting check box */
   @FXML private JFXCheckBox assembleOnlySelected;
   /** assemble only open files setting check box */
@@ -465,6 +467,11 @@ public final class Main implements Initializable {
     Settings.toggleShowSymbolTable();
   }
 
+  /** Calls settings {@code toggleEnableCache} method. */
+  @FXML private void cacheEnabled() {
+    Settings.toggleCacheEnabled();
+  }
+
   /** Calls settings {@code toggleAssembleOnlyOpen} method. */
   @FXML private void assembleOnlySelected() {
     Settings.toggleAssembleOnlySelected();
@@ -545,6 +552,7 @@ public final class Main implements Initializable {
     simulatorTab.disableProperty().bind(Bindings.not(Status.READY));
     editorTab.disableProperty().bind(Status.RUNNING);
     showSymbolTable.selectedProperty().bind(Settings.SHOW_ST);
+    cacheEnabled.selectedProperty().bind(Settings.CACHE_ENABLED);
     assembleOnlySelected.selectedProperty().bind(Settings.ASSEMBLE_ONLY_SELECTED);
     assembleOnly.selectedProperty().bind(Settings.ASSEMBLE_ONLY_OPEN);
     assembleAll.selectedProperty().bind(Settings.ASSEMBLE_ALL);

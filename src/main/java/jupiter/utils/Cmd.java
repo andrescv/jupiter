@@ -57,6 +57,7 @@ public final class Cmd {
     options.addOption(Option.builder().longOpt("start").hasArg().build());
     options.addOption(Option.builder().longOpt("hist").hasArg().build());
     options.addOption(Option.builder("g").longOpt("debug").build());
+    options.addOption(Option.builder("c").longOpt("cache").build());
     options.addOption(Option.builder().longOpt("assoc").hasArg().build());
     options.addOption(Option.builder().longOpt("block-size").hasArg().build());
     options.addOption(Option.builder().longOpt("num-blocks").hasArg().build());
@@ -77,6 +78,7 @@ public final class Cmd {
       Flags.DEBUG = cmd.hasOption("debug");
       Flags.EXTRICT = cmd.hasOption("extrict");
       Flags.SELF_MODIFYING = cmd.hasOption("self");
+      Flags.CACHE_ENABLED = cmd.hasOption("cache");
       if (cmd.hasOption("start")) {
         Flags.START = cmd.getOptionValue("start");
         if (!Flags.START.matches("[a-zA-Z_]([a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)?)")) {
@@ -249,6 +251,7 @@ public final class Cmd {
       IO.stdout().println("      --start <label>      set global start label (default: __start)");
       IO.stdout().println("      --hist <size>        history size for debugging");
       IO.stdout().println(Data.EOL + "[Cache Options]");
+      IO.stdout().println("  -c, --cache              enable cache simulation");
       IO.stdout().println("      --assoc <assoc>      cache associativity as a power of 2 (default: 1)");
       IO.stdout().println("      --block-size <size>  cache block size as a power of 2 (default: 16)");
       IO.stdout().println("      --num-blocks <num>   number of cache blocks as a power of 2 (default: 4)");

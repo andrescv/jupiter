@@ -283,7 +283,6 @@ public final class Debugger {
           IO.stdout().println();
         };
         program.getState().memory().cache().stats();
-        IO.stdout().println();
         Logger.info(String.format("exit(%d)", e.getCode()));
       } catch (SimulationException e) {
         terminated = true;
@@ -346,7 +345,6 @@ public final class Debugger {
             IO.stdout().println();
           };
           program.getState().memory().cache().stats();
-          IO.stdout().println();
           Logger.info(String.format("exit(%d)", e.getCode()));
           break;
         } catch (SimulationException e) {
@@ -368,6 +366,7 @@ public final class Debugger {
   /** Resets program execution. */
   private void reset() {
     terminated = false;
+    Globals.PRINT = false;
     history.reset();
     program.getState().reset();
     program.load();

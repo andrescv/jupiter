@@ -318,6 +318,11 @@
                               <JFXCheckBox fx:id="showSymbolTable" disable="true" text="" />
                            </graphic>
                         </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#cacheEnabled" text="Enable Cache Simulation">
+                           <graphic>
+                              <JFXCheckBox fx:id="cacheEnabled" disable="true" text="" />
+                           </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#assembleOnlySelected" text="Assemble Only Selected File">
                            <graphic>

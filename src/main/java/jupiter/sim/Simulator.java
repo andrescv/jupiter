@@ -67,7 +67,6 @@ public final class Simulator {
           IO.stdout().println();
         };
         state.memory().cache().stats();
-        IO.stdout().println();
         Logger.info(String.format("exit(%d)", e.getCode()));
         Jupiter.exit(e.getCode());
       } catch (SimulationException e) {
