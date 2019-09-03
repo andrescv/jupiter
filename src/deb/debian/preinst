@@ -1,0 +1,15 @@
+#!/bin/sh
+
+VERSION=3.1
+URL="https://github.com/andrescv/Jupiter/releases/download/v$VERSION/Jupiter-$VERSION-linux.zip"
+
+cd /opt
+rm -f jupiter
+wget "$URL" -O jupiter.zip
+unzip jupiter.zip
+rm -f jupiter.zip
+mv image jupiter
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Jupiter
+GenericName=RISC-V Assembler & Runtime Simulator
+Icon=/usr/share/pixmaps/jupiter.png
+TryExec=jupiter
+Exec=jupiter %U
+Terminal=false
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;
+Keywords=jupiter;

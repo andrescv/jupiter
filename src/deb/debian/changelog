@@ -1,0 +1,11 @@
+jupiter (3.1) bionic; urgency=medium
+
+  * Fix known bugs, add -cache option
+
+ -- Andrés Castellanos <andres.cv@galileo.edu>  Tue, 03 Sep 2019 11:29:52 -0600
+
+jupiter (3.0) bionic; urgency=medium
+
+  * Initial release
+
+ -- Andrés Castellanos <andres.cv@galileo.edu>  Sun, 28 Jul 2019 12:33:41 -0600

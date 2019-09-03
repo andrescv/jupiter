@@ -1,0 +1,14 @@
+Source: jupiter
+Section: education
+Priority: optional
+Maintainer: Andrés Castellanos <andres.cv@galileo.edu>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 4.1.2
+Homepage: https://riscvsim.com/
+Vcs-Git: https://github.com/andrescv/Jupiter.git
+Vcs-Browser: https://github.com/andrescv/Jupiter
+
+Package: jupiter
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, unzip, wget
+Description: RISC-V Assembler and Runtime Simulator
