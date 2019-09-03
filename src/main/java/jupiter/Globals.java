@@ -27,7 +27,7 @@ import jupiter.riscv.InstructionSet;
 public final class Globals {
 
   /** Jupiter simulator version */
-  public static final String VERSION = "v3.0";
+  public static final String VERSION = "v3.1";
 
   /** Jupiter simulator license and copyright */
   public static final String LICENSE = "Copyright (c) 2018-2019 Andrés Castellanos";
