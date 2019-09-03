@@ -456,9 +456,6 @@ public final class Memory {
     int address = heap;
     // allocate bytes
     heap += bytes;
-    for (int i = 0; i < bytes + Data.offsetToWordAlign(heap); i++) {
-      privStoreByte(address + i, (byte) 0);
-    }
     // align to a word boundary (if necessary)
     heap = Data.alignToWordBoundary(heap);
     return address;
