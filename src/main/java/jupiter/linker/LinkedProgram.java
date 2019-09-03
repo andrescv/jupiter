@@ -74,7 +74,8 @@ public final class LinkedProgram {
 
   /** Aligns static data segment to a word boundary. */
   protected void align() {
-    for (int i = 0; i < Data.offsetToWordAlign(data.size()); i++) {
+    int offset = Data.offsetToWordAlign(data.size());
+    for (int i = 0; i < offset; i++) {
       data.add((byte) 0);
     }
   }
