@@ -50,9 +50,9 @@
 ### Installation
 Download the app image for your operating system and unzip the file:
 
-* [Jupiter v3.0 - Linux (Ubuntu)](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-linux.zip)
-* [Jupiter v3.0 - macOS](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-mac.zip)
-* [Jupiter v3.0 - Windows](https://github.com/andrescv/Jupiter/releases/download/v3.0/Jupiter-3.0-win.zip)
+* [Jupiter v3.1 - Linux (Ubuntu)](https://github.com/andrescv/Jupiter/releases/download/v3.1/Jupiter-3.1-linux.zip)
+* [Jupiter v3.1 - macOS](https://github.com/andrescv/Jupiter/releases/download/v3.1/Jupiter-3.1-mac.zip)
+* [Jupiter v3.1 - Windows](https://github.com/andrescv/Jupiter/releases/download/v3.1/Jupiter-3.1-win.zip)
 
 #### Running Jupiter on Linux or macOS
 

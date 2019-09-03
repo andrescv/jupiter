@@ -1,6 +1,7 @@
 # Build directory
 build/
 bin/
+!src/deb/files/usr/bin
 
 # Docs build site
 docs/site
