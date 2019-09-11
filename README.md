@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/andrescv/Jupiter/">
-    <img src="./docs/assets/images/jupiter.png" alt="Jupiter" width="400">
+    <img src="./.github/jupiter.png" alt="Jupiter" width="400">
   </a>
   <br><br>
   <a href="https://github.com/andrescv/Jupiter/blob/master/LICENSE">
@@ -38,12 +38,12 @@
 ### Screenshots
 
 <p align="center">
-  <img src="./docs/assets/images/gui.png" alt="Jupiter GUI mode"/>
+  <img src="./.github/gui.png" alt="Jupiter GUI mode"/>
   <strong>GUI Mode</strong>
 </p>
 
 <p align="center">
-  <img src="./docs/assets/images/cli.png" alt="Jupiter CLI mode" />
+  <img src="./.github/cli.png" alt="Jupiter CLI mode" />
   <strong>CLI Mode</strong>
 </p>
 
