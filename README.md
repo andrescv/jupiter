@@ -23,17 +23,21 @@
   </a>
 </p>
 
-**Jupiter** is an open source and education-oriented RISC-V assembler and runtime simulator. It is written in Java 11 and capable of simulate all the instructions of the base integer ISA (`I` extension) plus the `M` and `F` extensions (**RV32IMF**), including all the pseudo-instructions described in the user-level instruction set manual<sup>1</sup>. It was developed taking into account that it could be used in various courses such as: _Computer Architecture, Compilers and Assembly Programming_.
+**Jupiter** is an open source and education-oriented RISC-V assembler and runtime simulator. It is written in Java and capable of simulate all the instructions of the base integer ISA (`I` extension) plus the `M` and `F` extensions (**RV32IMF**), including all the pseudo-instructions described in the user-level instruction set manual<sup>1</sup>. It was developed taking into account that it could be used in various courses such as: _Computer Architecture, Compilers_ and _Assembly Programming_.
 
 ### Features
 
-* **User Friendly**: Jupiter was designed focused in education and for all the people that are getting to know the RISC-V architecture. It places for priority the user experience. Jupiter has two modes of operation (_Command Line Interface_ and A _Graphical User Interface_) and both of these were developed to be intuitive and easy to use.
+* **User Friendly**: Jupiter was designed focused on education and for all the people that are getting to know the RISC-V architecture. It places for priority the user experience. Jupiter has two modes of operation (_Command Line Interface_ and _Graphical User Interface_) and both of these were developed to be intuitive and easy to use.
 
-* **Modularity**: Jupiter can assemble and simulate several files at once, not everything has to be one file of 1,000 lines of code. Simply one has to indicate by a global label what is the main starting point of the program. This permits modularity and enables the creation of projects and laboratories more easily.
+* **Modularity**: Jupiter can assemble and simulate several files at once, not everything has to be one file of 1,000 lines of code. Simply indicate by a global label what is the main starting point of the program. This permits modularity and enables the creation of projects and laboratories more easily.
 
-* **Feedback**: People using Jupiter gets feedback on what they are doing wrong :100:. The simulator shows errors of: syntax, when trying to access reserved memory or when trying to write to a read-only memory.
+* **Feedback**: People using Jupiter gets feedback on what they are doing wrong :100:. The simulator shows different types of errors like: syntax errors, when trying to access reserved memory or when trying to write to a read-only memory.
 
 * **Cross-platform**: Jupiter is available for **Linux** (_Ubuntu_), **macOS** and **Windows**.
+
+### Documentation
+
+Please visit the following [link](https://docs.riscvsim.com/) for more info and documentation.
 
 ### Screenshots
 
@@ -66,10 +70,6 @@ Download the app image for your operating system and unzip the file:
 image\bin\jupiter # for GUI mode
 image\bin\jupiter [options] <files> # for CLI mode
 ```
-
-### Why this name, Jupiter ?
-
-Traditionally other simulators of this type have used planet names, for example the famous educational simulator for the _MIPS_ architecture **MARS**<sup>2</sup> or the Berkeley's web-based simulator **Venus**<sup>3</sup>. The name **Jupiter**<sup>4</sup> was chosen because of this tradional reasons and also because this planet represents in some sort the number **5**, in contrast with RISC-V that is the 5th generation of the ISA originally designed in the 90's<sup>5</sup>.
 
 ### Contributing
 
