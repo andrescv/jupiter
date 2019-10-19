@@ -35,7 +35,6 @@ package jupiter.gui.highlighting;
   return symbol("eof");
 %eofval}
 
-
 %public
 %final
 %class Lexer
@@ -198,7 +197,7 @@ XREG = ([xX][0-9]+|"zero"|"ra"|"sp"|"gp"|"tp"|"fp"|"t"[0-9]+|"a"[0-9]+|"s"[0-9]+
 FREG = ([fF][0-9]+|"ft"[0-9]+|"fa"[0-9]+|"fs"[0-9]+)
 
 // identifier
-ID = [a-zA-Z_]([a-zA-Z0-9_]*("."[a-zA-Z0-9_]+)?)
+ID = [a-zA-Z_$]([a-zA-Z0-9_$]*("."[a-zA-Z0-9_"$"]+)?)*
 
 // labels
 LABEL = {ID}:

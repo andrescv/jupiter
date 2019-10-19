@@ -1,34 +1,16 @@
 package jupiter.asm;
 
-import java.util.HashMap;
 import java_cup.runtime.Symbol;
+
+import jupiter.riscv.hardware.RVIRegisterFile;
+import jupiter.riscv.hardware.RVFRegisterFile;
 
 %%
 
 %{
 
-  // RVI mnemonics
-  private static final String[] RVI = {
-    "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "s0", "s1", "a0", "a1", "a2",
-    "a3", "a4", "a5", "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10",
-    "s11", "t3", "t4", "t5", "t6"
-  };
-
-  // RVF mnemonics
-  private static final String[] RVF = {
-    "ft0", "ft1", "ft2", "ft3", "ft4", "ft5", "ft6", "ft7", "fs0", "fs1", "fa0", "fa1", "fa2",
-    "fa3", "fa4", "fa5", "fa6", "fa7", "fs2", "fs3", "fs4", "fs5", "fs6", "fs7", "fs8", "fs9",
-    "fs10", "fs11", "ft8", "ft9", "ft10", "ft11"
-  };
-
   /** strings and chars string builder */
   private StringBuilder text;
-
-  /** RVF */
-  private HashMap<String, Integer> rvf;
-
-  /** RVI */
-  private HashMap<String, Integer> rvi;
 
   /**
    * Creates a new cup Symbol with a predefined value obtained with the yytext() method.
@@ -58,8 +40,26 @@ import java_cup.runtime.Symbol;
    */
   private Symbol getX() {
     String reg = yytext().toLowerCase();
-    if (rvi.containsKey(reg)) {
-      return symbol(Token.XREG, rvi.get(reg));
+    int value = -1;
+    if (reg.startsWith("x")) {
+      try {
+        value = Integer.parseInt(reg.substring(1));
+        if (value > 31) {
+          value = -1;
+        }
+      } catch (NumberFormatException e) { }
+    } else if (reg.equals("fp")) {
+      value = 8;
+    } else {
+      for (int i = 0; i < RVIRegisterFile.mnemonics.length; i++) {
+        if (reg.equals(RVIRegisterFile.mnemonics[i])) {
+          value = i;
+          break;
+        }
+      }
+    }
+    if (value != -1) {
+      return symbol(Token.XREG, value);
     }
     return symbol(Token.ERROR, "invalid register: " + yytext());
   }
@@ -71,8 +71,24 @@ import java_cup.runtime.Symbol;
    */
   private Symbol getF() {
     String reg = yytext().toLowerCase();
-    if (rvf.containsKey(reg)) {
-      return symbol(Token.FREG, rvf.get(reg));
+    int value = -1;
+    if (reg.matches("f[0-9]+")) {
+      try {
+        value = Integer.parseInt(reg.substring(1));
+        if (value > 31) {
+          value = -1;
+        }
+      } catch (NumberFormatException e) { }
+    } else {
+      for (int i = 0; i < RVFRegisterFile.mnemonics.length; i++) {
+        if (reg.equals(RVFRegisterFile.mnemonics[i])) {
+          value = i;
+          break;
+        }
+      }
+    }
+    if (value != -1) {
+      return symbol(Token.FREG, value);
     }
     return symbol(Token.ERROR, "invalid register: " + yytext());
   }
@@ -81,20 +97,6 @@ import java_cup.runtime.Symbol;
 
 %init{
   text = new StringBuilder(0);
-  // init rvi
-  rvi = new HashMap<>();
-  for (int i = 0; i < RVI.length; i++) {
-    rvi.put(RVI[i], i);
-    rvi.put(String.format("x%d", i), i);
-    if (RVI[i].equals("s0"))
-      rvi.put("fp", i);
-  }
-  // init rvf
-  rvf = new HashMap<>();
-  for (int i = 0; i < RVF.length; i++) {
-    rvf.put(RVF[i], i);
-    rvf.put(String.format("f%d", i), i);
-  }
 %init}
 
 %eofval{
@@ -111,7 +113,6 @@ import java_cup.runtime.Symbol;
       return symbol(Token.EOF);
   }
 %eofval}
-
 
 %public
 %final
@@ -276,7 +277,7 @@ XREG = ([xX][0-9]+|"zero"|"ra"|"sp"|"gp"|"tp"|"fp"|"t"[0-9]+|"a"[0-9]+|"s"[0-9]+
 FREG = ([fF][0-9]+|"ft"[0-9]+|"fa"[0-9]+|"fs"[0-9]+)
 
 // identifier
-ID = [a-zA-Z_]([a-zA-Z0-9_]*("."[a-zA-Z0-9_]+)?)
+ID = [a-zA-Z_$]([a-zA-Z0-9_$]*("."[a-zA-Z0-9_"$"]+)?)*
 
 // labels
 LABEL = {ID}:
@@ -662,7 +663,6 @@ ERROR = .
 
   {I_FLW} {
     return symbol(Token.I_FLW);
-
   }
 
   {I_FSW} {
@@ -860,7 +860,6 @@ ERROR = .
   {I_J} {
     return symbol(Token.I_J);
   }
-
 
   {I_JR} {
     return symbol(Token.I_JR);
