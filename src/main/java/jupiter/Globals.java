@@ -33,7 +33,7 @@ public final class Globals {
   public static final String LICENSE = "Copyright (c) 2018-2019 Andrés Castellanos";
 
   /** Jupiter simulator online documentation */
-  public static final String HELP = "https://andrescv.github.io/Jupiter";
+  public static final String HELP = "https://jupitersim.gitbook.io";
 
   /** Jupiter RISC-V instruction set */
   public static final InstructionSet iset = new InstructionSet();
