@@ -2,7 +2,7 @@
 plugins {
   id 'java'
   id 'jacoco'
-  id 'com.diffplug.gradle.spotless' version '3.23.1'
+  id 'com.diffplug.gradle.spotless' version '3.25.0'
   id 'org.openjfx.javafxplugin' version '0.0.8'
   id 'org.beryx.jlink' version '2.16.1'
 }
