@@ -44,7 +44,7 @@ public final class Flags {
   public static boolean DEBUG = false;
 
   /** extrict mode option, assembler warnings are consider errors */
-  public static boolean EXTRICT = true;
+  public static boolean EXTRICT = false;
 
   /** self-modifying code option */
   public static boolean SELF_MODIFYING = false;
