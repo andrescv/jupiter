@@ -563,6 +563,8 @@ public final class Simulator {
     symbolTableAddress.setCellValueFactory(new TreeItemPropertyValueFactory<>("address"));
     symbolTableName.setCellFactory(p -> new DisplayCell<>());
     symbolTableAddress.setCellFactory(p -> new DisplayCell<>());
+    symbolTableName.setReorderable(false);
+    symbolTableAddress.setReorderable(false);
     symbolTable();
     // text
     textTable.setRowFactory(p -> new TextRow(program.getState()));
@@ -576,6 +578,11 @@ public final class Simulator {
     textCode.setCellFactory(p -> new DisplayCell<>());
     textBasic.setCellFactory(p -> new DisplayCell<>());
     textSource.setCellFactory(p -> new DisplayCell<>());
+    textBkpt.setReorderable(false);
+    textAddress.setReorderable(false);
+    textCode.setReorderable(false);
+    textBasic.setReorderable(false);
+    textSource.setReorderable(false);
     // buttons
     run.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EXIT));
     step.disableProperty().bind(Bindings.or(Status.RUNNING, Status.EXIT));

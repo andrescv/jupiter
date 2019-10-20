@@ -324,7 +324,7 @@
                         <JFXTreeTableView fx:id="symbolTable" showRoot="false" style="-fx-background-insets: 0;">
                            <columns>
                               <TreeTableColumn fx:id="symbolTableName" prefWidth="75.0" sortable="false" text="Symbol" />
-                              <TreeTableColumn fx:id="symbolTableAddress" prefWidth="75.0" text="Address" />
+                              <TreeTableColumn fx:id="symbolTableAddress" prefWidth="75.0" sortable="false" text="Address" />
                            </columns>
                            <columnResizePolicy>
                               <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
