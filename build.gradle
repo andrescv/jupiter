@@ -3,8 +3,8 @@ plugins {
   id 'java'
   id 'jacoco'
   id 'com.diffplug.gradle.spotless' version '3.23.1'
-  id 'org.openjfx.javafxplugin' version '0.0.7'
-  id 'org.beryx.jlink' version '2.11.1'
+  id 'org.openjfx.javafxplugin' version '0.0.8'
+  id 'org.beryx.jlink' version '2.16.1'
 }
 
 // Jupiter version
@@ -21,9 +21,8 @@ dependencies {
   compile 'com.jfoenix:jfoenix:9.0.8'
   compile 'commons-cli:commons-cli:1.4'
   compile files('lib/java-cup-11b-runtime.jar')
-  compile 'org.fxmisc.richtext:richtextfx:0.10.1'
+  compile 'org.fxmisc.richtext:richtextfx:0.10.2'
   testCompile 'org.junit.jupiter:junit-jupiter-api:5.4.2'
-  testCompile 'org.junit.jupiter:junit-jupiter-params:5.4.2'
   testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
