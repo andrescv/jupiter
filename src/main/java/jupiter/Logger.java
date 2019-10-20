@@ -38,7 +38,11 @@ public final class Logger {
    * @param msg Warning message to print
    */
   public static void warning(String msg) {
-    IO.stdout().println("Jupiter: (warning) " + msg);
+    if (Flags.EXTRICT) {
+      IO.stderr().println("Jupiter: (warning) " + msg);
+    } else {
+      IO.stdout().println("Jupiter: (warning) " + msg);
+    }
   }
 
   /**
