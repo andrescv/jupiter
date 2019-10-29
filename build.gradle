@@ -105,7 +105,7 @@ task codecov {
   description "Calls build and then jacocoTestReport"
 }
 
-// custom jar for development
+// custom fat jar for development
 task devJar(type: Jar) {
   baseName = 'Jupiter-dev'
   manifest {
@@ -122,6 +122,14 @@ task devJar(type: Jar) {
     }
   }
   with jar
+}
+
+// launch Jupiter GUI application
+task launch(type: JavaExec) {
+  group = "Execution"
+  description = "Run Jupiter GUI mode"
+  classpath = sourceSets.main.runtimeClasspath
+  main = "jupiter.Jupiter"
 }
 
 // java source and target compatibility
