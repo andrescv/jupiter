@@ -93,7 +93,7 @@ public final class Syscall {
    */
   public static void handler(State state) throws SimulationException {
     // match ecall code
-    switch (state.xregfile().getRegister("a0")) {
+    switch (state.xregfile().getRegister("a7")) {
       case PRINT_INT:
         printInt(state);
         break;
@@ -173,7 +173,7 @@ public final class Syscall {
         randFloat(state);
         break;
       default:
-        throw new SimulationException("invalid ecall code: " + state.xregfile().getRegister("a0"));
+        throw new SimulationException("invalid ecall code: " + state.xregfile().getRegister("a7"));
     }
   }
 
@@ -184,7 +184,7 @@ public final class Syscall {
    */
   private static void printInt(State state) {
     Globals.PRINT = true;
-    int num = state.xregfile().getRegister("a1");
+    int num = state.xregfile().getRegister("a0");
     IO.stdout().print(Integer.toString(num));
   }
 
@@ -206,7 +206,7 @@ public final class Syscall {
    */
   private static void printString(State state) throws SimulationException {
     Globals.PRINT = true;
-    int buffer = state.xregfile().getRegister("a1");
+    int buffer = state.xregfile().getRegister("a0");
     // 65684
     StringBuilder s = new StringBuilder(0);
     char c;
@@ -249,8 +249,8 @@ public final class Syscall {
    * @param state program state
    */
   private static void readString(State state) throws SimulationException {
-    int buffer = state.xregfile().getRegister("a1");
-    int length = Math.max(state.xregfile().getRegister("a2") - 1, 0);
+    int buffer = state.xregfile().getRegister("a0");
+    int length = Math.max(state.xregfile().getRegister("a1") - 1, 0);
     String s = IO.readString(length);
     int minLength = Math.min(length, s.length());
     for (int i = 0; i < minLength; i++) {
@@ -266,7 +266,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void sbrk(State state) throws SimulationException {
-    int numBytes = state.xregfile().getRegister("a1");
+    int numBytes = state.xregfile().getRegister("a0");
     if (numBytes >= 0) {
       int address = state.memory().allocateBytesFromHeap(numBytes);
       state.xregfile().setRegister("a0", address);
@@ -287,7 +287,7 @@ public final class Syscall {
    */
   private static void printChar(State state) {
     Globals.PRINT = true;
-    IO.stdout().print((char) state.xregfile().getRegister("a1") + "");
+    IO.stdout().print((char) state.xregfile().getRegister("a0") + "");
   }
 
   /**
@@ -305,8 +305,8 @@ public final class Syscall {
    * @param state program state
    */
   private static void open(State state) throws SimulationException{
-    int buffer = state.xregfile().getRegister("a1");
-    int oflags = state.xregfile().getRegister("a2");
+    int buffer = state.xregfile().getRegister("a0");
+    int oflags = state.xregfile().getRegister("a1");
     state.xregfile().setRegister("a0", VirtualFS.open(buffer, oflags, state));
   }
 
@@ -316,9 +316,9 @@ public final class Syscall {
    * @param state program state
    */
   private static void read(State state) throws SimulationException {
-    int fd = state.xregfile().getRegister("a1");
-    int buffer = state.xregfile().getRegister("a2");
-    int nbytes = state.xregfile().getRegister("a3");
+    int fd = state.xregfile().getRegister("a0");
+    int buffer = state.xregfile().getRegister("a1");
+    int nbytes = state.xregfile().getRegister("a2");
     if (nbytes > 0) {
       state.xregfile().setRegister("a0", VirtualFS.read(fd, buffer, nbytes, state));
     } else {
@@ -332,9 +332,9 @@ public final class Syscall {
    * @param state program state
    */
   private static void write(State state) throws SimulationException {
-    int fd = state.xregfile().getRegister("a1");
-    int buffer = state.xregfile().getRegister("a2");
-    int nbytes = state.xregfile().getRegister("a3");
+    int fd = state.xregfile().getRegister("a0");
+    int buffer = state.xregfile().getRegister("a1");
+    int nbytes = state.xregfile().getRegister("a2");
     if (nbytes > 0) {
       state.xregfile().setRegister("a0", VirtualFS.write(fd, buffer, nbytes, state));
     } else {
@@ -348,9 +348,9 @@ public final class Syscall {
    * @param state program state
    */
   private static void lseek(State state) throws SimulationException {
-    int fd = state.xregfile().getRegister("a1");
-    int offset = state.xregfile().getRegister("a2");
-    int whence = state.xregfile().getRegister("a3");
+    int fd = state.xregfile().getRegister("a0");
+    int offset = state.xregfile().getRegister("a1");
+    int whence = state.xregfile().getRegister("a2");
     state.xregfile().setRegister("a0", VirtualFS.lseek(fd, offset, whence));
   }
 
@@ -360,7 +360,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void close(State state) {
-    state.xregfile().setRegister("a0", VirtualFS.close(state.xregfile().getRegister("a1")));
+    state.xregfile().setRegister("a0", VirtualFS.close(state.xregfile().getRegister("a0")));
   }
 
   /**
@@ -369,7 +369,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void exit2(State state) throws SimulationException {
-    throw new HaltException(state.xregfile().getRegister("a1"));
+    throw new HaltException(state.xregfile().getRegister("a0"));
   }
 
   /**
@@ -378,7 +378,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void sleep(State state) throws SimulationException {
-    int millis = state.xregfile().getRegister("a1");
+    int millis = state.xregfile().getRegister("a0");
     if (millis >= 0) {
       try {
         Thread.sleep(millis);
@@ -395,7 +395,7 @@ public final class Syscall {
    */
   private static void cwd(State state) throws SimulationException {
     String path = System.getProperty("user.dir");
-    int buffer = state.xregfile().getRegister("a1");
+    int buffer = state.xregfile().getRegister("a0");
     for (int i = 0; i < path.length(); i++) {
       state.memory().storeByte(buffer++, (int) path.charAt(i));
     }
@@ -420,7 +420,7 @@ public final class Syscall {
    */
   private static void printHex(State state) {
     Globals.PRINT = true;
-    IO.stdout().print(String.format("0x%08x", state.xregfile().getRegister("a1")));
+    IO.stdout().print(String.format("0x%08x", state.xregfile().getRegister("a0")));
   }
 
   /**
@@ -430,7 +430,7 @@ public final class Syscall {
    */
   private static void printBin(State state) {
     Globals.PRINT = true;
-    IO.stdout().print(String.format("0b%32s", Integer.toBinaryString(state.xregfile().getRegister("a1"))).replace(' ', '0'));
+    IO.stdout().print(String.format("0b%32s", Integer.toBinaryString(state.xregfile().getRegister("a0"))).replace(' ', '0'));
   }
 
   /**
@@ -440,7 +440,7 @@ public final class Syscall {
    */
   private static void printUsgn(State state) {
     Globals.PRINT = true;
-    IO.stdout().print(Long.toString(Integer.toUnsignedLong(state.xregfile().getRegister("a1"))));
+    IO.stdout().print(Long.toString(Integer.toUnsignedLong(state.xregfile().getRegister("a0"))));
   }
 
   /**
@@ -449,7 +449,7 @@ public final class Syscall {
    * @param state program state
    */
   private static void setSeed(State state) {
-    RNG.setSeed(state.xregfile().getRegister("a1"));
+    RNG.setSeed(state.xregfile().getRegister("a0"));
   }
 
   /**
@@ -467,8 +467,8 @@ public final class Syscall {
    * @param state program state
    */
   private static void randIntRng(State state) {
-    int min = state.xregfile().getRegister("a1");
-    int max = state.xregfile().getRegister("a2");
+    int min = state.xregfile().getRegister("a0");
+    int max = state.xregfile().getRegister("a1");
     state.xregfile().setRegister("a0", RNG.nextInt((max - min) + 1) + min);
   }
 
