@@ -117,9 +117,9 @@ test07_data:
   .text
 
 success:
-  li a0, 10
+  li a7, 10
   ecall
 
 fail:
-  li a0, 17
+  li a7, 17
   ecall

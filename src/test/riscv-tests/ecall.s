@@ -9,10 +9,10 @@
 __start:
 
 test:
-  li a0, 1
-  li a2, 0xa
+  li a7, 1
+  li a0, 0xa
   ecall
 
 success:
-  li a0, 10
+  li a7, 10
   ecall
