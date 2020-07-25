@@ -19,9 +19,9 @@ test01:
   bne x1, x2, fail
 
 success:
-  li a0, 10
+  li a7, 10
   ecall
 
 fail:
-  li a0, 17
+  li a7, 17
   ecall

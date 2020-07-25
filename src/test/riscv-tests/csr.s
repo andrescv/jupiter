@@ -17,5 +17,5 @@ test:
   csrrci x1, 0, 0
 
 success:
-  li a0, 10
+  li a7, 10
   ecall

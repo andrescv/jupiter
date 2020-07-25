@@ -15,24 +15,24 @@ __start:
   li t0, 0
   li t1, 1
   # prints msg1
-  li a0, 4
-  la a1, msg1
+  li a7, 4
+  la a0, msg1
   ecall
   # reads an int and moves it to register t3
-  li a0, 5
+  li a7, 5
   ecall
   mv t3, a0
   # prints a newline
-  li a0, 11
-  li a1, '\n'
+  li a7, 11
+  li a0, '\n'
   ecall
   # prints msg2
-  li a0, 4
-  la a1, msg2
+  li a7, 4
+  la a0, msg2
   ecall
   # prints the int value in t3
-  li a0, 1
-  mv a1, t3
+  li a7, 1
+  mv a0, t3
   ecall
   # fibonnaci program
 fib:
@@ -44,13 +44,13 @@ fib:
   j fib
 finish:
   # prints msg3
-  li a0, 4
-  la a1, msg3
+  li a7, 4
+  la a0, msg3
   ecall
   # prints the result in t0
-  li a0, 1
-  mv a1, t0
+  li a7, 1
+  mv a0, t0
   ecall
   # ends the program with status code 0
-  li a0, 10
+  li a7, 10
   ecall

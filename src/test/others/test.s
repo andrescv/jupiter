@@ -3,5 +3,5 @@
 __start:
   li a0, 0xbb
   call print
-  li a0, 10
+  li a7, 10
   ecall
