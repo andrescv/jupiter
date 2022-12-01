@@ -1,0 +1,48 @@
+{
+  "name": "@jupitersim/app",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/andrescv/jupiter#readme",
+  "description": "Jupiter RISC-V Assembler & Runtime Simulator",
+  "packageManager": "npm@8.19.2",
+  "author": {
+    "email": "me@andrescv.dev",
+    "name": "Andrés Castellanos",
+    "url": "https://andrescv.dev"
+  },
+  "keywords": [
+    "jupiter",
+    "jupitersim",
+    "riscv",
+    "assembler",
+    "simulator",
+    "debugger"
+  ],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrescv/jupiter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andrescv/jupiter/issues"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.25.2",
+    "prettier": "^2.8.0",
+    "turbo": "^1.6.3"
+  }
+}
