@@ -8,6 +8,12 @@
   <a href="https://github.com/andrescv/Jupiter/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3">
   </a>
+  <a href="https://github.com/andrescv/jupiter/actions/workflows/ci.yml">
+    <img src="https://github.com/andrescv/jupiter/actions/workflows/ci.yml/badge.svg?branch=next" alt="">
+  </a>
+  <a href="https://codecov.io/gh/andrescv/jupiter" > 
+    <img src="https://codecov.io/gh/andrescv/jupiter/branch/next/graph/badge.svg?token=FpiLNNzYj8"/> 
+  </a>
   <a href="https://github.com/andrescv/Jupiter/releases">
     <img src="https://img.shields.io/github/downloads/andrescv/Jupiter/total.svg">
   </a>
