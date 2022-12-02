@@ -36,6 +36,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "coverage": "turbo run coverage",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{js,ts,tsx,md}\""

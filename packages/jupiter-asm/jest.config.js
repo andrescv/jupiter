@@ -8,6 +8,7 @@ const { pathsToModuleNameMapper } = require('ts-jest');
 const Config = require('@jupitersim/jest');
 
 module.exports = Config({
+  roots: ['src'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>',
   }),

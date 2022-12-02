@@ -5,6 +5,12 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "test": {
+      "outputs": []
+    },
+    "coverage": {
+      "outputs": ["coverage/**"]
+    },
     "lint": {
       "outputs": []
     },
