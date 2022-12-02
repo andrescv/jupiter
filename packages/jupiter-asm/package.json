@@ -10,6 +10,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "generate": "tsx ./script/generate.ts",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint \"**/*.ts\" --fix",
@@ -19,6 +21,8 @@
     "antlr4": "^4.11.0"
   },
   "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@jupitersim/jest": "*",
     "@jupitersim/tsconfig": "*",
     "@types/antlr4": "^4.11.1",
     "@types/node": "^18.11.10",
