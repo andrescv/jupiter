@@ -1,6 +1,6 @@
-import { Field } from '@/interface/field';
+import { Fields } from '@/constant/fields';
 
-import { Fields } from '../constant/fields';
+import { Field } from '@/interface/field';
 
 /**
  * RV code.
