@@ -1,4 +1,4 @@
-name: Linting
+name: CI
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [next]
 
 jobs:
-  lint:
-    name: Lint
+  ci:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - name: Check out source code
@@ -24,3 +24,15 @@ jobs:
 
       - name: Linting
         run: npm run lint
+
+      - name: Coverage
+        run: npm run coverage
+
+      - name: Upload Assembler Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/jupiter-asm/coverage
+          flags: asm
+          fail_ci_if_error: true
+          verbose: true
