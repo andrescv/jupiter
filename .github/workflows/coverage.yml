@@ -22,7 +22,7 @@ jobs:
       - name: Installing dependencies
         run: npm ci
 
-      - name: Linting
+      - name: Coverage
         run: npm run coverage
 
       - name: Upload Jupiter ASM coverage
