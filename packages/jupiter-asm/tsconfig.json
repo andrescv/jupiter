@@ -1,0 +1,11 @@
+{
+  "extends": "@jupitersim/tsconfig/library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["tsup.config.ts", "script", "src", "test"],
+  "exclude": ["dist", "build", "node_modules"]
+}
