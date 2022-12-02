@@ -1,10 +1,9 @@
 name: Coverage
 
 on:
-  push:
-    branches: [next]
-  pull_request:
-    branches: [next]
+  workflow_run:
+    workflows: [Linting]
+    types: [completed]
 
 jobs:
   coverage:
