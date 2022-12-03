@@ -1,3 +1,7 @@
+// @ts-check
+// eslint-disable-next-line
+const { pathsToModuleNameMapper } = require('ts-jest');
+
 /**
  * Jest config.
  *
@@ -6,7 +10,7 @@
 function Config(opts) {
   return {
     verbose: true,
-    roots: ['src', 'test'],
+    roots: ['src'],
     extensionsToTreatAsEsm: ['.ts'],
     preset: 'ts-jest/presets/js-with-ts',
     moduleFileExtensions: ['js', 'ts', 'json'],
@@ -20,5 +24,13 @@ function Config(opts) {
     ...opts,
   };
 }
+
+Config.moduleNameMapperFrom = (
+  /** @type {{ paths: import("typescript").MapLike<string[]> }} */
+  compilerOptions,
+  { prefix = '<rootDir>' } = {}
+) => pathsToModuleNameMapper(compilerOptions.paths, {
+  prefix,
+})
 
 module.exports = Config;
