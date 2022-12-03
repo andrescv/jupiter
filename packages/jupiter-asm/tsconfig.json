@@ -3,10 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@test/*": ["test/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["tsup.config.ts", "script", "src", "test"],
+  "include": ["tsup.config.ts", "script", "src"],
   "exclude": ["dist", "build", "node_modules"]
 }

@@ -21,12 +21,14 @@
     "antlr4": "^4.11.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@jest/globals": "^29.3.1",
     "@jupitersim/jest": "*",
     "@jupitersim/tsconfig": "*",
     "@types/antlr4": "^4.11.1",
     "@types/node": "^18.11.10",
     "eslint-config-jupiter": "*",
+    "jest-mock-extended": "^3.0.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
     "tsx": "^3.12.1",
