@@ -1,10 +1,10 @@
 {
   "name": "@jupitersim/jest",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "index.cjs",
   "private": true,
   "files": [
-    "index.js"
+    "index.cjs"
   ],
   "dependencies": {
     "jest": "^29.3.1",

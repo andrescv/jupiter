@@ -1,10 +1,10 @@
 {
   "name": "eslint-config-jupiter",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "index.cjs",
   "private": true,
   "files": [
-    "index.js"
+    "index.cjs"
   ],
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.45.0",
