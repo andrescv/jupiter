@@ -6,6 +6,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["tsup.config.ts", "script", "src"],
-  "exclude": ["dist", "build", "node_modules"]
+  "include": ["tsup.config.ts", "vitest.config.ts", "script", "src"],
+  "exclude": ["dist", "node_modules"]
 }

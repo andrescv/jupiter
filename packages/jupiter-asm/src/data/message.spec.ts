@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
-import { mockDeep, mockReset } from 'jest-mock-extended';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 
 import { Context } from '@/interface/context';
 import { Input } from '@/interface/input';

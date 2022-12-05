@@ -10,8 +10,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "jest",
-    "coverage": "jest --coverage",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "generate": "tsx ./script/generate.ts",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint \"**/*.ts\" --fix",
@@ -22,16 +22,17 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
-    "@jest/globals": "^29.3.1",
-    "@jupitersim/jest": "*",
     "@jupitersim/tsconfig": "*",
-    "@types/antlr4": "^4.11.1",
+    "@types/antlr4": "^4.11.2",
     "@types/node": "^18.11.10",
+    "@vitest/coverage-c8": "^0.25.3",
     "eslint-config-jupiter": "*",
-    "jest-mock-extended": "^3.0.1",
     "rimraf": "^3.0.2",
     "tsup": "^6.5.0",
     "tsx": "^3.12.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.3",
+    "vite": "^3.2.5",
+    "vitest": "^0.25.3",
+    "vitest-mock-extended": "^1.0.7"
   }
 }
