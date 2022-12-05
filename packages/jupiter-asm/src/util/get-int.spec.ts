@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import TerminalNode from 'antlr4/tree/TerminalNode';
+import { describe, expect, it } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 
 import { getInt } from './get-int';
