@@ -1,4 +1,7 @@
-module.exports = {
+/**
+ * @type {import('eslint').Linter.Config}
+ */
+const config = {
   extends: ['jupiter'],
   rules: {
     '@typescript-eslint/no-non-null-assertion': 'off',
@@ -30,3 +33,5 @@ module.exports = {
     },
   ],
 };
+
+module.exports = config;

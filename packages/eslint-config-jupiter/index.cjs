@@ -1,4 +1,7 @@
-module.exports = {
+/**
+ * @type {import('eslint').Linter.Config}
+ */
+const config = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'simple-import-sort'],
   extends: [
@@ -17,3 +20,5 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
   },
 };
+
+module.exports = config;
