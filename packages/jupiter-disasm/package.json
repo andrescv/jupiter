@@ -1,0 +1,29 @@
+{
+  "name": "@jupitersim/disasm",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint \"**/*.ts\"",
+    "lint:fix": "eslint \"**/*.ts\" --fix",
+    "clean": "rimraf .turbo dist coverage"
+  },
+  "devDependencies": {
+    "@jupitersim/tsconfig": "*",
+    "@types/node": "^18.11.10",
+    "eslint-config-jupiter": "*",
+    "rimraf": "^3.0.2",
+    "tsup": "^6.5.0",
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  }
+}
