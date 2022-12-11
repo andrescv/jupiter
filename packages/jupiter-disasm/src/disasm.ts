@@ -50,15 +50,15 @@ function getDecodeError(input: number) {
 }
 
 const createDecoder = (extensions: ReadonlyArray<RVExtension>) =>
-  chain(
-    extensions.map((extension) => {
-      if (extensionsDecoders.has(extension)) {
-        const create = extensionsDecoders.get(extension)!;
-        return create();
-      }
-      throw new UnsupportedExtensionError(extension);
-    }),
-    new RV32IDecodeHandler()
-  );
+  chain(extensions.map(toDecodeHandler), new RV32IDecodeHandler());
+
+function toDecodeHandler(extension: RVExtension) {
+  if (extensionsDecoders.has(extension)) {
+    const create = extensionsDecoders.get(extension)!;
+    return create();
+  }
+
+  throw new UnsupportedExtensionError(extension);
+}
 
 const fullDecoder = createDecoder(defaultExtensions);
