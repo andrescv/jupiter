@@ -12,7 +12,7 @@ import extendOptions, { defaultExtensions } from './helpers/extendOptions';
 export function disasm(
   input: number | number[],
   options?: Partial<Options>
-): string[] | string {
+): string[] {
   const extendedOptions = extendOptions(options || {});
   const decode = createDecodeFn(extendedOptions.selectedExtensions);
 
