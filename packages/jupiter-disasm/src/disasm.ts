@@ -11,9 +11,9 @@ import extendOptions, { defaultExtensions } from './helpers/extendOptions';
 
 export function disasm(
   input: number | number[],
-  options?: Partial<Options>
+  options: Partial<Options> = {}
 ): string[] {
-  const extendedOptions = extendOptions(options || {});
+  const extendedOptions = extendOptions(options);
   const decode = createDecodeFn(extendedOptions.selectedExtensions);
 
   if (Array.isArray(input)) {
