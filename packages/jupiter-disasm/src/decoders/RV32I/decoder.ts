@@ -79,7 +79,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
 
     const rd = this.getRegisterName(input.get(Fields.RD));
     const rs1 = this.getRegisterName(input.get(Fields.RS1));
-    const imm = extendSign(input.get(immField), 12).toString();
+    const imm = this.formatImm(extendSign(input.get(immField), 12));
 
     if (opcode === 0x03 || opcode === 0x67) {
       return this.offsetFormat(name, rd, rs1, imm);

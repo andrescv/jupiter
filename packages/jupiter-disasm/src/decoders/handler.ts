@@ -52,6 +52,10 @@ export abstract class RVDecodeHandler {
     return `${name} ${reg1} ${offset}(${reg2})`;
   }
 
+  protected formatImm(value: number): string {
+    return value.toString();
+  }
+
   /** The RISC-V ISA Module that decodes */
   protected abstract get isaModule(): 'RV32I' | RVExtension;
   protected abstract execute(input: MachineCode): string | null;
