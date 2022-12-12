@@ -68,6 +68,13 @@ describe('decoding', () => {
     expect(decode(0x93f5fab7)).toBe('lui x21 606047');
     expect(decode(0xf7f8e597)).toBe('auipc x11 1015694');
   });
+
+  it('should decode J-type instructions correctly', () => {
+    expect(decode(0x1dbfa56f)).toBe('jal x10 1026522');
+    expect(decode(0x59baf8ef)).toBe('jal x17 720282');
+    expect(decode(0x7ffff0ef)).toBe('jal x1 1048574');
+    expect(decode(0x79bba8ef)).toBe('jal x17 765850');
+  });
 });
 
 const createDecodeFn =
