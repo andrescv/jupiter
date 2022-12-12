@@ -1,3 +1,5 @@
+import { getXRegister } from '@/helpers/get-register';
+
 import { MachineCode } from '@/interfaces/code';
 import { HandlerResult } from '@/interfaces/handler';
 import { DecodingOptions, RVExtension } from '@/interfaces/options';
@@ -29,6 +31,12 @@ export abstract class RVDecodeHandler {
 
   public setNext(next: RVDecodeHandler): void {
     this.next = next;
+  }
+
+  protected getRegisterName(register: number) {
+    return getXRegister(register, {
+      useABIName: this.options.useABINames,
+    });
   }
 
   /** The RISC-V ISA Module that decodes */

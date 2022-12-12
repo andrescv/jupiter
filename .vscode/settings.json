@@ -4,6 +4,7 @@
       "andi",
       "ebreak",
       "ecall",
+      "FUNCT",
       "jalr",
       "slli",
       "slti",

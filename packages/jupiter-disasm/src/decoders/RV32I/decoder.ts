@@ -1,6 +1,10 @@
+import { areNumeric } from '@/helpers/numeric';
+
 import { Fields, MachineCode } from '@/interfaces/code';
 
 import { RVDecodeHandler } from '../handler';
+
+import getRTypeName from './r-type';
 
 export class RV32IDecodeHandler extends RVDecodeHandler {
   protected readonly isaModule = 'RV32I';
@@ -10,8 +14,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
 
     switch (opcode) {
       case 0x33:
-        // R-Type
-        return null;
+        return this.decodeRType(input);
       case 0x03:
       case 0x13:
       case 0x67:
@@ -37,5 +40,24 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     }
 
     return null;
+  }
+
+  private decodeRType(input: MachineCode): string | null {
+    const funct3 = input.get(Fields.FUNCT3);
+    const funct7 = input.get(Fields.FUNCT7);
+
+    const name = getRTypeName(funct3, funct7);
+    const rd = input.get(Fields.RD);
+    const rs1 = input.get(Fields.RS1);
+    const rs2 = input.get(Fields.RS2);
+
+    const missingFields = !(name && areNumeric(rd, rs1, rs2));
+    if (missingFields) return null;
+
+    const rdName = this.getRegisterName(rd);
+    const rs1Name = this.getRegisterName(rs1);
+    const rs2Name = this.getRegisterName(rs2);
+
+    return `${name} ${rdName} ${rs1Name} ${rs2Name}`;
   }
 }
