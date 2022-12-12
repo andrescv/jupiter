@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+      "addi",
+      "andi",
+      "ebreak",
+      "ecall",
+      "jalr",
+      "slli",
+      "slti",
+      "sltiu",
+      "sltu",
+      "srai",
+      "srli",
+      "xori"
+    ]
+}
