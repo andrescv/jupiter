@@ -7,7 +7,7 @@ const iType: ITypeMappings = <const>{
     0x5: 'lhu',
   },
   0x13: {
-    0x9: 'addi',
+    0x0: 'addi',
     0x2: 'slti',
     0x3: 'sltiu',
     0x4: 'xori',
