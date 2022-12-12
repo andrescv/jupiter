@@ -41,6 +41,13 @@ describe('decoding', () => {
     expect(decode(0x00000073)).toBe('ecall');
     expect(decode(0x00100073)).toBe('ebreak');
   });
+
+  it('should decode S-type instructions correctly', () => {
+    expect(decode(0x00a58223)).toBe('sb x10 4(x11)');
+    expect(decode(0xc0551023)).toBe('sh x5 -1024(x10)');
+    expect(decode(0x7e652e23)).toBe('sw x6 2044(x10)');
+    expect(decode(0x02652fa3)).toBe('sw x6 63(x10)');
+  });
 });
 
 const createDecodeFn =
