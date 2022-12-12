@@ -93,8 +93,17 @@ describe('[chain of responsibility] tests', () => {
   });
 });
 
+describe('imm formatting', () => {
+  const handler = fakeHandlerFactory();
+  const formatImm = handler['formatImm'];
+  it('should format as decimal', () => {
+    expect(formatImm(0x00000000)).toBe('0');
+    expect(formatImm(0x32)).toBe('50');
+  });
+});
+
 const fakeHandlerFactory = (instance: Partial<HandlerLike> = {}) =>
-  Object.assign(new FakeHandler(), instance);
+  Object.assign(new FakeHandler({ useABINames: false }), instance);
 
 class FakeHandler extends RVDecodeHandler {
   protected isaModule: 'RV32I' | RVExtension = 'RV32I';
