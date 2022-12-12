@@ -5,6 +5,7 @@ import { Field } from '@/interfaces/field';
 
 import { RVDecodeHandler } from '../handler';
 
+import getBTypeName from './b-type';
 import getITypeName from './i-type';
 import getRTypeName from './r-type';
 import getSTypeName from './s-type';
@@ -26,8 +27,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
       case 0x23:
         return this.decodeSType(input);
       case 0x63:
-        // B-Type
-        return null;
+        return this.decodeBType(input);
       case 0x17:
       case 0x37:
         // U-Type
@@ -102,5 +102,29 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     const rs2 = this.getRegisterName(input.get(Fields.RS2));
 
     return this.offsetFormat(name, rs2, rs1, imm);
+  }
+
+  private decodeBType(input: MachineCode): string | null {
+    const funct3 = input.get(Fields.FUNCT3);
+    const name = getBTypeName(funct3);
+
+    if (!name) return null;
+
+    const imm4_1 = input.get(Fields.IMM_4_1);
+    const imm_10_5 = input.get(Fields.IMM_10_5);
+    const imm11 = input.get(Fields.IMM_11B);
+    const imm12 = input.get(Fields.IMM_12);
+
+    const imm = this.formatImm(
+      extendSign(
+        (imm12 << 12) | (imm11 << 11) | (imm_10_5 << 5) | (imm4_1 << 1),
+        13
+      )
+    );
+
+    const rs1 = this.getRegisterName(input.get(Fields.RS1));
+    const rs2 = this.getRegisterName(input.get(Fields.RS2));
+
+    return this.normalFormat(name, rs1, rs2, imm);
   }
 }

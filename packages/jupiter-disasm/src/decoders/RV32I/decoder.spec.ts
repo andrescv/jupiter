@@ -56,6 +56,12 @@ describe('decoding', () => {
     expect(decode(0x031ad463)).toBe('bge x21 x17 40');
     expect(decode(0x02d4e663)).toBe('bltu x9 x13 44');
     expect(decode(0x025efa63)).toBe('bgeu x29 x5 52');
+
+    expect(decode(0x065e8263)).toBe('beq x29 x5 100');
+    expect(decode(0x0e5e9e63)).toBe('bne x29 x5 252');
+    expect(decode(0x325e9c63)).toBe('bne x29 x5 824');
+    expect(decode(0x7fea0863)).toBe('beq x20 x30 2032');
+    expect(decode(0x7d7f4463)).toBe('blt x30 x23 1992');
   });
 });
 
