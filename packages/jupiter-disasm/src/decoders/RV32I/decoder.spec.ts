@@ -48,6 +48,15 @@ describe('decoding', () => {
     expect(decode(0x7e652e23)).toBe('sw x6 2044(x10)');
     expect(decode(0x02652fa3)).toBe('sw x6 63(x10)');
   });
+
+  it('should decode B-type instructions correctly', () => {
+    expect(decode(0x7f750fe3)).toBe('beq x10 x23 4094');
+    expect(decode(0xfec51ee3)).toBe('bne x10 x12 -4');
+    expect(decode(0x02f5c063)).toBe('blt x11 x15 32');
+    expect(decode(0x031ad463)).toBe('bge x21 x17 40');
+    expect(decode(0x02d4e663)).toBe('bltu x9 x13 44');
+    expect(decode(0x025efa63)).toBe('bgeu x29 x5 52');
+  });
 });
 
 const createDecodeFn =

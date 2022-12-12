@@ -2,6 +2,8 @@
     "cSpell.words": [
       "addi",
       "andi",
+      "bgeu",
+      "bltu",
       "ebreak",
       "ecall",
       "FUNCT",
