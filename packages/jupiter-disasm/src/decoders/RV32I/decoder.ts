@@ -9,6 +9,7 @@ import getBTypeName from './b-type';
 import getITypeName from './i-type';
 import getRTypeName from './r-type';
 import getSTypeName from './s-type';
+import getUTypeName from './u-type';
 
 export class RV32IDecodeHandler extends RVDecodeHandler {
   protected readonly isaModule = 'RV32I';
@@ -30,8 +31,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
         return this.decodeBType(input);
       case 0x17:
       case 0x37:
-        // U-Type
-        return null;
+        return this.decodeUType(opcode, input);
       case 0x6f:
         // J-Type
         return null;
@@ -126,5 +126,14 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     const rs2 = this.getRegisterName(input.get(Fields.RS2));
 
     return this.normalFormat(name, rs1, rs2, imm);
+  }
+
+  private decodeUType(opcode: number, input: MachineCode): string | null {
+    const name = getUTypeName(opcode);
+    if (!name) return null;
+
+    const rd = this.getRegisterName(input.get(Fields.RD));
+    const imm = this.formatImm(input.get(Fields.IMM_31_12));
+    return this.normalFormat(name, rd, imm);
   }
 }
