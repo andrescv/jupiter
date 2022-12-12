@@ -1,7 +1,7 @@
-import { Fields } from '@/rv32/fields';
-
 import { MachineCode } from '@/interfaces/code';
 import { Field } from '@/interfaces/field';
+
+import { Fields } from '@/rv32/fields';
 
 /**
  * RV code.

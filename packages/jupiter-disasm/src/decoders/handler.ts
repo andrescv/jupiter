@@ -1,8 +1,8 @@
-import { Code } from '@/rv32';
-
 import { MachineCode } from '@/interfaces/code';
 import { HandlerResult } from '@/interfaces/handler';
 import { DecodingOptions, RVExtension } from '@/interfaces/options';
+
+import { Code } from '@/rv32';
 
 export abstract class RVDecodeHandler {
   protected next: RVDecodeHandler | null = null;
