@@ -63,6 +63,11 @@ describe('decoding', () => {
     expect(decode(0x7fea0863)).toBe('beq x20 x30 2032');
     expect(decode(0x7d7f4463)).toBe('blt x30 x23 1992');
   });
+
+  it('should decode U-type instructions correctly', () => {
+    expect(decode(0x93f5fab7)).toBe('lui x21 606047');
+    expect(decode(0xf7f8e597)).toBe('auipc x11 1015694');
+  });
 });
 
 const createDecodeFn =
