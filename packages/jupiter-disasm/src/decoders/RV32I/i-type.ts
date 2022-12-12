@@ -3,8 +3,8 @@ const iType: ITypeMappings = <const>{
     0x0: 'lb',
     0x1: 'lh',
     0x2: 'lw',
-    0x3: 'lbu',
-    0x4: 'lhu',
+    0x4: 'lbu',
+    0x5: 'lhu',
   },
   0x13: {
     0x9: 'addi',
