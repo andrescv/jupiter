@@ -18,6 +18,15 @@ describe('decoding', () => {
     expect(decode(0x00b56633)).toBe('or x12 x10 x11');
     expect(decode(0x00b57633)).toBe('and x12 x10 x11');
   });
+
+  it('should decode I-type instructions correctly', () => {
+    expect(decode(0x008b0567)).toBe('jalr x10 8(x22)');
+    expect(decode(0xff8a02e7)).toBe('jalr x5 -8(x20)');
+    expect(decode(0x00028503)).toBe('lb x10 0(x5)');
+    expect(decode(0xffc30583)).toBe('lb x11 -4(x6)');
+    expect(decode(0x00029503)).toBe('lh x10 0(x5)');
+    expect(decode(0xffc31583)).toBe('lh x11 -4(x6)');
+  });
 });
 
 const createDecodeFn =

@@ -6,6 +6,7 @@
       "ecall",
       "FUNCT",
       "jalr",
+      "SHAMT",
       "slli",
       "slti",
       "sltiu",

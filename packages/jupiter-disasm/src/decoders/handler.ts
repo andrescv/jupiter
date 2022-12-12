@@ -39,6 +39,19 @@ export abstract class RVDecodeHandler {
     });
   }
 
+  protected normalFormat(name: string, ...args: string[]) {
+    return `${name} ${args.join(' ')}`;
+  }
+
+  protected offsetFormat(
+    name: string,
+    reg1: string,
+    reg2: string,
+    offset: string
+  ) {
+    return `${name} ${reg1} ${offset}(${reg2})`;
+  }
+
   /** The RISC-V ISA Module that decodes */
   protected abstract get isaModule(): 'RV32I' | RVExtension;
   protected abstract execute(input: MachineCode): string | null;

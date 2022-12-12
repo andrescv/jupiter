@@ -1,9 +1,11 @@
-import { areNumeric } from '@/helpers/numeric';
+import { extendSign } from '@/helpers/numeric';
 
 import { Fields, MachineCode } from '@/interfaces/code';
+import { Field } from '@/interfaces/field';
 
 import { RVDecodeHandler } from '../handler';
 
+import getITypeName from './i-type';
 import getRTypeName from './r-type';
 
 export class RV32IDecodeHandler extends RVDecodeHandler {
@@ -19,8 +21,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
       case 0x13:
       case 0x67:
       case 0x73:
-        // I-Type
-        return null;
+        return this.decodeIType(opcode, input);
       case 0x23:
         // S-Type
         return null;
@@ -47,17 +48,43 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     const funct7 = input.get(Fields.FUNCT7);
 
     const name = getRTypeName(funct3, funct7);
-    const rd = input.get(Fields.RD);
-    const rs1 = input.get(Fields.RS1);
-    const rs2 = input.get(Fields.RS2);
+    if (!name) return null;
 
-    const missingFields = !(name && areNumeric(rd, rs1, rs2));
-    if (missingFields) return null;
+    const rd = this.getRegisterName(input.get(Fields.RD));
+    const rs1 = this.getRegisterName(input.get(Fields.RS1));
+    const rs2 = this.getRegisterName(input.get(Fields.RS2));
 
-    const rdName = this.getRegisterName(rd);
-    const rs1Name = this.getRegisterName(rs1);
-    const rs2Name = this.getRegisterName(rs2);
+    return this.normalFormat(name, rd, rs1, rs2);
+  }
 
-    return `${name} ${rdName} ${rs1Name} ${rs2Name}`;
+  private decodeIType(opcode: number, input: MachineCode): string | null {
+    const funct3 = input.get(Fields.FUNCT3);
+
+    let name: string | null;
+    let immField: Field = Fields.IMM_11_0;
+
+    if (opcode === 0x13 && (funct3 === 0x01 || funct3 === 0x05)) {
+      const special = input.get(Fields.IMM_11_5);
+      name = getITypeName(opcode, funct3, special);
+      immField = Fields.SHAMT;
+    } else if (opcode === 0x73) {
+      const special = input.get(Fields.IMM_11_0);
+      name = getITypeName(opcode, funct3, special);
+      return name;
+    } else {
+      name = getITypeName(opcode, funct3);
+    }
+
+    if (!name) return null;
+
+    const rd = this.getRegisterName(input.get(Fields.RD));
+    const rs1 = this.getRegisterName(input.get(Fields.RS1));
+    const imm = extendSign(input.get(immField), 12).toString();
+
+    if (opcode === 0x03 || opcode === 0x67) {
+      return this.offsetFormat(name, rd, rs1, imm);
+    }
+
+    return this.normalFormat(name, rd, rs1, imm);
   }
 }
