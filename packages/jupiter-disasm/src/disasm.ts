@@ -1,4 +1,4 @@
-import { Options, RVExtension } from '@/interfaces/options';
+import { DecodingOptions, Options, RVExtension } from '@/interfaces/options';
 
 import { extensionsDecoders, RV32IDecodeHandler } from './decoders';
 import {
@@ -14,7 +14,10 @@ export function disasm(
   options: Partial<Options> = {}
 ): string[] {
   const extendedOptions = extendOptions(options);
-  const decode = createDecodeFn(extendedOptions.selectedExtensions);
+  const decode = createDecodeFn(
+    extendedOptions.selectedExtensions,
+    extendedOptions
+  );
 
   if (Array.isArray(input)) {
     return input.map(decode);
@@ -24,10 +27,11 @@ export function disasm(
 }
 
 function createDecodeFn(
-  extensions: ReadonlyArray<RVExtension>
+  extensions: ReadonlyArray<RVExtension>,
+  options: DecodingOptions
 ): (input: number) => string {
   return (input) => {
-    const decoder = createDecoder(extensions);
+    const decoder = createDecoder(extensions, options);
 
     const result = decoder.decode(input);
 
@@ -49,16 +53,20 @@ function getDecodeError(input: number) {
   return new UnsupportedInstructionError(input);
 }
 
-const createDecoder = (extensions: ReadonlyArray<RVExtension>) =>
-  chain(extensions.map(toDecodeHandler), new RV32IDecodeHandler());
+const createDecoder = (
+  extensions: ReadonlyArray<RVExtension>,
+  opts: DecodingOptions
+) => chain(extensions.map(toDecodeHandler(opts)), new RV32IDecodeHandler(opts));
 
-function toDecodeHandler(extension: RVExtension) {
-  if (extensionsDecoders.has(extension)) {
-    const create = extensionsDecoders.get(extension)!;
-    return create();
-  }
+function toDecodeHandler(options: DecodingOptions) {
+  return (extension: RVExtension) => {
+    if (extensionsDecoders.has(extension)) {
+      const create = extensionsDecoders.get(extension)!;
+      return create(options);
+    }
 
-  throw new UnsupportedExtensionError(extension);
+    throw new UnsupportedExtensionError(extension);
+  };
 }
 
-const fullDecoder = createDecoder(defaultExtensions);
+const fullDecoder = createDecoder(defaultExtensions, { useABINames: false });

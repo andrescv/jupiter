@@ -3,4 +3,6 @@ export interface Options {
   useABINames: boolean;
 }
 
+export type DecodingOptions = Omit<Options, 'selectedExtensions'>;
+
 export type RVExtension = 'Zifencei' | 'Zicsr' | 'M' | 'A' | 'F' | 'D';

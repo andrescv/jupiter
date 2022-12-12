@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { RV32IDecodeHandler } from './decoder';
 
 describe('decoding', () => {
-  const decoder = new RV32IDecodeHandler();
+  const decoder = new RV32IDecodeHandler({ useABINames: false });
   const decode = createDecodeFn(decoder);
 
   it('should decode R-type instructions correctly', () => {

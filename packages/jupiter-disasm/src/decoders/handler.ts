@@ -2,10 +2,12 @@ import { Code } from '@/rv32';
 
 import { MachineCode } from '@/interfaces/code';
 import { HandlerResult } from '@/interfaces/handler';
-import { RVExtension } from '@/interfaces/options';
+import { DecodingOptions, RVExtension } from '@/interfaces/options';
 
 export abstract class RVDecodeHandler {
   protected next: RVDecodeHandler | null = null;
+
+  public constructor(protected options: DecodingOptions) {}
 
   public decode(input: number): HandlerResult<string> {
     const machineCode = new Code(input);
