@@ -74,6 +74,11 @@ describe('decoding', () => {
     expect(decode(0x59baf8ef)).toBe('jal x17 720282');
     expect(decode(0x7ffff0ef)).toBe('jal x1 1048574');
     expect(decode(0x79bba8ef)).toBe('jal x17 765850');
+
+    expect(decode(0xe260556f)).toBe('jal x10 -1026522');
+    expect(decode(0xa66508ef)).toBe('jal x17 -720282');
+    expect(decode(0x802000ef)).toBe('jal x1 -1048574');
+    expect(decode(0x866458ef)).toBe('jal x17 -765850');
   });
 });
 

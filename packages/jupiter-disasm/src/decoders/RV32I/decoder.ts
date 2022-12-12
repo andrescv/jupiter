@@ -33,8 +33,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
       case 0x37:
         return this.decodeUType(opcode, input);
       case 0x6f:
-        // J-Type
-        return null;
+        return this.decodeJalInstruction(input);
       case 0x0f:
         // FENCE
         return null;
@@ -135,5 +134,22 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     const rd = this.getRegisterName(input.get(Fields.RD));
     const imm = this.formatImm(input.get(Fields.IMM_31_12));
     return this.normalFormat(name, rd, imm);
+  }
+
+  private decodeJalInstruction(input: MachineCode): string {
+    const rd = this.getRegisterName(input.get(Fields.RD));
+    const imm10_1 = input.get(Fields.IMM_10_1);
+    const imm11 = input.get(Fields.IMM_11J);
+    const imm19_12 = input.get(Fields.IMM_19_12);
+    const imm20 = input.get(Fields.IMM_20);
+
+    const imm = this.formatImm(
+      extendSign(
+        (imm20 << 20) | (imm19_12 << 12) | (imm11 << 11) | (imm10_1 << 1),
+        21
+      )
+    );
+
+    return this.normalFormat('jal', rd, imm);
   }
 }
