@@ -26,6 +26,20 @@ describe('decoding', () => {
     expect(decode(0xffc30583)).toBe('lb x11 -4(x6)');
     expect(decode(0x00029503)).toBe('lh x10 0(x5)');
     expect(decode(0xffc31583)).toBe('lh x11 -4(x6)');
+    expect(decode(0x8002a503)).toBe('lw x10 -2048(x5)');
+    expect(decode(0x7ff44583)).toBe('lbu x11 2047(x8)');
+    expect(decode(0x02095503)).toBe('lhu x10 32(x18)');
+    expect(decode(0xb5058513)).toBe('addi x10 x11 -1200');
+    expect(decode(0x4b05a513)).toBe('slti x10 x11 1200');
+    expect(decode(0xed55b413)).toBe('sltiu x8 x11 -299');
+    expect(decode(0x19034613)).toBe('xori x12 x6 400');
+    expect(decode(0x19036613)).toBe('ori x12 x6 400');
+    expect(decode(0x04637b93)).toBe('andi x23 x6 70');
+    expect(decode(0x01f59a13)).toBe('slli x20 x11 31');
+    expect(decode(0x01455d93)).toBe('srli x27 x10 20');
+    expect(decode(0x40f85b13)).toBe('srai x22 x16 15');
+    expect(decode(0x00000073)).toBe('ecall');
+    expect(decode(0x00100073)).toBe('ebreak');
   });
 });
 
