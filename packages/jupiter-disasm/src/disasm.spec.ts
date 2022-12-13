@@ -37,7 +37,7 @@ describe('disasm function', () => {
   });
 
   it('should decode single instruction', () => {
-    expect(disasm(0x40bf04b3)).toStrictEqual(['sub x9 x30 x11']);
+    expect(disasm(0x40bf04b3)).toBe('sub x9 x30 x11');
   });
 
   // TODO: add test for DisabledExtensionError (need at least one extension)

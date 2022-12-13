@@ -9,10 +9,13 @@ import {
 import { chain } from './helpers/chain';
 import extendOptions, { defaultExtensions } from './helpers/extendOptions';
 
+export function disasm(input: number[], options?: Partial<Options>): string[];
+export function disasm(input: number, options?: Partial<Options>): string;
+
 export function disasm(
   input: number | number[],
   options: Partial<Options> = {}
-): string[] {
+): string | string[] {
   const extendedOptions = extendOptions(options);
   const decode = createDecodeFn(
     extendedOptions.selectedExtensions,
@@ -23,7 +26,7 @@ export function disasm(
     return input.map(decode);
   }
 
-  return [decode(input)];
+  return decode(input);
 }
 
 function createDecodeFn(
