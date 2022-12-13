@@ -80,6 +80,12 @@ describe('decoding', () => {
     expect(decode(0x802000ef)).toBe('jal x1 -1048574');
     expect(decode(0x866458ef)).toBe('jal x17 -765850');
   });
+
+  it('should decode Fence instructions correctly', () => {
+    expect(decode(0x0ff0000f)).toBe('fence iorw iorw');
+    expect(decode(0x0330000f)).toBe('fence rw rw');
+    expect(decode(0x8330000f)).toBe('fence.tso');
+  });
 });
 
 const createDecodeFn =

@@ -209,4 +209,16 @@ export const Fields = <const>{
     lo: 26,
     mask: 0b1,
   },
+  FM: {
+    lo: 28,
+    mask: 0b1111,
+  },
+  PRED: {
+    lo: 24,
+    mask: 0b1111,
+  },
+  SUCC: {
+    lo: 20,
+    mask: 0b1111,
+  },
 };

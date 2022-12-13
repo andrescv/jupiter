@@ -16,6 +16,7 @@
       "sltu",
       "srai",
       "srli",
+      "SUCC",
       "xori"
     ]
 }

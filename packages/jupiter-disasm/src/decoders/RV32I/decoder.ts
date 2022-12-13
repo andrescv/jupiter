@@ -35,8 +35,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
       case 0x6f:
         return this.decodeJalInstruction(input);
       case 0x0f:
-        // FENCE
-        return null;
+        return this.decodeFenceInstruction(input);
     }
 
     return null;
@@ -151,5 +150,46 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     );
 
     return this.normalFormat('jal', rd, imm);
+  }
+
+  private decodeFenceInstruction(input: MachineCode): string | null {
+    const funct3 = input.get(Fields.FUNCT3);
+    if (funct3 !== 0x0) return null;
+
+    const fm = input.get(Fields.FM);
+    const pred = input.get(Fields.PRED);
+    const succ = input.get(Fields.SUCC);
+
+    switch (fm) {
+      case 0x0:
+        return this.formatNormalFence(pred, succ);
+      case 0x8:
+        if (pred == 0x3 && succ == 0x3) {
+          return 'fence.tso';
+        }
+    }
+
+    return null;
+  }
+
+  private formatNormalFence(pred: number, succ: number): string {
+    return this.normalFormat(
+      'fence',
+      this.formatFenceCode(pred),
+      this.formatFenceCode(succ)
+    );
+  }
+
+  /**
+   * @param code binary code (4-bit)
+   * @returns {string} representation of the code (e.g. 0b0011 -> 'rw')
+   */
+  private formatFenceCode(code: number): string {
+    const i = code & 0x8 ? 'i' : '';
+    const o = code & 0x4 ? 'o' : '';
+    const r = code & 0x2 ? 'r' : '';
+    const w = code & 0x1 ? 'w' : '';
+
+    return i + o + r + w;
   }
 }
