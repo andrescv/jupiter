@@ -40,7 +40,7 @@ export abstract class RVDecodeHandler {
   }
 
   protected normalFormat(name: string, ...args: string[]) {
-    return `${name} ${args.join(' ')}`;
+    return `${name} ${args.join(' ')}`.trim();
   }
 
   protected offsetFormat(
