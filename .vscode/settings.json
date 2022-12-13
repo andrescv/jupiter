@@ -17,6 +17,8 @@
       "srai",
       "srli",
       "SUCC",
-      "xori"
+      "xori",
+      "Zicsr",
+      "Zifencei"
     ]
 }
