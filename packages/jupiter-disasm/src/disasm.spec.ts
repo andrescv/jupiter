@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { disasm } from './disasm';
+import { DisabledExtensionError } from './errors';
 
 describe('disasm function', () => {
   it('should decode RV32I instructions', () => {
@@ -56,5 +57,9 @@ describe('disasm function', () => {
     ]);
   });
 
-  // TODO: add test for DisabledExtensionError (need at least one extension)
+  it('should throw an error if the extension is not enabled', () => {
+    expect(() => disasm(0x02b7cbb3, { selectedExtensions: [] })).toThrowError(
+      DisabledExtensionError
+    );
+  });
 });
