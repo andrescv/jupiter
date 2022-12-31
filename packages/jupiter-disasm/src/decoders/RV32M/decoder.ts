@@ -23,18 +23,4 @@ export class RV32MDecodeHandler extends RVDecodeHandler {
 
     return null;
   }
-
-  private decodeRType(input: MachineCode): string | null {
-    const funct3 = input.get(Fields.FUNCT3);
-    const funct7 = input.get(Fields.FUNCT7);
-
-    const name = this.getRTypeName(funct3, funct7);
-    if (!name) return null;
-
-    const rd = this.getRegisterName(input.get(Fields.RD));
-    const rs1 = this.getRegisterName(input.get(Fields.RS1));
-    const rs2 = this.getRegisterName(input.get(Fields.RS2));
-
-    return this.normalFormat(name, rd, rs1, rs2);
-  }
 }
