@@ -1,4 +1,6 @@
-const rType: RTypeMappings = <const>{
+import { RTypeNameMappings } from '@/interfaces/instruction-mappings';
+
+const mappings: RTypeNameMappings = <const>{
   0x01: {
     0x0: 'mul',
     0x1: 'mulh',
@@ -11,19 +13,4 @@ const rType: RTypeMappings = <const>{
   },
 };
 
-type RTypeMappings = Record<
-  number,
-  Record<number, string | undefined> | undefined
->;
-
-function getRTypeName(funct3: number, funct7: number): string | null {
-  const funct3Mappings = rType[funct7];
-  if (funct3Mappings) {
-    const name = funct3Mappings[funct3];
-    return name || null;
-  }
-
-  return null;
-}
-
-export default getRTypeName;
+export default mappings;

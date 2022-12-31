@@ -108,6 +108,10 @@ const fakeHandlerFactory = (instance: Partial<HandlerLike> = {}) =>
 class FakeHandler extends RVDecodeHandler {
   protected isaModule: 'RV32I' | RVExtension = 'RV32I';
 
+  protected init(): void {
+    this.mappings = {};
+  }
+
   execute(): string | null {
     return null;
   }

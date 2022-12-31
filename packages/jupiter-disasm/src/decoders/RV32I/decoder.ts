@@ -5,14 +5,24 @@ import { Field } from '@/interfaces/field';
 
 import { RVDecodeHandler } from '../handler';
 
-import getBTypeName from './b-type';
-import getITypeName from './i-type';
-import getRTypeName from './r-type';
-import getSTypeName from './s-type';
-import getUTypeName from './u-type';
+import bTypeNameMappings from './b-type';
+import iTypeNameMappings from './i-type';
+import rTypeNameMappings from './r-type';
+import sTypeNameMappings from './s-type';
+import uTypeNameMappings from './u-type';
 
 export class RV32IDecodeHandler extends RVDecodeHandler {
   protected readonly isaModule = 'RV32I';
+
+  protected init(): void {
+    this.mappings = {
+      BType: bTypeNameMappings,
+      IType: iTypeNameMappings,
+      RType: rTypeNameMappings,
+      SType: sTypeNameMappings,
+      UType: uTypeNameMappings,
+    };
+  }
 
   protected execute(input: MachineCode): string | null {
     const opcode = input.get(Fields.OPCODE);
@@ -45,7 +55,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
     const funct3 = input.get(Fields.FUNCT3);
     const funct7 = input.get(Fields.FUNCT7);
 
-    const name = getRTypeName(funct3, funct7);
+    const name = this.getRTypeName(funct3, funct7);
     if (!name) return null;
 
     const rd = this.getRegisterName(input.get(Fields.RD));
@@ -63,14 +73,14 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
 
     if (opcode === 0x13 && (funct3 === 0x01 || funct3 === 0x05)) {
       const special = input.get(Fields.IMM_11_5);
-      name = getITypeName(opcode, funct3, special);
+      name = this.getITypeName(opcode, funct3, special);
       immField = Fields.SHAMT;
     } else if (opcode === 0x73) {
       const special = input.get(Fields.IMM_11_0);
-      name = getITypeName(opcode, funct3, special);
+      name = this.getITypeName(opcode, funct3, special);
       return name;
     } else {
-      name = getITypeName(opcode, funct3);
+      name = this.getITypeName(opcode, funct3);
     }
 
     if (!name) return null;
@@ -88,7 +98,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
 
   private decodeSType(input: MachineCode): string | null {
     const funct3 = input.get(Fields.FUNCT3);
-    const name = getSTypeName(funct3);
+    const name = this.getSTypeName(funct3);
 
     if (!name) return null;
 
@@ -104,7 +114,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
 
   private decodeBType(input: MachineCode): string | null {
     const funct3 = input.get(Fields.FUNCT3);
-    const name = getBTypeName(funct3);
+    const name = this.getBTypeName(funct3);
 
     if (!name) return null;
 
@@ -127,7 +137,7 @@ export class RV32IDecodeHandler extends RVDecodeHandler {
   }
 
   private decodeUType(opcode: number, input: MachineCode): string | null {
-    const name = getUTypeName(opcode);
+    const name = this.getUTypeName(opcode);
     if (!name) return null;
 
     const rd = this.getRegisterName(input.get(Fields.RD));

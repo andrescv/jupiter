@@ -1,4 +1,6 @@
-const bType: Record<number, string | undefined> = <const>{
+import { BTypeNameMappings } from '@/interfaces/instruction-mappings';
+
+const mappings: BTypeNameMappings = <const>{
   0x0: 'beq',
   0x1: 'bne',
   0x4: 'blt',
@@ -7,10 +9,4 @@ const bType: Record<number, string | undefined> = <const>{
   0x7: 'bgeu',
 };
 
-function getBTypeName(funct3: number): string | null {
-  const name = bType[funct3];
-
-  return name || null;
-}
-
-export default getBTypeName;
+export default mappings;

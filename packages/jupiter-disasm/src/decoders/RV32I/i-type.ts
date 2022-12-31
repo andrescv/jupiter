@@ -1,4 +1,6 @@
-const iType: ITypeMappings = <const>{
+import { ITypeNameMappings } from '@/interfaces/instruction-mappings';
+
+const mappings: ITypeNameMappings = <const>{
   0x03: {
     0x0: 'lb',
     0x1: 'lh',
@@ -32,27 +34,4 @@ const iType: ITypeMappings = <const>{
   },
 };
 
-type ITypeMappings = Record<
-  number,
-  | Record<number, string | Record<number, string | undefined> | undefined>
-  | undefined
->;
-
-function getITypeName(opcode: number, funct3: number, special?: number) {
-  const opcodeMappings = iType[opcode];
-  const funct3Mappings = opcodeMappings?.[funct3];
-
-  if (funct3Mappings) {
-    if (typeof funct3Mappings === 'string' && special === undefined) {
-      return funct3Mappings;
-    }
-
-    if (typeof funct3Mappings === 'object' && special !== undefined) {
-      return funct3Mappings[special] || null;
-    }
-  }
-
-  return null;
-}
-
-export default getITypeName;
+export default mappings;

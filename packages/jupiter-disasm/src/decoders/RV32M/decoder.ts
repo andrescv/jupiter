@@ -2,10 +2,16 @@ import { Fields, MachineCode } from '@/interfaces/code';
 
 import { RVDecodeHandler } from '../handler';
 
-import getRTypeName from './r-type';
+import rTypeNameMappings from './r-type';
 
 export class RV32MDecodeHandler extends RVDecodeHandler {
   protected readonly isaModule = 'M';
+
+  protected init(): void {
+    this.mappings = {
+      RType: rTypeNameMappings,
+    };
+  }
 
   protected execute(input: MachineCode): string | null {
     const opcode = input.get(Fields.OPCODE);
@@ -22,7 +28,7 @@ export class RV32MDecodeHandler extends RVDecodeHandler {
     const funct3 = input.get(Fields.FUNCT3);
     const funct7 = input.get(Fields.FUNCT7);
 
-    const name = getRTypeName(funct3, funct7);
+    const name = this.getRTypeName(funct3, funct7);
     if (!name) return null;
 
     const rd = this.getRegisterName(input.get(Fields.RD));
