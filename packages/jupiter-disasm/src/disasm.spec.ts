@@ -25,19 +25,35 @@ describe('disasm function', () => {
   });
 
   it('should use ABI names for registers', () => {
-    const instructions = disasm([0x00c28533, 0x01036413, 0x40bf04b3], {
-      useABINames: true,
-    });
+    const instructions = disasm(
+      [0x00c28533, 0x01036413, 0x40bf04b3, 0x0326c533],
+      { useABINames: true }
+    );
 
     expect(instructions).toStrictEqual([
       'add a0 t0 a2',
       'ori x8 t1 16',
       'sub s1 t5 a1',
+      'div a0 a3 s2',
     ]);
   });
 
   it('should decode single instruction', () => {
     expect(disasm(0x40bf04b3)).toBe('sub x9 x30 x11');
+  });
+
+  it('should decode RV32M instructions', () => {
+    const instructions = disasm(
+      [0x036591b3, 0x02b7cbb3, 0x03576eb3, 0x0220d033],
+      { selectedExtensions: ['M'] }
+    );
+
+    expect(instructions).toStrictEqual([
+      'mulh x3 x11 x22',
+      'div x23 x15 x11',
+      'rem x29 x14 x21',
+      'divu x0 x1 x2',
+    ]);
   });
 
   // TODO: add test for DisabledExtensionError (need at least one extension)
