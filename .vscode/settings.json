@@ -1,0 +1,28 @@
+{
+    "cSpell.words": [
+      "addi",
+      "andi",
+      "auipc",
+      "bgeu",
+      "bltu",
+      "divu",
+      "ebreak",
+      "ecall",
+      "funct",
+      "jalr",
+      "mulh",
+      "mulhsu",
+      "mulhu",
+      "shamt",
+      "slli",
+      "slti",
+      "sltiu",
+      "sltu",
+      "srai",
+      "srli",
+      "succ",
+      "xori",
+      "zicsr",
+      "zifencei"
+    ]
+}
